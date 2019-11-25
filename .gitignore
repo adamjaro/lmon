@@ -1,0 +1,11 @@
+build/
+data/
+*.log
+*.py~
+*.pyc
+*.pdf
+*.txt
+*.so
+*.d
+*.pcm
+

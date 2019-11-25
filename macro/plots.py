@@ -1,0 +1,388 @@
+#!/usr/bin/python
+
+import ROOT as rt
+from ROOT import gPad, gROOT, gStyle, TFile, gSystem
+
+import plot_utils as ut
+
+#_____________________________________________________________________________
+def up_down_corrected():
+
+    #energy in spectrometer corrected for the acceptance
+    ebin = 0.5
+    emin = 1
+    emax = 20
+
+    edet = 1
+
+    sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+
+    can = ut.box_canvas()
+
+    #sum energy from up and down detectors
+    hSum = ut.prepare_TH1D("hSum", ebin, emin, emax)
+    tree.Draw("(up_en+down_en)/1000. >> hSum", sel)
+
+    #calculate the acceptance
+    hRec = ut.prepare_TH1D("hRec", ebin, emin, emax)
+    hGen = ut.prepare_TH1D("hGen", ebin, emin, emax)
+
+    tree.Draw("phot_gen/1000 >> hRec", sel)
+    tree.Draw("phot_gen/1000 >> hGen")
+
+    hAcc = hRec.Clone()
+    hAcc.Sumw2()
+    hAcc.Divide(hGen)
+
+    #apply the acceptance
+    hSum.Sumw2()
+    for i in xrange(hAcc.GetNbinsX()+1):
+        acc = hAcc.GetBinContent(i)
+        if acc > 0.:
+            hSum.SetBinContent(i, hSum.GetBinContent(i)/acc )
+        else:
+            hSum.SetBinContent(i, 0)
+
+    hSum.Draw()
+
+    #cross section parametrization
+    sys.path.append('/home/jaroslav/sim/lgen/')
+    from gen_zeus import gen_zeus
+    gen = gen_zeus(18, 275, emin)
+    sig = gen.dSigDe
+    sig.SetNpx(300)
+    sig.SetLineWidth(3)
+
+    #scale the cross section to the plot
+    norm = ebin * hSum.Integral() / sig.Integral(emin, gen.Ee)
+    gen.ar2 = norm * gen.ar2
+
+    sig.Draw("same")
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#up_down_corrected
+
+#_____________________________________________________________________________
+def acceptance():
+
+    #spectrometer acceptance as a function of generated photon energy
+
+    ebin = 1
+    emin = 1
+    emax = 20
+
+    edet = 1
+
+    can = ut.box_canvas()
+
+    hRec = ut.prepare_TH1D("hRec", ebin, emin, emax)
+    hGen = ut.prepare_TH1D("hGen", ebin, emin, emax)
+
+    sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+
+    tree.Draw("phot_gen/1000 >> hRec", sel)
+    tree.Draw("phot_gen/1000 >> hGen")
+
+    hAcc = hRec.Clone()
+    hAcc.Sumw2()
+    hAcc.Divide(hGen)
+
+    hAcc.SetYTitle("Spectrometer acceptance / ({0:.3f}".format(ebin)+" GeV)")
+    hAcc.SetXTitle("Generated #it{E}_{#gamma} (GeV)")
+
+    hAcc.SetTitleOffset(1.8, "Y")
+    hAcc.SetTitleOffset(1.3, "X")
+
+    gPad.SetTopMargin(0.01)
+    gPad.SetRightMargin(0.02)
+    gPad.SetBottomMargin(0.1)
+    gPad.SetLeftMargin(0.12)
+
+    #hRec.Draw()
+    #hGen.Draw()
+    hAcc.Draw()
+
+    leg = ut.prepare_leg(0.64, 0.84, 0.15, 0.15, 0.027) # x, y, dx, dy, tsiz
+    leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def up_down_en():
+
+    #up and down spectrometers energy sum
+
+    ebin = 0.1
+    emin = 0
+    emax = 20
+
+    edet = 1
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+
+    tree.Draw("(up_en+down_en)/1000. >> hE", sel)
+    #tree.Draw("up_en/1000. >> hE")#, sel)
+    #tree.Draw("down_en/1000. >> hE")
+
+    print "Entries:", hE.GetEntries()
+
+    hE.SetYTitle("Events / ({0:.3f}".format(ebin)+" GeV)")
+    hE.SetXTitle("#it{E}_{#gamma} = #it{E}_{up} + #it{E}_{down} (GeV)")
+
+    hE.SetTitleOffset(1.4, "Y")
+    hE.SetTitleOffset(1.3, "X")
+
+    gPad.SetTopMargin(0.01)
+    gPad.SetRightMargin(0.02)
+    gPad.SetBottomMargin(0.1)
+    gPad.SetLeftMargin(0.1)
+
+    #hE.GetYaxis().SetMoreLogLabels()
+
+    hE.Draw()
+
+    gPad.SetLogy()
+
+    leg = ut.prepare_leg(0.58, 0.8, 0.2, 0.15, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(hE, "#it{E}_{up} + #it{E}_{down}", "lp")
+    leg.AddEntry(None, "#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def down_xy():
+
+    #down spectrometer first point in xy
+
+    xbin = 0.1
+
+    xmin = -12
+    xmax = 12
+
+    ymin = -25
+    ymax = -3
+
+    emin = 0.7
+
+    can = ut.box_canvas()
+
+    hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, ymin, ymax)
+
+    sel = "down_en>"+str(emin*1e3)
+
+    tree.Draw("down_y/10:down_x/10 >> hX", sel)
+
+    hX.SetXTitle("Horizontal #it{x} (cm)")
+    hX.SetYTitle("Vertical #it{y} (cm)")
+
+    hX.GetXaxis().CenterTitle()
+    hX.GetYaxis().CenterTitle()
+
+    hX.SetTitleOffset(1.2, "Y")
+    hX.SetTitleOffset(1.2, "X")
+
+    gPad.SetTopMargin(0.02)
+    gPad.SetRightMargin(0.12)
+    gPad.SetBottomMargin(0.09)
+    gPad.SetLeftMargin(0.09)
+
+    hX.Draw()
+
+    gPad.SetLogz()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def up_xy():
+
+    #up spectrometer first point in xy
+
+    xbin = 0.1
+
+    xmin = -12
+    xmax = 12
+
+    ymin = 3
+    ymax = 25
+
+    emin = 0.7
+
+    can = ut.box_canvas()
+
+    hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, ymin, ymax)
+
+    sel = "up_en>"+str(emin*1e3)
+
+    tree.Draw("up_y/10:up_x/10 >> hX", sel)
+
+    hX.SetXTitle("Horizontal #it{x} (cm)")
+    hX.SetYTitle("Vertical #it{y} (cm)")
+
+    hX.GetXaxis().CenterTitle()
+    hX.GetYaxis().CenterTitle()
+
+    hX.SetTitleOffset(1.2, "Y")
+    hX.SetTitleOffset(1.2, "X")
+
+    gPad.SetTopMargin(0.02)
+    gPad.SetRightMargin(0.11)
+    gPad.SetBottomMargin(0.09)
+    gPad.SetLeftMargin(0.09)
+
+    hX.Draw()
+
+    gPad.SetLogz()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def phot_xy():
+
+    #photon detector first point in xy
+
+    xbin = 0.1
+    xmin = -12
+    xmax = 12
+
+    can = ut.box_canvas()
+
+    hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, xmin, xmax)
+
+    tree.Draw("phot_y/10:phot_x/10 >> hX")#, "phot_en<1000")
+
+    hX.SetXTitle("Horizontal #it{x} (cm)")
+    hX.SetYTitle("Vertical #it{y} (cm)")
+
+    hX.GetXaxis().CenterTitle()
+    hX.GetYaxis().CenterTitle()
+
+    hX.SetTitleOffset(1.2, "Y")
+    hX.SetTitleOffset(1.2, "X")
+
+    gPad.SetTopMargin(0.01)
+    gPad.SetRightMargin(0.11)
+    gPad.SetBottomMargin(0.09)
+    gPad.SetLeftMargin(0.09)
+
+    hX.Draw()
+
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def phot_en():
+
+    #energy deposited in photon detector
+
+    ebin = 0.1
+    emin = 1
+    emax = 20
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    tree.Draw("phot_en/1000. >> hE")
+
+    #cross section parametrization
+    sys.path.append('/home/jaroslav/sim/lgen/')
+    from gen_zeus import gen_zeus
+    gen = gen_zeus(18, 275, emin)
+    gen.dSigDe.SetNpx(300)
+    gen.dSigDe.SetLineWidth(3)
+
+    #scale the cross section to the plot
+    norm = ebin * hE.Integral() / gen.dSigDe.Integral(emin, gen.Ee)
+    gen.ar2 = norm * gen.ar2
+
+    hE.SetYTitle("Events / ({0:.3f}".format(ebin)+" GeV)")
+    hE.SetXTitle("#it{E}_{#gamma} (GeV)")
+
+    hE.SetTitleOffset(1.5, "Y")
+    hE.SetTitleOffset(1.3, "X")
+
+    gPad.SetTopMargin(0.01)
+    gPad.SetRightMargin(0.02)
+    gPad.SetBottomMargin(0.1)
+    gPad.SetLeftMargin(0.11)
+
+    #hE.GetYaxis().SetMoreLogLabels()
+
+    hE.Draw()
+
+    gen.dSigDe.Draw("same")
+
+    gPad.SetLogy()
+
+    leg = ut.prepare_leg(0.53, 0.77, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(hE, "Geant model", "lp")
+    leg.AddEntry(gen.dSigDe, "Bethe-Heitler cross section", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+if __name__ == "__main__":
+
+    infile = "../data/lmon.root"
+    #infile = "data/pdet_18x275_zeus_1Mevt.daq.root"
+    #infile = "data/pdet_18x275_zeus_compcal_100kevt.daq.root"
+    #infile = "data/pdet_18x275_zeus_compcal_0p25T_100kevt.daq.root"
+    #infile = "data/pdet_18x275_zeus_compcal_0p75T_100kevt.daq.root"
+    #infile = "data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
+
+
+    gROOT.SetBatch()
+    gStyle.SetPadTickX(1)
+    gStyle.SetFrameLineWidth(2)
+
+    iplot = 1
+    funclist = []
+    funclist.append( phot_en ) # 0
+    funclist.append( phot_xy ) # 1
+    funclist.append( up_xy ) # 2
+    funclist.append( down_xy ) # 3
+    funclist.append( up_down_en ) # 4
+    funclist.append( acceptance ) # 5
+    funclist.append( up_down_corrected ) # 6
+
+    #open the input
+    inp = TFile.Open(infile)
+    tree = inp.Get("DetectorTree")
+
+    #call the plot function
+    funclist[iplot]()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
