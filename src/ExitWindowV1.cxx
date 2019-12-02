@@ -183,8 +183,7 @@ void ExitWindowV1::CreateOutput(TTree *tree) {
 
   //set output branches of exit window
 
-  //DetUtils u(fNam, tree);
-  DetUtils u("ew", tree);
+  DetUtils u(fNam, tree); // prefix for variable names and tree for AddBranch
 
   u.AddBranch("_photX", &fPhotX, "D");
   u.AddBranch("_photY", &fPhotY, "D");
@@ -231,17 +230,7 @@ void ExitWindowV1::FinishEvent() {
   // length between photon first point and conversion point
   fPhotConvLen = (fConvX-fPhotX)*(fConvX-fPhotX) + (fConvY-fPhotY)*(fConvY-fPhotY) + (fConvZ-fPhotZ)*(fConvZ-fPhotZ);
   fPhotConvLen = TMath::Sqrt(fPhotConvLen);
-/*
-  G4cout << fPhotX << " " << fPhotY << " " << fPhotZ;
 
-  if(fConv) {
-
-    G4cout << " " << fConvX << " " << fConvY << " " << fConvZ << " " << fConvStepLen << " " << fPhotConvLen;
-
-  }
-
-  G4cout << G4endl;
-*/
 }//FinishEvent
 
 

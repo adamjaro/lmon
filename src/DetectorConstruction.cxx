@@ -29,6 +29,7 @@
 
 //local classes
 #include "DetectorConstruction.h"
+#include "MCEvent.h"
 #include "SensDetDummy.h"
 #include "BoxCal.h"
 #include "ExitWindow.h"
@@ -39,7 +40,7 @@
 #include "ExitWindowV1.h"
 
 //_____________________________________________________________________________
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fPhotGen(0) {
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
@@ -55,7 +56,7 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
 
   //create the output file, name to come from Messenger
   gSystem->MakeDirectory("../data");
-  fOut = new TFile("../data/lmon_18x275_ewV1_flat_100kevt.root", "recreate");
+  fOut = new TFile("../data/lmon.root", "recreate");
 
   //output detector tree
   fDetTree = new TTree("DetectorTree", "DetectorTree");
@@ -63,8 +64,9 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
   //all detectors and their parts
   fDet = new std::vector<Detector*>;
 
-  //generated photon
-  fPhotGen = new Double_t;
+  //MC event, also inherits from Detector
+  fMC = new MCEvent();
+  AddDetector(fMC);
 
 }//DetectorConstruction
 
@@ -78,7 +80,6 @@ DetectorConstruction::~DetectorConstruction() {
   fOut->Close();
 
   delete fDet;
-  delete fPhotGen;
 
 }//~DetectorConstruction
 
@@ -99,8 +100,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //photon exit window
   //new ExitWindow(-2000*cm, top_l); // only material
   //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
-  AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
-  //AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kTilt, top_l) );
+  AddDetector( new ExitWindowV1("ew", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
+  //AddDetector( new ExitWindowV1("ew", -2000*cm, ExitWindowV1::kTilt, top_l) );
 
   //collimator
   //new Collimator(-2137*cm, top_l);
@@ -123,10 +124,18 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 }//Construct
 
 //_____________________________________________________________________________
-void DetectorConstruction::FinishEvent(const G4Event *evt) const {
+void DetectorConstruction::BeginEvent(const G4Event *evt) const {
 
-  //energy of generated gamma photon
-  *fPhotGen = evt->GetPrimaryVertex()->GetPrimary()->GetTotalEnergy();
+  //detector loop for  ClearEvent  in each detector
+  std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::ClearEvent ));
+
+  //set MC
+  fMC->BeginEvent(evt);
+
+}//BeginEvent
+
+//_____________________________________________________________________________
+void DetectorConstruction::FinishEvent() const {
 
   //detector loop
   std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::FinishEvent ));
@@ -135,14 +144,6 @@ void DetectorConstruction::FinishEvent(const G4Event *evt) const {
   fDetTree->Fill();
 
 }//WriteEvent
-
-//_____________________________________________________________________________
-void DetectorConstruction::ClearEvent() const {
-
-  //detector loop
-  std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::ClearEvent ));
-
-}//ClearEvent
 
 //_____________________________________________________________________________
 void DetectorConstruction::AddDetector(Detector *det) {
@@ -155,12 +156,7 @@ void DetectorConstruction::AddDetector(Detector *det) {
 //_____________________________________________________________________________
 void DetectorConstruction::CreateOutput() const {
 
-  //energy of generated gamma photon
-  fDetTree->Branch("phot_gen", fPhotGen, "phot_gen/D");
-
-  //output of the detectors
-
-  //detector loop
+  //detector loop to call CreateOutput
   std::vector<Detector*>::iterator i = fDet->begin();
   while(i != fDet->end()) {
     (*i++)->CreateOutput(fDetTree);

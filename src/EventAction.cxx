@@ -22,18 +22,18 @@ EventAction::EventAction() : G4UserEventAction(), fDet(0) {
 }//EventAction
 
 //_____________________________________________________________________________
-void EventAction::BeginOfEventAction(const G4Event *) {
+void EventAction::BeginOfEventAction(const G4Event *evt) {
 
-  //clear the detectors
-  fDet->ClearEvent();
+  //set MC and clear the detectors
+  fDet->BeginEvent(evt);
 
 }//BeginOfEventAction
 
 //_____________________________________________________________________________
-void EventAction::EndOfEventAction(const G4Event *evt) {
+void EventAction::EndOfEventAction(const G4Event*) {
 
   //write detector event output
-  fDet->FinishEvent(evt);
+  fDet->FinishEvent();
 
 }//EndOfEventAction
 

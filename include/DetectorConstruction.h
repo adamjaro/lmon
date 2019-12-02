@@ -15,8 +15,9 @@ class G4Event;
 class TFile;
 class TTree;
 class vector;
+class MCEvent;
 
-#include "Rtypes.h"
+//#include "Rtypes.h"
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
 
@@ -27,8 +28,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
     G4VPhysicalVolume* Construct();
 
-    void ClearEvent() const;
-    void FinishEvent(const G4Event *evt) const;
+    void BeginEvent(const G4Event *evt) const;
+    void FinishEvent() const;
 
     void CreateOutput() const;
 
@@ -43,8 +44,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
     TFile *fOut; // output file
     TTree *fDetTree; // output tree
 
-    Double_t *fPhotGen; // energy of generated photon, placeholder for a class
-                        // holding TClonesArray of TParticles
+    MCEvent *fMC; // generated particles
 
 };
 
