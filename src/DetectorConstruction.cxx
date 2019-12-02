@@ -36,6 +36,7 @@
 #include "CompCal.h"
 #include "Collimator.h"
 #include "ExitWinZEUS.h"
+#include "ExitWindowV1.h"
 
 //_____________________________________________________________________________
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fPhotGen(0) {
@@ -97,23 +98,25 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
   //photon exit window
   //new ExitWindow(-2000*cm, top_l); // only material
-  AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
+  //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
+  //AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
+  AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kTilt, top_l) );
 
   //collimator
-  new Collimator(-2137*cm, top_l);
+  //new Collimator(-2137*cm, top_l);
 
   //dipole magnet
-  new Magnet(-2250*cm, top_l);
+  //new Magnet(-2250*cm, top_l);
 
   //detectors
-  G4double dpos = -3135*cm;
+  //G4double dpos = -3135*cm;
   //AddDetector(new BoxCal("phot", dpos-50*cm, 0, top_l));
   //AddDetector(new BoxCal("up", dpos, 4.2*cm, top_l));
   //AddDetector(new BoxCal("down", dpos, -4.2*cm, top_l));
 
-  AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
-  AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
-  AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
+  //AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
+  //AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
+  //AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
 
   return top_p;
 

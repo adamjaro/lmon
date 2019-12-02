@@ -17,8 +17,8 @@
 void ActionInitialization::Build() const {
 
   //select the generator
-  //SetUserAction(new GeneratorAction);
-  SetUserAction(new LgenReader);
+  SetUserAction(new GeneratorAction);
+  //SetUserAction(new LgenReader);
   //SetUserAction(new UniformGen);
 
   SetUserAction(new EventAction);
