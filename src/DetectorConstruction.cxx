@@ -55,7 +55,7 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
 
   //create the output file, name to come from Messenger
   gSystem->MakeDirectory("../data");
-  fOut = new TFile("../data/lmon.root", "recreate");
+  fOut = new TFile("../data/lmon_18x275_ewV1_flat_100kevt.root", "recreate");
 
   //output detector tree
   fDetTree = new TTree("DetectorTree", "DetectorTree");
@@ -99,8 +99,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //photon exit window
   //new ExitWindow(-2000*cm, top_l); // only material
   //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
-  //AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
-  AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kTilt, top_l) );
+  AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
+  //AddDetector( new ExitWindowV1("ExitWindowV1", -2000*cm, ExitWindowV1::kTilt, top_l) );
 
   //collimator
   //new Collimator(-2137*cm, top_l);
