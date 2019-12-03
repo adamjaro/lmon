@@ -28,6 +28,7 @@ LgenReader::LgenReader() : G4VUserPrimaryGeneratorAction() {
   //open lgen input
   string inp = "../lgen_5x41_12evt_evt.dat";
   //string inp = "/direct/eic+u/jadam/sim/lgen/data/lgen_18x275_1p2Mevt_evt.dat";
+  //string inp = "/home/jaroslav/sim/lgen/lgen_evt.dat";
   fIn.open(inp.c_str());
 
   //skip the header, 6 lines
@@ -48,7 +49,8 @@ void LgenReader::GeneratePrimaries(G4Event *evt) {
 
   char_separator<char> sep(" ");
   string line;
-  double px, py, pz;
+  G4double px, py, pz; // photon momentum, GeV
+  G4double vx, vy, vz; // vertex coordinates, mm
   //event loop
   while( line.find("Event finished") == string::npos ) {
     getline(fIn, line);
@@ -82,11 +84,25 @@ void LgenReader::GeneratePrimaries(G4Event *evt) {
     ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
     ss >> pz >> py >> px;
 
+    //skip the energy and mass
+    ++trk_it;
+    ++trk_it;
+
+    //get vertex position
+    ss.str("");
+    ss.clear();
+    ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
+    ss >> vz >> vy >> vx;
+
   }//event loop
+
+  //G4cout << "LgenReader::GeneratePrimaries " << vx << " " << vy << " " << vz << G4endl;
 
   //generate the photon
   G4ParticleGun gun(fGammaDef);
+
   gun.SetParticleMomentum(G4ParticleMomentum(px*GeV, py*GeV, pz*GeV));
+  gun.SetParticlePosition(G4ThreeVector(vx*mm, vy*mm, vz*mm));
 
   gun.GeneratePrimaryVertex(evt);
 
