@@ -108,6 +108,9 @@ G4bool ExitWindowV1::ProcessHits(G4Step *step, G4TouchableHistory*) {
   //select primary track
   if( track->GetParentID() != 0 ) return true;
 
+  //set flag for primary photon makin a step in exit window
+  fIsHit = kTRUE;
+
   //first point on the exit window
   if( fPhotZ > 9998.) {
 
@@ -207,6 +210,8 @@ void ExitWindowV1::ClearEvent() {
   //G4cout << "ExitWindowV1::ClearEvent" << G4endl;
 
   //default values
+
+  fIsHit = kFALSE;
 
   fPhotX = 9999.;
   fPhotY = 9999.;

@@ -37,6 +37,8 @@ class ExitWindowV1 : public Detector, public G4VSensitiveDetector {
     void ConstructFlat();
     void ConstructTilt();
 
+    Bool_t fIsHit; // flag set when primary photon makes a step
+
     Double_t fPhotX; // x position of the photon
     Double_t fPhotY; // y position of the photon
     Double_t fPhotZ; // z position of the photon
