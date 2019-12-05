@@ -26,8 +26,8 @@ using namespace boost;
 LgenReader::LgenReader() : G4VUserPrimaryGeneratorAction() {
 
   //open lgen input
-  string inp = "../lgen_5x41_12evt_evt.dat";
-  //string inp = "/direct/eic+u/jadam/sim/lgen/data/lgen_18x275_1p2Mevt_evt.dat";
+  //string inp = "../lgen_5x41_12evt_evt.dat";
+  string inp = "/direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat";
   //string inp = "/home/jaroslav/sim/lgen/lgen_evt.dat";
   fIn.open(inp.c_str());
 
