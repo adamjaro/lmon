@@ -93,6 +93,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
   //top world volume
   G4Box *top_s = new G4Box("top_s", 2*meter, 2*meter, 3500*cm);
+  //G4Box *top_s = new G4Box("top_s", 3*m, 3*m, 3*m);
   G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, "top_l");
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
   G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, "top_p", 0, false, 0);
@@ -100,8 +101,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //photon exit window
   //new ExitWindow(-2000*cm, top_l); // only material
   //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
-  AddDetector( new ExitWindowV1("ew", -2000*cm, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
-  //AddDetector( new ExitWindowV1("ew", -2000*cm, ExitWindowV1::kTilt, top_l) );
+  AddDetector( new ExitWindowV1("ew", -21.7*meter, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
+  //AddDetector( new ExitWindowV1("ew", -20250.*mm, ExitWindowV1::kTilt, top_l) );
 
   //collimator
   //new Collimator(-2137*cm, top_l);

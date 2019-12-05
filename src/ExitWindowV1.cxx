@@ -80,8 +80,8 @@ void ExitWindowV1::ConstructTilt() {
 
   G4cout << "ExitWindowV1::ConstructTilt" << G4endl;
 
-  G4double dx = 10.*cm;
-  G4double dz = 1.*cm;
+  G4double dx = 2.9*meter;
+  G4double dz = 1.*mm;
 
   G4Box *shape = new G4Box(fNam, dx/2., dx/2., dz/2.);
   G4LogicalVolume *vol = new G4LogicalVolume(shape, fMat, fNam);
@@ -91,7 +91,7 @@ void ExitWindowV1::ConstructTilt() {
   vis->SetForceSolid(true);
   vol->SetVisAttributes(vis);
 
-  G4RotationMatrix rot(0, 45*deg, 0); //phi, theta, psi, is typedef to CLHEP::HepRotation
+  G4RotationMatrix rot(0, 1.5363272258*rad, 0); //phi, theta, psi, is typedef to CLHEP::HepRotation
   //G4RotationMatrix rot(0, 0, 0);
   G4ThreeVector pos(0, 0, fZpos);
   G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
