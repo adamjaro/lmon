@@ -56,7 +56,7 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
 
   //create the output file, name to come from Messenger
   gSystem->MakeDirectory("../data");
-  fOut = new TFile("../data/lmon_18x275_ewV1_tilt_1Mevt.root", "recreate");
+  fOut = new TFile("../data/lmon.root", "recreate");
 
   //output detector tree
   fDetTree = new TTree("DetectorTree", "DetectorTree");
