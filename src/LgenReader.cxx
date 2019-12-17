@@ -15,6 +15,7 @@
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4GenericMessenger.hh"
 
 //local headers
 #include "LgenReader.h"
@@ -25,17 +26,12 @@ using namespace boost;
 //_____________________________________________________________________________
 LgenReader::LgenReader() : G4VUserPrimaryGeneratorAction() {
 
-  //open lgen input
-  string inp = "../lgen_5x41_12evt_evt.dat";
-  //string inp = "/direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat";
-  //string inp = "/home/jaroslav/sim/lgen/lgen_evt.dat";
-  fIn.open(inp.c_str());
+  //default input name
+  fInputName = "../lgen_5x41_12evt_evt.dat";
 
-  //skip the header, 6 lines
-  string line;
-  for(int i=0; i<6; i++) {
-    getline(fIn, line);
-  }
+  //command for name of input file
+  fMsg = new G4GenericMessenger(this, "/lmon/input/");
+  fMsg->DeclareProperty("name", fInputName);
 
   //gamma definition for the generator
   fGammaDef = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
@@ -44,6 +40,9 @@ LgenReader::LgenReader() : G4VUserPrimaryGeneratorAction() {
 
 //_____________________________________________________________________________
 void LgenReader::GeneratePrimaries(G4Event *evt) {
+
+  //open lgen input
+  if(!fIn.is_open()) OpenInput();
 
   //read the lgen event
 
@@ -108,7 +107,28 @@ void LgenReader::GeneratePrimaries(G4Event *evt) {
 
 }//GeneratePrimaries
 
+//_____________________________________________________________________________
+void LgenReader::OpenInput() {
 
+  //open the input file
+
+  G4cout << "LgenReader::OpenInput: " << fInputName << G4endl;
+  fIn.open(fInputName);
+
+  //test if file exists
+  if(fIn.fail()) {
+    string description = "Can't open input: " + fInputName;
+    G4Exception("LgenReader::OpenInput", "InputNotOpen01", FatalException, description.c_str());
+  }
+
+  //skip the header, 6 lines
+  string line;
+  for(int i=0; i<6; i++) {
+    getline(fIn, line);
+  }
+
+
+}//OpenInput
 
 
 

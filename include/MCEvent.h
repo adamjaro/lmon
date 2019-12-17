@@ -3,6 +3,7 @@
 #define MCEvent_h
 
 #include "Detector.h"
+#include "Rtypes.h"
 
 class MCEvent : public Detector {
 

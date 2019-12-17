@@ -1,5 +1,10 @@
 
 /run/initialize
 
-/run/beamOn 12
+#/lmon/input/name /home/jaroslav/sim/lgen/lgen_evt.dat
+#/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+
+#/lmon/output/name ../data/test/lmon.root
+
+/run/beamOn 3
 

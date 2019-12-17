@@ -10,13 +10,6 @@
 #include <algorithm>
 #include <typeinfo>
 
-//ROOT
-#include "TFile.h"
-#include "TTree.h"
-#include "TClass.h"
-#include "TROOT.h"
-#include "TSystem.h"
-
 //Geant
 #include "G4NistManager.hh"
 #include "G4Box.hh"
@@ -26,11 +19,12 @@
 #include "G4Event.hh"
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
+#include "G4GenericMessenger.hh"
 
 //local classes
 #include "DetectorConstruction.h"
+#include "RootOut.h"
 #include "MCEvent.h"
-#include "SensDetDummy.h"
 #include "BoxCal.h"
 #include "ExitWindow.h"
 #include "Magnet.h"
@@ -40,26 +34,19 @@
 #include "ExitWindowV1.h"
 
 //_____________________________________________________________________________
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0) {
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
-  //inctruct ROOT not to write anything about G4VSensitiveDetector to file
-  //by pointing it to an empty dummy class SensDetDummy
-  if( gROOT->GetVersionInt() >= 60000 ) {
-    // ROOT 6
-    ROOT::AddClass("G4VSensitiveDetector", 0, typeid(SensDetDummy), TClass::GetDict("SensDetDummy"), 0);
-  } else {
-    // ROOT 5
-    TClass::GetClass("SensDetDummy")->Clone("G4VSensitiveDetector");
-  }
+  //default name for output file
+  fOutputName = "../data/lmon.root";
 
-  //create the output file, name to come from Messenger
-  gSystem->MakeDirectory("../data");
-  fOut = new TFile("../data/lmon.root", "recreate");
+  //command for name of output file
+  fMsg = new G4GenericMessenger(this, "/lmon/output/");
+  fMsg->DeclareProperty("name", fOutputName);
 
-  //output detector tree
-  fDetTree = new TTree("DetectorTree", "DetectorTree");
+  //output file and tree
+  fOut = new RootOut();
 
   //all detectors and their parts
   fDet = new std::vector<Detector*>;
@@ -73,10 +60,7 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
 //_____________________________________________________________________________
 DetectorConstruction::~DetectorConstruction() {
 
-  //write the tree
-  fDetTree->Write();
-
-  //close the output file
+  //write the tree and close output file
   fOut->Close();
 
   delete fDet;
@@ -142,7 +126,7 @@ void DetectorConstruction::FinishEvent() const {
   std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::FinishEvent ));
 
   //fill the output tree
-  fDetTree->Fill();
+  fOut->FillTree();
 
 }//WriteEvent
 
@@ -157,10 +141,19 @@ void DetectorConstruction::AddDetector(Detector *det) {
 //_____________________________________________________________________________
 void DetectorConstruction::CreateOutput() const {
 
+  //open output file
+  bool is_open = fOut->Open(fOutputName);
+
+  //test if file exists
+  if(!is_open) {
+    G4String description = "Can't open output: " + fOutputName;
+    G4Exception("DetectorConstruction::CreateOutput", "OutputNotOpen01", FatalException, description);
+  }
+
   //detector loop to call CreateOutput
   std::vector<Detector*>::iterator i = fDet->begin();
   while(i != fDet->end()) {
-    (*i++)->CreateOutput(fDetTree);
+    (*i++)->CreateOutput( fOut->GetTree() );
   }//detector loop
 
 }//CreateOutput
