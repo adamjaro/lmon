@@ -12,11 +12,11 @@
 #include <boost/tokenizer.hpp>
 
 //Geant headers
+#include "G4GenericMessenger.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4GenericMessenger.hh"
 
 //local headers
 #include "TxReader.h"
@@ -76,10 +76,10 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
   //G4cout << "TxReader::GeneratePrimaries " << vx << " " << vy << " " << vz << G4endl;
 
   //get number of particles
-  for(int i=0; i<5; i++) ++vtx_it;
+  for(int i=0; i<4; i++) ++vtx_it;
   ss.str("");
   ss.clear();
-  ss << *vtx_it;
+  ss << *(vtx_it++);
   int ntrk;
   ss >> ntrk;
 
@@ -104,10 +104,10 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
     ss >> pz >> py >> px;
 
     //get pdg
-    for(int i=0; i<4; i++) ++trk_it;
+    for(int i=0; i<3; i++) ++trk_it;
     ss.str("");
     ss.clear();
-    ss << *trk_it;
+    ss << *(trk_it++);
     int pdg;
     ss >> pdg;
 
