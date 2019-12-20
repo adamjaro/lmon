@@ -179,7 +179,7 @@ def ew_xy():
 if __name__ == "__main__":
 
     #infile = "../data/lmon.root"
-    infile = "../data/lmon_18x275_ewV1_flat_1Mevt.root"
+    infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
     #infile = "../data/lmon_18x275_ewV1_tilt_1Mevt.root"
 
     gROOT.SetBatch()

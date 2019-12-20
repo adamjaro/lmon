@@ -91,7 +91,9 @@ void ExitWindowV1::ConstructTilt() {
   vis->SetForceSolid(true);
   vol->SetVisAttributes(vis);
 
-  G4RotationMatrix rot(0, 1.5363272258*rad, 0); //phi, theta, psi, is typedef to CLHEP::HepRotation
+  //100 mrad in x-z plane
+  //theta = pi/2 - 100 mrad
+  G4RotationMatrix rot(0, 1.470796*rad, 1.570796*rad); //phi, theta, psi, is typedef to CLHEP::HepRotation
   //G4RotationMatrix rot(0, 0, 0);
   G4ThreeVector pos(0, 0, fZpos);
   G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
