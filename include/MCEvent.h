@@ -27,6 +27,10 @@ class MCEvent : public Detector {
     Double_t fPhotTheta; // polar angle of generated photon
     Double_t fPhotPhi; // azimuthan angle  of generated photon
 
+    Double_t fVx; // x of generated vertex, mm
+    Double_t fVy; // y of generated vertex, mm
+    Double_t fVz; // z of generated vertex, mm
+
 };
 
 #endif

@@ -20,8 +20,17 @@ MCEvent::MCEvent(): Detector(), fNam("MCEvent") {
 //_____________________________________________________________________________
 void MCEvent::BeginEvent(const G4Event *evt) {
 
+  G4PrimaryVertex *pvtx = evt->GetPrimaryVertex();
+  if(!pvtx) return;
+
+  //position of generated vertex, mm
+  fVx = pvtx->GetX0();
+  fVy = pvtx->GetY0();
+  fVz = pvtx->GetZ0();
+
   //energy of generated gamma photon
-  G4PrimaryParticle *part = evt->GetPrimaryVertex()->GetPrimary();
+  G4PrimaryParticle *part = pvtx->GetPrimary();
+
   fPhotGen = part->GetTotalEnergy();
   fPhotGen = fPhotGen/1e3; // to GeV
 
@@ -39,6 +48,7 @@ void MCEvent::BeginEvent(const G4Event *evt) {
 
   //G4cout << "MCEvent::BeginEvent " << fPhotGen << " " << px << " " << py << " " << pz << G4endl;
   //G4cout << "MCEvent::BeginEvent " << vec.E() << " " << vec.Theta() << " " << vec.Phi() << G4endl;
+  //G4cout << "MCEvent::BeginEvent " << pvtx->GetX0() << " " << pvtx->GetY0() << " " << pvtx->GetZ0() << G4endl;
 
 }//BeginEvent
 
@@ -52,6 +62,10 @@ void MCEvent::CreateOutput(TTree *tree) {
   u.AddBranch("phot_gen", &fPhotGen, "D");
   u.AddBranch("phot_theta", &fPhotTheta, "D");
   u.AddBranch("phot_phi", &fPhotPhi, "D");
+
+  u.AddBranch("vtx_x", &fVx, "D");
+  u.AddBranch("vtx_y", &fVy, "D");
+  u.AddBranch("vtx_z", &fVz, "D");
 
 }//CreateOutput
 

@@ -1,0 +1,11 @@
+
+#run macro for EIC nodes
+
+/run/initialize
+
+/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+
+#/lmon/output/name ../data/test/lmon.root
+
+/run/beamOn 3
+

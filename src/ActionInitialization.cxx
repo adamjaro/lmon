@@ -10,6 +10,7 @@
 #include "GeneratorAction.h"
 #include "EventAction.h"
 #include "LgenReader.h"
+#include "TxReader.h"
 #include "RunAction.h"
 #include "UniformGen.h"
 
@@ -18,7 +19,8 @@ void ActionInitialization::Build() const {
 
   //select the generator
   //SetUserAction(new GeneratorAction);
-  SetUserAction(new LgenReader);
+  //SetUserAction(new LgenReader);
+  SetUserAction(new TxReader);
   //SetUserAction(new UniformGen);
 
   SetUserAction(new EventAction);

@@ -1,8 +1,9 @@
 
+#run macro for local testing
+
 /run/initialize
 
-#/lmon/input/name /home/jaroslav/sim/lgen/lgen_evt.dat
-#/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+#/lmon/input/name /home/jaroslav/sim/lgen/lgen.tx
 
 #/lmon/output/name ../data/test/lmon.root
 

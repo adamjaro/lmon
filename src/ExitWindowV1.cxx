@@ -188,6 +188,8 @@ void ExitWindowV1::CreateOutput(TTree *tree) {
 
   DetUtils u(fNam, tree); // prefix for variable names and tree for AddBranch
 
+  u.AddBranch("_IsHit", &fIsHit, "O");
+
   u.AddBranch("_photX", &fPhotX, "D");
   u.AddBranch("_photY", &fPhotY, "D");
   u.AddBranch("_photZ", &fPhotZ, "D");
