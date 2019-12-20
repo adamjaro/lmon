@@ -41,15 +41,15 @@ def ew_conv_phi():
     #hPhiSel.Draw()
     hConvPhi.Draw()
 
-    hConvPhi.SetMinimum(0.07) # for flat
-    hConvPhi.SetMaximum(0.09)
+    hConvPhi.SetMinimum(0.075) # for flat
+    hConvPhi.SetMaximum(0.087)
 
     #hConvPhi.SetMinimum(0.19) # for tilt
     #hConvPhi.SetMaximum(0.24)
 
     leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.08, 0.035)
-    leg.AddEntry(hConvPhi, "Flat exit window", "lp")
-    #leg.AddEntry(hConvPhi, "Tilted exit window", "lp")
+    #leg.AddEntry(hConvPhi, "Flat exit window", "lp")
+    leg.AddEntry(hConvPhi, "Tilted exit window", "lp")
     leg.Draw("same")
 
     #gPad.SetLogy()
@@ -93,15 +93,15 @@ def ew_conv_theta():
     #hTsel.Draw()
     hConvTheta.Draw()
 
-    hConvTheta.SetMinimum(0.) # for flat
-    hConvTheta.SetMaximum(0.2)
+    hConvTheta.SetMinimum(0.04) # for flat
+    hConvTheta.SetMaximum(0.14)
 
     #hConvTheta.SetMinimum(0.03) # for tilt
     #hConvTheta.SetMaximum(0.37)
 
     leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.08, 0.035)
-    leg.AddEntry(hConvTheta, "Flat exit window", "lp")
-    #leg.AddEntry(hConvTheta, "Tilted exit window", "lp")
+    #leg.AddEntry(hConvTheta, "Flat exit window", "lp")
+    leg.AddEntry(hConvTheta, "Tilted exit window", "lp")
     leg.Draw("same")
 
     #gPad.SetLogy()
@@ -179,8 +179,8 @@ def ew_xy():
 if __name__ == "__main__":
 
     #infile = "../data/lmon.root"
-    infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
-    #infile = "../data/lmon_18x275_ewV1_tilt_1Mevt.root"
+    #infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
+    infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
