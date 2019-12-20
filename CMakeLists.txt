@@ -74,6 +74,7 @@ set(MACRO
   init_vis.mac
   vis.mac
   run.mac
+  run_eic.mac
 )
 
 foreach(_mac ${MACRO})

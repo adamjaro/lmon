@@ -55,6 +55,8 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
     }
 
     getline(fIn, line);
+
+    G4cout << line << G4endl;
   }
 
   //get vertex coordinates

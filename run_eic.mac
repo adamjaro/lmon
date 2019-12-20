@@ -3,9 +3,9 @@
 
 /run/initialize
 
-/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
-#/lmon/output/name ../data/test/lmon.root
+/lmon/output/name ../data/lmon_18x275_ewV1_flat_10Mevt.root
 
-/run/beamOn 3
+/run/beamOn 10000000
 
