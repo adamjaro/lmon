@@ -11,7 +11,6 @@
 #include <typeinfo>
 
 //Geant
-#include "G4GenericMessenger.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -37,13 +36,6 @@
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
-
-  //default name for output file
-  fOutputName = "../data/lmon.root";
-
-  //command for name of output file
-  fMsg = new G4GenericMessenger(this, "/lmon/output/");
-  fMsg->DeclareProperty("name", fOutputName);
 
   //output file and tree
   fOut = new RootOut();
@@ -142,13 +134,7 @@ void DetectorConstruction::AddDetector(Detector *det) {
 void DetectorConstruction::CreateOutput() const {
 
   //open output file
-  bool is_open = fOut->Open(fOutputName);
-
-  //test if file exists
-  if(!is_open) {
-    G4String description = "Can't open output: " + fOutputName;
-    G4Exception("DetectorConstruction::CreateOutput", "OutputNotOpen01", FatalException, description);
-  }
+  fOut->Open();
 
   //detector loop to call CreateOutput
   std::vector<Detector*>::iterator i = fDet->begin();

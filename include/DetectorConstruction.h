@@ -12,7 +12,6 @@ class G4Event;
 
 #include "Detector.h"
 
-class G4GenericMessenger;
 class RootOut;
 class vector;
 class MCEvent;
@@ -39,8 +38,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
     std::vector<Detector*> *fDet; //all detectors
 
-    G4GenericMessenger *fMsg; // messenger for name of output file
-    G4String fOutputName; // name of output file
     RootOut *fOut; // output to ROOT TTree
 
     MCEvent *fMC; // generated particles
