@@ -115,15 +115,15 @@ def ew_z():
     #photon impact point along z
 
     zbin = 0.004
-    zmin = -21.5
-    zmax = -19
+    zmin = -22.5
+    zmax = -20
 
     can = ut.box_canvas()
 
     hZ = ut.prepare_TH1D("hZ", zbin, zmin, zmax)
 
-    #tree.Draw("ew_photZ/1000. >> hZ") # , "ew_photZ>9998." only 9 events out of 1e6
-    tree.Draw("ew_convZ/1e3 >> hZ", "ew_conv==1")
+    tree.Draw("ew_photZ/1000. >> hZ") # , "ew_photZ>9998." only 9 events out of 1e6
+    #tree.Draw("ew_convZ/1e3 >> hZ", "ew_conv==1")
 
     print "Entries:", hZ.GetEntries()
 
@@ -139,7 +139,7 @@ def ew_z():
 
     gPad.SetLogy()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -172,7 +172,7 @@ def ew_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -180,13 +180,14 @@ if __name__ == "__main__":
 
     #infile = "../data/lmon.root"
     #infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
-    infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
+    #infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
+    infile = "../data/lmon_18x275_ewV2_10Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 3
+    iplot = 1
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1

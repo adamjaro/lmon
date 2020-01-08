@@ -105,6 +105,8 @@ G4bool ExitWindowV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
   //select e+e- conversion
   if(nsec != 2 || nel != 1 || npos != 1) return true;
 
+  fConv = kTRUE;
+
   //location of the conversion
   const G4ThreeVector cp = step->GetPostStepPoint()->GetPosition();
   fConvX = cp.x();

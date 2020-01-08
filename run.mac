@@ -3,7 +3,7 @@
 
 /run/initialize
 
-#/lmon/input/name /home/jaroslav/sim/lgen/lgen.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_1p2Mevt_evt.dat
 
 #/lmon/output/name ../data/test/lmon.root
 
