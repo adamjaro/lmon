@@ -31,6 +31,7 @@
 #include "Collimator.h"
 #include "ExitWinZEUS.h"
 #include "ExitWindowV1.h"
+#include "ExitWindowV2.h"
 
 //_____________________________________________________________________________
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0) {
@@ -78,7 +79,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //new ExitWindow(-2000*cm, top_l); // only material
   //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
   //AddDetector( new ExitWindowV1("ew", -21.7*meter, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
-  AddDetector( new ExitWindowV1("ew", -20250.*mm, ExitWindowV1::kTilt, top_l) );
+  //AddDetector( new ExitWindowV1("ew", -20250.*mm, ExitWindowV1::kTilt, top_l) );
+  AddDetector( new ExitWindowV2("ew", -20250.*mm, top_l) );
 
   //collimator
   //new Collimator(-2137*cm, top_l);

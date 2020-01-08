@@ -4,6 +4,8 @@
 
 // abstract base class for detectors
 
+#include <vector>
+
 class G4String;
 class TTree;
 
