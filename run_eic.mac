@@ -5,7 +5,7 @@
 
 /lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
-/lmon/output/name ../data/lmon_18x275_ewV1_tilt_10Mevt.root
+/lmon/output/name ../data/lmon_18x275_ewV2_10Mevt.root
 
 /run/beamOn 10000000
 
