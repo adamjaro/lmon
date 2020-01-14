@@ -122,8 +122,8 @@ def ew_z():
 
     hZ = ut.prepare_TH1D("hZ", zbin, zmin, zmax)
 
-    tree.Draw("ew_photZ/1000. >> hZ") # , "ew_photZ>9998." only 9 events out of 1e6
-    #tree.Draw("ew_convZ/1e3 >> hZ", "ew_conv==1")
+    #tree.Draw("ew_photZ/1000. >> hZ") # , "ew_photZ>9998." only 9 events out of 1e6
+    tree.Draw("ew_convZ/1e3 >> hZ", "ew_conv==1")
 
     print "Entries:", hZ.GetEntries()
 
@@ -187,7 +187,7 @@ if __name__ == "__main__":
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 1
+    iplot = 3
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1

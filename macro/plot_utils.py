@@ -110,11 +110,11 @@ def set_axis(axis):
     axis.SetLabelSize(siz)
 
 #_____________________________________________________________________________
-def set_graph(tx):
+def set_graph(tx, col=rt.kBlack, style=rt.kFullCircle):
 
-    tx.SetMarkerStyle(rt.kFullCircle)
-    tx.SetMarkerColor(rt.kBlack)
-    tx.SetLineColor(rt.kBlack)
+    tx.SetMarkerStyle(style)
+    tx.SetMarkerColor(col)
+    tx.SetLineColor(col)
     tx.SetLineWidth(2)
 
 #_____________________________________________________________________________
