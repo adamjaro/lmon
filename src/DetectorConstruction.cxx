@@ -19,6 +19,7 @@
 #include "G4Event.hh"
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
+#include "G4GenericMessenger.hh"
 
 //local classes
 #include "DetectorConstruction.h"
@@ -34,7 +35,8 @@
 #include "ExitWindowV2.h"
 
 //_____________________________________________________________________________
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0) {
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0), fMsg(0),
+    fIncCollim(0), fIncMagnet(0), fIncEWv2(0), fIncPhot(0), fIncUp(0), fIncDown(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
@@ -47,6 +49,15 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
   //MC event, also inherits from Detector
   fMC = new MCEvent();
   AddDetector(fMC);
+
+  //messenger for detectors and components
+  fMsg = new G4GenericMessenger(this, "/lmon/construct/");
+  fMsg->DeclareProperty("collim", fIncCollim);
+  fMsg->DeclareProperty("magnet", fIncMagnet);
+  fMsg->DeclareProperty("ewV2", fIncEWv2);
+  fMsg->DeclareProperty("phot", fIncPhot);
+  fMsg->DeclareProperty("up", fIncUp);
+  fMsg->DeclareProperty("down", fIncDown);
 
 }//DetectorConstruction
 
@@ -69,7 +80,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
 
   //top world volume
-  G4Box *top_s = new G4Box("top_s", 2*meter, 2*meter, 3500*cm);
+  G4Box *top_s = new G4Box("top_s", 2*meter, 2*meter, 35*meter);
   //G4Box *top_s = new G4Box("top_s", 3*m, 3*m, 3*m);
   G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, "top_l");
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
@@ -80,23 +91,23 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
   //AddDetector( new ExitWindowV1("ew", -21.7*meter, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
   //AddDetector( new ExitWindowV1("ew", -20250.*mm, ExitWindowV1::kTilt, top_l) );
-  AddDetector( new ExitWindowV2("ew", -20250.*mm, top_l) );
+  if(fIncEWv2) AddDetector( new ExitWindowV2("ew", -20.75*meter, top_l));
 
   //collimator
-  //new Collimator(-2137*cm, top_l);
+  if(fIncCollim) new Collimator(-22.1*meter, top_l);
 
   //dipole magnet
-  //new Magnet(-2250*cm, top_l);
+  if(fIncMagnet) new Magnet(-22.5*meter, top_l);
 
   //detectors
-  //G4double dpos = -3135*cm;
+  G4double dpos = -3135*cm;
   //AddDetector(new BoxCal("phot", dpos-50*cm, 0, top_l));
   //AddDetector(new BoxCal("up", dpos, 4.2*cm, top_l));
   //AddDetector(new BoxCal("down", dpos, -4.2*cm, top_l));
 
-  //AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
-  //AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
-  //AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
+  if(fIncPhot) AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
+  if(fIncUp) AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
+  if(fIncDown) AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
 
   return top_p;
 

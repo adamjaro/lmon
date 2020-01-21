@@ -1,11 +1,21 @@
 
 #run macro for local testing
 
+#detectors and components
+/lmon/construct/collim 1
+/lmon/construct/magnet 1
+/lmon/construct/ewV2 1
+/lmon/construct/phot 1
+/lmon/construct/up 1
+/lmon/construct/down 1
+
 /run/initialize
 
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_1p2Mevt_evt.dat
 
 #/lmon/output/name ../data/test/lmon.root
+
+
 
 /run/beamOn 3
 

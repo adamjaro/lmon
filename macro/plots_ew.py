@@ -187,7 +187,7 @@ if __name__ == "__main__":
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 3
+    iplot = 1
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1

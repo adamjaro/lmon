@@ -9,6 +9,15 @@
 #
 # Change the default number of threads (in multi-threaded mode)
 #/run/numberOfThreads 4
+
+#detectors and components
+/lmon/construct/collim 1
+/lmon/construct/magnet 1
+/lmon/construct/ewV2 1
+/lmon/construct/phot 1
+/lmon/construct/up 1
+/lmon/construct/down 1
+
 #
 # Initialize kernel
 /run/initialize

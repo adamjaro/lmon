@@ -9,6 +9,7 @@
 class G4VPhysicalVolume;
 class G4Step;
 class G4Event;
+class G4GenericMessenger;
 
 #include "Detector.h"
 
@@ -41,6 +42,14 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
     RootOut *fOut; // output to ROOT TTree
 
     MCEvent *fMC; // generated particles
+
+    G4GenericMessenger *fMsg; // messenger for detectors and components
+    G4bool fIncCollim; // flag to include the collimator
+    G4bool fIncMagnet; // flag for spectrometer magnet
+    G4bool fIncEWv2; // flag for photon exit window version 2
+    G4bool fIncPhot; // direct photon calorimeter
+    G4bool fIncUp; // up spectrometer calorimeter
+    G4bool fIncDown; // up spectrometer calorimeter
 
 };
 
