@@ -11,6 +11,7 @@
 #include <typeinfo>
 
 //Geant
+#include "G4GenericMessenger.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
 #include "G4LogicalVolume.hh"
@@ -19,7 +20,6 @@
 #include "G4Event.hh"
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
-#include "G4GenericMessenger.hh"
 
 //local classes
 #include "DetectorConstruction.h"
