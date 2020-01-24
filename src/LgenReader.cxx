@@ -11,11 +11,11 @@
 #include <boost/tokenizer.hpp>
 
 //Geant headers
+#include "G4GenericMessenger.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4GenericMessenger.hh"
 
 //local headers
 #include "LgenReader.h"
