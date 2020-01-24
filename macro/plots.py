@@ -71,7 +71,7 @@ def acceptance():
 
     #spectrometer acceptance as a function of generated photon energy
 
-    ebin = 1
+    ebin = 1.5
     emin = 1
     emax = 20
 
@@ -84,12 +84,19 @@ def acceptance():
 
     sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
 
-    tree.Draw("phot_gen/1000 >> hRec", sel)
-    tree.Draw("phot_gen/1000 >> hGen")
+    #tree.Draw("phot_gen/1000 >> hRec", sel)
+    #tree.Draw("phot_gen/1000 >> hGen")
+    tree.Draw("phot_gen >> hRec", sel)
+    tree.Draw("phot_gen >> hGen")
+
+    print "Rec entries:", hRec.GetEntries()
+    print "Gen entries:", hGen.GetEntries()
 
     hAcc = hRec.Clone()
     hAcc.Sumw2()
     hAcc.Divide(hGen)
+
+    #print "Integrated acceptance:", hAcc.Integral()
 
     hAcc.SetYTitle("Spectrometer acceptance / ({0:.3f}".format(ebin)+" GeV)")
     hAcc.SetXTitle("Generated #it{E}_{#gamma} (GeV)")
@@ -158,7 +165,7 @@ def up_down_en():
     leg.AddEntry(None, "#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -301,6 +308,7 @@ def phot_en():
     tree.Draw("phot_en/1000. >> hE")
 
     #cross section parametrization
+    import sys
     sys.path.append('/home/jaroslav/sim/lgen/')
     from gen_zeus import gen_zeus
     gen = gen_zeus(18, 275, emin)
@@ -335,25 +343,23 @@ def phot_en():
     leg.AddEntry(gen.dSigDe, "Bethe-Heitler cross section", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    infile = "../data/lmon.root"
-    #infile = "data/pdet_18x275_zeus_1Mevt.daq.root"
-    #infile = "data/pdet_18x275_zeus_compcal_100kevt.daq.root"
-    #infile = "data/pdet_18x275_zeus_compcal_0p25T_100kevt.daq.root"
-    #infile = "data/pdet_18x275_zeus_compcal_0p75T_100kevt.daq.root"
-    #infile = "data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
+    #infile = "../data/lmon.root"
+    #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
+    #infile = "../data/lmon_18x275_all_0p5Mevt.root"
+    infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
 
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 1
+    iplot = 5
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -366,6 +372,7 @@ if __name__ == "__main__":
     #open the input
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
+    #tree = inp.Get("ltree")
 
     #call the plot function
     funclist[iplot]()

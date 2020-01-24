@@ -153,8 +153,9 @@ def plot_en(det):
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    infile = "../data/lmon.root"
+    #infile = "../data/lmon.root"
     #infile = "../data/pdet2_uni_0p5_20GeV_1kevt.daq.root"
+    infile = "../data/lmon_18x275_all_3kevt.root"
 
 
     gROOT.SetBatch()
@@ -162,7 +163,9 @@ if __name__ == "__main__":
     gStyle.SetFrameLineWidth(2)
 
     iplot = 0
-    det = "phot"
+    #det = "phot"
+    #det = "up"
+    det = "down"
 
     funclist = []
     funclist.append( plot_en ) # 0
