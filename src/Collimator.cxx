@@ -41,8 +41,9 @@ Collimator::Collimator(G4double zpos, G4LogicalVolume *top) {
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, nam);
 
   G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(1, 1, 0);
-  //vis->SetLineWidth(2);
+  vis->SetColor(1, 1, 0); // yellow
+  //vis->SetColor(1, 0, 1); // magenta
+  vis->SetLineWidth(2);
   vol->SetVisAttributes(vis);
 
   //put the collimator to the top volume

@@ -34,7 +34,7 @@ Magnet::Magnet(G4double zpos, G4LogicalVolume *top) {
   G4VisAttributes *vis = new G4VisAttributes();
   //vis->SetColor(1, 1, 0); // yellow
   vis->SetColor(1, 0, 1); // magenta
-  //vis->SetLineWidth(2);
+  vis->SetLineWidth(2);
   mvol->SetVisAttributes(vis);
 
   //maginetic field
