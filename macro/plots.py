@@ -6,6 +6,50 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def acceptance_autobin():
+
+    #spectrometer acceptance as a function of generated photon energy,
+    #size of bins is given by the desired precision
+
+    emin = 1
+    emax = 20
+
+    edet = 1
+
+    prec = 0.08
+    delt = 1e-2
+
+    sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+
+    can = ut.box_canvas()
+
+    gROOT.LoadMacro("get_acc.C")
+    hAcc = rt.get_acc(tree, "phot_gen", sel, prec, delt)
+
+    #ut.set_graph(hAcc, rt.kBlue)
+    ut.set_graph(hAcc)
+
+    hAcc.GetYaxis().SetTitle("Spectrometer acceptance / "+str(prec*1e2)+" %")
+    hAcc.GetXaxis().SetTitle("Generated #it{E}_{#gamma} (GeV)")
+    hAcc.SetTitle("")
+
+    hAcc.GetYaxis().SetTitleOffset(2)
+    hAcc.GetXaxis().SetTitleOffset(1.3)
+
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.01, 0.02)
+
+    hAcc.Draw("AP")
+
+    leg = ut.prepare_leg(0.64, 0.84, 0.15, 0.15, 0.027) # x, y, dx, dy, tsiz
+    leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acceptance_autobin
+
+#_____________________________________________________________________________
 def up_down_corrected():
 
     #energy in spectrometer corrected for the acceptance
@@ -117,7 +161,7 @@ def acceptance():
     leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -352,14 +396,15 @@ if __name__ == "__main__":
     #infile = "../data/lmon.root"
     #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
-    infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
+    #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
+    infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
 
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 5
+    iplot = 7
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -368,6 +413,7 @@ if __name__ == "__main__":
     funclist.append( up_down_en ) # 4
     funclist.append( acceptance ) # 5
     funclist.append( up_down_corrected ) # 6
+    funclist.append( acceptance_autobin ) # 7
 
     #open the input
     inp = TFile.Open(infile)

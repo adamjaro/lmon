@@ -139,7 +139,7 @@ def ew_z():
 
     gPad.SetLogy()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -172,7 +172,7 @@ def ew_xy():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________

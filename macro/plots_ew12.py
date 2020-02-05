@@ -20,15 +20,16 @@ def conv_phi():
     delt = 1e-6
 
     gROOT.LoadMacro("get_ew_conv.C")
-    hEffV1 = rt.get_ew_conv(tree_v1, "phot_phi", "ew_conv", prec, delt)
+    #hEffV1 = rt.get_ew_conv(tree_v1, "phot_phi", "ew_conv", prec, delt)
     hEffV2 = rt.get_ew_conv(tree_v2, "phot_phi", "ew_conv", prec, delt)
 
     #hEffV1 = get_eff(tree_v1, "phot_phi", "ew_conv", pbin, pmin, pmax)
     #hEffV2 = get_eff(tree_v2, "phot_phi", "ew_conv", pbin, pmin, pmax)
 
-    ut.set_graph(hEffV1, rt.kBlue)
-    ut.set_graph(hEffV2, rt.kRed, rt.kFullTriangleUp)
-    hEffV2.SetMarkerSize(1.5)
+    #ut.set_graph(hEffV1, rt.kBlue)
+    #ut.set_graph(hEffV2, rt.kRed, rt.kFullTriangleUp)
+    #hEffV2.SetMarkerSize(1.5)
+    ut.set_graph(hEffV2)
 
     #plot the probability
     can = ut.box_canvas()
@@ -46,13 +47,13 @@ def conv_phi():
 
     frame.Draw()
 
-    hEffV1.Draw("psame")
+    #hEffV1.Draw("psame")
     hEffV2.Draw("psame")
 
     leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.1, 0.035)
-    leg.AddEntry(hEffV1, "Tilted plane", "lp")
+    #leg.AddEntry(hEffV1, "Tilted plane", "lp")
     leg.AddEntry(hEffV2, "Half-cylinder", "lp")
-    leg.Draw("same")
+    #leg.Draw("same")
 
     #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -70,15 +71,16 @@ def conv_theta():
     delt = 1e-6
 
     gROOT.LoadMacro("get_ew_conv.C")
-    hEffV1 = rt.get_ew_conv(tree_v1, "phot_theta", "ew_conv", prec, delt, -1., TMath.Pi())
+    #hEffV1 = rt.get_ew_conv(tree_v1, "phot_theta", "ew_conv", prec, delt, -1., TMath.Pi())
     hEffV2 = rt.get_ew_conv(tree_v2, "phot_theta", "ew_conv", prec, delt, -1., TMath.Pi())
 
     #hEffV1 = get_eff(tree_v1, "TMath::Pi()-phot_theta", "ew_conv", tbin, tmin, tmax)
     #hEffV2 = get_eff(tree_v2, "TMath::Pi()-phot_theta", "ew_conv", tbin, tmin, tmax)
 
-    ut.set_graph(hEffV1, rt.kBlue)
-    ut.set_graph(hEffV2, rt.kRed, rt.kFullTriangleUp)
-    hEffV2.SetMarkerSize(1.5)
+    #ut.set_graph(hEffV1, rt.kBlue)
+    #ut.set_graph(hEffV2, rt.kRed, rt.kFullTriangleUp)
+    #hEffV2.SetMarkerSize(1.5)
+    ut.set_graph(hEffV2)
 
     #plot the probability
     can = ut.box_canvas()
@@ -95,13 +97,13 @@ def conv_theta():
 
     frame.Draw()
 
-    hEffV1.Draw("psame")
+    #hEffV1.Draw("psame")
     hEffV2.Draw("psame")
 
     leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.1, 0.035)
-    leg.AddEntry(hEffV1, "Tilted plane", "lp")
+    #leg.AddEntry(hEffV1, "Tilted plane", "lp")
     leg.AddEntry(hEffV2, "Half-cylinder", "lp")
-    leg.Draw("same")
+    #leg.Draw("same")
 
     gPad.SetLogx()
 
@@ -135,7 +137,7 @@ if __name__ == "__main__":
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 1
+    iplot = 0
     funclist = []
     funclist.append( conv_theta ) # 0
     funclist.append( conv_phi ) # 1
