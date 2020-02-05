@@ -16,8 +16,8 @@
 /lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
 #output
-/lmon/output/name ../data/lmon_18x275_all_0p25T_100kevt.root
+/lmon/output/name ../data/lmon_18x275_all_0p25T_1Mevt.root
 
 #number of events
-/run/beamOn 100000
+/run/beamOn 1000000
 
