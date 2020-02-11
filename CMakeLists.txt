@@ -21,6 +21,9 @@ include_directories(${PROJECT_SOURCE_DIR}/include)
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cxx)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
+#BOOST
+set(BOOST_LIB boost_program_options)
+
 #ROOT
 
 #compiler flags
@@ -66,15 +69,17 @@ target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
 
 #binary executable
 add_executable(${BIN} run.cxx)
-target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB})
+target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${BOOST_LIB})
 
 #copy macros to build directory
 set(MACRO
   gui.mac
   init_vis.mac
+  init_vis_lowQ2.mac
   vis.mac
   run.mac
   run_eic.mac
+  run_lowQ2.mac
 )
 
 foreach(_mac ${MACRO})

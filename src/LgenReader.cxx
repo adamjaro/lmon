@@ -12,13 +12,11 @@
 
 //Geant headers
 #include "G4GenericMessenger.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
-#include "G4SystemOfUnits.hh"
+#include "G4Event.hh"
 
 //local headers
 #include "LgenReader.h"
+#include "GenParticle.h"
 
 using namespace std;
 using namespace boost;
@@ -33,10 +31,22 @@ LgenReader::LgenReader() : G4VUserPrimaryGeneratorAction() {
   fMsg = new G4GenericMessenger(this, "/lmon/input/");
   fMsg->DeclareProperty("name", fInputName);
 
-  //gamma definition for the generator
-  fGammaDef = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
+  //generated particles
+  fPhot = new GenParticle(22);
+  fEl = new GenParticle(11);
+  fBeamEl = new GenParticle(11);
 
 }//LgenReader
+
+//_____________________________________________________________________________
+LgenReader::~LgenReader() {
+
+  delete fMsg;
+  delete fPhot;
+  delete fEl;
+  delete fBeamEl;
+
+}//~LgenReader
 
 //_____________________________________________________________________________
 void LgenReader::GeneratePrimaries(G4Event *evt) {
@@ -48,8 +58,6 @@ void LgenReader::GeneratePrimaries(G4Event *evt) {
 
   char_separator<char> sep(" ");
   string line;
-  G4double px, py, pz; // photon momentum, GeV
-  G4double vx, vy, vz; // vertex coordinates, mm
   //event loop
   while( line.find("Event finished") == string::npos ) {
     getline(fIn, line);
@@ -73,37 +81,41 @@ void LgenReader::GeneratePrimaries(G4Event *evt) {
     int stat, pdg;
     ss >> pdg >> stat;
 
-    //select only final state photon
-    if( pdg != 22 || stat != 1 ) continue;
-
-    //get photon momentum
+    //skip to particle momentum
     for(int i=0; i<3; i++) ++trk_it;
-    ss.str("");
-    ss.clear();
-    ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
-    ss >> pz >> py >> px;
 
-    //skip the energy and mass
-    ++trk_it;
-    ++trk_it;
+    //final state photon
+    if( pdg == 22 && stat == 1 ) {
+      fPhot->ReadFromPythia6(trk_it);
+      continue;
+    }
 
-    //get vertex position
-    ss.str("");
-    ss.clear();
-    ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
-    ss >> vz >> vy >> vx;
+    //scattered electron
+    if( pdg == 11 && stat == 1 ) {
+      fEl->ReadFromPythia6(trk_it);
+      continue;
+    }
+
+    //beam electron
+    if( pdg == 11 && stat == 201 ) {
+      fBeamEl->ReadFromPythia6(trk_it);
+      continue;
+    }
 
   }//event loop
 
-  //G4cout << "LgenReader::GeneratePrimaries " << vx << " " << vy << " " << vz << G4endl;
-
   //generate the photon
-  G4ParticleGun gun(fGammaDef);
+  G4PrimaryVertex *vtx = fPhot->MakePrimaryVertex();
+  fPhot->GenerateToVertex(vtx);
 
-  gun.SetParticleMomentum(G4ParticleMomentum(px*GeV, py*GeV, pz*GeV));
-  gun.SetParticlePosition(G4ThreeVector(vx*mm, vy*mm, vz*mm));
+  //scattered electron
+  fEl->GenerateToVertex(vtx);
 
-  gun.GeneratePrimaryVertex(evt);
+  //beam electron
+  //fBeamEl->GenerateToVertex(vtx);
+
+  //put vertex to the event
+  evt->AddPrimaryVertex(vtx);
 
 }//GeneratePrimaries
 

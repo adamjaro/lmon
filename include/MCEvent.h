@@ -21,6 +21,9 @@ class MCEvent : public Detector {
 
   private:
 
+    void ReadPhoton(G4PrimaryParticle *part);
+    void ReadElectron(G4PrimaryParticle *part);
+
     G4String fNam; // class name
 
     Double_t fPhotGen; // energy of generated photon
@@ -30,6 +33,8 @@ class MCEvent : public Detector {
     Double_t fVx; // x of generated vertex, mm
     Double_t fVy; // y of generated vertex, mm
     Double_t fVz; // z of generated vertex, mm
+
+    Double_t fElGen; // energy of scattered electron
 
 };
 

@@ -1,0 +1,20 @@
+
+#run macro for low Q2 tagger testing
+
+#detectors and components
+/lmon/construct/B2eR 1
+#/lmon/construct/ewV2 1
+/lmon/construct/lowQ2 1
+
+
+/run/initialize
+
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+
+#/lmon/output/name ../data/test/lmon.root
+
+
+
+/run/beamOn 3
+

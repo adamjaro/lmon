@@ -30,7 +30,7 @@ using namespace std;
 ExitWindowV2::ExitWindowV2(const G4String& nam, G4double zpos, G4LogicalVolume *top):
     Detector(), G4VSensitiveDetector(nam), fNam(nam) {
 
-  G4cout << "ExitWindowV2: " << fNam << G4endl;
+  G4cout << "  ExitWindowV2: " << fNam << G4endl;
 
   G4double dz = 2.5*meter; // length along z
   G4double radius = 10*cm; // inner radius

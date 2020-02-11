@@ -1,0 +1,31 @@
+# Macro file for the initialization of example B4
+# in interactive session
+#
+# Set some default verbose
+#
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+#
+# Change the default number of threads (in multi-threaded mode)
+#/run/numberOfThreads 4
+
+#detectors and components
+/lmon/construct/B2eR 1
+/lmon/construct/ewV2 1
+/lmon/construct/lowQ2 1
+
+/lmon/construct/phot 1
+/lmon/construct/up 1
+/lmon/construct/down 1
+
+#
+# Initialize kernel
+/run/initialize
+
+/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+
+#
+# Visualization setting
+/control/execute vis.mac

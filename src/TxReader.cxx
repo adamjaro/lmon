@@ -9,23 +9,25 @@
 //C++ headers
 #include <string.h>
 #include <sstream>
+#include <vector>
+#include <map>
 #include <boost/tokenizer.hpp>
 
 //Geant headers
 #include "G4GenericMessenger.hh"
-#include "G4ParticleGun.hh"
-#include "G4ParticleTable.hh"
-#include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4PrimaryVertex.hh"
+#include "G4Event.hh"
 
 //local headers
 #include "TxReader.h"
+#include "GenParticle.h"
 
 using namespace std;
 using namespace boost;
 
 //_____________________________________________________________________________
-TxReader::TxReader() : G4VUserPrimaryGeneratorAction() {
+TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fIev(0) {
 
   //default input name
   fInputName = "../lgen_5x41_0p5min_12evt.tx";
@@ -33,9 +35,6 @@ TxReader::TxReader() : G4VUserPrimaryGeneratorAction() {
   //command for name of input file
   fMsg = new G4GenericMessenger(this, "/lmon/input/");
   fMsg->DeclareProperty("name", fInputName);
-
-  //gamma definition for the generator
-  fGammaDef = G4ParticleTable::GetParticleTable()->FindParticle("gamma");
 
 }//TxReader
 
@@ -55,85 +54,86 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
     }
 
     getline(fIn, line);
-
-    G4cout << line << G4endl;
+    //G4cout << line << G4endl;
   }
 
-  //get vertex coordinates
+  //increment event count for progress printout
+  fIev++;
+  if( fIev%10 == 100000 ) {
+    G4cout << "TxReader::GeneratePrimaries, event number: " << fIev << G4endl;
+  }
+
+  //get vertex coordinates, cm, and number of particles
   getline(fIn, line);
+  G4double vx, vy, vz; // cm
+  int ntrk; // number of particles
+  ReadVertex(line, vx, vy, vz, ntrk); // read from the vertex line
+
+  //G4cout << line << G4endl;
+  //G4cout << "TxReader::GeneratePrimaries " << vx << " " << vy << " " << vz << " " << ntrk << G4endl;
+
+  //make the primary vertex
+  G4PrimaryVertex *vtx = new G4PrimaryVertex(vx*cm, vy*cm, vz*cm, 0);
+
+  //tracks in event
+  vector<GenParticle> tracks;
+
+  //particle loop
+  for(int itrk=0; itrk<ntrk; itrk++) {
+
+    getline(fIn, line);
+    tracks.push_back( GenParticle(line) );
+  }//particle loop
+
+  //put tracks to map according to pdg
+  map<G4int, GenParticle*> tmap;
+  for(vector<GenParticle>::iterator i = tracks.begin(); i != tracks.end(); i++) {
+
+    //put the electron
+    if( (*i).GetPdg() == 11 ) tmap.insert( make_pair(11, &(*i)) );
+
+    //photon
+    if( (*i).GetPdg() == 22 ) tmap.insert( make_pair(22, &(*i)) );
+
+    //G4cout << "TxReader::GeneratePrimaries: " << (*i).GetPdg() << G4endl;
+  }
+
+  //G4cout << "TxReader::GeneratePrimaries: " << tmap[11]->GetPdg() << " " << tmap[22]->GetPdg() << G4endl;
+
+  //generate the photon
+  tmap[22]->GenerateToVertex(vtx);
+
+  //scattered electron
+  tmap[11]->GenerateToVertex(vtx);
+
+  //put vertex to the event
+  evt->AddPrimaryVertex(vtx);
+
+}//GeneratePrimaries
+
+//_____________________________________________________________________________
+void TxReader::ReadVertex(const std::string& line, G4double& vx, G4double& vy, G4double& vz, int& ntrk) {
+
+  //vertex coordinates and number of tracks
 
   //split the vertex line
-  char_separator<char> sep(" ");
-  tokenizer< char_separator<char> > vtxline(line, sep);
+  tokenizer< char_separator<char> > vtxline(line, char_separator<char>(" "));
   tokenizer< char_separator<char> >::iterator vtx_it = vtxline.begin();
 
   //get vertex coordinates, cm
-  G4double vx, vy, vz; // cm
   stringstream ss;
   ++vtx_it;
   ss << *(vtx_it++) << " " << *(vtx_it++) << " " << *(vtx_it++);
   ss >> vz >> vy >> vx;
-
-  //G4cout << line << G4endl;
-  //G4cout << "TxReader::GeneratePrimaries " << vx << " " << vy << " " << vz << G4endl;
 
   //get number of particles
   for(int i=0; i<4; i++) ++vtx_it;
   ss.str("");
   ss.clear();
   ss << *(vtx_it++);
-  int ntrk;
   ss >> ntrk;
 
-  //G4cout << ntrk << G4endl;
-
-  //get photon momentum
-  G4double px, py, pz;
-
-  //particle loop
-  for(int itrk=0; itrk<ntrk; itrk++) {
-    getline(fIn, line);
-
-    //split the particle line
-    tokenizer< char_separator<char> > trkline(line, sep);
-    tokenizer< char_separator<char> >::iterator trk_it = trkline.begin();
-
-    //get the momentum
-    for(int i=0; i<2; i++) ++trk_it;
-    ss.str("");
-    ss.clear();
-    ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
-    ss >> pz >> py >> px;
-
-    //get pdg
-    for(int i=0; i<3; i++) ++trk_it;
-    ss.str("");
-    ss.clear();
-    ss << *(trk_it++);
-    int pdg;
-    ss >> pdg;
-
-    //G4cout << line << G4endl;
-    //G4cout << pdg << G4endl;
-
-    //select the photon
-    if(pdg == 22) break;
-
-  }//particle loop
-
-  //G4cout << "tx: " << px << " " << py << " " << pz << G4endl;
-
-  //generate the photon
-  G4ParticleGun gun(fGammaDef);
-
-  gun.SetParticleMomentum(G4ParticleMomentum(px*GeV, py*GeV, pz*GeV));
-  gun.SetParticlePosition(G4ThreeVector(vx*cm, vy*cm, vz*cm));
-
-  gun.GeneratePrimaryVertex(evt);
-
-  //G4cout << "TxReader::GeneratePrimaries " << vx << " " << vy << " " << vz << G4endl;
-
-}//GeneratePrimaries
+}//ReadVertex
 
 //_____________________________________________________________________________
 void TxReader::OpenInput() {

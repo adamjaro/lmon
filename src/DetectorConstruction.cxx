@@ -33,10 +33,12 @@
 #include "ExitWinZEUS.h"
 #include "ExitWindowV1.h"
 #include "ExitWindowV2.h"
+#include "BeamMagnet.h"
+#include "BoxCalV2.h"
 
 //_____________________________________________________________________________
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0), fMsg(0),
-    fIncCollim(0), fIncMagnet(0), fIncEWv2(0), fIncPhot(0), fIncUp(0), fIncDown(0) {
+    fIncCollim(0), fIncMagnet(0), fIncEWv2(0), fIncPhot(0), fIncUp(0), fIncDown(0), fIncB2eR(0), fIncLowQ2(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
@@ -58,6 +60,8 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
   fMsg->DeclareProperty("phot", fIncPhot);
   fMsg->DeclareProperty("up", fIncUp);
   fMsg->DeclareProperty("down", fIncDown);
+  fMsg->DeclareProperty("B2eR", fIncB2eR);
+  fMsg->DeclareProperty("lowQ2", fIncLowQ2);
 
 }//DetectorConstruction
 
@@ -108,6 +112,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   if(fIncPhot) AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
   if(fIncUp) AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
   if(fIncDown) AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
+
+  //beamline B2eR magnet
+  if(fIncB2eR) new BeamMagnet(-12.254*meter, top_l);
+
+  //low Q^2 tagger
+  if(fIncLowQ2) AddDetector(new BoxCalV2("lowQ2", -27*meter, 40*cm, top_l));
 
   return top_p;
 

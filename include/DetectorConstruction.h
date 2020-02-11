@@ -50,6 +50,8 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
     G4bool fIncPhot; // direct photon calorimeter
     G4bool fIncUp; // up spectrometer calorimeter
     G4bool fIncDown; // up spectrometer calorimeter
+    G4bool fIncB2eR; // beamline B2eR magnet
+    G4bool fIncLowQ2; // low Q^2 tagger
 
 };
 

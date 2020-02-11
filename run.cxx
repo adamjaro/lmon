@@ -1,6 +1,8 @@
 
 //C++ headers
 #include <iostream>
+#include <string>
+#include <boost/program_options.hpp>
 
 //Geant headers
 #include "G4UIExecutive.hh"
@@ -15,10 +17,29 @@
 #include "DetectorConstruction.h"
 #include "ActionInitialization.h"
 
+namespace po = boost::program_options;
+using namespace std;
+
 //_____________________________________________________________________________
 int main(int argc, char* argv[]) {
 
-  //interactive or batch execution
+  //command line arguments
+  po::options_description opt("Program arguments");
+  opt.add_options()("vis", po::value<string>(), "visualization macro");
+
+  //parse the arguments
+  po::variables_map opt_map;
+  po::store(po::parse_command_line(argc, argv, opt), opt_map);
+
+  //visualization macro
+  G4String vis_mac("init_vis.mac"); // default name
+  if(opt_map.count("vis")) {
+
+    //name from the argument
+    vis_mac = G4String( opt_map["vis"].as<string>() );
+  }
+
+  //single argument for batch execution
   G4String macro;
   if( argc == 2 ) {
     macro = argv[1];
@@ -57,13 +78,13 @@ int main(int argc, char* argv[]) {
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
   //UI session for interactive or batch mode
+  G4String command = "/control/execute ";
   if ( macro.size() > 0 ) {
     // batch mode
-    G4String command = "/control/execute ";
     UImanager->ApplyCommand(command+macro);
   } else {
     //interactive
-    UImanager->ApplyCommand("/control/execute init_vis.mac");
+    UImanager->ApplyCommand(command+vis_mac);
     if (ui->IsGUI()) {
       UImanager->ApplyCommand("/control/execute gui.mac");
     }
