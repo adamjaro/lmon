@@ -4,6 +4,9 @@
 #include <string>
 #include <boost/program_options.hpp>
 
+//explicit instantiation to reduce warnings from old Geant 4.10.00 on EIC nodes
+template std::vector<std::basic_string<char> > boost::program_options::to_internal(const std::vector<std::basic_string<char> >&);
+
 //Geant headers
 #include "G4UIExecutive.hh"
 #include "Randomize.hh"

@@ -8,6 +8,8 @@
 /lmon/construct/phot 1  # direct photon detector
 /lmon/construct/up 1  # upper spectrometer calorimeter
 /lmon/construct/down 1  # down spectrometer calorimeter
+/lmon/construct/B2eR 1  # beam magnet B2eR
+/lmon/construct/lowQ2 1  # low Q^2 tagger
 
 #init and run
 /run/initialize
@@ -16,7 +18,7 @@
 /lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
 #output
-/lmon/output/name ../data/lmon_18x275_all_0p25T_1Mevt.root
+/lmon/output/name ../data/lmon_18x275_lowQ2_1Mevt.root
 
 #number of events
 /run/beamOn 1000000

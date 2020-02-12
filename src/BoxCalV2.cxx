@@ -23,6 +23,7 @@
 #include "G4Transform3D.hh"
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
+//#include "G4TrackStatus.hh"
 
 //local classes
 #include "BoxCalV2.h"
@@ -71,7 +72,8 @@ G4bool BoxCalV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //remove the track
   G4Track *track = step->GetTrack();
-  track->SetTrackStatus(G4TrackStatus::fKillTrackAndSecondaries);
+  //track->SetTrackStatus(G4TrackStatus::fKillTrackAndSecondaries);
+  track->SetTrackStatus(fKillTrackAndSecondaries);
 
   //primary track only
   if( track->GetParentID() != 0 ) return true;
