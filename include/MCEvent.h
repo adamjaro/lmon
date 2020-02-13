@@ -23,6 +23,7 @@ class MCEvent : public Detector {
 
     void ReadPhoton(G4PrimaryParticle *part);
     void ReadElectron(G4PrimaryParticle *part);
+    void GetThetaPhi(G4PrimaryParticle *part, Double_t &theta, Double_t &phi);
 
     G4String fNam; // class name
 
@@ -35,6 +36,8 @@ class MCEvent : public Detector {
     Double_t fVz; // z of generated vertex, mm
 
     Double_t fElGen; // energy of scattered electron
+    Double_t fElTheta; // polar angle of generated photon
+    Double_t fElPhi; // azimuthan angle  of generated photon
 
 };
 

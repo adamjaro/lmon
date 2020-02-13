@@ -15,9 +15,11 @@
 /lmon/construct/ewV2 1
 /lmon/construct/lowQ2 1
 
-/lmon/construct/phot 1
-/lmon/construct/up 1
-/lmon/construct/down 1
+#/lmon/construct/collim 1
+
+#/lmon/construct/phot 1
+#/lmon/construct/up 1
+#/lmon/construct/down 1
 
 #
 # Initialize kernel

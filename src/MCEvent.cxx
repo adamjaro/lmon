@@ -54,17 +54,8 @@ void MCEvent::ReadPhoton(G4PrimaryParticle *part) {
   fPhotGen = part->GetTotalEnergy();
   fPhotGen = fPhotGen/1e3; // to GeV
 
-  //Lorentz vector for angles
-  G4double px = part->GetPx()/1e3; // to GeV
-  G4double py = part->GetPy()/1e3;
-  G4double pz = part->GetPz()/1e3;
-
-  TLorentzVector vec;
-  vec.SetPxPyPzE(px, py, pz, fPhotGen);
-
   //azimuthal and polar angle
-  fPhotTheta = vec.Theta();
-  fPhotPhi = vec.Phi();
+  GetThetaPhi(part, fPhotTheta, fPhotPhi);
 
 }//ReadPhoton
 
@@ -81,7 +72,31 @@ void MCEvent::ReadElectron(G4PrimaryParticle *part) {
 
   //G4cout << "MCEvent::ReadElectron: " << fElGen << G4endl;
 
+  //electron azimuthal and polar angle
+  GetThetaPhi(part, fElTheta, fElPhi);
+
 }//ReadElectron
+
+//_____________________________________________________________________________
+void MCEvent::GetThetaPhi(G4PrimaryParticle *part, Double_t &theta, Double_t &phi) {
+
+  //theta and phi angles for generated particle
+
+  //energy and momentum for Lorentz vector
+  G4double en = part->GetTotalEnergy()/1e3; // to GeV
+  G4double px = part->GetPx()/1e3;
+  G4double py = part->GetPy()/1e3;
+  G4double pz = part->GetPz()/1e3;
+
+  //Lorentz vector for angles
+  TLorentzVector vec;
+  vec.SetPxPyPzE(px, py, pz, en);
+
+  //azimuthal and polar angle
+  theta = vec.Theta();
+  phi = vec.Phi();
+
+}//GetThetaPhi
 
 //_____________________________________________________________________________
 void MCEvent::CreateOutput(TTree *tree) {
@@ -99,6 +114,8 @@ void MCEvent::CreateOutput(TTree *tree) {
   u.AddBranch("vtx_z", &fVz, "D");
 
   u.AddBranch("el_gen", &fElGen, "D");
+  u.AddBranch("el_theta", &fElTheta, "D");
+  u.AddBranch("el_phi", &fElPhi, "D");
 
 }//CreateOutput
 
@@ -114,6 +131,8 @@ void MCEvent::ClearEvent() {
   fVz = -9999.;
 
   fElGen = 0.;
+  fElTheta = 0.;
+  fElPhi = 0.;
 
 }//ClearEvent
 

@@ -59,7 +59,7 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
 
   //increment event count for progress printout
   fIev++;
-  if( fIev%10 == 100000 ) {
+  if( fIev%100000 == 0 ) {
     G4cout << "TxReader::GeneratePrimaries, event number: " << fIev << G4endl;
   }
 
