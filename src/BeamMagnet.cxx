@@ -37,8 +37,8 @@ BeamMagnet::BeamMagnet(G4double zpos, G4LogicalVolume *top) {
   //vis->SetColor(1, 0, 1); // magenta
   vis->SetColor(0, 0, 1); // blue
   vis->SetLineWidth(2);
-  //vis->SetForceSolid();
-  vis->SetForceAuxEdgeVisible(true);
+  vis->SetForceSolid();
+  //vis->SetForceAuxEdgeVisible(true);
   vol->SetVisAttributes(vis);
 
   //maginetic field

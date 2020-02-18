@@ -12,7 +12,7 @@
 
 #detectors and components
 /lmon/construct/B2eR 1
-/lmon/construct/ewV2 1
+#/lmon/construct/ewV2 1
 /lmon/construct/lowQ2 1
 
 #/lmon/construct/collim 1

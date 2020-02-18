@@ -19,7 +19,7 @@ def main():
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 4
+    iplot = 7
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -28,6 +28,7 @@ def main():
     funclist.append( el_hit_x ) # 4
     funclist.append( el_hit_y ) # 5
     funclist.append( el_hit_z ) # 6
+    funclist.append( el_hit_xy ) # 7
 
     #input
     inp = TFile.Open(infile)
@@ -59,13 +60,26 @@ def el_en():
     tree.Draw("el_gen >> hEnAll")
     tree.Draw("el_gen >> hEnTag", "lowQ2_IsHit == 1")
 
-    ut.line_h1(hEnAll)
+    ut.line_h1(hEnAll) # , rt.kBlack
     ut.set_H1D_col(hEnTag, rt.kRed)
+
+    hEnAll.SetYTitle("Events / ({0:.3f}".format(ebin)+" GeV)")
+    hEnAll.SetXTitle("#it{E}_{e^{-}} (GeV)")
+
+    hEnAll.SetTitleOffset(1.5, "Y")
+    hEnAll.SetTitleOffset(1.3, "X")
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.05, 0.02)
 
     hEnAll.Draw()
     hEnTag.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.2, 0.8, 0.2, 0.1, 0.035)
+    leg.AddEntry(hEnAll, "All electrons", "l")
+    leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en
@@ -349,6 +363,40 @@ def el_hit_z():
     can.SaveAs("01fig.pdf")
 
 #el_hit_z
+
+#_____________________________________________________________________________
+def el_hit_xy():
+
+    #electron hit on the tagger in x and y
+
+    xbin = 1
+    xmin = 280
+    xmax = 510
+
+    ybin = 0.1
+    ymin = -40
+    ymax = 40
+
+    can = ut.box_canvas()
+
+    #x and y of the electrons
+    hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", "lowQ2_IsHit == 1")
+    #tree.Draw("lowQ2_hx >> hX")
+
+    ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.02, 0.11)
+
+    hXY.Draw()
+
+    gPad.SetLogz()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_hit_xy
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
