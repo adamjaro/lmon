@@ -117,7 +117,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   if(fIncB2eR) new BeamMagnet(-12.254*meter, top_l);
 
   //low Q^2 tagger
-  if(fIncLowQ2) AddDetector(new BoxCalV2("lowQ2", -27*meter, 40*cm, top_l));
+  if(fIncLowQ2) AddDetector(new BoxCalV2("lowQ2", -27*meter, 47.2*cm, top_l));
 
   return top_p;
 

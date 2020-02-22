@@ -9,12 +9,16 @@
 
 /run/initialize
 
-/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_1p2Mevt.tx
+/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_xB_yB_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
 
-#/lmon/output/name ../data/test/lmon.root
+/lmon/output/name ../data/test/lmon.root
+#/lmon/output/name ../data/lmon_18x275_qr_xB_yB_lowQ2_1Mevt.root
 
 
 
 /run/beamOn 1000000
+#/run/beamOn 12
 

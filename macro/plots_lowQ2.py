@@ -13,13 +13,15 @@ def main():
 
     #infile = "../data/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
-    infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
+    #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
+    #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 7
+    iplot = 3
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -79,7 +81,7 @@ def el_en():
     leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en
@@ -146,8 +148,8 @@ def q2_calc():
     qmax = 3e-2
 
     lqbin = 5e-2
-    lqmin = -12
-    lqmax = 0
+    lqmin = -5
+    lqmax = 2
 
     can = ut.box_canvas()
 
@@ -183,7 +185,7 @@ def q2_calc():
     tree.SetBranchAddress("lowQ2_IsHit", AddressOf(is_hit, "val"))
 
     nevt = tree.GetEntries()
-    #nevt = 10
+    #nevt = 30000
 
     #counters for skipped entries
     nskip_def = 0
@@ -260,8 +262,8 @@ def q2_calc():
 
     hLog10q2Def.Draw()
     hLog10q2DefTag.Draw("e1same")
-    hLog10q2kine.Draw("e1same")
-    hLog10q2kineTag.Draw("e1same")
+    #hLog10q2kine.Draw("e1same")
+    #hLog10q2kineTag.Draw("e1same")
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -393,7 +395,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
