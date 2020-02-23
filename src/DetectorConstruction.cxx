@@ -34,6 +34,7 @@
 #include "ExitWindowV1.h"
 #include "ExitWindowV2.h"
 #include "BeamMagnet.h"
+#include "BeamMagnetV2.h"
 #include "BoxCalV2.h"
 
 //_____________________________________________________________________________
@@ -114,7 +115,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   if(fIncDown) AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
 
   //beamline B2eR magnet
-  if(fIncB2eR) new BeamMagnet(-12.254*meter, top_l);
+  //if(fIncB2eR) new BeamMagnet(-12.254*meter, top_l);
+  if(fIncB2eR) AddDetector(new BeamMagnetV2("B2eR", -12.254*meter, top_l));
 
   //low Q^2 tagger
   if(fIncLowQ2) AddDetector(new BoxCalV2("lowQ2", -27*meter, 47.2*cm, top_l));

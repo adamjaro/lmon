@@ -11,7 +11,8 @@ import plot_utils as ut
 def main():
 
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yB_lowQ2_1Mevt.root"
 
     iplot = 0
@@ -52,7 +53,7 @@ def evt_Log10_Q2():
     hLog10Q2Tag = ut.prepare_TH1D("hLog10Q2Tag", lqbin, lqmin, lqmax)
 
     tree.Draw(gL10Q2+" >> hLog10Q2")
-    tree.Draw(gL10Q2+" >> hLog10Q2Tag", "lowQ2_IsHit == 1")
+    tree.Draw(gL10Q2+" >> hLog10Q2Tag", "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.02")
 
     can = ut.box_canvas()
 
