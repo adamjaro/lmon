@@ -145,7 +145,20 @@ void tree_to_list(TTree *tree, list<Double_t> &list, string bnam) {
 
 }//tree_to_list
 
+//_____________________________________________________________________________
+void h1_from_list(list<Double_t> &inp, TH1D &hx) {
 
+  //fill a TH1D histogram from the input list
+  hx.Sumw2();
+
+  //list loop
+  list<Double_t>::const_iterator it = inp.cbegin();
+  while(it != inp.cend()) {
+    hx.Fill(*it);
+    it++;
+  }//list loop
+
+}//h1_from_list
 
 
 

@@ -11,17 +11,14 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #infile = "../data/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
 
-    gROOT.SetBatch()
-    gStyle.SetPadTickX(1)
-    gStyle.SetFrameLineWidth(2)
-
-    iplot = 3
+    iplot = 6
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -36,6 +33,10 @@ def main():
     inp = TFile.Open(infile)
     global tree
     tree = inp.Get("DetectorTree")
+
+    #selection for hit in tagger, contains B2eR aperture
+    global gQ2sel
+    gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
 
     #call the plot function
     funclist[iplot]()
@@ -354,7 +355,8 @@ def el_hit_z():
     #z of the electron
     hZ = ut.prepare_TH1D("hZ", zbin, zmin, zmax)
 
-    tree.Draw("lowQ2_hz/1e3 >> hZ", "lowQ2_IsHit == 1")
+    #tree.Draw("lowQ2_hz/1e3 >> hZ", "lowQ2_IsHit == 1")
+    tree.Draw("lowQ2_hz/1e3 >> hZ", gQ2sel)
     #tree.Draw("lowQ2_hz/1e3 >> hZ")
 
     gPad.SetLogy()
@@ -372,20 +374,25 @@ def el_hit_xy():
     #electron hit on the tagger in x and y
 
     xbin = 1
-    xmin = 280
-    xmax = 510
+    xmin = 350
+    xmax = 590
+    #xmin = 280
+    #xmax = 1000
 
-    ybin = 0.1
-    ymin = -40
-    ymax = 40
+    ybin = 1
+    ymin = -110
+    ymax = 110
 
     can = ut.box_canvas()
 
     #x and y of the electrons
     hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
 
-    tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", "lowQ2_IsHit == 1")
+    tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", gQ2sel)
+    #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", "lowQ2_IsHit == 1")
     #tree.Draw("lowQ2_hx >> hX")
+
+    print "Entries:", hXY.GetEntries()
 
     ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
 
@@ -402,6 +409,10 @@ def el_hit_xy():
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
+
+    gROOT.SetBatch()
+    gStyle.SetPadTickX(1)
+    gStyle.SetFrameLineWidth(2)
 
     main()
 
