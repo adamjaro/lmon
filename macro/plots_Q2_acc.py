@@ -34,6 +34,7 @@ def acc_quasi_real():
     delt = 1e-6
 
     #number of events, 0 for all
+    #nev = 100000
     nev = 0
 
     #tree from the input
@@ -49,15 +50,25 @@ def acc_quasi_real():
     #make the plot
     can = ut.box_canvas()
 
-    ut.set_graph(acc_qr, rt.kRed)
+    ut.set_graph(acc_qr, rt.kRed) # , rt.kRed
 
-    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.6)
+    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.45)
 
+    ytit = "Acceptance / {0:.1f} %".format(prec*100)
+    ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.6, 1.2)
     frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    gPad.SetGrid()
 
     acc_qr.Draw("psame")
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.1, 0.035)
+    leg.AddEntry(acc_qr, "Acceptance for quasi-real photoproduction", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_quasi_real
@@ -92,15 +103,25 @@ def acc_pythia():
     #make the plot
     can = ut.box_canvas()
 
-    ut.set_graph(acc_py, rt.kBlue) # , rt.kFullTriangleUp
+    ut.set_graph(acc_py, rt.kRed) # , rt.kFullTriangleUp
 
-    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.3)
+    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.25)
 
+    ytit = "Acceptance / {0:.1f} %".format(prec*100)
+    ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.6, 1.2)
     frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    gPad.SetGrid()
 
     acc_py.Draw("psame")
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.1, 0.035)
+    leg.AddEntry(acc_py, "Acceptance for Pythia6", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_pythia

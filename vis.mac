@@ -8,7 +8,7 @@
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
-#/vis/viewer/set/background 1 1 1 0.
+/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
 #
 # Draw geometry:
@@ -40,7 +40,7 @@
 #/vis/scene/add/axes 0 0 -3185 10.5 cm
 #/vis/scene/add/axes 0 0 0 2 m
 #/vis/scene/add/axes 0.4 0 -27 0.1 meter # low Q^2 tagger
-/vis/scene/add/axes 0.267 0 -27 0.1 meter # beam along the tagger
+#/vis/scene/add/axes 0.267 0 -27 0.1 meter # beam along the tagger
 #
 #
 # Draw smooth trajectories at end of event, showing trajectory points

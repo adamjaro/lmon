@@ -14,11 +14,12 @@ def main():
     #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
-    #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
+    infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
 
-    iplot = 6
+
+    iplot = 0
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -78,11 +79,13 @@ def el_en():
     hEnTag.Draw("same")
 
     leg = ut.prepare_leg(0.2, 0.8, 0.2, 0.1, 0.035)
-    leg.AddEntry(hEnAll, "All electrons", "l")
+    #leg.AddEntry(hEnAll, "All electrons", "l")
+    #leg.AddEntry(hEnAll, "All quasi-real electrons", "l")
+    leg.AddEntry(hEnAll, "All bremsstrahlung electrons", "l")
     leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en
@@ -396,13 +399,13 @@ def el_hit_xy():
 
     ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
 
-    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.02, 0.11)
+    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.02, 0.12)
 
     hXY.Draw()
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy

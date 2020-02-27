@@ -250,7 +250,7 @@ def fill_h1_tf(hx, func, col=rt.kBlue):
     hx.SetMarkerColor(col)
 
 #_____________________________________________________________________________
-def line_h1(hx, col=rt.kBlue):
+def line_h1(hx, col=rt.kBlue, wdt=-1):
 
     #set H1 to show as a line of bin content
 
@@ -259,6 +259,8 @@ def line_h1(hx, col=rt.kBlue):
 
     hx.SetLineColor(col)
     hx.SetMarkerColor(col)
+
+    if wdt > 0: hx.SetLineWidth(wdt)
 
 #_____________________________________________________________________________
 def box_canvas(dx=768, dy=768):
