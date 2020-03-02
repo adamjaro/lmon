@@ -13,11 +13,13 @@ def main():
     #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_xB_yB_lowQ2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
 
-    iplot = 5
+    iplot = 4
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -25,6 +27,7 @@ def main():
     funclist.append( el_theta_phi_tag ) # 3
     funclist.append( evt_Log10_Q2_y ) # 4
     funclist.append( evt_Q2_theta ) # 5
+    funclist.append( evt_lx_ly ) # 6
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -84,12 +87,12 @@ def evt_Log10_Q2():
     hLog10Q2.SetMaximum(2e5) # for qr
 
     leg = ut.prepare_leg(0.2, 0.83, 0.2, 0.1, 0.035)
-    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
-    leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
+    leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
+    #leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
     leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_Log10_Q2
@@ -208,7 +211,7 @@ def el_theta_phi_tag():
     #hThetaPhi.Draw()
     hThetaPhiTag.Draw()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_theta_phi_tag
@@ -219,20 +222,26 @@ def evt_Log10_Q2_y():
     #log_10(Q^2) and y
 
     lqbin = 5e-2
-    lqmin = -5
+    #lqmin = -5
+    lqmin = -10
     lqmax = -1.5
 
     ybin = 1e-2
-    ymin = 0.06
+    #ymin = 0.06
+    ymin = 0
     ymax = 0.8
 
     yform = "(18.-el_gen)/18."
 
     hLog10Q2yTag = ut.prepare_TH2D("hLog10Q2yTag", ybin, ymin, ymax, lqbin, lqmin, lqmax)
 
+    can = ut.box_canvas()
+
     tree.Draw(gL10Q2+":"+yform+" >> hLog10Q2yTag", gQ2sel)
 
-    can = ut.box_canvas()
+    ut.put_yx_tit(hLog10Q2yTag, "log_{10}(#it{Q}^{2})", "y", 1.6, 1.4)
+
+    gPad.SetLogx()
 
     hLog10Q2yTag.Draw()
 
@@ -247,7 +256,7 @@ def evt_Q2_theta():
     #Q^2 and theta
 
     qbin = 5e-6
-    qmin = 1e-5
+    qmin = 1e-10
     qmax = 1e-1
 
     tbin = 1e-4
@@ -273,10 +282,56 @@ def evt_Q2_theta():
 
     hQ2thetaTag.Draw()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_Q2_theta
+
+#_____________________________________________________________________________
+def evt_lx_ly():
+
+    #log_10(x) and log_10(y)
+
+    xbin = 0.01
+    xmin = -14
+    xmax = 0
+
+    ybin = 0.01
+    ymin = -5
+    ymax = 0
+
+    hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+    hXYtag = ut.prepare_TH2D("hXYtag", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    can = ut.box_canvas()
+
+    yform = "(18.-el_gen)/18."
+    Q2form = "2.*18.*el_gen*(1.-TMath::Cos(TMath::Pi()-el_theta))"
+    xform = Q2form+"/(("+yform+")*19800.82)"
+
+    lyform = "TMath::Log10("+yform+")"
+    lxform = "TMath::Log10("+xform+")"
+
+    tree.Draw(lyform+":"+lxform+" >> hXY")
+    tree.Draw(lyform+":"+lxform+" >> hXYtag", gQ2sel)
+
+    ytit = "log_{10}(#it{y})"+" / {0:.3f}".format(ybin)
+    xtit = "log_{10}(#it{x})"+" / {0:.3f}".format(xbin)
+    ut.put_yx_tit(hXY, ytit, xtit, 1.4, 1.4)
+    ut.put_yx_tit(hXYtag, ytit, xtit, 1.4, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.11, 0.03, 0.12)
+
+    hXY.Draw()
+    #hXYtag.Draw()
+
+    gPad.SetGrid()
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_lx_ly
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

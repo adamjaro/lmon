@@ -14,12 +14,15 @@ def main():
     #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
-    infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
+    #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    infile = "../data/lmon_pythia_5M_1Mevt.root"
 
 
-    iplot = 0
+    iplot = 7
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -85,7 +88,7 @@ def el_en():
     leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en
@@ -405,7 +408,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
