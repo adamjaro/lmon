@@ -13,15 +13,16 @@
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_xB_yA_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_xD_yC_1p2Mevt.tx
-/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_beff2_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
-#/lmon/input/name /home/jaroslav/sim/read_pythia/data/pythia_5M.tx
+/lmon/input/name /home/jaroslav/sim/read_pythia/data/pythia_5M_beff2.tx
 
 /lmon/output/name ../data/test/lmon.root
-#/lmon/output/name ../data/lmon_18x275_qr_Qb_1Mevt.root
-#/lmon/output/name ../data/lmon_pythia_5M_1Mevt.root
+#/lmon/output/name ../data/lmon_18x275_qr_Qb_beff2_1Mevt.root
+#/lmon/output/name ../data/lmon_pythia_5M_beff2_5Mevt.root
 
 
-/run/beamOn 1000000
+/run/beamOn 5000000
 #/run/beamOn 12
 

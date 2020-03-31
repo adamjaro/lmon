@@ -398,6 +398,7 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
+    #infile = "../data/lmon_18x275_beff2_1Mevt.root"
 
 
     gROOT.SetBatch()

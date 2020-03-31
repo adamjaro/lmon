@@ -19,7 +19,9 @@ def main():
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
-    infile = "../data/lmon_pythia_5M_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
 
     iplot = 7
@@ -395,8 +397,7 @@ def el_hit_xy():
     hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
 
     tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", gQ2sel)
-    #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", "lowQ2_IsHit == 1")
-    #tree.Draw("lowQ2_hx >> hX")
+    #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY")
 
     print "Entries:", hXY.GetEntries()
 
@@ -408,7 +409,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy

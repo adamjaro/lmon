@@ -16,10 +16,12 @@ def main():
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
+    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 4
+    iplot = 0
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -28,6 +30,7 @@ def main():
     funclist.append( evt_Log10_Q2_y ) # 4
     funclist.append( evt_Q2_theta ) # 5
     funclist.append( evt_lx_ly ) # 6
+    funclist.append( evt_log10_Q2_theta ) # 7
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -87,12 +90,12 @@ def evt_Log10_Q2():
     hLog10Q2.SetMaximum(2e5) # for qr
 
     leg = ut.prepare_leg(0.2, 0.83, 0.2, 0.1, 0.035)
-    leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
-    #leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
+    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
+    leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
     leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_Log10_Q2
@@ -211,7 +214,7 @@ def el_theta_phi_tag():
     #hThetaPhi.Draw()
     hThetaPhiTag.Draw()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_theta_phi_tag
@@ -332,6 +335,41 @@ def evt_lx_ly():
     can.SaveAs("01fig.pdf")
 
 #evt_lx_ly
+
+#_____________________________________________________________________________
+def evt_log10_Q2_theta():
+
+    #log_10(Q^2) and theta
+
+    lqbin = 0.01
+    lqmin = -8
+    lqmax = -1
+
+    tbin = 1e-4
+    tmin = 0
+    tmax = 0.011
+
+    hlQ2thetaTag = ut.prepare_TH2D("hlQ2thetaTag", tbin, tmin, tmax, lqbin, lqmin, lqmax)
+
+    tree.Draw(gL10Q2+":TMath::Pi()-el_theta >> hlQ2thetaTag", gQ2sel)
+
+    ytit = "log_{10}(Q^{2}) / "+"{0:.3f}".format(lqbin)
+    xtit = "Polar angle #theta (rad) / {0:.2f} mrad".format(tbin*1e3)
+    ut.put_yx_tit(hlQ2thetaTag, ytit, xtit, 1.6, 1.4)
+
+    can = ut.box_canvas()
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.12)
+
+    #gPad.SetLogx()
+    gPad.SetLogz()
+
+    hlQ2thetaTag.Draw()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_log10_Q2_theta
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

@@ -26,7 +26,8 @@ def acc_quasi_real(do_plot=True):
     #Quasi-real input
     #inp_qr = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
-    inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    #inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
 
     #range in the log_10(Q^2)
     #lqmin = -4.5
@@ -84,7 +85,9 @@ def acc_quasi_real(do_plot=True):
 def acc_pythia(do_plot=True):
 
     #Pythia input
-    inp_py = "../data/lmon_pythia_5M_1Mevt.root"
+    #inp_py = "../data/lmon_pythia_5M_1Mevt.root"
+    inp_py = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #inp_py = "../data/lmon_pythia_5M_beff2_5Mevt.root"
 
     #range in the log_10(Q^2)
     lqmin = -10
@@ -168,7 +171,7 @@ def acc_both():
     leg.AddEntry(acc_py, "Pythia6", "lp")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_both
