@@ -16,12 +16,12 @@ def main():
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
-    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 0
+    iplot = 8
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -31,6 +31,9 @@ def main():
     funclist.append( evt_Q2_theta ) # 5
     funclist.append( evt_lx_ly ) # 6
     funclist.append( evt_log10_Q2_theta ) # 7
+    funclist.append( el_en_tag ) # 8
+    funclist.append( el_log10_theta_tag ) # 9
+    funclist.append( el_en_log10_theta_tag ) # 10
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -90,8 +93,8 @@ def evt_Log10_Q2():
     hLog10Q2.SetMaximum(2e5) # for qr
 
     leg = ut.prepare_leg(0.2, 0.83, 0.2, 0.1, 0.035)
-    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
-    leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
+    leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
+    #leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
     leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
@@ -370,6 +373,86 @@ def evt_log10_Q2_theta():
     can.SaveAs("01fig.pdf")
 
 #evt_log10_Q2_theta
+
+#_____________________________________________________________________________
+def el_en_tag():
+
+    #energy for electrons hitting the tagger
+
+    #bins in energy
+    ebin = 0.1
+    emin = 8.5
+    emax = 18
+
+    can = ut.box_canvas()
+
+    #hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
+    hEnTag = ut.prepare_TH1D_n("hEnTag", 10, emin, emax)
+
+    tree.Draw("el_gen >> hEnTag", gQ2sel)
+
+    hEnTag.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_en_tag
+
+#_____________________________________________________________________________
+def el_log10_theta_tag():
+
+    #electron generated log_10 of polar angle for electrons hitting the tagger
+
+    #bins in log_10(theta)
+    ltbin = 0.1
+    ltmin = -5.5
+    ltmax = -1.5
+
+    can = ut.box_canvas()
+
+    #hThetaTag = ut.prepare_TH1D("hThetaTag", ltbin, ltmin, ltmax)
+    hThetaTag = ut.prepare_TH1D_n("hThetaTag", 30, ltmin, ltmax)
+
+    tree.Draw("TMath::Log10(TMath::Pi()-el_theta) >> hThetaTag", gQ2sel)
+
+    #gPad.SetLogy()
+
+    hThetaTag.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_log10_theta_tag
+
+#_____________________________________________________________________________
+def el_en_log10_theta_tag():
+
+    #electron generated energy and log_10 of polar angle for electrons hitting the tagger
+
+    #bins in log_10(theta)
+    ltbin = 0.1
+    ltmin = -5.5
+    ltmax = -1.5
+
+    #bins in energy
+    ebin = 0.1
+    emin = 0
+    emax = 20
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", ltbin, ltmin, ltmax, ebin, emin, emax)
+
+    tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", gQ2sel)
+
+    gPad.SetLogz()
+
+    hEnThetaTag.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_en_log10_theta_tag
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

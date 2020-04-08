@@ -10,7 +10,7 @@ def main():
 
     #tagger acceptance as a function of Q2
 
-    iplot = 2
+    iplot = 0
     funclist = []
     funclist.append( acc_quasi_real ) # 0
     funclist.append( acc_pythia ) # 1
@@ -27,7 +27,8 @@ def acc_quasi_real(do_plot=True):
     #inp_qr = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
-    inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
+    inp_qr = "../data/lmon_18x275_qr_Qc_10Mevt.root"
+    #inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
 
     #range in the log_10(Q^2)
     #lqmin = -4.5

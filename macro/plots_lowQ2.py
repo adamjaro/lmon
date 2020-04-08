@@ -18,8 +18,8 @@ def main():
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
@@ -305,8 +305,8 @@ def el_hit_x():
     #electron hit on the tagger in x
 
     xbin = 1
-    xmin = 250
-    xmax = 550
+    xmin = 350
+    xmax = 600
 
     can = ut.box_canvas()
 
@@ -329,8 +329,10 @@ def el_hit_y():
     #electron hit on the tagger in y
 
     ybin = 0.1
-    ymin = -110
-    ymax = 110
+    ymin = -8
+    ymax = 8
+    #ymin = -110
+    #ymax = 110
 
     can = ut.box_canvas()
 
@@ -383,11 +385,13 @@ def el_hit_xy():
 
     xbin = 1
     xmin = 350
-    xmax = 590
+    xmax = 600
     #xmin = 280
     #xmax = 1000
 
-    ybin = 1
+    ybin = 0.1
+    #ymin = -8
+    #ymax = 8
     ymin = -110
     ymax = 110
 
@@ -395,6 +399,7 @@ def el_hit_xy():
 
     #x and y of the electrons
     hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+    #hXY = ut.prepare_TH2D_n("hXY", 50, xmin, xmax, 50, ymin, ymax)
 
     tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", gQ2sel)
     #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY")
@@ -409,7 +414,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
