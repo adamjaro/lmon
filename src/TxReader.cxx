@@ -101,10 +101,10 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
   //G4cout << "TxReader::GeneratePrimaries: " << tmap[11]->GetPdg() << " " << tmap[22]->GetPdg() << G4endl;
 
   //generate the photon
-  tmap[22]->GenerateToVertex(vtx);
+  //tmap[22]->GenerateToVertex(vtx);
 
   //scattered electron
-  //tmap[11]->GenerateToVertex(vtx);
+  tmap[11]->GenerateToVertex(vtx);
 
   //put vertex to the event
   evt->AddPrimaryVertex(vtx);
