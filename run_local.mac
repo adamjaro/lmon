@@ -1,0 +1,17 @@
+
+#local running
+
+#detectors and components
+/lmon/construct/ewV2 1
+
+/run/initialize
+
+/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+
+/lmon/output/name ../data/test/lmon.root
+
+
+
+/run/beamOn 100000
+
+

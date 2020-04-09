@@ -80,6 +80,7 @@ set(MACRO
   run.mac
   run_eic.mac
   run_lowQ2.mac
+  run_local.mac
 )
 
 foreach(_mac ${MACRO})

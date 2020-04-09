@@ -6,6 +6,71 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def ew_efrac():
+
+    #fraction of energy carried by electron or positron
+
+    ebin = 0.01
+    emin = 0
+    emax = 1
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    tree.Draw("ew_enPos/(phot_gen*1e3) >> hE", "ew_conv==1")
+    #tree.Draw("ew_enEl/(phot_gen*1e3) >> hE", "ew_conv==1")
+
+    #hZ.SetXTitle("#it{z} of conversion point (meter)")
+    #hZ.SetYTitle("Events / ({0:.3f} m)".format(zbin))
+
+    #hZ.SetTitleOffset(1.5, "Y")
+    #hZ.SetTitleOffset(1.2, "X")
+
+    #ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.03)
+
+    hE.Draw()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#ew_efrac
+
+#_____________________________________________________________________________
+def ew_econv():
+
+    #difference between sum of electron and positron energy and photon energy
+
+    ebin = 1e-6
+    emin = -1e-3
+    emax = 1e-3
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    tree.Draw("(ew_enEl+ew_enPos)-(phot_gen*1e3) >> hE", "ew_conv==1")
+
+    #hZ.SetXTitle("#it{z} of conversion point (meter)")
+    #hZ.SetYTitle("Events / ({0:.3f} m)".format(zbin))
+
+    #hZ.SetTitleOffset(1.5, "Y")
+    #hZ.SetTitleOffset(1.2, "X")
+
+    #ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.03)
+
+    hE.Draw()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#ew_econv
+
+#_____________________________________________________________________________
 def ew_conv_phi():
 
     #conversion probablity as a function of azimuthal angle phi
@@ -179,20 +244,23 @@ def ew_xy():
 if __name__ == "__main__":
 
     #infile = "../data/lmon.root"
+    infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
     #infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
-    infile = "../data/lmon_18x275_ewV2_10Mevt.root"
+    #infile = "../data/lmon_18x275_ewV2_10Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 1
+    iplot = 5
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1
     funclist.append( ew_conv_theta ) # 2
     funclist.append( ew_conv_phi ) # 3
+    funclist.append( ew_econv ) # 4
+    funclist.append( ew_efrac ) # 5
 
     #open the input
     inp = TFile.Open(infile)

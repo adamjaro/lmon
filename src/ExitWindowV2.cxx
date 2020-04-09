@@ -83,6 +83,7 @@ G4bool ExitWindowV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //conversion to a pair
   G4int nsec = 0, nel = 0, npos = 0; // number of secondaries, electrons and positrons
+  Double_t en_el=-9999., en_pos=-9999.;
 
   //secondary loop
   const vector<const G4Track*> *sec = step->GetSecondaryInCurrentStep();
@@ -97,8 +98,14 @@ G4bool ExitWindowV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
     G4int pdg = def->GetPDGEncoding();
 
     //electrons and positrons
-    if(pdg == 11) nel++;
-    if(pdg == -11) npos++;
+    if(pdg == 11) {
+      nel++;
+      en_el = (*i)->GetTotalEnergy();
+    }
+    if(pdg == -11) {
+      npos++;
+      en_pos = (*i)->GetTotalEnergy();
+    }
 
   }//secondary loop
 
@@ -106,6 +113,10 @@ G4bool ExitWindowV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
   if(nsec != 2 || nel != 1 || npos != 1) return true;
 
   fConv = kTRUE;
+
+  //energy of electron and positron
+  fEnEl = en_el;
+  fEnPos = en_pos;
 
   //location of the conversion
   const G4ThreeVector cp = step->GetPostStepPoint()->GetPosition();
@@ -135,6 +146,9 @@ void ExitWindowV2::CreateOutput(TTree *tree) {
 
   u.AddBranch("_conv", &fConv, "O");
 
+  u.AddBranch("_enEl", &fEnEl, "D");
+  u.AddBranch("_enPos", &fEnPos, "D");
+
   u.AddBranch("_convX", &fConvX, "D");
   u.AddBranch("_convY", &fConvY, "D");
   u.AddBranch("_convZ", &fConvZ, "D");
@@ -156,6 +170,9 @@ void ExitWindowV2::ClearEvent() {
   fPhotZ = 9999.;
 
   fConv = kFALSE;
+
+  fEnEl = -9999.;
+  fEnPos = -9999.;
 
   fConvStepLen = -9999.;
   fPhotConvLen = -9999.;

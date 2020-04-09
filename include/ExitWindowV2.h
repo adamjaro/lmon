@@ -35,6 +35,9 @@ class ExitWindowV2 : public Detector, public G4VSensitiveDetector {
 
     Bool_t fConv; // flag set when e+e- conversion took place
 
+    Double_t fEnEl; // electron energy after conversion
+    Double_t fEnPos; // positron energy after conversion
+
     Double_t fConvX; // x of conversion point
     Double_t fConvY; // y of conversion point
     Double_t fConvZ; // z of conversion point
