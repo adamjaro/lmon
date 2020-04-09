@@ -8,4 +8,4 @@ data/
 *.so
 *.d
 *.pcm
-
+macro/tmp/

@@ -6,6 +6,44 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def acc_from_tmp():
+
+    #spectrometer acceptance from temporary file
+
+    tmp = TFile.Open("tmp/hacc.root")
+    hAcc = tmp.Get("divide_hSel_by_hAll")
+
+    can = ut.box_canvas()
+
+    hAcc.Draw("AP")
+
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.01, 0.02)
+
+    en = rt.Double(0)
+    av = rt.Double(0)
+    iacc = 0.
+    for i in xrange(hAcc.GetN()):
+        hAcc.GetPoint(i, en, av)
+
+        iacc += av*(hAcc.GetErrorXhigh(i)+hAcc.GetErrorXlow(i))
+
+    print "iacc:", iacc
+
+    #acceptance parametrization
+    from spec_acc import spec_acc
+    acc = spec_acc()
+    acc.scale = iacc/acc.acc_func.Integral(2, 21)
+
+    print "int_func:", acc.acc_func.Integral(2, 21)
+
+    acc.acc_func.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_from_tmp
+
+#_____________________________________________________________________________
 def acceptance_autobin():
 
     #spectrometer acceptance as a function of generated photon energy,
@@ -16,7 +54,8 @@ def acceptance_autobin():
 
     edet = 1
 
-    prec = 0.08
+    #prec = 0.08
+    prec = 0.02
     delt = 1e-2
 
     sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
@@ -40,11 +79,32 @@ def acceptance_autobin():
 
     hAcc.Draw("AP")
 
+    #save the acceptance to a temporary file
+    #tmp = TFile.Open("tmp/hacc.root", "recreate")
+    #hAcc.Write()
+    #tmp.Write()
+    #tmp.Close()
+
+    #integrate the acceptance to scale the parametrization
+    en = rt.Double(0)
+    av = rt.Double(0)
+    iacc = 0.
+    for i in xrange(hAcc.GetN()):
+        hAcc.GetPoint(i, en, av)
+        iacc += av*(hAcc.GetErrorXhigh(i)+hAcc.GetErrorXlow(i))
+
+    #acceptance parametrization
+    from spec_acc import spec_acc
+    acc = spec_acc()
+    acc.scale = iacc/acc.acc_func.Integral(2, 21)
+
+    acc.acc_func.Draw("same")
+
     leg = ut.prepare_leg(0.64, 0.84, 0.15, 0.15, 0.027) # x, y, dx, dy, tsiz
     leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acceptance_autobin
@@ -115,7 +175,8 @@ def acceptance():
 
     #spectrometer acceptance as a function of generated photon energy
 
-    ebin = 1.5
+    #ebin = 1.5
+    ebin = 0.5
     emin = 1
     emax = 20
 
@@ -156,6 +217,25 @@ def acceptance():
     #hRec.Draw()
     #hGen.Draw()
     hAcc.Draw()
+
+    #acceptance parametrization
+    from spec_acc import spec_acc
+    acc = spec_acc()
+    #acc.scale = 0.081*0.7
+
+    acc.scale = hAcc.GetBinWidth(1)*hAcc.Integral()/acc.acc_func.Integral(2, 21)
+    #acc.scale = hAcc.Integral("w")/acc.acc_func.Integral(2, 21)
+
+    print
+    #print "scale:", acc.scale
+
+    print "int_hacc:", hAcc.Integral()*hAcc.GetBinWidth(1)
+    #print "binw:", hAcc.GetBinWidth(1)
+    print "int_func:", acc.acc_func.Integral(2, 21)
+
+    #ih = scale*if   scale = ih/if
+
+    acc.acc_func.Draw("same")
 
     leg = ut.prepare_leg(0.64, 0.84, 0.15, 0.15, 0.027) # x, y, dx, dy, tsiz
     leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
@@ -397,15 +477,15 @@ if __name__ == "__main__":
     #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
-    infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
-    #infile = "../data/lmon_18x275_beff2_1Mevt.root"
+    #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
+    infile = "../data/lmon_18x275_beff2_1Mevt.root"
 
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 7
+    iplot = 8
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -415,6 +495,7 @@ if __name__ == "__main__":
     funclist.append( acceptance ) # 5
     funclist.append( up_down_corrected ) # 6
     funclist.append( acceptance_autobin ) # 7
+    funclist.append( acc_from_tmp ) # 8
 
     #open the input
     inp = TFile.Open(infile)
