@@ -19,13 +19,13 @@ GeneratorAction::GeneratorAction() : G4VUserPrimaryGeneratorAction(), fGun(0), f
 
   fGun = new G4ParticleGun(1); //number of particles
 
-  //G4String nam = "gamma";
-  G4String nam = "e-";
+  G4String nam = "gamma";
+  //G4String nam = "e-";
   G4ParticleDefinition *particle = G4ParticleTable::GetParticleTable()->FindParticle(nam);
   fGun->SetParticleDefinition(particle);
   fGun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
   //fGun->SetParticlePosition(G4ThreeVector(0, 0.2*cm, 0));
-  fGun->SetParticleEnergy(9*GeV); // 10*MeV  1*GeV  4.5*GeV
+  fGun->SetParticleEnergy(10*GeV); // 10*MeV  1*GeV  4.5*GeV
 
   fGun2 = new G4ParticleGun(1);
   G4ParticleDefinition *p2 = G4ParticleTable::GetParticleTable()->FindParticle("e-");
@@ -47,7 +47,7 @@ GeneratorAction::~GeneratorAction() {
 void GeneratorAction::GeneratePrimaries(G4Event *evt) {
 
   fGun->GeneratePrimaryVertex(evt);
-  fGun2->GeneratePrimaryVertex(evt);
+  //fGun2->GeneratePrimaryVertex(evt);
 
 }//GeneratePrimaries
 
