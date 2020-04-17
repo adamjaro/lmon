@@ -14,14 +14,14 @@
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_xB_yA_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_xD_yC_1p2Mevt.tx
 #/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_qr_Qc_10p2Mevt.tx
-/lmon/input/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_qr_Qc_100p2Mevt.tx
+/lmon/input/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_qr_Qc_beff2_100p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_beff2_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
 #/lmon/input/name /direct/eic+u/jadam/sim/read_pythia/data/pythia_5M.tx
 
-/lmon/output/name ../data/test/lmon.root
+#/lmon/output/name ../data/test/lmon.root
 #/lmon/output/name ../data/lmon_18x275_qr_Qc_10Mevt.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_qr_Qc_100Mevt.root
+/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_qr_Qc_beff2_100Mevt.root
 #/lmon/output/name ../data/lmon_pythia_5M_5Mevt.root
 
 
