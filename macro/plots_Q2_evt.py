@@ -16,12 +16,13 @@ def main():
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
+    infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 8
+    iplot = 10
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -431,12 +432,12 @@ def el_en_log10_theta_tag():
 
     #bins in log_10(theta)
     ltbin = 0.1
-    ltmin = -5.5
-    ltmax = -1.5
+    ltmin = -7
+    ltmax = -1.2
 
     #bins in energy
     ebin = 0.1
-    emin = 0
+    emin = 3
     emax = 20
 
     can = ut.box_canvas()
@@ -445,11 +446,18 @@ def el_en_log10_theta_tag():
 
     tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", gQ2sel)
 
+    ytit = "#it{E}_{e^{-}} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "log_{10}(#theta) / "+"{0:.1f}".format(ltbin)
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
+
     gPad.SetLogz()
 
-    hEnThetaTag.Draw()
+    hEnThetaTag.SetContour(10)
+    hEnThetaTag.Draw("colz")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en_log10_theta_tag

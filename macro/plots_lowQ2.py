@@ -18,9 +18,9 @@ def main():
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    #infile = "../data/lmon_pythia_5M_1Mevt.root"
+    infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
 
@@ -414,7 +414,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy

@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import ROOT as rt
-from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath
+from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath, TF1
 
 import plot_utils as ut
 
@@ -10,33 +10,73 @@ def ew_efrac():
 
     #fraction of energy carried by electron or positron
 
-    ebin = 0.01
+    #ebin = 1e-2
+    nbins = 100
     emin = 0
     emax = 1
 
     can = ut.box_canvas()
 
-    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+    #hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+    hE = ut.prepare_TH1D_n("hE", nbins, emin, emax)
 
     tree.Draw("ew_enPos/(phot_gen*1e3) >> hE", "ew_conv==1")
     #tree.Draw("ew_enEl/(phot_gen*1e3) >> hE", "ew_conv==1")
 
-    #hZ.SetXTitle("#it{z} of conversion point (meter)")
-    #hZ.SetYTitle("Events / ({0:.3f} m)".format(zbin))
+    #frame = gPad.DrawFrame(0, 400, 1, 1300)
+    frame = gPad.DrawFrame(0, 4000, 1, 13000)
+    frame.Draw()
 
-    #hZ.SetTitleOffset(1.5, "Y")
-    #hZ.SetTitleOffset(1.2, "X")
+    xtit = "#it{z} = #it{E}_{+}/#it{E}_{#gamma}"
+    ut.put_yx_tit(frame, "d#it{N}/d#it{z}", xtit, 1.8, 1.2)
 
-    #ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.03)
+    #ut.set_margin_lbtr(gPad, 0.12, 0.09, 0.02, 0.02)
+    ut.set_margin_lbtr(gPad, 0.12, 0.09, 0.04, 0.02)
 
-    hE.Draw()
+    hE.Draw("e1same")
 
-    gPad.SetLogy()
+    #QED parametrization
+    dSigDz = TF1("dSigDz", eq_94p5_z, 0, 1, 2)
+    dSigDz.SetParameter(0, 10)
+    dSigDz.SetParameter(1, 1)
+    dSigDz.SetNpx(300)
+    dSigDz.SetLineWidth(3)
 
-    ut.invert_col(rt.gPad)
+    #normalize the parametrization
+    norm = hE.GetBinWidth(1) * hE.Integral() / dSigDz.Integral(1e-4, 1-1e-4)
+    dSigDz.SetParameter(1, norm)
+
+    dSigDz.Draw("same")
+
+    leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.14, 0.035)
+    leg.AddEntry(None, "#it{E}_{#gamma} = 10 GeV", "")
+    leg.AddEntry(dSigDz, "QED approximation", "l")
+    leg.AddEntry(hE, "Geant4 simulation", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #ew_efrac
+
+#_____________________________________________________________________________
+def eq_94p5_z(val, par):
+
+    # Berestetskii, Lifshitz and Pitaevskii, QED, page 411, eq. 94.5 in z = Ep/w
+
+    w = par[0]
+    z = val[0]
+
+    norm = par[1]
+
+    sig = z**2 + (1.-z)**2 + z*(1.-z)*2./3
+
+    m = 0.000511
+    sig *= TMath.Log( (2.*w*z*(1.-z))/m - 0.5 )
+
+    return sig*norm
+
+#eq_94p5_z
 
 #_____________________________________________________________________________
 def ew_econv():
@@ -244,10 +284,12 @@ def ew_xy():
 if __name__ == "__main__":
 
     #infile = "../data/lmon.root"
-    infile = "../data/test/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_ewV1_flat_10Mevt.root"
     #infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
     #infile = "../data/lmon_18x275_ewV2_10Mevt.root"
+    #infile = "../data/lmon_10GeV_ewV2_1Mevt.root"
+    infile = "../data/lmon_10GeV_ewV2_10Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)

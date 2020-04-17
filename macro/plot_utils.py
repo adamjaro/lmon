@@ -95,6 +95,14 @@ def set_H1D(hx):
   hx.SetTitle("")
 
 #_____________________________________________________________________________
+def set_H1_text_size(hx, siz):
+
+    hx.SetTitleSize(siz)
+    hx.SetLabelSize(siz)
+    hx.SetTitleSize(siz, "Y")
+    hx.SetLabelSize(siz, "Y")
+
+#_____________________________________________________________________________
 def set_H1D_col(hx, col):
 
     hx.SetMarkerColor(col)
@@ -603,6 +611,11 @@ def invert_col(pad, bgcol=rt.kBlack):
             if obj.GetLineColor() == rt.kBlack:
                 obj.SetLineColor(fgcol)
                 obj.SetFillColor(bgcol)
+
+      #TLine
+      if obj.InheritsFrom( TLine.Class() ) == True:
+            if obj.GetLineColor() == rt.kBlack:
+                obj.SetLineColor(fgcol)
 
       #move to next item
       obj = next()
