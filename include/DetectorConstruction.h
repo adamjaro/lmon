@@ -16,6 +16,7 @@ class G4GenericMessenger;
 class RootOut;
 class vector;
 class MCEvent;
+class GeoParser;
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
 
@@ -35,7 +36,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
   private:
 
-    void AddDetector(Detector *det); // add detector to all detectors
+    void AddDetector(unsigned int i, G4LogicalVolume *top); // add detector to all detectors
 
     std::vector<Detector*> *fDet; //all detectors
 
@@ -43,15 +44,10 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
     MCEvent *fMC; // generated particles
 
-    G4GenericMessenger *fMsg; // messenger for detectors and components
-    G4bool fIncCollim; // flag to include the collimator
-    G4bool fIncMagnet; // flag for spectrometer magnet
-    G4bool fIncEWv2; // flag for photon exit window version 2
-    G4bool fIncPhot; // direct photon calorimeter
-    G4bool fIncUp; // up spectrometer calorimeter
-    G4bool fIncDown; // up spectrometer calorimeter
-    G4bool fIncB2eR; // beamline B2eR magnet
-    G4bool fIncLowQ2; // low Q^2 tagger
+    GeoParser *fGeo; // geometry parser
+    G4String fGeoName; // name of geometry input
+
+    G4GenericMessenger *fMsg; // messenger for geometry input
 
 };
 

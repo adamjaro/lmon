@@ -4,12 +4,18 @@
 
 // collimator between photon exit window and dipole magnet
 
+class GeoParser;
+
 class Collimator {
 
   public:
 
-    Collimator(G4double zpos, G4LogicalVolume*);
+    Collimator(const G4String&, GeoParser *geo, G4LogicalVolume*);
     virtual ~Collimator() {}
+
+  private:
+
+    G4String fNam; // component name
 
 };
 

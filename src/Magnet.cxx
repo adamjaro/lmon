@@ -17,9 +17,15 @@
 
 //local headers
 #include "Magnet.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-Magnet::Magnet(G4double zpos, G4LogicalVolume *top) {
+Magnet::Magnet(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) {
+
+  G4cout << "  Magnet: " << nam << G4endl;
+
+  //position along z
+  G4double zpos = geo->GetD(nam, "zpos") * mm;
 
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
 
@@ -27,7 +33,6 @@ Magnet::Magnet(G4double zpos, G4LogicalVolume *top) {
   G4double dz = 60.*cm;
   G4double xysiz = 10*cm;
 
-  G4String nam = "Magnet";
   G4Box *mshape = new G4Box(nam, xysiz, xysiz, dz/2.);
   G4LogicalVolume *mvol = new G4LogicalVolume(mshape, mat, nam);
 

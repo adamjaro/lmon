@@ -11,16 +11,7 @@
 #/run/numberOfThreads 4
 
 #detectors and components
-/lmon/construct/B2eR 1
-#/lmon/construct/ewV2 1
-/lmon/construct/lowQ2 1
-
-#/lmon/construct/collim 1
-#/lmon/construct/magnet 1
-
-#/lmon/construct/phot 1
-#/lmon/construct/up 1
-#/lmon/construct/down 1
+/lmon/construct/geometry ../config/geom_lowQ2.in
 
 #
 # Initialize kernel

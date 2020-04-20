@@ -22,7 +22,7 @@ def main():
     infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 10
+    iplot = 6
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -300,10 +300,12 @@ def evt_lx_ly():
     #log_10(x) and log_10(y)
 
     xbin = 0.01
+    #xbin = 0.1
     xmin = -14
     xmax = 0
 
     ybin = 0.01
+    #ybin = 0.1
     ymin = -5
     ymax = 0
 
@@ -312,7 +314,9 @@ def evt_lx_ly():
 
     can = ut.box_canvas()
 
-    yform = "(18.-el_gen)/18."
+    #yform = "(18.-el_gen)/18."
+    yform = "1.-(1.-TMath::Cos(el_theta))*el_gen/(2.*18.)"
+    #yform = 
     Q2form = "2.*18.*el_gen*(1.-TMath::Cos(TMath::Pi()-el_theta))"
     xform = Q2form+"/(("+yform+")*19800.82)"
 

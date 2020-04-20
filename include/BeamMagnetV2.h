@@ -7,11 +7,13 @@
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
 
+class GeoParser;
+
 class BeamMagnetV2 : public Detector, public G4VSensitiveDetector {
 
   public:
 
-    BeamMagnetV2(G4String nam, G4double zpos, G4LogicalVolume*);
+    BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume*);
     virtual ~BeamMagnetV2() {}
 
     //Detector

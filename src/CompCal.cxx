@@ -19,12 +19,16 @@
 #include "CompCal.h"
 #include "Cell.h"
 #include "OpDet.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-CompCal::CompCal(const G4String& nam, G4double zpos, G4double ypos, G4LogicalVolume *top): Detector(),
+CompCal::CompCal(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
   fNam(nam) {
 
   G4cout << "CompCal::CompCal: " << fNam << G4endl;
+
+  G4double zpos = geo->GetD(fNam, "zpos");
+  G4double ypos = geo->GetD(fNam, "ypos");
 
   //number of cells in x and y
   G4int ncells = 7;

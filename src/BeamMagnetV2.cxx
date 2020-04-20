@@ -19,10 +19,14 @@
 
 //local headers
 #include "BeamMagnetV2.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-BeamMagnetV2::BeamMagnetV2(G4String nam, G4double zpos, G4LogicalVolume *top):
+BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
     Detector(), G4VSensitiveDetector(nam), fNam(nam) {
+
+  //position along z
+  G4double zpos = geo->GetD(fNam, "zpos") * mm;
 
   //conical inner core
   G4double length = 5.5*meter;

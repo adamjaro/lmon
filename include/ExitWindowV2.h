@@ -8,11 +8,13 @@
 
 #include "G4VSensitiveDetector.hh"
 
+class GeoParser;
+
 class ExitWindowV2 : public Detector, public G4VSensitiveDetector {
 
   public:
 
-    ExitWindowV2(const G4String& nam, G4double zpos, G4LogicalVolume *top);
+    ExitWindowV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top);
 
     //Detector
     virtual const G4String& GetName() const {return fNam;}

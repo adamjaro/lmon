@@ -25,6 +25,7 @@
 #include "DetectorConstruction.h"
 #include "RootOut.h"
 #include "MCEvent.h"
+#include "GeoParser.h"
 #include "BoxCal.h"
 #include "ExitWindow.h"
 #include "Magnet.h"
@@ -38,8 +39,8 @@
 #include "BoxCalV2.h"
 
 //_____________________________________________________________________________
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0), fMsg(0),
-    fIncCollim(0), fIncMagnet(0), fIncEWv2(0), fIncPhot(0), fIncUp(0), fIncDown(0), fIncB2eR(0), fIncLowQ2(0) {
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0),
+    fGeo(0), fMsg(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
@@ -51,18 +52,14 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
 
   //MC event, also inherits from Detector
   fMC = new MCEvent();
-  AddDetector(fMC);
+  fMC->Add(fDet);
+
+  //geometry parser
+  fGeo = new GeoParser();
 
   //messenger for detectors and components
   fMsg = new G4GenericMessenger(this, "/lmon/construct/");
-  fMsg->DeclareProperty("collim", fIncCollim);
-  fMsg->DeclareProperty("magnet", fIncMagnet);
-  fMsg->DeclareProperty("ewV2", fIncEWv2);
-  fMsg->DeclareProperty("phot", fIncPhot);
-  fMsg->DeclareProperty("up", fIncUp);
-  fMsg->DeclareProperty("down", fIncDown);
-  fMsg->DeclareProperty("B2eR", fIncB2eR);
-  fMsg->DeclareProperty("lowQ2", fIncLowQ2);
+  fMsg->DeclareProperty("geometry", fGeoName);
 
 }//DetectorConstruction
 
@@ -79,7 +76,10 @@ DetectorConstruction::~DetectorConstruction() {
 //_____________________________________________________________________________
 G4VPhysicalVolume* DetectorConstruction::Construct() {
 
-  G4cout << G4endl << "DetectorConstruction::Construct" << G4endl;
+  G4cout << G4endl << "DetectorConstruction::Construct: " << fGeoName << G4endl;
+
+  //run the geometry parser
+  fGeo->LoadInput(fGeoName);
 
   //vacuum top material
   G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
@@ -91,35 +91,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
   G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, "top_p", 0, false, 0);
 
-  //photon exit window
-  //new ExitWindow(-2000*cm, top_l); // only material
-  //AddDetector( new ExitWinZEUS("ExitWinZEUS", -2000*cm, top_l) ); // demonstrator to write detector as a branch
-  //AddDetector( new ExitWindowV1("ew", -21.7*meter, ExitWindowV1::kFlat, top_l) ); // v1 with output on pair conversion
-  //AddDetector( new ExitWindowV1("ew", -20250.*mm, ExitWindowV1::kTilt, top_l) );
-  if(fIncEWv2) AddDetector( new ExitWindowV2("ew", -20.75*meter, top_l));
-
-  //collimator
-  if(fIncCollim) new Collimator(-22.1*meter, top_l);
-
-  //dipole magnet
-  if(fIncMagnet) new Magnet(-22.5*meter, top_l);
-
-  //detectors
-  G4double dpos = -3135*cm;
-  //AddDetector(new BoxCal("phot", dpos-50*cm, 0, top_l));
-  //AddDetector(new BoxCal("up", dpos, 4.2*cm, top_l));
-  //AddDetector(new BoxCal("down", dpos, -4.2*cm, top_l));
-
-  if(fIncPhot) AddDetector(new CompCal("phot", dpos-50*cm, 0, top_l));
-  if(fIncUp) AddDetector(new CompCal("up", dpos, 4.2*cm, top_l));
-  if(fIncDown) AddDetector(new CompCal("down", dpos, -4.2*cm, top_l));
-
-  //beamline B2eR magnet
-  //if(fIncB2eR) new BeamMagnet(-12.254*meter, top_l);
-  if(fIncB2eR) AddDetector(new BeamMagnetV2("B2eR", -12.254*meter, top_l));
-
-  //low Q^2 tagger
-  if(fIncLowQ2) AddDetector(new BoxCalV2("lowQ2", -27*meter, 47.2*cm, top_l));
+  //add detectors and components
+  for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i, top_l);
 
   return top_p;
 
@@ -148,7 +121,43 @@ void DetectorConstruction::FinishEvent() const {
 }//WriteEvent
 
 //_____________________________________________________________________________
-void DetectorConstruction::AddDetector(Detector *det) {
+void DetectorConstruction::AddDetector(unsigned int i, G4LogicalVolume *top) {
+
+  //add detector to all detectors
+
+  //G4cout << "DetectorConstruction::AddDetector: " << fGeo->GetType(i) << " " << fGeo->GetName(i) << G4endl;
+
+  //detector type and name
+  G4String type = fGeo->GetType(i);
+  G4String name = fGeo->GetName(i);
+
+  //construct detector or component of type 'type'
+  Detector *det = 0x0;
+
+  if( type == "BoxCalV2" ) {
+    det = new BoxCalV2(name, fGeo, top);
+
+  } else if( type == "BeamMagnetV2" ) {
+    det = new BeamMagnetV2(name, fGeo, top);
+
+  } else if( type == "ExitWindowV2" ) {
+    det = new ExitWindowV2(name, fGeo, top);
+
+  } else if( type == "Collimator" ) {
+    new Collimator(name, fGeo, top);
+
+  } else if( type == "Magnet" ) {
+    new Magnet(name, fGeo, top);
+
+  } else if( type == "BoxCal" ) {
+    det = new BoxCal(name, fGeo, top);
+
+  } else if( type == "CompCal" ) {
+    det = new CompCal(name, fGeo, top);
+
+  }
+
+  if(!det) return;
 
   //add detector to all detectors
   det->Add(fDet);

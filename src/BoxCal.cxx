@@ -29,12 +29,16 @@
 #include "BoxCal.h"
 #include "OpDet.h"
 #include "OpTable.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-BoxCal::BoxCal(const G4String& nam, G4double zpos, G4double ypos, G4LogicalVolume *top): Detector(),
+BoxCal::BoxCal(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
   G4VSensitiveDetector(nam), fNam(nam), fSens(0) {
 
   G4cout << "  BoxCal: " << fNam << G4endl;
+
+  G4double zpos = geo->GetD(fNam, "zpos") * mm;
+  G4double ypos = geo->GetD(fNam, "ypos") * mm;
 
   //nist material manager for detector PbW04
   G4NistManager *nist = G4NistManager::Instance();

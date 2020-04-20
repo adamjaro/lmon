@@ -23,17 +23,23 @@
 #include "G4Transform3D.hh"
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
-//#include "G4TrackStatus.hh"
 
 //local classes
 #include "BoxCalV2.h"
 #include "DetUtils.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-BoxCalV2::BoxCalV2(const G4String& nam, G4double zpos, G4double xpos, G4LogicalVolume *top): Detector(),
+BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
   G4VSensitiveDetector(nam), fNam(nam) {
 
   G4cout << "  BoxCalV2: " << fNam << G4endl;
+
+  //position along z and x
+  G4double zpos = geo->GetD(fNam, "zpos") * mm;
+  G4double xpos = geo->GetD(fNam, "xpos") * mm;
+
+  //G4cout << "  BoxCalV2: " << zpos << " " << xpos << G4endl;
 
   //detector shape
   G4double xysiz = 20*cm;

@@ -2,12 +2,7 @@
 #run macro for local testing
 
 #detectors and components
-/lmon/construct/collim 1
-/lmon/construct/magnet 1
-/lmon/construct/ewV2 1
-/lmon/construct/phot 1
-/lmon/construct/up 1
-/lmon/construct/down 1
+/lmon/construct/geometry ../config/geom_lumi.in
 
 /run/initialize
 

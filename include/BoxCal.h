@@ -11,12 +11,13 @@ class G4VPhysicalVolume;
 class G4Step;
 
 class OpDet;
+class GeoParser;
 
 class BoxCal : public Detector, public G4VSensitiveDetector {
 
   public:
 
-    BoxCal(const G4String&, G4double zpos, G4double ypos, G4LogicalVolume*);
+    BoxCal(const G4String&, GeoParser *geo, G4LogicalVolume*);
     virtual ~BoxCal() {}
 
     //called via G4VSensitiveDetector

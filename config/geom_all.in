@@ -1,0 +1,7 @@
+
+#all components
+
+include ../config/geom_lumi.in
+
+include ../config/geom_lowQ2.in
+

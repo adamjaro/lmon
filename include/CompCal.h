@@ -7,12 +7,13 @@
 #include "Detector.h"
 
 class Cell;
+class GeoParser;
 
 class CompCal : public Detector {
 
   public:
 
-    CompCal(const G4String&, G4double zpos, G4double ypos, G4LogicalVolume*);
+    CompCal(const G4String&, GeoParser *geo, G4LogicalVolume*);
     virtual ~CompCal() {}
 
     virtual void Add(std::vector<Detector*> *vec);

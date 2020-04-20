@@ -4,11 +4,13 @@
 
 // spectrometer dipole magnet
 
+class GeoParser;
+
 class Magnet {
 
   public:
 
-    Magnet(G4double zpos, G4LogicalVolume*);
+    Magnet(const G4String&, GeoParser *geo, G4LogicalVolume*);
     virtual ~Magnet() {}
 
 };

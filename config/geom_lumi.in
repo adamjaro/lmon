@@ -1,0 +1,43 @@
+
+#luminosity monitor
+
+#photon exit window version 2
+new ExitWindowV2 ew
+
+  ew.zpos = -20750 # mm
+
+#collimator
+new Collimator collim
+
+  collim.zpos = -22100 # mm
+
+#dipole spectrometer magnet
+new Magnet lumi_dipole
+
+  lumi_dipole.zpos = -22500 # mm
+
+#luminosity detectors
+
+#direct photon calorimeter
+new BoxCal phot
+#new CompCal phot
+
+  phot.zpos = -31850 # mm
+  phot.ypos = 0
+
+#up spectrometer calorimeter
+new BoxCal up
+#new CompCal up
+
+  up.zpos = -31350 # mm
+  up.ypos = 42 # mm
+
+#down spectrometer calorimeter
+new BoxCal down
+#new CompCal down
+
+  down.zpos = -31350 # mm
+  down.ypos = -42 # mm
+
+
+

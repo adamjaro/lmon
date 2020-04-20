@@ -1,0 +1,15 @@
+
+#geometry for low Q^2 tagger
+
+#low Q^2 tagger
+new BoxCalV2 lowQ2
+
+  lowQ2.zpos = -27000 # mm
+  lowQ2.xpos = 472 # mm
+
+#beamline B2eR magnet
+new BeamMagnetV2 B2eR
+
+  B2eR.zpos = -12254 # mm
+
+

@@ -1,16 +1,9 @@
 
 #run macro for EIC nodes
 
-#detectors and components, 1 = include, 0 = do not include
-#/lmon/construct/collim 1  # collimator
-#/lmon/construct/magnet 1  # spectrometer magnet
-/lmon/construct/ewV2 1  # photon exit window
-#/lmon/construct/phot 1  # direct photon detector
-#/lmon/construct/up 1  # upper spectrometer calorimeter
-#/lmon/construct/down 1  # down spectrometer calorimeter
-
-#/lmon/construct/B2eR 1  # beam magnet B2eR
-#/lmon/construct/lowQ2 1  # low Q^2 tagger
+#detectors and components
+/lmon/construct/geometry ../config/geom_lumi.in
+#/lmon/construct/geometry ../config/geom_lowQ2.in
 
 #init and run
 /run/initialize
