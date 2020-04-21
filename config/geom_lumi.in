@@ -14,7 +14,7 @@ new ExitWindowV2 ew
   ew.zpos = -20750 # mm
 
 #collimator
-new Collimator collim
+new CollimatorV2 collim
 
   collim.zpos = -22100 # mm
 

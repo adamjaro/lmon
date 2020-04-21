@@ -19,11 +19,11 @@
 
 #/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
 #/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
-#/vis/viewer/set/targetPoint 0 0 -2137 cm # collimator
+/vis/viewer/set/targetPoint 0 0 -2137 cm # collimator
 #/vis/viewer/set/targetPoint 0 0 -2250 cm # magnet
 #/vis/viewer/set/targetPoint 0 0 -3185 cm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
-/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
+#/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 
 #

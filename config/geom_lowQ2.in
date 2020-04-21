@@ -17,6 +17,15 @@ new BoxCalV2 lowQ2
 #beamline B2eR magnet
 new BeamMagnetV2 B2eR
 
-  B2eR.zpos = -12254 # mm
+  B2eR.zpos = -12254 # mm, center of the magnet along z
+
+#beam pipe placeholder in front of B2eR magnet
+new ConeAperture beampipe
+
+  beampipe.zpos = 0 # mm, front face of the cone along z
+  beampipe.length = 9503 # mm, cone length
+  beampipe.r1 = 139 # mm, inner radius closer to the IP
+  beampipe.r2 = 139 # mm, inner radious further from the IP
+  beampipe.dr = 2 # mm, cone radial thickness
 
 
