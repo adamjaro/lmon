@@ -1,8 +1,8 @@
 
 //_____________________________________________________________________________
 //
-// main detector construction,
-// detector definition is here
+// main detector construction
+//
 //_____________________________________________________________________________
 
 //C++
@@ -26,21 +26,10 @@
 #include "RootOut.h"
 #include "MCEvent.h"
 #include "GeoParser.h"
-#include "BoxCal.h"
-#include "ExitWindow.h"
-#include "Magnet.h"
-#include "CompCal.h"
-#include "Collimator.h"
-#include "ExitWinZEUS.h"
-#include "ExitWindowV1.h"
-#include "ExitWindowV2.h"
-#include "BeamMagnet.h"
-#include "BeamMagnetV2.h"
-#include "BoxCalV2.h"
+#include "ComponentBuilder.h"
 
 //_____________________________________________________________________________
-DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0),
-    fGeo(0), fMsg(0) {
+DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0), fMsg(0) {
 
   G4cout << "DetectorConstruction::DetectorConstruction" << G4endl;
 
@@ -53,9 +42,6 @@ DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fD
   //MC event, also inherits from Detector
   fMC = new MCEvent();
   fMC->Add(fDet);
-
-  //geometry parser
-  fGeo = new GeoParser();
 
   //messenger for detectors and components
   fMsg = new G4GenericMessenger(this, "/lmon/construct/");
@@ -79,13 +65,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4cout << G4endl << "DetectorConstruction::Construct: " << fGeoName << G4endl;
 
   //run the geometry parser
-  fGeo->LoadInput(fGeoName);
+  GeoParser geo;
+  geo.LoadInput(fGeoName);
 
   //create the top volume
-  G4String topnam = fGeo->GetTopName();
-  G4double topx = fGeo->GetD(topnam, "xsiz") * mm;
-  G4double topy = fGeo->GetD(topnam, "ysiz") * mm;
-  G4double topz = fGeo->GetD(topnam, "zsiz") * mm;
+  G4String topnam = geo.GetTopName();
+  G4double topx = geo.GetD(topnam, "xsiz") * mm;
+  G4double topy = geo.GetD(topnam, "ysiz") * mm;
+  G4double topz = geo.GetD(topnam, "zsiz") * mm;
 
   //top world volume
   G4Box *top_s = new G4Box(topnam+"_s", topx, topy, topz);
@@ -98,7 +85,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, topnam+"_p", 0, false, 0);
 
   //add detectors and components
-  for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i, top_l);
+  ComponentBuilder builder(top_l, &geo, fDet);
 
   return top_p;
 
@@ -124,51 +111,7 @@ void DetectorConstruction::FinishEvent() const {
   //fill the output tree
   fOut->FillTree();
 
-}//WriteEvent
-
-//_____________________________________________________________________________
-void DetectorConstruction::AddDetector(unsigned int i, G4LogicalVolume *top) {
-
-  //add detector to all detectors
-
-  //G4cout << "DetectorConstruction::AddDetector: " << fGeo->GetType(i) << " " << fGeo->GetName(i) << G4endl;
-
-  //detector type and name
-  G4String type = fGeo->GetType(i);
-  G4String name = fGeo->GetName(i);
-
-  //construct detector or component of type 'type'
-  Detector *det = 0x0;
-
-  if( type == "BoxCalV2" ) {
-    det = new BoxCalV2(name, fGeo, top);
-
-  } else if( type == "BeamMagnetV2" ) {
-    det = new BeamMagnetV2(name, fGeo, top);
-
-  } else if( type == "ExitWindowV2" ) {
-    det = new ExitWindowV2(name, fGeo, top);
-
-  } else if( type == "Collimator" ) {
-    new Collimator(name, fGeo, top);
-
-  } else if( type == "Magnet" ) {
-    new Magnet(name, fGeo, top);
-
-  } else if( type == "BoxCal" ) {
-    det = new BoxCal(name, fGeo, top);
-
-  } else if( type == "CompCal" ) {
-    det = new CompCal(name, fGeo, top);
-
-  }
-
-  if(!det) return;
-
-  //add detector to all detectors
-  det->Add(fDet);
-
-}//AddDetector
+}//FinishEvent
 
 //_____________________________________________________________________________
 void DetectorConstruction::CreateOutput() const {

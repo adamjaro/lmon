@@ -16,7 +16,6 @@ class G4GenericMessenger;
 class RootOut;
 class vector;
 class MCEvent;
-class GeoParser;
 
 class DetectorConstruction : public G4VUserDetectorConstruction {
 
@@ -36,15 +35,12 @@ class DetectorConstruction : public G4VUserDetectorConstruction {
 
   private:
 
-    void AddDetector(unsigned int i, G4LogicalVolume *top); // add detector to all detectors
-
     std::vector<Detector*> *fDet; //all detectors
 
     RootOut *fOut; // output to ROOT TTree
 
     MCEvent *fMC; // generated particles
 
-    GeoParser *fGeo; // geometry parser
     G4String fGeoName; // name of geometry input
 
     G4GenericMessenger *fMsg; // messenger for geometry input
