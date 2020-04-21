@@ -1,6 +1,13 @@
 
 #luminosity monitor
 
+#top volume
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 35000 # mm
+
 #photon exit window version 2
 new ExitWindowV2 ew
 

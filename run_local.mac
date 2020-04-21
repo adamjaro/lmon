@@ -7,7 +7,9 @@
 
 /run/initialize
 
-/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/select 11
+#/lmon/input/select 22
 
 /lmon/output/name ../data/test/lmon.root
 

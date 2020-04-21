@@ -25,6 +25,8 @@
 BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
     Detector(), G4VSensitiveDetector(nam), fNam(nam) {
 
+  G4cout << "  BeamMagnetV2: " << fNam << G4endl;
+
   //position along z
   G4double zpos = geo->GetD(fNam, "zpos") * mm;
 

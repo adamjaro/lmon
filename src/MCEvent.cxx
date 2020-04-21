@@ -34,6 +34,8 @@ void MCEvent::BeginEvent(const G4Event *evt) {
   for(G4int i=0; i<pvtx->GetNumberOfParticle(); i++) {
     G4PrimaryParticle *part = pvtx->GetPrimary(i);
 
+    //G4cout << "MCEvent::BeginEvent: " << part->GetPDGcode() << G4endl;
+
     //read the photon and electron
     G4int pdg = part->GetPDGcode();
     if(pdg == 22) ReadPhoton(part);

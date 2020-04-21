@@ -18,8 +18,10 @@
 /run/initialize
 
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
-/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
 #/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+#/lmon/input/select 22
+#/lmon/input/select 11
 
 #
 # Visualization setting

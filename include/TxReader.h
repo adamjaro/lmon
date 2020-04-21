@@ -30,6 +30,8 @@ class TxReader : public G4VUserPrimaryGeneratorAction {
     std::ifstream fIn; // TX input
     G4String fInputName; // name of TX input
 
+    G4int fSelPdg; // select the particle to generate according to its pdg
+
     G4GenericMessenger *fMsg; // messenger for name of input file
 
     int fIev; // event number for progress printout

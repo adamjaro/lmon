@@ -10,7 +10,6 @@
 #include <string.h>
 #include <sstream>
 #include <vector>
-#include <map>
 #include <boost/tokenizer.hpp>
 
 //Geant headers
@@ -27,7 +26,7 @@ using namespace std;
 using namespace boost;
 
 //_____________________________________________________________________________
-TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fIev(0) {
+TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fSelPdg(-9999), fIev(0) {
 
   //default input name
   fInputName = "../lgen_5x41_0p5min_12evt.tx";
@@ -35,6 +34,9 @@ TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fIev(0) {
   //command for name of input file
   fMsg = new G4GenericMessenger(this, "/lmon/input/");
   fMsg->DeclareProperty("name", fInputName);
+
+  //pdg selection
+  fMsg->DeclareProperty("select", fSelPdg);
 
 }//TxReader
 
@@ -75,7 +77,7 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
   //make the primary vertex
   G4PrimaryVertex *vtx = new G4PrimaryVertex(vx*cm, vy*cm, vz*cm, 0);
 
-  //tracks in event
+  //load the particles in event
   vector<GenParticle> tracks;
 
   //particle loop
@@ -85,26 +87,15 @@ void TxReader::GeneratePrimaries(G4Event *evt) {
     tracks.push_back( GenParticle(line) );
   }//particle loop
 
-  //put tracks to map according to pdg
-  map<G4int, GenParticle*> tmap;
-  for(vector<GenParticle>::iterator i = tracks.begin(); i != tracks.end(); i++) {
+  //generate the particles
+  vector<GenParticle>::iterator i;
+  for(i = tracks.begin(); i != tracks.end(); i++){
 
-    //put the electron
-    if( (*i).GetPdg() == 11 ) tmap.insert( make_pair(11, &(*i)) );
+    //apply pdg selection if set
+    if( fSelPdg > -9999 && fSelPdg != (*i).GetPdg() ) continue;
 
-    //photon
-    if( (*i).GetPdg() == 22 ) tmap.insert( make_pair(22, &(*i)) );
-
-    //G4cout << "TxReader::GeneratePrimaries: " << (*i).GetPdg() << G4endl;
+    (*i).GenerateToVertex(vtx);
   }
-
-  //G4cout << "TxReader::GeneratePrimaries: " << tmap[11]->GetPdg() << " " << tmap[22]->GetPdg() << G4endl;
-
-  //generate the photon
-  //tmap[22]->GenerateToVertex(vtx);
-
-  //scattered electron
-  tmap[11]->GenerateToVertex(vtx);
 
   //put vertex to the event
   evt->AddPrimaryVertex(vtx);

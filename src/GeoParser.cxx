@@ -97,6 +97,21 @@ void GeoParser::AddPar(token_it &it) {
 }//AddPar
 
 //_____________________________________________________________________________
+G4String GeoParser::GetTopName() {
+
+  vector< pair<G4String, G4String> >::reverse_iterator i = fDet.rbegin();
+  while(i != fDet.rend()) {
+
+    if( (*i).first == "top" ) return (*i).second;
+
+    i++;
+  }
+
+  return "";
+
+}//GetTopName
+
+//_____________________________________________________________________________
 const G4String& GeoParser::GetS(G4String name, G4String par) {
 
   //load geometry parameter 'par' as a string from the map for detector 'name'

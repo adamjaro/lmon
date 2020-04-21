@@ -1,6 +1,13 @@
 
 #geometry for low Q^2 tagger
 
+#top volume
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 35000 # mm
+
 #low Q^2 tagger
 new BoxCalV2 lowQ2
 

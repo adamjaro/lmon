@@ -19,6 +19,9 @@ class GeoParser {
     const G4String& GetType(unsigned int i) const {return fDet[i].first;}
     const G4String& GetName(unsigned int i) const {return fDet[i].second;}
 
+    //top volume name
+    G4String GetTopName();
+
     //geometry parameters
     template<typename par_type> par_type GetPar(G4String name, G4String par);
     const G4String& GetS(G4String name, G4String par);

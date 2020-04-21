@@ -81,15 +81,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //run the geometry parser
   fGeo->LoadInput(fGeoName);
 
-  //vacuum top material
-  G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  //create the top volume
+  G4String topnam = fGeo->GetTopName();
+  G4double topx = fGeo->GetD(topnam, "xsiz") * mm;
+  G4double topy = fGeo->GetD(topnam, "ysiz") * mm;
+  G4double topz = fGeo->GetD(topnam, "zsiz") * mm;
 
   //top world volume
-  G4Box *top_s = new G4Box("top_s", 2*meter, 2*meter, 35*meter);
-  //G4Box *top_s = new G4Box("top_s", 3*m, 3*m, 3*m);
-  G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, "top_l");
+  G4Box *top_s = new G4Box(topnam+"_s", topx, topy, topz);
+
+  //vacuum top material
+  G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, topnam+"_l");
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
-  G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, "top_p", 0, false, 0);
+
+  G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, topnam+"_p", 0, false, 0);
 
   //add detectors and components
   for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i, top_l);
