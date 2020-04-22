@@ -313,7 +313,8 @@ def down_xy():
 
     sel = "down_en>"+str(emin*1e3)
 
-    tree.Draw("down_y/10:down_x/10 >> hX", sel)
+    #tree.Draw("down_y/10:down_x/10 >> hX", sel)
+    tree.Draw("down_hy/10:down_hx/10 >> hX")
 
     hX.SetXTitle("Horizontal #it{x} (cm)")
     hX.SetYTitle("Vertical #it{y} (cm)")
@@ -333,7 +334,7 @@ def down_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -357,7 +358,8 @@ def up_xy():
 
     sel = "up_en>"+str(emin*1e3)
 
-    tree.Draw("up_y/10:up_x/10 >> hX", sel)
+    #tree.Draw("up_y/10:up_x/10 >> hX", sel)
+    tree.Draw("up_hy/10:up_hx/10 >> hX")
 
     hX.SetXTitle("Horizontal #it{x} (cm)")
     hX.SetYTitle("Vertical #it{y} (cm)")
@@ -377,7 +379,7 @@ def up_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -393,7 +395,8 @@ def phot_xy():
 
     hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, xmin, xmax)
 
-    tree.Draw("phot_y/10:phot_x/10 >> hX")#, "phot_en<1000")
+    #tree.Draw("phot_y/10:phot_x/10 >> hX")#, "phot_en<1000")
+    tree.Draw("phot_hy/10:phot_hx/10 >> hX")#, "phot_en<1000")
 
     hX.SetXTitle("Horizontal #it{x} (cm)")
     hX.SetYTitle("Vertical #it{y} (cm)")
@@ -429,13 +432,17 @@ def phot_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    tree.Draw("phot_en/1000. >> hE")
+    #tree.Draw("phot_en/1000. >> hE")
+    tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
 
     #cross section parametrization
+    import ConfigParser
+    parse = ConfigParser.RawConfigParser()
+    parse.read("/home/jaroslav/sim/eic-lgen/lgen_18x275.ini")
     import sys
-    sys.path.append('/home/jaroslav/sim/lgen/')
+    sys.path.append('/home/jaroslav/sim/eic-lgen/')
     from gen_zeus import gen_zeus
-    gen = gen_zeus(18, 275, emin)
+    gen = gen_zeus(18, 275, parse)
     gen.dSigDe.SetNpx(300)
     gen.dSigDe.SetLineWidth(3)
 
@@ -478,14 +485,14 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
-    infile = "../data/lmon_18x275_beff2_1Mevt.root"
-
+    #infile = "../data/lmon_18x275_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 8
+    iplot = 0
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1

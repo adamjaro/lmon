@@ -20,11 +20,11 @@ def main():
     #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    infile = "../data/lmon_pythia_5M_5Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_5Mevt.root"
+    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
 
-
-    iplot = 7
+    iplot = 0
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -68,6 +68,8 @@ def el_en():
 
     tree.Draw("el_gen >> hEnAll")
     tree.Draw("el_gen >> hEnTag", "lowQ2_IsHit == 1")
+    #tree.Draw("lowQ2_en/1e3 >> hEnTag", "lowQ2_IsHit == 1")
+    #tree.Draw("lowQ2_EnPrim/1e3 >> hEnTag", "lowQ2_IsHit == 1")
 
     ut.line_h1(hEnAll) # , rt.kBlack
     ut.set_H1D_col(hEnTag, rt.kRed)
@@ -80,15 +82,16 @@ def el_en():
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.05, 0.02)
 
-    hEnAll.Draw()
-    hEnTag.Draw("same")
+    #hEnAll.Draw()
+    #hEnTag.Draw("same")
+    hEnTag.Draw()
 
     leg = ut.prepare_leg(0.2, 0.8, 0.2, 0.1, 0.035)
     #leg.AddEntry(hEnAll, "All electrons", "l")
     #leg.AddEntry(hEnAll, "All quasi-real electrons", "l")
     leg.AddEntry(hEnAll, "All bremsstrahlung electrons", "l")
     leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
-    leg.Draw("same")
+    #leg.Draw("same")
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -414,7 +417,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
