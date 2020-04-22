@@ -93,12 +93,20 @@ G4bool BoxCalV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //remove the track
   G4Track *track = step->GetTrack();
+
+  //G4cout << track->GetParentID() << G4endl;
+  //G4cout << "before: " << track->GetTotalEnergy() << G4endl;
+  //G4cout << "before: " << track->GetKineticEnergy() << G4endl;
+
   track->SetTrackStatus(fKillTrackAndSecondaries);
+
+  //G4cout << "after:  " << track->GetTotalEnergy() << G4endl;
+  //G4cout << G4endl;
 
   fEnAll += track->GetTotalEnergy();
 
   //primary track only
-  if( fSelectPrim == true || track->GetParentID() != 0 ) return true;
+  if( fSelectPrim == true && track->GetParentID() != 0 ) return true;
 
   //consider only first hit by the primary track
   if(fIsHit == kFALSE) {
