@@ -3,7 +3,7 @@
 
 #detectors and components
 /lmon/construct/geometry ../config/geom_all.in
-/lmon/construct/geometry ../config/geom_lowQ2.in
+#/lmon/construct/geometry ../config/geom_lowQ2.in
 
 /run/initialize
 

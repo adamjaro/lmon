@@ -35,20 +35,13 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
 
   G4cout << "  BoxCalV2: " << fNam << G4endl;
 
-  //position along z and x
-  G4double zpos = geo->GetD(fNam, "zpos") * mm;
-  G4double xpos = geo->GetD(fNam, "xpos") * mm;
-
-  //G4cout << "  BoxCalV2: " << zpos << " " << xpos << G4endl;
-
   //detector shape
-  G4double xysiz = 20*cm;
-  G4double zsiz = 35*cm;
+  G4double xysiz = 200*mm;
+  G4double zsiz = 350*mm;
   G4Box *shape = new G4Box(fNam, xysiz/2., xysiz/2., zsiz/2.);
 
   //PbWO4 material
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_PbWO4");
-  //G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
 
   //logical volume
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
@@ -59,14 +52,36 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
   vol->SetVisAttributes(vis);
 
   //rotation in x-z plane by rotation along y
-  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), -0.02*rad); //typedef to CLHEP::HepRotation
+  G4double rot_y = 0;
+  geo->GetOptD(fNam, "rot_y", rot_y);
+  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), rot_y*rad); //is typedef to CLHEP::HepRotation
 
-  //placement with rotation at a given position in x and z
-  G4ThreeVector pos(xpos, 0, zpos-zsiz/2);
+  //placement with rotation at a given position in x, y and z
+  G4double xpos = 0; // center position in x, mm
+  geo->GetOptD(fNam, "xpos", xpos);
+
+  G4double ypos = 0; // position in y, mm
+  geo->GetOptD(fNam, "ypos", ypos);
+
+  //use y position as the edge closer to the beam axis
+  G4double ymid = 0;
+  if(ypos > 0.1) {
+    ymid = xysiz/2. + ypos;
+  } else if(ypos < -0.1) {
+    ymid = -1*xysiz/2. + ypos;
+  }
+
+  G4double zpos = geo->GetD(fNam, "zpos") * mm; // position of the front face along z
+  G4ThreeVector pos(xpos*mm, ymid*mm, zpos-zsiz/2);
   G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
 
   //put to the top volume
   new G4PVPlacement(transform, vol, fNam, top, false, 0);
+
+  //load flag for primary particles in ProcessHits if defined
+  fSelectPrim = false;
+  geo->GetOptB(fNam, "select_prim", fSelectPrim);
+  //G4cout << "  BoxCalV2, select_prim: " << fSelectPrim << G4endl;
 
   //clear all event variables
   ClearEvent();
@@ -78,11 +93,12 @@ G4bool BoxCalV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //remove the track
   G4Track *track = step->GetTrack();
-  //track->SetTrackStatus(G4TrackStatus::fKillTrackAndSecondaries);
   track->SetTrackStatus(fKillTrackAndSecondaries);
 
+  fEnAll += track->GetTotalEnergy();
+
   //primary track only
-  if( track->GetParentID() != 0 ) return true;
+  if( fSelectPrim == true || track->GetParentID() != 0 ) return true;
 
   //consider only first hit by the primary track
   if(fIsHit == kFALSE) {
@@ -93,7 +109,7 @@ G4bool BoxCalV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
   }
 
   //energy
-  fEn = track->GetTotalEnergy();
+  fEnPrim = track->GetTotalEnergy();
 
   //hit position
   const G4ThreeVector hp = step->GetPostStepPoint()->GetPosition();
@@ -116,7 +132,8 @@ void BoxCalV2::CreateOutput(TTree *tree) {
 
   u.AddBranch("_IsHit", &fIsHit, "O");
 
-  u.AddBranch("_en", &fEn, "D");
+  u.AddBranch("_EnPrim", &fEnPrim, "D");
+  u.AddBranch("_en", &fEnAll, "D");
 
   u.AddBranch("_hx", &fHx, "D");
   u.AddBranch("_hy", &fHy, "D");
@@ -129,7 +146,8 @@ void BoxCalV2::ClearEvent() {
 
   fIsHit = kFALSE;
 
-  fEn = -9999.;
+  fEnPrim = -9999.;
+  fEnAll = 0;
 
   fHx = 9999.;
   fHy = 9999.;

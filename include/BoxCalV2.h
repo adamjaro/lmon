@@ -30,8 +30,11 @@ class BoxCalV2 : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // detector name
 
+    Bool_t fSelectPrim; // flag to select only primary track in ProcessHits
+
     Bool_t fIsHit; // hit by primary particle
-    Double_t fEn; // energy of the primary particle
+    Double_t fEnPrim; // energy of the primary particle
+    Double_t fEnAll; // sum of energy of all particles in event
 
     Double_t fHx; // hit position in x
     Double_t fHy; // hit position in y

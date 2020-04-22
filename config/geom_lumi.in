@@ -26,21 +26,21 @@ new Magnet lumi_dipole
 #luminosity detectors
 
 #direct photon calorimeter
-new BoxCal phot
+new BoxCalV2 phot
 #new CompCal phot
 
   phot.zpos = -31850 # mm
   phot.ypos = 0
 
 #up spectrometer calorimeter
-new BoxCal up
+new BoxCalV2 up
 #new CompCal up
 
   up.zpos = -31350 # mm
   up.ypos = 42 # mm
 
 #down spectrometer calorimeter
-new BoxCal down
+new BoxCalV2 down
 #new CompCal down
 
   down.zpos = -31350 # mm

@@ -152,8 +152,54 @@ G4int GeoParser::GetI(G4String name, G4String par) {
 
 }//GetI
 
+//_____________________________________________________________________________
+G4bool GeoParser::GetB(G4String name, G4String par) {
 
+  return GetPar<G4bool>(name, par);
 
+}//GetB
+
+//_____________________________________________________________________________
+template<typename par_type> void GeoParser::GetOptPar(G4String name, G4String par, par_type& val) {
+
+  //get value 'val' for optional parameter 'par' as par_type for detector named 'name'
+
+  map<G4String, G4String>::iterator ival;
+  ival = fPar.find(name+"."+par);
+
+  if( ival == fPar.end() ) return;
+
+  istringstream st( (*ival).second );
+  st >> val;
+
+}//GetOptPar
+
+//_____________________________________________________________________________
+void GeoParser::GetOptD(G4String name, G4String par, G4double& val) {
+
+  //optional G4double parameter
+
+  GetOptPar<G4double>(name, par, val);
+
+}//GetOptD
+
+//_____________________________________________________________________________
+void GeoParser::GetOptI(G4String name, G4String par, G4int& val) {
+
+  //optional G4int parameter
+
+  GetOptPar<G4int>(name, par, val);
+
+}//GetOptI
+
+//_____________________________________________________________________________
+void GeoParser::GetOptB(G4String name, G4String par, G4bool& val) {
+
+  //optional G4bool parameter
+
+  GetOptPar<G4bool>(name, par, val);
+
+}//GetOptI
 
 
 

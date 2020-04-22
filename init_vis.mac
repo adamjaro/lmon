@@ -13,6 +13,10 @@
 #detectors and components
 /lmon/construct/geometry ../config/geom_all.in
 
+#TX input
+#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/select 22
+
 #
 # Initialize kernel
 /run/initialize

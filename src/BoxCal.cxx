@@ -49,8 +49,8 @@ BoxCal::BoxCal(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detec
   optab->CrystalTable(det_m);
 
   //detector shape
-  G4double xysiz = 20*cm;
-  G4double zsiz = 35*cm;
+  G4double xysiz = 200*mm;
+  G4double zsiz = 350*mm;
 
   //crystal volume
   G4Box *det_s = new G4Box(nam, xysiz/2., xysiz/2., zsiz/2.);
@@ -68,9 +68,9 @@ BoxCal::BoxCal(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detec
 
   //put detector to the top volume, center along y up or down
   G4double ymid = 0;
-  if(ypos > 0.1*cm) {
+  if(ypos > 0.1) {
     ymid = xysiz/2. + ypos;
-  } else if(ypos < -0.1*cm) {
+  } else if(ypos < -0.1) {
     ymid = -1*xysiz/2. + ypos;
   }
   fSens = new G4PVPlacement(0, G4ThreeVector(0, ymid, zpos-zsiz/2.), det_l, nam, top, false, 0);

@@ -13,6 +13,8 @@ new BoxCalV2 lowQ2
 
   lowQ2.zpos = -27000 # mm
   lowQ2.xpos = 472 # mm
+  lowQ2.rot_y = -0.02 # rad, rotation in x-z plane by rotation along y
+  lowQ2.select_prim = 1 # primary tracks only
 
 #beamline B2eR magnet
 new BeamMagnetV2 B2eR
