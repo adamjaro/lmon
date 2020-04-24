@@ -54,8 +54,8 @@ def acceptance_autobin():
 
     edet = 1
 
-    #prec = 0.08
-    prec = 0.02
+    prec = 0.08
+    #prec = 0.02
     delt = 1e-2
 
     sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
@@ -432,8 +432,8 @@ def phot_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    #tree.Draw("phot_en/1000. >> hE")
-    tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
+    tree.Draw("phot_en/1000. >> hE")
+    #tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
 
     #cross section parametrization
     import ConfigParser
@@ -486,7 +486,8 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt.root"
-    infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
+    #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
+    infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)

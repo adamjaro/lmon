@@ -19,10 +19,11 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
-    infile = "../data/lmon_pythia_5M_5Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_5Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
+    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 6
+    iplot = 10
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -35,6 +36,7 @@ def main():
     funclist.append( el_en_tag ) # 8
     funclist.append( el_log10_theta_tag ) # 9
     funclist.append( el_en_log10_theta_tag ) # 10
+    funclist.append( evt_Log10_Q2_x ) # 11
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -450,13 +452,15 @@ def el_en_log10_theta_tag():
 
     tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", gQ2sel)
 
-    ytit = "#it{E}_{e^{-}} / "+"{0:.1f} GeV".format(ebin)
-    xtit = "log_{10}(#theta) / "+"{0:.1f}".format(ltbin)
+    ytit = "#it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "log_{10}(#theta_{e}) / "+"{0:.1f} rad".format(ltbin)
     ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.6, 1.3)
 
     ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
 
     gPad.SetLogz()
+
+    gPad.SetGrid()
 
     hEnThetaTag.SetContour(10)
     hEnThetaTag.Draw("colz")
@@ -465,6 +469,50 @@ def el_en_log10_theta_tag():
     can.SaveAs("01fig.pdf")
 
 #el_en_log10_theta_tag
+
+#_____________________________________________________________________________
+def evt_Log10_Q2_x():
+
+    #log_10(Q^2) and x
+
+    lqbin = 5e-2
+    #lqmin = -5
+    lqmin = -10
+    lqmax = -1
+
+    #xbin = 0.01
+    xbin = 0.1
+    xmin = -14
+    xmax = -0.3
+
+    yform = "1.-(1.-TMath::Cos(el_theta))*el_gen/(2.*18.)"
+    Q2form = "2.*18.*el_gen*(1.-TMath::Cos(TMath::Pi()-el_theta))"
+    xform = Q2form+"/(("+yform+")*19800.82)"
+
+    lQ2form = "TMath::Log10("+Q2form+")"
+    lxform = "TMath::Log10("+xform+")"
+
+    hLog10Q2xTag = ut.prepare_TH2D("hLog10Q2xTag", xbin, xmin, xmax, lqbin, lqmin, lqmax)
+
+    can = ut.box_canvas()
+
+    tree.Draw(lQ2form+":"+lxform+" >> hLog10Q2xTag", gQ2sel)
+    #tree.Draw(lQ2form+":"+lxform+" >> hLog10Q2xTag")
+
+    ytit = "log_{10}(#it{Q}^{2})"+" / {0:.3f}".format(lqbin)+" GeV^{2}"
+    xtit = "log_{10}(#it{x})"+" / {0:.1f}".format(xbin)
+    ut.put_yx_tit(hLog10Q2xTag, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
+
+    gPad.SetGrid()
+
+    hLog10Q2xTag.Draw()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_Log10_Q2_x
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

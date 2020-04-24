@@ -21,10 +21,11 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_5Mevt.root"
-    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
 
-    iplot = 0
+    iplot = 7
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -388,11 +389,11 @@ def el_hit_xy():
 
     xbin = 1
     xmin = 350
-    xmax = 600
+    xmax = 580
     #xmin = 280
     #xmax = 1000
 
-    ybin = 0.1
+    ybin = 1
     #ymin = -8
     #ymax = 8
     ymin = -110
@@ -413,11 +414,14 @@ def el_hit_xy():
 
     ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.02, 0.12)
 
+    hXY.SetMinimum(0.98)
+    hXY.SetContour(300)
+
     hXY.Draw()
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
