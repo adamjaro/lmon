@@ -7,9 +7,11 @@
 
 //C++
 #include <string>
+//#include <math>
 
 //ROOT
 #include "TTree.h"
+#include "TMath.h"
 
 //Geant
 #include "G4LogicalVolume.hh"
@@ -25,6 +27,7 @@
 
 //local headers
 #include "OpDet.h"
+#include "OpHitsArray.h"
 
 //_____________________________________________________________________________
 OpDet::OpDet(const G4String& name, G4double xysiz, G4double zpos, G4double xmid, G4double ymid, G4LogicalVolume *top):
@@ -65,6 +68,9 @@ OpDet::OpDet(const G4String& name, G4double xysiz, G4double zpos, G4double xmid,
   fCerenkovType = cer.GetProcessType();
   fCerenkovSubType = cer.GetProcessSubType();
 
+  //hits array
+  fHits = new OpHitsArray(0.5); // time interval for the hit in ns
+
 }//OpDet
 
 //_____________________________________________________________________________
@@ -90,7 +96,7 @@ G4bool OpDet::ProcessHits(G4Step *step, G4TouchableHistory*) {
   fEopt += step->GetTotalEnergyDeposit();
 
   //apply the quantum efficiency
-  if(fRand->flat() > fQE) return true;
+  //if(fRand->flat() > fQE) return true;
 
   //scintillation or Cerenkov photon
   G4int ptype = track->GetCreatorProcess()->GetProcessType();
@@ -105,6 +111,9 @@ G4bool OpDet::ProcessHits(G4Step *step, G4TouchableHistory*) {
   if(tim < fTmin) fTmin = tim;
   if(tim > fTmax) fTmax = tim;
   fTavg += tim;
+
+  //add hit to hits array
+  fHits->AddHit(tim);
 
   //number of optical photons
   fNphot++;
@@ -127,6 +136,8 @@ void OpDet::CreateOutput(TTree *tree) {
   AddBranch("_tmax", &fTmax, tree);
   AddBranch("_tavg", &fTavg, tree);
 
+  fHits->CreateOutput(fNam, tree);
+
 }//CreateOutput
 
 //_____________________________________________________________________________
@@ -143,6 +154,9 @@ void OpDet::FinishEvent() {
     fTmax = -999.;
   }
 
+  //write the hits
+  fHits->WriteOutput();
+
 }//FinishEvent
 
 //_____________________________________________________________________________
@@ -158,6 +172,8 @@ void OpDet::ClearEvent() {
   fTmin = 1.e12;
   fTmax = -1.;
   fTavg = 0.;
+
+  fHits->Clear();
 
 }//ClearEvent
 

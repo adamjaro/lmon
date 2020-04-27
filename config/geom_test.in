@@ -1,0 +1,13 @@
+
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 35000 # mm
+
+#new BoxCal phot
+new CompCal phot
+
+  phot.zpos = -31850 # mm
+  phot.ypos = 0
+

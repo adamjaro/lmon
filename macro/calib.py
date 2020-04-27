@@ -2,13 +2,170 @@
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem, AddressOf
-from ROOT import TGraph, TF1
+from ROOT import TGraph, TF1, std
 
 from ROOT import RooFit as rf
 from ROOT import RooRealVar, RooDataHist, RooArgList, RooBreitWigner
 
 import plot_utils as ut
 from parameter_descriptor import parameter_descriptor as pdesc
+
+#_____________________________________________________________________________
+def draw_pulse():
+
+    #draw a single pulse of photoelectrons using the hits for a given event
+
+    ievt = 0
+
+    cell = "03x03"
+
+    #tree.Print()
+
+    #get the hits from the tree
+    hitTime = std.vector(float)()
+    hitNphot = std.vector(int)()
+
+    tree.SetBranchAddress("phot_"+cell+"_OpDet_hits_time", hitTime)
+    tree.SetBranchAddress("phot_"+cell+"_OpDet_hits_nphot", hitNphot)
+
+    tree.GetEntry(ievt)
+
+    nhits = hitTime.size()
+
+    can = ut.box_canvas()
+
+    gHits = TGraph(nhits)
+
+    for i in xrange(nhits):
+        gHits.SetPoint(i, hitTime.at(i), hitNphot.at(i))
+
+    gHits.Draw("A*l")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def time_delta_nphot():
+
+    #time difference between last and first photoelectron and number of photoelectrons
+
+    nbin = 2e3
+    nmin = 0
+    nmax = 8e4
+
+    tbin = 4 # time ns
+    tmin = 30
+    tmax = 200
+
+    cell = "03x03"
+
+    can = ut.box_canvas()
+
+    hNT = ut.prepare_TH2D("hNT", nbin, nmin, nmax, tbin, tmin, tmax)
+
+    tform = "(phot_"+cell+"_OpDet_tmax-phot_"+cell+"_OpDet_tmin)"
+    nform = "phot_"+cell+"_OpDet_nphot"
+
+    tree.Draw(tform+":"+nform+" >> hNT")#, "phot_en>1000")
+
+    hNT.SetMinimum(0.98)
+    hNT.SetContour(100)
+
+    gPad.SetGrid()
+
+    hNT.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def nphot():
+
+    #distribution in number of photoelectrons
+
+    nbin = 3e3
+    nmin = 0
+    nmax = 8e4
+
+    can = ut.box_canvas()
+
+    hN = ut.prepare_TH1D("hN", nbin, nmin, nmax)
+
+    #tree.Print()
+
+    tree.Draw("phot_03x03_OpDet_nphot >> hN")#, "phot_en<1000")
+
+    hN.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def time_delta():
+
+    #difference in time between the last and the first photoelectron
+
+    tbin = 1
+    tmin = 30
+    tmax = 200
+
+    cell = "03x03"
+
+    can = ut.box_canvas()
+    #gStyle.SetOptStat("uo")
+
+    hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
+
+    tree.Draw("phot_"+cell+"_OpDet_tmax-phot_"+cell+"_OpDet_tmin >> hT")#, "phot_en<1000")
+
+    hT.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def time_last():
+
+    #time of the last photoelectron
+
+    tbin = 1
+    tmin = 104
+    tmax = 300
+
+    can = ut.box_canvas()
+    #gStyle.SetOptStat("uo")
+
+    hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
+
+    tree.Draw("phot_03x03_OpDet_tmax >> hT")#, "phot_en<1000")
+
+    hT.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
+def time_first():
+
+    #time of the first photoelectron
+
+    tbin = 0.11
+    tmin = 104
+    tmax = 112
+
+    can = ut.box_canvas()
+    #gStyle.SetOptStat("uo")
+
+    hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
+
+    #tree.Print()
+
+    tree.Draw("phot_03x03_OpDet_tmin >> hT")#, "phot_en<1000")
+
+    hT.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
 def resolution():
@@ -259,21 +416,30 @@ if __name__ == "__main__":
 
     infile = "../data/lmon.root"
     #infile = "../data/pdet2_uni_0p5_20GeV_1kevt.daq.root"
+    #infile = "/home/jaroslav/sim/pdet2/data/pdet2_uni_0p5_20GeV_1kevt.daq.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 1
+    iplot = 8
 
     funclist = []
     funclist.append( calib_graph ) # 0
     funclist.append( rec ) # 1
     funclist.append( resolution ) # 2
+    funclist.append( time_first ) # 3
+    funclist.append( time_last ) # 4
+    funclist.append( time_delta ) # 5
+    funclist.append( nphot ) # 6
+    funclist.append( time_delta_nphot ) # 7
+    funclist.append( draw_pulse ) # 8
 
     #open the input
     inp = TFile.Open(infile)
+    #inp.ls()
     tree = inp.Get("DetectorTree")
+    #tree = inp.Get("ltree")
 
     #call the plot function
     funclist[iplot]()

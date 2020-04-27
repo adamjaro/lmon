@@ -9,6 +9,8 @@
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
 
+class OpHitsArray;
+
 class OpDet : public Detector, public G4VSensitiveDetector {
 
   public:
@@ -53,6 +55,8 @@ class OpDet : public Detector, public G4VSensitiveDetector {
     G4int fScinSubType; // scintillation process subtype
     G4int fCerenkovType; // Cerenkov process type
     G4int fCerenkovSubType; // Cerenkov process subtype
+
+    OpHitsArray *fHits; // hits array for the detector
 
     friend class CompCal;
 

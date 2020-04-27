@@ -66,8 +66,8 @@ int main(int argc, char* argv[]) {
 
   //physics
   FTFP_BERT *physicsList = new FTFP_BERT;
-  //G4OpticalPhysics *opt = new G4OpticalPhysics();
-  //physicsList->RegisterPhysics(opt); // uncomment to turn optics on
+  //G4OpticalPhysics *optics = new G4OpticalPhysics();
+  //physicsList->RegisterPhysics(optics); // uncomment to turn optics on
   runManager->SetUserInitialization(physicsList);
 
   //action

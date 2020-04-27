@@ -35,7 +35,7 @@ void OpTable::CrystalTable(G4Material *mat) {
 
   tab->AddProperty("FASTCOMPONENT", scin_en, scin_fast, ntab);
   tab->AddConstProperty("FASTTIMECONSTANT", 6*ns);
-  tab->AddConstProperty("SCINTILLATIONYIELD", 200/MeV); // 200/MEV nominal  10
+  tab->AddConstProperty("SCINTILLATIONYIELD", 200/MeV); // 200/MeV nominal  10
   tab->AddConstProperty("RESOLUTIONSCALE", 1.);
 
   G4double opt_en[] = {1.551*eV, 3.545*eV}; // 350 - 800 nm
