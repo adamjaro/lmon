@@ -18,8 +18,8 @@
 UniformGen::UniformGen() : G4VUserPrimaryGeneratorAction(), fGun(0) {
 
   //minimal and maximal energy, in GeV
-  fEmin = 0.5;
-  fEmax = 20.;
+  fEmin = 1;
+  fEmax = 18;
   //fEmin = 0.01;
   //fEmax = 0.02;
 

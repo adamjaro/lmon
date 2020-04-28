@@ -24,7 +24,7 @@
 //local classes
 #include "ExitWinZEUS.h"
 
-ClassImp(ExitWinZEUS)
+//ClassImp(ExitWinZEUS)
 
 //_____________________________________________________________________________
 ExitWinZEUS::ExitWinZEUS(const G4String& nam, G4double zpos, G4LogicalVolume *top): Detector(),

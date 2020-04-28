@@ -2,23 +2,25 @@
 #run macro for EIC nodes
 
 #detectors and components
-/lmon/construct/geometry ../config/geom_all.in
+#/lmon/construct/geometry ../config/geom_all.in
 #/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_lowQ2.in
+/lmon/construct/geometry ../config/geom_test.in
 
 #init and run
 /run/initialize
 
 #input
-/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_beff2_10p1Mevt.tx
+#/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_beff2_10p1Mevt.tx
 #/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
 #output
 #/lmon/output/name ../data/lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt.root
 #/lmon/output/name ../data/lmon_10GeV_ewV2_10Mevt.root
-/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_beff2_1Mevt_v2.root
+#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_beff2_1Mevt_v2.root
+#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_uni_1_18GeV_0p5ns_1kevt.root
 
 #number of events
-/run/beamOn 1000000
+/run/beamOn 1000
 

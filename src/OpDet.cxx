@@ -96,7 +96,7 @@ G4bool OpDet::ProcessHits(G4Step *step, G4TouchableHistory*) {
   fEopt += step->GetTotalEnergyDeposit();
 
   //apply the quantum efficiency
-  //if(fRand->flat() > fQE) return true;
+  if(fRand->flat() > fQE) return true;
 
   //scintillation or Cerenkov photon
   G4int ptype = track->GetCreatorProcess()->GetProcessType();

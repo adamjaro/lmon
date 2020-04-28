@@ -43,7 +43,8 @@ link_directories (${ROOT_LIBDIR})
 set (DICT G__DET.cxx)
 set (CLING rootcint)
 set (LINKDEF LinkDef.h)
-set (HDRS_DET Detector.h SensDetDummy.h ExitWinZEUS.h)
+#set (HDRS_DET Detector.h SensDetDummy.h ExitWinZEUS.h)
+set (HDRS_DET Detector.h SensDetDummy.h)
 
 #include for CLING
 get_directory_property(incdirs INCLUDE_DIRECTORIES)
@@ -63,8 +64,8 @@ add_custom_command (
 )
 
 #shared library
-add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
-#add_library (${LIB} SHARED ${sources} ${headers})
+#add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
+add_library (${LIB} SHARED ${sources} ${headers})
 target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
 
 #binary executable

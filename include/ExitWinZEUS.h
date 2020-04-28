@@ -39,7 +39,7 @@ class ExitWinZEUS : public Detector, public G4VSensitiveDetector {
     Double_t fY; // y position of the photon
     Double_t fZ; // z position of the photon
 
-    ClassDef(ExitWinZEUS, 1);
+    //ClassDef(ExitWinZEUS, 1);
 };
 
 #endif
