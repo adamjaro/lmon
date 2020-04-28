@@ -10,12 +10,75 @@ from ROOT import RooRealVar, RooDataHist, RooArgList, RooBreitWigner
 import plot_utils as ut
 from parameter_descriptor import parameter_descriptor as pdesc
 
+
+#_____________________________________________________________________________
+def draw_signals():
+
+    #draw signal pulses over multiple events
+
+    nevt = 12
+
+    cell = "03x03"
+
+    emin = 0
+
+    ofs = 10  # 10 or 500
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(100, -6.2e3, 150, 200)
+    frame.Draw()
+    #frame.SetLineColor(rt.kWhite)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.01, 0.03)
+
+    hitTime = std.vector(float)()
+    hitNphot = std.vector(int)()
+
+    tree.SetBranchAddress("phot_"+cell+"_OpDet_hits_time", hitTime)
+    tree.SetBranchAddress("phot_"+cell+"_OpDet_hits_nphot", hitNphot)
+
+    gROOT.ProcessLine("struct Entry {Double_t val;};")
+    phot_en = rt.Entry()
+    tree.SetBranchAddress("phot_en", AddressOf(phot_en, "val"))
+
+    glist = []
+
+    ievt = 0
+    for i in xrange(tree.GetEntriesFast()):
+
+        if i < ofs: continue
+
+        tree.GetEntry(i)
+
+        if phot_en.val/1e3 < emin: continue
+
+        nhits = hitTime.size()
+
+        glist.append( TGraph(nhits) )
+        gh = glist[len(glist)-1]
+
+        for ihit in xrange(nhits):
+            gh.SetPoint(ihit, hitTime.at(ihit), -hitNphot.at(ihit))
+
+        gh.SetLineColor(rt.kBlue)
+
+        gh.Draw("lsame")
+
+        ievt += 1
+        if ievt >= nevt: break
+
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
 #_____________________________________________________________________________
 def draw_pulse():
 
     #draw a single pulse of photoelectrons using the hits for a given event
 
-    ievt = 0
+    ievt = 7
 
     cell = "03x03"
 
@@ -260,9 +323,13 @@ def rec(plot=True):
     #calib.FixParameter(1, 0.265056)
     #calib.FixParameter(2, -0.000238363)
 
-    calib.FixParameter(0, -0.0904673)
-    calib.FixParameter(1, 0.278804)
-    calib.FixParameter(2, -0.000435157)
+    #calib.FixParameter(0, -0.0904673)
+    #calib.FixParameter(1, 0.278804)
+    #calib.FixParameter(2, -0.000435157)
+
+    calib.FixParameter(0, -0.100343)
+    calib.FixParameter(1, 0.294137)
+    calib.FixParameter(2, -0.000465561)
 
     #get number of detected optical photon from the tree
     gROOT.ProcessLine("struct EntryL {ULong64_t val;};")
@@ -287,7 +354,7 @@ def rec(plot=True):
         tree.GetEntry(i)
         #reconstruct the energy, GeV
         en = calib.Eval( float(nphot.val)/1e3 )
-        gRec.SetPoint(i, gen.val/1e3, en)
+        gRec.SetPoint(i, gen.val, en) # /1e3
         #print i, nphot.val, en, gen.val/1e3
 
     #plot the reconstructed vs. generated graph
@@ -348,7 +415,7 @@ def calib_graph():
 
     for i in xrange(nev):
         tree.GetEntry(i)
-        gGenNphot.SetPoint(i, float(nphot.val)/1e3, gen_energy.val/1e3)
+        gGenNphot.SetPoint(i, float(nphot.val)/1e3, gen_energy.val) # /1e3
 
     #verify values in the graph
     gx = rt.Double()
@@ -405,7 +472,7 @@ def calib_graph():
     desc.itemRes("#it{c}_{2}", res, 2, rt.kRed)
     desc.draw()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #calib_graph
@@ -414,15 +481,16 @@ def calib_graph():
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    infile = "../data/lmon.root"
+    #infile = "../data/lmon.root"
     #infile = "../data/pdet2_uni_0p5_20GeV_1kevt.daq.root"
     #infile = "/home/jaroslav/sim/pdet2/data/pdet2_uni_0p5_20GeV_1kevt.daq.root"
+    infile = "../data/lmon_uni_1_18GeV_0p5ns_1kevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 8
+    iplot = 9
 
     funclist = []
     funclist.append( calib_graph ) # 0
@@ -434,6 +502,7 @@ if __name__ == "__main__":
     funclist.append( nphot ) # 6
     funclist.append( time_delta_nphot ) # 7
     funclist.append( draw_pulse ) # 8
+    funclist.append( draw_signals ) # 9
 
     #open the input
     inp = TFile.Open(infile)
