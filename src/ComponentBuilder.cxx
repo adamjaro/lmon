@@ -33,6 +33,7 @@
 #include "BoxCalV2.h"
 #include "ConeAperture.h"
 #include "CollimatorV2.h"
+#include "CaloBPC.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -82,6 +83,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "CollimatorV2" ) {
     det = new CollimatorV2(name, fGeo, fTop);
+
+  } else if( type == "CaloBPC" ) {
+    det = new CaloBPC(name, fGeo, fTop);
 
   }
 

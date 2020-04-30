@@ -17,6 +17,6 @@
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
 
 
-/run/beamOn 1
+/run/beamOn 3
 #/units/list
 
