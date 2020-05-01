@@ -15,8 +15,8 @@
 #/lmon/construct/geometry ../config/geom_test.in
 
 #TX input
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
-#/lmon/input/select 22
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/tx/select 22
 
 #
 # Initialize kernel

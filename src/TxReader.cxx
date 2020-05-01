@@ -26,13 +26,13 @@ using namespace std;
 using namespace boost;
 
 //_____________________________________________________________________________
-TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fSelPdg(-9999), fIev(0) {
+TxReader::TxReader() : G4VPrimaryGenerator(), fSelPdg(-9999), fIev(0) {
 
   //default input name
   fInputName = "../lgen_5x41_0p5min_12evt.tx";
 
   //command for name of input file
-  fMsg = new G4GenericMessenger(this, "/lmon/input/");
+  fMsg = new G4GenericMessenger(this, "/lmon/input/tx/");
   fMsg->DeclareProperty("name", fInputName);
 
   //pdg selection
@@ -41,7 +41,7 @@ TxReader::TxReader() : G4VUserPrimaryGeneratorAction(), fSelPdg(-9999), fIev(0) 
 }//TxReader
 
 //_____________________________________________________________________________
-void TxReader::GeneratePrimaries(G4Event *evt) {
+void TxReader::GeneratePrimaryVertex(G4Event *evt) {
 
   //open TX input
   if(!fIn.is_open()) OpenInput();

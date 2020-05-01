@@ -19,11 +19,16 @@
 # Initialize kernel
 /run/initialize
 
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
-#/lmon/input/select 22
-#/lmon/input/select 11
+/lmon/input/type pythia6
+/lmon/input/pythia6/select 2112
+/lmon/input/pythia6/select -211
+#/lmon/input/pythia6/select 22
+
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_0p1mrad_1p2Mevt_evt.dat
+#/lmon/input/tx/select 22
+#/lmon/input/tx/select 11
 
 #
 # Visualization setting

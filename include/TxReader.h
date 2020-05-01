@@ -5,20 +5,20 @@
 // generator reader for TX (Starlight) format
 
 #include "globals.hh"
-#include "G4VUserPrimaryGeneratorAction.hh"
+#include "G4VPrimaryGenerator.hh"
 #include <fstream>
 
 class G4Event;
 class G4GenericMessenger;
 
-class TxReader : public G4VUserPrimaryGeneratorAction {
+class TxReader : public G4VPrimaryGenerator {
 
   public:
 
     TxReader();
     virtual ~TxReader() {}
 
-    virtual void GeneratePrimaries(G4Event *evt);
+    virtual void GeneratePrimaryVertex(G4Event *evt);
 
   private:
 

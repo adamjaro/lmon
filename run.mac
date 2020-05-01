@@ -6,7 +6,7 @@
 
 /run/initialize
 
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_1p2Mevt_evt.dat
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
 #/lmon/output/name ../data/test/lmon.root
 

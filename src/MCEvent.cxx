@@ -1,10 +1,14 @@
 
+//C++
+#include<vector>
+
 //ROOT
 #include "TTree.h"
 #include "TLorentzVector.h"
 
 //Geant
 #include "G4Event.hh"
+#include "G4SystemOfUnits.hh"
 
 //local classes
 #include "MCEvent.h"
@@ -34,7 +38,16 @@ void MCEvent::BeginEvent(const G4Event *evt) {
   for(G4int i=0; i<pvtx->GetNumberOfParticle(); i++) {
     G4PrimaryParticle *part = pvtx->GetPrimary(i);
 
+    //add particle to the output
+    fPartPdg.push_back( part->GetPDGcode() );
+    fPartPx.push_back( part->GetPx()/GeV );
+    fPartPy.push_back( part->GetPy()/GeV );
+    fPartPz.push_back( part->GetPz()/GeV );
+    fPartEn.push_back( part->GetTotalEnergy()/GeV );
+
     //G4cout << "MCEvent::BeginEvent: " << part->GetPDGcode() << G4endl;
+    //G4cout << part->GetPDGcode() << " " << part->GetPx()/GeV << " " << part->GetPy()/GeV << " " << part->GetPz()/GeV;
+    //G4cout << " " << part->GetTotalEnergy()/GeV << G4endl;
 
     //read the photon and electron
     G4int pdg = part->GetPDGcode();
@@ -105,6 +118,12 @@ void MCEvent::CreateOutput(TTree *tree) {
 
   //set MC output branches
 
+  tree->Branch("gen_pdg", &fPartPdg);
+  tree->Branch("gen_px", &fPartPx);
+  tree->Branch("gen_py", &fPartPy);
+  tree->Branch("gen_pz", &fPartPz);
+  tree->Branch("gen_en", &fPartEn);
+
   DetUtils u("", tree);
 
   u.AddBranch("phot_gen", &fPhotGen, "D");
@@ -123,6 +142,12 @@ void MCEvent::CreateOutput(TTree *tree) {
 
 //_____________________________________________________________________________
 void MCEvent::ClearEvent() {
+
+  fPartPdg.clear();
+  fPartPx.clear();
+  fPartPy.clear();
+  fPartPz.clear();
+  fPartEn.clear();
 
   fPhotGen = 0.;
   fPhotTheta = 0.;

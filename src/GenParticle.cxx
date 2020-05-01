@@ -128,7 +128,7 @@ void GenParticle::ReadFromPythia6(tokenizer< char_separator<char> >::iterator &t
   ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
   ss >> fVz >> fVy >> fVx;
 
-  //G4cout << "GenParticle::ReadFromPythia6: " << fPx << " " << fPy << " " << fPz;
+  //G4cout << "GenParticle::ReadFromPythia6: " << fPx << " " << fPy << " " << fPz << G4endl;
   //G4cout << " " << fVx << " " << fVy << " " << fVz << G4endl;
 
 }//ReadFromPythia6

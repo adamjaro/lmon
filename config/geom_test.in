@@ -5,7 +5,7 @@ new top topv
   topv.ysiz = 200 # mm
   topv.zsiz = 250 # mm
 
-new CaloBPC lowQ2
+#new CaloBPC lowQ2
 
   lowQ2.zpos = -40
   lowQ2.xpos = 10

@@ -5,23 +5,22 @@
 // selects the event generator
 //_____________________________________________________________________________
 
-//local headers
+//local classes
 #include "ActionInitialization.h"
 #include "GeneratorAction.h"
 #include "EventAction.h"
 #include "LgenReader.h"
-#include "TxReader.h"
 #include "RunAction.h"
 #include "UniformGen.h"
+#include "GenReader.h"
 
 //_____________________________________________________________________________
 void ActionInitialization::Build() const {
 
   //select the generator
   //SetUserAction(new GeneratorAction);
-  //SetUserAction(new LgenReader);
-  SetUserAction(new TxReader);
   //SetUserAction(new UniformGen);
+  SetUserAction(new GenReader);
 
   SetUserAction(new EventAction);
   SetUserAction(new RunAction);

@@ -27,6 +27,13 @@ class MCEvent : public Detector {
 
     G4String fNam; // class name
 
+    // MC generated particles
+    std::vector<Int_t> fPartPdg; //particle pdg
+    std::vector<Float_t> fPartPx; //particle px, GeV
+    std::vector<Float_t> fPartPy; //particle py, GeV
+    std::vector<Float_t> fPartPz; //particle pz, GeV
+    std::vector<Float_t> fPartEn; //particle energy, GeV
+
     Double_t fPhotGen; // energy of generated photon
     Double_t fPhotTheta; // polar angle of generated photon
     Double_t fPhotPhi; // azimuthan angle  of generated photon

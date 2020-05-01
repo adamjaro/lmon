@@ -9,9 +9,16 @@
 
 /run/initialize
 
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
-#/lmon/input/select 11
-#/lmon/input/select 22
+#/lmon/input/type tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/tx/select 22
+
+/lmon/input/type pythia6
+/lmon/input/pythia6/name ../pythia6_pp_255.txt
+/lmon/input/pythia6/select 2212
+/lmon/input/pythia6/select 211
+/lmon/input/pythia6/select -211
+/lmon/input/pythia6/select 22
 
 #/lmon/output/name ../data/test/lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
