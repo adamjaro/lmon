@@ -31,9 +31,5 @@ new ConeAperture beampipe # beam aperture in front of B2eR
   beampipe.r2 = 139 # mm, inner radious further from the IP
   beampipe.dr = 2 # mm, cone radial thickness
 
-#new CaloBPC lowQ2
 
-#  lowQ2.zpos = -40
-#  lowQ2.xpos = 10
-#  lowQ2.rot_y = -0.3
 

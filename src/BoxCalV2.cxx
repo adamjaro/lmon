@@ -35,10 +35,14 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
 
   G4cout << "  BoxCalV2: " << fNam << G4endl;
 
-  //detector shape
-  G4double xysiz = 200*mm;
-  G4double zsiz = 350*mm;
-  G4Box *shape = new G4Box(fNam, xysiz/2., xysiz/2., zsiz/2.);
+  //detector shape, mm
+  G4double xsiz = 200;
+  G4double ysiz = 200;
+  G4double zsiz = 350;
+  geo->GetOptD(fNam, "xsiz", xsiz);
+  geo->GetOptD(fNam, "ysiz", ysiz);
+  geo->GetOptD(fNam, "zsiz", zsiz);
+  G4Box *shape = new G4Box(fNam, (xsiz*mm)/2., (ysiz*mm)/2., (zsiz*mm)/2.);
 
   //PbWO4 material
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_PbWO4");
@@ -66,9 +70,9 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
   //use y position as the edge closer to the beam axis
   G4double ymid = 0;
   if(ypos > 0.1) {
-    ymid = xysiz/2. + ypos;
+    ymid = ysiz/2. + ypos;
   } else if(ypos < -0.1) {
-    ymid = -1*xysiz/2. + ypos;
+    ymid = -1*ysiz/2. + ypos;
   }
 
   G4double zpos = geo->GetD(fNam, "zpos") * mm; // position of the front face along z

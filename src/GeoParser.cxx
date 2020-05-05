@@ -7,6 +7,7 @@
 //Geant
 #include "G4String.hh"
 #include "G4ios.hh"
+#include "G4Exception.hh"
 
 //local classes
 #include "GeoParser.h"
@@ -118,6 +119,12 @@ const G4String& GeoParser::GetS(G4String name, G4String par) {
 
   map<G4String, G4String>::iterator ival;
   ival = fPar.find(name+"."+par);
+
+  if( ival == fPar.end() ) {
+    //parameter not found
+    string description = "Parameter '" + par + "' not found for '" + name + "'";
+    G4Exception("GeoParser::GetS", "ParameterNotFound01", FatalException, description.c_str());
+  }
 
   return (*ival).second;
 

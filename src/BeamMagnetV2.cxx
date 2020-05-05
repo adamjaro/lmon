@@ -43,7 +43,9 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   vol_inner->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
   //magnetic field inside the inner core
-  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, -0.198*tesla, 0));
+  G4double dipole_field = -0.198;
+  geo->GetOptD(fNam, "field", dipole_field);
+  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, dipole_field*tesla, 0));
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
   fman->CreateChordFinder(field);
