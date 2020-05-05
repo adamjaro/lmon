@@ -11,8 +11,13 @@
 /run/initialize
 
 #input
-#/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_beff2_10p1Mevt.tx
-#/lmon/input/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+/lmon/input/type pythia6
+/lmon/input/pythia6/name /direct/eic+u/jadam/test/pythia6_example.txt
+/lmon/input/pythia6/select -211
+/lmon/input/pythia6/select 22
+
+#/lmon/input/tx/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_beff2_10p1Mevt.tx
+#/lmon/input/tx/name /direct/eic+u/jadam/sim/lgen/data/lgen_18x275_10p1Mevt.tx
 
 #output
 #/lmon/output/name ../data/lmon.root
@@ -22,5 +27,5 @@
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_uni_1_18GeV_0p5ns_1kevt.root
 
 #number of events
-/run/beamOn 1000
+/run/beamOn 3
 
