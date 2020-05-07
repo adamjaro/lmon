@@ -35,6 +35,10 @@
 #include "CollimatorV2.h"
 #include "CaloBPC.h"
 #include "BeamQuadrupole.h"
+#include "central_config.h"
+#ifdef BUILD_CENTRAL
+  #include "CentralBuilder.h"
+#endif
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -90,6 +94,11 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "BeamQuadrupole" ) {
     det = new BeamQuadrupole(name, fGeo, fTop);
+
+  } else if( type == "CentralDetector" ) {
+    #ifdef BUILD_CENTRAL
+      CentralBuilder central(fTop, fGeo, fDet);
+    #endif
 
   }
 

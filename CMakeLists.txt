@@ -63,10 +63,20 @@ add_custom_command (
   WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+#central detector
+option(BUILD_CENTRAL "Build central detector" OFF)
+configure_file(central_config.h.in central_config.h)
+if(BUILD_CENTRAL)
+  add_subdirectory(central)
+  list(APPEND EXTRA_LIBS central)
+  list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/central/include")
+endif()
+
 #shared library
 #add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})
-target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
+target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${EXTRA_INCLUDES})
+target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS} ${EXTRA_LIBS})
 
 #binary executable
 add_executable(${BIN} run.cxx)

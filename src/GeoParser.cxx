@@ -7,7 +7,7 @@
 //Geant
 #include "G4String.hh"
 #include "G4ios.hh"
-#include "G4StateManager.hh"
+#include "globals.hh"
 
 //local classes
 #include "GeoParser.h"
