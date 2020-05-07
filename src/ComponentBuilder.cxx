@@ -34,6 +34,7 @@
 #include "ConeAperture.h"
 #include "CollimatorV2.h"
 #include "CaloBPC.h"
+#include "BeamQuadrupole.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -86,6 +87,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "CaloBPC" ) {
     det = new CaloBPC(name, fGeo, fTop);
+
+  } else if( type == "BeamQuadrupole" ) {
+    det = new BeamQuadrupole(name, fGeo, fTop);
 
   }
 

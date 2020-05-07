@@ -48,6 +48,8 @@ void MCEvent::BeginEvent(const G4Event *evt) {
     //G4cout << "MCEvent::BeginEvent: " << part->GetPDGcode() << G4endl;
     //G4cout << part->GetPDGcode() << " " << part->GetPx()/GeV << " " << part->GetPy()/GeV << " " << part->GetPz()/GeV;
     //G4cout << " " << part->GetTotalEnergy()/GeV << G4endl;
+    //G4cout << "MCEvent::BeginEvent: " << part->GetPx()/GeV << " " << part->GetPy()/GeV << " " << part->GetPz()/GeV << G4endl;
+    //G4cout << G4endl;
 
     //read the photon and electron
     G4int pdg = part->GetPDGcode();

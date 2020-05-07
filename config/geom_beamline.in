@@ -23,13 +23,41 @@ new BoxCalV2 Q3eR # get electrons at Q3eR location
   Q3eR.ysiz = 1100 # mm
   Q3eR.select_prim = 1 # primary tracks only
 
-new ConeAperture beampipe # beam aperture in front of B2eR
+new BeamQuadrupole Q1eR # Q1eR quadrupole
+
+  Q1eR.zpos = -6200 # mm
+  Q1eR.length = 1800 # mm
+  Q1eR.r1 = 66 # mm
+  Q1eR.r2 = 79 # mm
+  Q1eR.grad = 13.428092 # T/m
+
+new BeamQuadrupole Q2eR # Q1eR quadrupole
+
+  Q2eR.zpos = -8300 # mm
+  Q2eR.length = 1400 # mm
+  Q2eR.r1 = 83 # mm
+  Q2eR.r2 = 94 # mm
+  Q2eR.grad = -12.850280 # T/m
+
+new ConeAperture beampipe # beam aperture in front of quadrupole magnets
 
   beampipe.zpos = 0 # mm, front face of the cone along z
-  beampipe.length = 9498 # mm, cone length
-  beampipe.r1 = 139 # mm, inner radius closer to the IP
-  beampipe.r2 = 139 # mm, inner radious further from the IP
+  beampipe.length = 5297 # mm, cone length
+  beampipe.r1 = 66 # mm, inner radius closer to the IP
+  beampipe.r2 = 66 # mm, inner radious further from the IP
   beampipe.dr = 2 # mm, cone radial thickness
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -4,14 +4,14 @@ from math import sqrt, cos, log, tan, pi, log10
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath, AddressOf
-from ROOT import TLorentzVector, TDatabasePDG
+from ROOT import TLorentzVector, TDatabasePDG, TCrown
 
 import plot_utils as ut
 
 #_____________________________________________________________________________
 def main():
 
-    #infile = "../data/test/lmon.root"
+    infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
@@ -22,10 +22,12 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
-    infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
+    #infile = "../data/lmon_beam_18_beff2_10Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
 
-    iplot = 7
+    iplot = 8
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -35,6 +37,8 @@ def main():
     funclist.append( el_hit_y ) # 5
     funclist.append( el_hit_z ) # 6
     funclist.append( el_hit_xy ) # 7
+    funclist.append( el_Q3eR_xy ) # 8
+    funclist.append( gen_vtx_z ) # 9
 
     #input
     inp = TFile.Open(infile)
@@ -68,7 +72,7 @@ def el_en():
     hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
 
     tree.Draw("el_gen >> hEnAll")
-    tree.Draw("el_gen >> hEnTag", "lowQ2_IsHit == 1")
+    #tree.Draw("el_gen >> hEnTag", "lowQ2_IsHit == 1")
     #tree.Draw("lowQ2_en/1e3 >> hEnTag", "lowQ2_IsHit == 1")
     #tree.Draw("lowQ2_EnPrim/1e3 >> hEnTag", "lowQ2_IsHit == 1")
 
@@ -83,15 +87,15 @@ def el_en():
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.05, 0.02)
 
-    #hEnAll.Draw()
+    hEnAll.Draw()
     #hEnTag.Draw("same")
-    hEnTag.Draw()
+    #hEnTag.Draw()
 
     leg = ut.prepare_leg(0.2, 0.8, 0.2, 0.1, 0.035)
     #leg.AddEntry(hEnAll, "All electrons", "l")
     #leg.AddEntry(hEnAll, "All quasi-real electrons", "l")
     leg.AddEntry(hEnAll, "All bremsstrahlung electrons", "l")
-    leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
+    #leg.AddEntry(hEnTag, "Electrons hitting the tagger", "l")
     #leg.Draw("same")
 
     ut.invert_col(rt.gPad)
@@ -108,7 +112,8 @@ def el_theta():
     #tmin = 3
     #tmax = TMath.Pi()
     tmin = 0
-    tmax = 1e-1
+    #tmax = 1e-1
+    tmax = 0.04
 
     can = ut.box_canvas()
 
@@ -425,6 +430,85 @@ def el_hit_xy():
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
+
+#_____________________________________________________________________________
+def el_Q3eR_xy():
+
+    #electron hit at Q3eR position in x and y
+
+    #dxy = 25
+    #dxy = 140
+    dxy = 700
+
+    #xbin = 0.1
+    xbin = 1
+    xmin = 400
+    #xmin = 460
+    xmax = xmin+dxy
+
+    #ybin = 0.1
+    ybin = 1
+    #ymin = -50
+    ymin = -dxy/2
+    ymax = ymin+dxy
+
+    can = ut.box_canvas()
+
+    hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "Q3eR_IsHit==1")
+    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "", "", 10000)
+    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "Q3eR_hx>500")
+    tree.Draw("Q3eR_hy:Q3eR_hx >> hXY")
+
+    print "Entries:", hXY.GetEntries()
+
+    ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.08, 0.12)
+
+    hXY.SetMinimum(0.98)
+    hXY.SetContour(300)
+
+    hXY.Draw()
+
+    #Q3eR entering radius
+    r1 = TCrown(472.033, 0, 40, 0)
+    r1.SetLineColor(rt.kOrange)
+    r1.SetLineStyle(rt.kDashed)
+    r1.SetLineWidth(3)
+    r1.Draw("same")
+
+    gPad.SetGrid()
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_Q3eR_xy
+
+#_____________________________________________________________________________
+def gen_vtx_z():
+
+    #generated vertex position along z
+
+    vbin = 1
+    vmin = -100
+    vmax = 100
+
+    can = ut.box_canvas()
+    hZ = ut.prepare_TH1D("hZ", vbin, vmin, vmax)
+
+    tree.Draw("vtx_z >> hZ")
+
+    #gPad.SetLogy()
+
+    hZ.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#gen_vtx_z
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

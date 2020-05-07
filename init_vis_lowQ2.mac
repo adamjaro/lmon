@@ -20,7 +20,8 @@
 /run/initialize
 
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_10kevt.tx
-/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt.tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt.tx
+/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_beff2_1p2Mevt.tx
 
 #/lmon/input/type pythia6
 #/lmon/input/pythia6/select 2112
