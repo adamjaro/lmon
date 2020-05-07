@@ -67,6 +67,7 @@ add_custom_command (
 option(BUILD_CENTRAL "Build central detector" OFF)
 configure_file(central_config.h.in central_config.h)
 if(BUILD_CENTRAL)
+  link_directories($ENV{HOME}/sim/magnetic_field/BeastMagneticField/install/lib)
   add_subdirectory(central)
   list(APPEND EXTRA_LIBS central)
   list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/central/include")

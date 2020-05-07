@@ -37,8 +37,16 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   //conical shape
   G4Cons *shape = new G4Cons(fNam, r2, r2+dr, r1, r1+dr, length/2, 0, 360*deg);
 
+  //transparency for particles
+  fIsTransparent = false;
+  geo->GetOptB(fNam, "transparent", fIsTransparent);
+
   //logical volume
-  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Fe");
+  G4String mat_name = "G4_Al";
+  if(fIsTransparent) {
+    mat_name = "G4_Galactic";
+  }
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial(mat_name);
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //vessel visibility
@@ -56,6 +64,8 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
 //_____________________________________________________________________________
 G4bool ConeAperture::ProcessHits(G4Step *step, G4TouchableHistory*) {
+
+  if(fIsTransparent) return true;
 
   //remove the track entering the cone aperture vessel
   G4Track *track = step->GetTrack();

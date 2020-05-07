@@ -1,13 +1,23 @@
 
 new top topv
 
-  topv.xsiz = 2000 # mm
-  topv.ysiz = 2000 # mm
-  topv.zsiz = 2000 # mm
+  topv.xsiz = 5000 # mm
+  topv.ysiz = 5000 # mm
+  topv.zsiz = 40000 # mm
 
-new CentralDetector central
+new CentralDetector central # set to create central detectors
 
-#  lowQ2.zpos = -40
-#  lowQ2.xpos = 10
-#  lowQ2.rot_y = -0.3
+new BoxCalR ecal # backward electromagnetic calorimeter
+
+  ecal.zpos = -3280
+
+new SolenoidBeAST solenoid # central solenoid magnet
+
+  #field map
+  solenoid.map = ~sim/magnetic_field/BeastMagneticField/data/mfield.4col.dat
+
+include ../config/geom_beamline.in
+
+#make the central part of the beam pipe transparent
+central_beampipe.transparent = 1
 

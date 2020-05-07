@@ -12,6 +12,8 @@ class CentralBuilder {
 
   private:
 
+    void AddDetector(unsigned int i); // add detector or component
+
     G4LogicalVolume *fTop; // top world volume
 
     GeoParser *fGeo; // geometry parser

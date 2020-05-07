@@ -24,7 +24,7 @@ class ConeAperture : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // compoment name
 
-
+    G4bool fIsTransparent; // transparency for particles
 
 
 

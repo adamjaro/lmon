@@ -41,17 +41,22 @@ new BeamQuadrupole Q2eR # Q1eR quadrupole
 
 new ConeAperture beampipe # beam aperture in front of quadrupole magnets
 
-  beampipe.zpos = 0 # mm, front face of the cone along z
-  beampipe.length = 5297 # mm, cone length
-  beampipe.r1 = 66 # mm, inner radius closer to the IP
-  beampipe.r2 = 66 # mm, inner radious further from the IP
+  #beampipe.zpos = 0 # mm, front face of the cone along z
+  #beampipe.length = 5297 # mm, cone length
+  #beampipe.r1 = 66 # mm, inner radius closer to the IP
+  beampipe.zpos = -3480 # mm,  after ecal
+  beampipe.length = 1817 # mm
+  beampipe.r1 = 80 # mm
+  beampipe.r2 = 66 # mm, inner radius further from the IP
   beampipe.dr = 2 # mm, cone radial thickness
 
+new ConeAperture central_beampipe # beam pipe in front of ecal
 
-
-
-
-
+  central_beampipe.zpos = 0 # mm
+  central_beampipe.length = 3480
+  central_beampipe.r1 = 66
+  central_beampipe.r2 = 66
+  central_beampipe.dr = 2
 
 
 

@@ -23,10 +23,11 @@
 #/vis/viewer/set/targetPoint 0 0 -2250 cm # magnet
 #/vis/viewer/set/targetPoint 0 0 -3185 cm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
-/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
+#/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
 #/vis/viewer/set/targetPoint 0 0 -5.297 meter # Q1eR magnet
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 #/vis/viewer/set/targetPoint 0.472 0 -37.995 meter # Q3eR magnet
+/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
 
 #
 # Specify zoom value:
@@ -39,8 +40,8 @@
 #
 # Draw coordinate axes:
 #/vis/scene/add/axes 0 0 -20.75 1 meter # exit window
-#/vis/scene/add/axes 0 0 -3185 10.5 cm
-#/vis/scene/add/axes 0 0 0 0.2 m
+#/vis/scene/add/axes 0 0 -3280 105 mm
+#/vis/scene/add/axes 0 0 0 0.1 m
 #/vis/scene/add/axes 0.4 0 -27 0.1 meter # low Q^2 tagger
 #/vis/scene/add/axes 0.267 0 -27 0.1 meter # beam along the tagger
 #
