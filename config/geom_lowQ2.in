@@ -6,7 +6,7 @@ new top topv
 
   topv.xsiz = 2000 # mm
   topv.ysiz = 2000 # mm
-  topv.zsiz = 35000 # mm
+  topv.zsiz = 40000 # mm
 
 #low Q^2 tagger
 new BoxCalV2 lowQ2
@@ -16,18 +16,21 @@ new BoxCalV2 lowQ2
   lowQ2.rot_y = -0.02 # rad, rotation in x-z plane by rotation along y
   lowQ2.select_prim = 1 # primary tracks only
 
-#beamline B2eR magnet
-new BeamMagnetV2 B2eR
+#beamline
+include ../config/geom_beamline.in
 
-  B2eR.zpos = -12254 # mm, center of the magnet along z
+#beamline B2eR magnet
+#new BeamMagnetV2 B2eR
+
+#  B2eR.zpos = -12254 # mm, center of the magnet along z
 
 #beam pipe placeholder in front of B2eR magnet
-new ConeAperture beampipe
+#new ConeAperture beampipe
 
-  beampipe.zpos = 0 # mm, front face of the cone along z
-  beampipe.length = 9503 # mm, cone length
-  beampipe.r1 = 139 # mm, inner radius closer to the IP
-  beampipe.r2 = 139 # mm, inner radious further from the IP
-  beampipe.dr = 2 # mm, cone radial thickness
+#  beampipe.zpos = 0 # mm, front face of the cone along z
+#  beampipe.length = 9503 # mm, cone length
+#  beampipe.r1 = 139 # mm, inner radius closer to the IP
+#  beampipe.r2 = 139 # mm, inner radious further from the IP
+#  beampipe.dr = 2 # mm, cone radial thickness
 
 

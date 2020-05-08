@@ -1,7 +1,7 @@
 
 //_____________________________________________________________________________
 //
-// beamline dipole magnet, version 2, intended first for B2eR
+// beamline dipole magnet, version 2
 //
 //_____________________________________________________________________________
 
@@ -28,12 +28,12 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4cout << "  BeamMagnetV2: " << fNam << G4endl;
 
   //position along z
-  G4double zpos = geo->GetD(fNam, "zpos") * mm;
+  G4double zpos = geo->GetD(fNam, "zpos") * mm; // center along z
 
   //conical inner core
-  G4double length = 5.5*meter;
-  G4double r1 = 0.097*meter;
-  G4double r2 = 0.139*meter;
+  G4double length = geo->GetD(fNam, "length") * mm; // total length in z
+  G4double r1 = geo->GetD(fNam, "r1") * mm; // entrance radius
+  G4double r2 = geo->GetD(fNam, "r2") * mm; // exit radius
 
   G4String nam_inner = fNam+"_inner";
   G4Cons *shape_inner = new G4Cons(nam_inner, 0, r2, 0, r1, length/2, 0, 360*deg);
@@ -43,9 +43,8 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   vol_inner->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
   //magnetic field inside the inner core
-  G4double dipole_field = -0.198;
-  geo->GetOptD(fNam, "field", dipole_field);
-  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, dipole_field*tesla, 0));
+  G4double dipole_field = geo->GetD(fNam, "field") * tesla; // magnet field
+  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, dipole_field, 0));
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
   fman->CreateChordFinder(field);
@@ -56,7 +55,7 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_inner, nam_inner, top, false, 0);
 
   //cylindrical outer shape
-  G4double r3 = 0.2*meter;
+  G4double r3 = geo->GetD(fNam, "rout") * mm; // vessel outer radius
   G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., r3, length/2-1e-4*meter, 0., 360.*deg);
 
   //magnet vessel around the inner magnetic core

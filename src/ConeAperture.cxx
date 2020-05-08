@@ -5,6 +5,9 @@
 // no secondaries are created from absorbed particles
 //_____________________________________________________________________________
 
+//ROOT
+#include "TMath.h"
+
 //Geant
 #include "G4Cons.hh"
 #include "G4LogicalVolume.hh"
@@ -12,6 +15,8 @@
 #include "G4NistManager.hh"
 #include "G4PVPlacement.hh"
 #include "G4VisAttributes.hh"
+#include "G4Transform3D.hh"
+#include "G4RotationMatrix.hh"
 
 //local classes
 #include "GeoParser.h"
@@ -23,8 +28,12 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   G4cout << "  ConeAperture: " << fNam << G4endl;
 
-  //front face of the cone along z
+  //front face of the cone along z, mm
   G4double zpos = geo->GetD(fNam, "zpos") * mm;
+
+  //front face in x, mm
+  G4double xpos = 0;
+  geo->GetOptD(fNam, "xpos", xpos);
 
   //cone length
   G4double length = geo->GetD(fNam, "length") * mm;
@@ -57,8 +66,20 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   //vis_vessel->SetForceAuxEdgeVisible(true);
   vol->SetVisAttributes(vis_vessel);
 
+  //aperture vessel in top module
+  G4double angle = 0; // rotation in x along the y axis, rad
+  geo->GetOptD(fNam, "angle", angle);
+  G4RotationMatrix rot_y(G4ThreeVector(0, 1, 0), angle*rad); //is typedef to CLHEP::HepRotation
+
+  //center position
+  xpos = xpos -(length/2)*TMath::Tan(angle);
+  G4ThreeVector pos(xpos, 0, zpos-length/2.);
+
+  //placement with rotation and center position
+  G4Transform3D transform(rot_y, pos); // is HepGeom::Transform3D
+
   //put the cone to the top volume
-  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos-length/2.), vol, fNam, top, false, 0);
+  new G4PVPlacement(transform, vol, fNam, top, false, 0);
 
 }//ConeAperture
 

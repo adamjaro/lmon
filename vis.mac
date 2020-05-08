@@ -27,7 +27,8 @@
 #/vis/viewer/set/targetPoint 0 0 -5.297 meter # Q1eR magnet
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 #/vis/viewer/set/targetPoint 0.472 0 -37.995 meter # Q3eR magnet
-/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
+#/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
+/vis/viewer/set/targetPoint 0 0 -15010 mm # after B2eR
 
 #
 # Specify zoom value:

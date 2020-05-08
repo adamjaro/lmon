@@ -9,9 +9,12 @@ new BeamMagnetV2 B2eR # B2eR beam dipole
 
   B2eR.zpos = -12250 # mm, center of the magnet along z
   B2eR.field = -0.200125 # tesla, nominal by Scott
-  #B2eR.field = -0.18 # tesla
+  B2eR.length = 5500 # mm, total length along z
+  B2eR.r1 = 97 # mm, entrance radius
+  B2eR.r2 = 139 # mm, exit radius
+  B2eR.rout = 200 # mm, vessel outer radius
 
-new BoxCalV2 Q3eR # get electrons at Q3eR location
+new BoxCalV2 Q3eR # marker at Q3eR location
 
   Q3eR.zpos = -37995.904 # mm, nominal by Scott
   Q3eR.xpos = 472.033 # mm
@@ -31,7 +34,7 @@ new BeamQuadrupole Q1eR # Q1eR quadrupole
   Q1eR.r2 = 79 # mm
   Q1eR.grad = 13.428092 # T/m
 
-new BeamQuadrupole Q2eR # Q1eR quadrupole
+new BeamQuadrupole Q2eR # Q2eR quadrupole
 
   Q2eR.zpos = -8300 # mm
   Q2eR.length = 1400 # mm
@@ -57,6 +60,27 @@ new ConeAperture central_beampipe # beam pipe in front of ecal
   central_beampipe.r1 = 66
   central_beampipe.r2 = 66
   central_beampipe.dr = 2
+
+new ConeAperture rear_beampipe # beam after B2eR
+
+  rear_beampipe.zpos = -15010 # mm, entrance position in z
+  rear_beampipe.xpos = 50.42 # mm, entrance position in x
+  rear_beampipe.length = 22980 # total length
+  rear_beampipe.angle = -0.018332 # rad
+  #rear_beampipe.r1 = 191 # mm, B2eR exit radius + shift in x
+  rear_beampipe.r1 = 139 # mm, B2eR exit radius
+  rear_beampipe.r2 = 40 # mm, Q3eR entrance radius
+  rear_beampipe.dr = 2 # mm, vessel thickness
+  rear_beampipe.transparent = 1 # transparent for particles
+
+
+
+
+
+
+
+
+
 
 
 

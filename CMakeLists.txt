@@ -65,23 +65,24 @@ add_custom_command (
 
 #central detector
 option(BUILD_CENTRAL "Build central detector" OFF)
-configure_file(central_config.h.in central_config.h)
+set(BEAST_INSTALL "$ENV{HOME}/sim/magnetic_field/BeastMagneticField/install" CACHE PATH "BeAST solenoid field")
+configure_file(include/central_config.h.in central_config.h)
 if(BUILD_CENTRAL)
-  link_directories($ENV{HOME}/sim/magnetic_field/BeastMagneticField/install/lib)
   add_subdirectory(central)
-  list(APPEND EXTRA_LIBS central)
-  list(APPEND EXTRA_INCLUDES "${PROJECT_SOURCE_DIR}/central/include")
+  link_directories(${BEAST_INSTALL}/lib)
+  set(LIB_CENTRAL central bmf)
+  set(INCLUDE_CENTRAL "${PROJECT_SOURCE_DIR}/central/include")
 endif()
 
 #shared library
 #add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})
-target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${EXTRA_INCLUDES})
-target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS} ${EXTRA_LIBS})
+target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${INCLUDE_CENTRAL})
+target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
 
 #binary executable
 add_executable(${BIN} run.cxx)
-target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${BOOST_LIB})
+target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${BOOST_LIB} ${LIB_CENTRAL})
 
 #copy macros to build directory
 set(MACRO
