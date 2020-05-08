@@ -33,11 +33,12 @@ ExitWindowV2::ExitWindowV2(const G4String& nam, GeoParser *geo, G4LogicalVolume 
 
   G4cout << "  ExitWindowV2: " << fNam << G4endl;
 
-  //position along z
+  //position along z and x
   G4double zpos = geo->GetD(fNam, "zpos") * mm;
+  G4double xpos = geo->GetD(fNam, "xpos") * mm;
 
   G4double dz = 2.5*meter; // length along z
-  G4double radius = 10*cm; // inner radius
+  G4double radius = geo->GetD(fNam, "radius") * mm; // inner radius
   G4double thickness = 1*mm; // exit window thickness
 
   //cylindrical U-shape
@@ -59,7 +60,7 @@ ExitWindowV2::ExitWindowV2(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   G4RotationMatrix rot(G4ThreeVector(0, 1, 0), -0.1*rad); //typedef to CLHEP::HepRotation
 
   //placement with rotation at a given position along z
-  G4ThreeVector pos(0, 0, zpos);
+  G4ThreeVector pos(xpos, 0, zpos);
   G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
 
   new G4PVPlacement(transform, vol, fNam, top, false, 0);

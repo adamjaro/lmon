@@ -6,22 +6,25 @@ new top topv
 
   topv.xsiz = 2000 # mm
   topv.ysiz = 2000 # mm
-  topv.zsiz = 35000 # mm
+  topv.zsiz = 40000 # mm
 
 #photon exit window version 2
 new ExitWindowV2 ew
 
   ew.zpos = -20750 # mm
+  ew.xpos = 60 # mm
+  ew.radius = 130 # mm, inner radius
 
 #collimator
 new CollimatorV2 collim
 
-  collim.zpos = -22100 # mm
+  collim.zpos = -27000 # mm
+  collim.siz = 300 # mm, outer size
 
 #dipole spectrometer magnet
 new Magnet lumi_dipole
 
-  lumi_dipole.zpos = -22500 # mm
+  lumi_dipole.zpos = -28000 # mm
 
 #luminosity detectors
 
@@ -29,22 +32,31 @@ new Magnet lumi_dipole
 new BoxCalV2 phot
 #new CompCal phot
 
-  phot.zpos = -31850 # mm
+  phot.zpos = -37000 # mm
   phot.ypos = 0
 
 #up spectrometer calorimeter
 new BoxCalV2 up
 #new CompCal up
 
-  up.zpos = -31350 # mm
+  up.zpos = -36500 # mm
   up.ypos = 42 # mm
 
 #down spectrometer calorimeter
 new BoxCalV2 down
 #new CompCal down
 
-  down.zpos = -31350 # mm
+  down.zpos = -36500 # mm
   down.ypos = -42 # mm
+
+
+
+
+
+
+
+
+
 
 
 

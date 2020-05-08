@@ -6,6 +6,30 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def plot_spec_acc():
+
+    #acceptance parametrization
+    from spec_acc import spec_acc
+    acc0 = spec_acc()
+    acc = spec_acc(8200, 0.26, 42, 242)
+
+    #acc.length = 8200
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(1, 0, 22, 1)
+    frame.Draw()
+
+    acc0.acc_func.Draw("same")
+    acc0.acc_func.SetLineStyle(rt.kDashed)
+    acc.acc_func.Draw("same")
+
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
 def acc_from_tmp():
 
     #spectrometer acceptance from temporary file
@@ -493,7 +517,7 @@ if __name__ == "__main__":
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 0
+    iplot = 9
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -504,6 +528,7 @@ if __name__ == "__main__":
     funclist.append( up_down_corrected ) # 6
     funclist.append( acceptance_autobin ) # 7
     funclist.append( acc_from_tmp ) # 8
+    funclist.append( plot_spec_acc ) # 9
 
     #open the input
     inp = TFile.Open(infile)

@@ -1,0 +1,21 @@
+
+new top topv
+
+  topv.xsiz = 5000 # mm
+  topv.ysiz = 5000 # mm
+  topv.zsiz = 40000 # mm
+
+new CentralDetector central # set to create central detectors
+
+new BoxCalR ecal # backward electromagnetic calorimeter
+
+  ecal.zpos = -3280
+
+new SolenoidBeAST solenoid # central solenoid magnet
+
+  #field map
+  solenoid.map = ~sim/magnetic_field/BeastMagneticField/data/mfield.4col.dat
+
+#make the central part of the beam pipe transparent
+central_beampipe.transparent = 1
+

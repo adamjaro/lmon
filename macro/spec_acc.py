@@ -6,18 +6,18 @@ from ROOT import TF1
 #_____________________________________________________________________________
 class spec_acc:
     #_____________________________________________________________________________
-    def __init__(self):
+    def __init__(self, l=8550., field=0.25, ymin=42., ymax=252.):
 
         #magnet and spectrometer
-        self.field = 0.25 # T, magnet field
+        self.field = field # T, magnet field
         self.mlen = 0.6 # m, magnet length along z
-        self.length = 8550. # mm, distance from magnet to spectrometer detectors
+        self.length = l # mm, distance from magnet to spectrometer detectors
 
         pT = 0.3*self.field*self.mlen # GeV
 
         #detector positions, mm
-        self.y_min = 42.
-        self.y_max = 252.
+        self.y_min = ymin
+        self.y_max = ymax
 
         #range for functions
         self.func_min = 2

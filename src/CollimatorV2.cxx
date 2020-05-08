@@ -35,7 +35,7 @@ CollimatorV2::CollimatorV2(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   G4double len = 30*cm;
 
   //outer size
-  G4double siz = 50*cm;
+  G4double siz = geo->GetD(fNam, "siz") * mm;
 
   //collimator shape
   G4Box *outer = new G4Box(fNam, siz/2, siz/2, len/2);

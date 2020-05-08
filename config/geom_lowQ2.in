@@ -4,33 +4,37 @@
 #top volume
 new top topv
 
-  topv.xsiz = 2000 # mm
-  topv.ysiz = 2000 # mm
+  topv.xsiz = 5000 # mm
+  topv.ysiz = 5000 # mm
   topv.zsiz = 40000 # mm
 
+#two tagger stations
+new BoxCalV2 lowQ2_1
+
+  lowQ2_1.zpos = -24000 # mm
+  lowQ2_1.xpos = 528.56 # mm
+  lowQ2_1.xsiz = 400 # mm
+  lowQ2_1.ysiz = 400 # mm
+  lowQ2_1.rot_y = -0.018332 # rad, rotation in x-z plane by rotation along y
+  lowQ2_1.select_prim = 1 # primary tracks only
+
+new BoxCalV2 lowQ2_2
+
+  lowQ2_2.zpos = -37000 # mm
+  lowQ2_2.xpos = 661.88 # mm
+  lowQ2_2.xsiz = 300 # mm
+  lowQ2_2.ysiz = 200 # mm
+  lowQ2_2.rot_y = -0.018332 # rad, rotation in x-z plane by rotation along y
+  lowQ2_2.select_prim = 1 # primary tracks only
+
 #low Q^2 tagger
-new BoxCalV2 lowQ2
+#new BoxCalV2 lowQ2
 
-  lowQ2.zpos = -27000 # mm
-  lowQ2.xpos = 472 # mm
-  lowQ2.rot_y = -0.02 # rad, rotation in x-z plane by rotation along y
-  lowQ2.select_prim = 1 # primary tracks only
+#  lowQ2.zpos = -27000 # mm
+#  lowQ2.xpos = 472 # mm
+#  lowQ2.rot_y = -0.02 # rad, rotation in x-z plane by rotation along y
+#  lowQ2.select_prim = 1 # primary tracks only
 
-#beamline
-include ../config/geom_beamline.in
 
-#beamline B2eR magnet
-#new BeamMagnetV2 B2eR
-
-#  B2eR.zpos = -12254 # mm, center of the magnet along z
-
-#beam pipe placeholder in front of B2eR magnet
-#new ConeAperture beampipe
-
-#  beampipe.zpos = 0 # mm, front face of the cone along z
-#  beampipe.length = 9503 # mm, cone length
-#  beampipe.r1 = 139 # mm, inner radius closer to the IP
-#  beampipe.r2 = 139 # mm, inner radious further from the IP
-#  beampipe.dr = 2 # mm, cone radial thickness
 
 
