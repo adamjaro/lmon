@@ -19,6 +19,7 @@
 #include "G4Transform3D.hh"
 #include "G4RotationMatrix.hh"
 #include "G4ThreeVector.hh"
+#include "G4PrimaryParticle.hh"
 
 //local classes
 #include "ExitWindowV2.h"
@@ -75,6 +76,9 @@ G4bool ExitWindowV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //primary only
   if( track->GetParentID() != 0 ) return true;
+
+  //G4cout << fNam << " " << track->GetParentID() << " ";// << G4endl;
+  //G4cout << track->GetDynamicParticle()->GetPDGcode() << " " << track->GetTotalEnergy() << G4endl;
 
   //first point on the exit window
   if( fPhotZ > 9998.) {

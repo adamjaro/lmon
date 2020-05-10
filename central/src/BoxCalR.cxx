@@ -53,13 +53,43 @@ BoxCalR::BoxCalR(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 //_____________________________________________________________________________
 G4bool BoxCalR::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  G4cout << "BoxCalR::ProcessHits" << G4endl;
+  //G4cout << "BoxCalR::ProcessHits" << G4endl;
 
   //remove the track
   G4Track *track = step->GetTrack();
   track->SetTrackStatus(fKillTrackAndSecondaries);
 
+  //primary track only
+  //if( track->GetParentID() != 0 ) return true;
+
+  //G4cout << track->GetTotalEnergy()/GeV << " " << track->GetDynamicParticle()->GetTotalEnergy()/GeV << " ";
+  //G4cout << track->GetTotalEnergy() - track->GetDynamicParticle()->GetTotalEnergy() << G4endl;
+
+  //G4cout << track->GetDynamicParticle()->GetPrimaryParticle() << G4endl;
+
+  //hit position
+  //const G4ThreeVector hp = step->GetPostStepPoint()->GetPosition();
+  //G4cout << hp.x() << " " << hp.y() << " " << hp.z() <<G4endl;
+
   return true;
 
 }//ProcessHits
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -43,7 +43,7 @@ Magnet::Magnet(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) {
   mvol->SetVisAttributes(vis);
 
   //maginetic field
-  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0.25*tesla, 0, 0));
+  G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0.26*tesla, 0, 0));
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
   fman->CreateChordFinder(field);

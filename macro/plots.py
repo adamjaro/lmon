@@ -6,6 +6,55 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def phot_hits_xy():
+
+    xbin = 1
+    xmin = -120
+    xmax = 120
+
+    can = ut.box_canvas()
+
+    hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, xmin, xmax)
+
+    from BoxCalV2Hits import BoxCalV2Hits
+
+    hits = BoxCalV2Hits("phot", tree)
+
+    nevt = tree.GetEntries()
+    #nevt = 12
+
+    for ievt in xrange(nevt):
+
+        hits.read(ievt)
+
+        #if hits.GetN() <= 1: continue
+        #print hits.GetN()
+
+        for ihit in xrange(hits.GetN()):
+
+            if hits.GetPdg(ihit) == 22: continue
+            #if hits.GetPdg(ihit) != 22: continue
+
+            #if hits.GetEn(ihit) > 0.1: continue
+            #if hits.GetEn(ihit) < 1: continue
+
+            hX.Fill(hits.GetX(ihit), hits.GetY(ihit))
+
+            #print " ", hits.GetPdg(ihit), hits.GetX(ihit), hits.GetY(ihit), hits.GetZ(ihit), hits.GetEn(ihit)
+
+    print "Entries:", hX.GetEntries()
+
+    hX.SetMinimum(0.98)
+    hX.SetContour(300)
+
+    hX.Draw()
+
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#_____________________________________________________________________________
 def plot_spec_acc():
 
     #acceptance parametrization
@@ -211,7 +260,8 @@ def acceptance():
     hRec = ut.prepare_TH1D("hRec", ebin, emin, emax)
     hGen = ut.prepare_TH1D("hGen", ebin, emin, emax)
 
-    sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+    #sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
+    sel = "up_en>"+str(edet)+" && down_en>"+str(edet)
 
     #tree.Draw("phot_gen/1000 >> hRec", sel)
     #tree.Draw("phot_gen/1000 >> hGen")
@@ -285,9 +335,11 @@ def up_down_en():
 
     sel = "up_en>"+str(edet*1e3)+" && down_en>"+str(edet*1e3)
 
-    tree.Draw("(up_en+down_en)/1000. >> hE", sel)
+    #tree.Draw("(up_en+down_en)/1000. >> hE", sel)
     #tree.Draw("up_en/1000. >> hE")#, sel)
     #tree.Draw("down_en/1000. >> hE")
+    #tree.Draw("up_en >> hE")#, sel)
+    tree.Draw("down_en >> hE")
 
     print "Entries:", hE.GetEntries()
 
@@ -456,7 +508,8 @@ def phot_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    tree.Draw("phot_en/1000. >> hE")
+    #tree.Draw("phot_en/1000. >> hE")
+    tree.Draw("phot_en >> hE")
     #tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
 
     #cross section parametrization
@@ -504,20 +557,20 @@ def phot_en():
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    #infile = "../data/lmon.root"
+    infile = "../data/test/lmon.root"
     #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
+    #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 9
+    iplot = 10
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -529,6 +582,7 @@ if __name__ == "__main__":
     funclist.append( acceptance_autobin ) # 7
     funclist.append( acc_from_tmp ) # 8
     funclist.append( plot_spec_acc ) # 9
+    funclist.append( phot_hits_xy ) # 10
 
     #open the input
     inp = TFile.Open(infile)

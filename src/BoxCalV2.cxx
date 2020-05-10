@@ -8,6 +8,7 @@
 //_____________________________________________________________________________
 
 //C++
+#include <vector>
 
 //ROOT
 #include "TTree.h"
@@ -28,6 +29,8 @@
 #include "BoxCalV2.h"
 #include "DetUtils.h"
 #include "GeoParser.h"
+
+using namespace std;
 
 //_____________________________________________________________________________
 BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
@@ -82,11 +85,6 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
   //put to the top volume
   new G4PVPlacement(transform, vol, fNam, top, false, 0);
 
-  //load flag for primary particles in ProcessHits if defined
-  fSelectPrim = false;
-  geo->GetOptB(fNam, "select_prim", fSelectPrim);
-  //G4cout << "  BoxCalV2, select_prim: " << fSelectPrim << G4endl;
-
   //clear all event variables
   ClearEvent();
 
@@ -97,39 +95,42 @@ G4bool BoxCalV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //remove the track
   G4Track *track = step->GetTrack();
-
-  //G4cout << track->GetParentID() << G4endl;
-  //G4cout << "before: " << track->GetTotalEnergy() << G4endl;
-  //G4cout << "before: " << track->GetKineticEnergy() << G4endl;
-
   track->SetTrackStatus(fKillTrackAndSecondaries);
 
-  //G4cout << "after:  " << track->GetTotalEnergy() << G4endl;
-  //G4cout << G4endl;
+  //mark the hit
+  fIsHit = kTRUE;
 
-  fEnAll += track->GetTotalEnergy();
+  //energy in current step
+  G4double en_step = track->GetTotalEnergy();
 
-  //primary track only
-  if( fSelectPrim == true && track->GetParentID() != 0 ) return true;
-
-  //consider only first hit by the primary track
-  if(fIsHit == kFALSE) {
-
-    fIsHit = kTRUE;
-  } else {
-    return true;
+  //add possible secondaries to the energy
+  const vector<const G4Track*> *sec = step->GetSecondaryInCurrentStep();
+  vector<const G4Track*>::const_iterator isec = sec->begin();
+  while(isec != sec->end()) {
+    en_step += (*isec)->GetTotalEnergy();
+    isec++;
   }
 
-  //energy
-  fEnPrim = track->GetTotalEnergy();
+  //add energy in step to the total energy in event
+  fEnAll += en_step/GeV;
 
   //hit position
   const G4ThreeVector hp = step->GetPostStepPoint()->GetPosition();
-  fHx = hp.x();
-  fHy = hp.y();
-  fHz = hp.z();
 
-  //G4cout << "BoxCalV2::ProcessHits: " << track->GetParentID() << G4endl;
+  //add the hit
+  fHitPdg.push_back( track->GetDynamicParticle()->GetPDGcode() );
+  fHitEn.push_back( en_step/GeV );
+  fHitX.push_back( hp.x() );
+  fHitY.push_back( hp.y() );
+  fHitZ.push_back( hp.z() );
+
+  //first hit by primary particle
+  if(!fPrimHit && track->GetParentID() == 0) {
+    fPrimHit = true;
+    fHx = hp.x();
+    fHy = hp.y();
+    fHz = hp.z();
+  }
 
   return true;
 
@@ -144,12 +145,17 @@ void BoxCalV2::CreateOutput(TTree *tree) {
 
   u.AddBranch("_IsHit", &fIsHit, "O");
 
-  u.AddBranch("_EnPrim", &fEnPrim, "D");
   u.AddBranch("_en", &fEnAll, "D");
 
   u.AddBranch("_hx", &fHx, "D");
   u.AddBranch("_hy", &fHy, "D");
   u.AddBranch("_hz", &fHz, "D");
+
+  u.AddBranch("_HitPdg", &fHitPdg);
+  u.AddBranch("_HitEn", &fHitEn);
+  u.AddBranch("_HitX", &fHitX);
+  u.AddBranch("_HitY", &fHitY);
+  u.AddBranch("_HitZ", &fHitZ);
 
 }//CreateOutput
 
@@ -158,12 +164,19 @@ void BoxCalV2::ClearEvent() {
 
   fIsHit = kFALSE;
 
-  fEnPrim = -9999.;
   fEnAll = 0;
 
-  fHx = 9999.;
-  fHy = 9999.;
-  fHz = 9999.;
+  fHx = 99999.;
+  fHy = 99999.;
+  fHz = 99999.;
+
+  fHitPdg.clear();
+  fHitEn.clear();
+  fHitX.clear();
+  fHitY.clear();
+  fHitZ.clear();
+
+  fPrimHit = false;
 
 }//ClearEvent
 

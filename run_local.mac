@@ -24,8 +24,6 @@
 #/lmon/input/pythia6/select -211
 #/lmon/input/pythia6/select 22
 
-#/lmon/input/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt_evt.dat
-
 /lmon/output/name ../data/test/lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
 

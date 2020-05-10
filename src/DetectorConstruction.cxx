@@ -111,6 +111,9 @@ void DetectorConstruction::FinishEvent() const {
   //fill the output tree
   fOut->FillTree();
 
+  //G4cout << "DetectorConstruction::FinishEvent" << G4endl;
+  //G4cout << G4endl;
+
 }//FinishEvent
 
 //_____________________________________________________________________________

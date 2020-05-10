@@ -3,14 +3,16 @@
 
 #detectors and components
 /lmon/construct/geometry ../config/geom_lumi.in
+#/lmon/construct/geometry ../config/geom_all.in
 
 /run/initialize
 
-#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+/lmon/input/tx/select 22
 
-#/lmon/output/name ../data/test/lmon.root
+/lmon/output/name ../data/test/lmon.root
 
 
 
-/run/beamOn 3
+/run/beamOn 100000
 

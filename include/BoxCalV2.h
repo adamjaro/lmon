@@ -30,37 +30,22 @@ class BoxCalV2 : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // detector name
 
-    Bool_t fSelectPrim; // flag to select only primary track in ProcessHits
+    Bool_t fIsHit; // hit in event
+    Double_t fEnAll; // sum of energy of all particles in event, GeV
 
-    Bool_t fIsHit; // hit by primary particle
-    Double_t fEnPrim; // energy of the primary particle
-    Double_t fEnAll; // sum of energy of all particles in event
+    Double_t fHx; // first hit by primary particle in x, mm
+    Double_t fHy; // first hit by primary particle in y, mm
+    Double_t fHz; // first hit by primary particle in z, mm
 
-    Double_t fHx; // hit position in x
-    Double_t fHy; // hit position in y
-    Double_t fHz; // hit position in z
+    //hits array
+    std::vector<Int_t> fHitPdg; // particle pdg
+    std::vector<Float_t> fHitEn; // hit energy, GeV
+    std::vector<Float_t> fHitX; // hit position in x, mm
+    std::vector<Float_t> fHitY; // hit position in y, mm
+    std::vector<Float_t> fHitZ; // hit position in z, mm
 
-/*
-    G4VPhysicalVolume *fSens; //detector sensitive volume
-    OpDet *fOpDet; // optical detector attached to the crystal
+    G4bool fPrimHit; // flag for hit by primary particle
 
-    void AddBranch(const std::string& nam, Double_t *val, TTree *tree);
-    void AddBranch(const std::string& nam, ULong64_t *val, TTree *tree);
-
-    Double_t fEdep; // deposited energy in the detector
-    Double_t fX; // x of first point in the detector
-    Double_t fY; // y of first point
-    Double_t fZ; // z of first point
-
-    ULong64_t fNphot; // number of optical photons
-    ULong64_t fNscin; // scintillation photons
-    ULong64_t fNcerenkov; // Cerenkov photons
-
-    G4int fScinType; // scintillation process type
-    G4int fScinSubType; // scintillation process subtype
-    G4int fCerenkovType; // Cerenkov process type
-    G4int fCerenkovSubType; // Cerenkov process subtype
-*/
 };
 
 #endif
