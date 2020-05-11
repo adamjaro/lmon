@@ -9,7 +9,8 @@ new CentralDetector central # set to create central detectors
 
 new BoxCalR ecal # backward electromagnetic calorimeter
 
-  ecal.zpos = -3280
+  ecal.zpos = -3280 # mm, position of front face in z
+  ecal.r1 = 80 # mm, inner radius
 
 new SolenoidBeAST solenoid # central solenoid magnet
 

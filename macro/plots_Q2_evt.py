@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #infile = "../data/test/lmon.root"
+    infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
@@ -21,9 +21,9 @@ def main():
     #infile = "../data/lmon_pythia_5M_1Mevt.root"
     #infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
-    infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 10
+    iplot = 0
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -44,7 +44,13 @@ def main():
 
     #selection for hit in tagger, contains B2eR aperture
     global gQ2sel
-    gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
+    #gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
+    #gQ2sel = "lowQ2_IsHit==1"
+    #gQ2sel = "lowQ2s1_IsHit==1"
+    #gQ2sel = "lowQ2s2_IsHit==1"
+    #gQ2sel = "ecal_IsHit==1"
+    #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+    gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
 
     #open the input and run
     inp = TFile.Open(infile)
@@ -101,7 +107,7 @@ def evt_Log10_Q2():
     leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_Log10_Q2

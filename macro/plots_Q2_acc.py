@@ -24,10 +24,11 @@ def main():
 def acc_quasi_real(do_plot=True):
 
     #Quasi-real input
+    inp_qr = "../data/test/lmon.root"
     #inp_qr = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
-    inp_qr = "../data/lmon_18x275_qr_Qc_10Mevt.root"
+    #inp_qr = "../data/lmon_18x275_qr_Qc_10Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
 
     #range in the log_10(Q^2)
@@ -36,7 +37,7 @@ def acc_quasi_real(do_plot=True):
     lqmax = 0
 
     #bins calculation
-    prec = 0.04
+    prec = 0.08
     delt = 1e-6
 
     #number of events, 0 for all

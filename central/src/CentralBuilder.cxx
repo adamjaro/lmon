@@ -9,6 +9,7 @@
 #include <vector>
 
 //ROOT
+#include "Rtypes.h"
 
 //Geant
 #include "G4LogicalVolume.hh"

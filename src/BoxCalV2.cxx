@@ -48,7 +48,7 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
   G4Box *shape = new G4Box(fNam, (xsiz*mm)/2., (ysiz*mm)/2., (zsiz*mm)/2.);
 
   //PbWO4 material
-  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_PbWO4");
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_W");
 
   //logical volume
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);

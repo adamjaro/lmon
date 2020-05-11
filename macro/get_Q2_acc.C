@@ -3,16 +3,18 @@
 TGraphAsymmErrors get_Q2_acc(TTree *tree, Double_t ebeam, Double_t theta_max, Double_t prec, Double_t delt, ULong64_t nev=0) {
 
   //connect the tree
-  tree->SetBranchStatus("*", 0);
-  tree->SetBranchStatus("el_gen", 1);
-  tree->SetBranchStatus("el_theta", 1);
-  tree->SetBranchStatus("lowQ2_IsHit", 1);
+  //tree->SetBranchStatus("*", 0);
+  //tree->SetBranchStatus("el_gen", 1);
+  //tree->SetBranchStatus("el_theta", 1);
+  //tree->SetBranchStatus("lowQ2_IsHit", 1);
 
   Double_t el_gen, el_theta;
-  Bool_t lowQ2_IsHit;
+  Bool_t lowQ2_IsHit, lowQ2s1_IsHit, lowQ2s2_IsHit;
   tree->SetBranchAddress("el_gen", &el_gen);
   tree->SetBranchAddress("el_theta", &el_theta);
-  tree->SetBranchAddress("lowQ2_IsHit", &lowQ2_IsHit);
+  //tree->SetBranchAddress("lowQ2_IsHit", &lowQ2_IsHit);
+  tree->SetBranchAddress("lowQ2s1_IsHit", &lowQ2s1_IsHit);
+  tree->SetBranchAddress("lowQ2s2_IsHit", &lowQ2s2_IsHit);
 
   //number of events
   if(nev == 0) {
@@ -31,7 +33,10 @@ TGraphAsymmErrors get_Q2_acc(TTree *tree, Double_t ebeam, Double_t theta_max, Do
     valAll.push_back(lQ2);
 
     //selection for hit in the tagger and B2eR acceptance
-    if(lowQ2_IsHit != kTRUE || TMath::Pi()-el_theta > theta_max) {
+    //if(lowQ2_IsHit != kTRUE || TMath::Pi()-el_theta > theta_max) {
+    //if(lowQ2_IsHit != kTRUE) {
+    //if(lowQ2s2_IsHit != kTRUE) {
+    if(lowQ2s1_IsHit != kTRUE and lowQ2s2_IsHit != kTRUE) {
       continue;
     }
 

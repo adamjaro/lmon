@@ -7,12 +7,12 @@
 
 /run/initialize
 
-/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
-/lmon/input/tx/select 22
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx
+#/lmon/input/tx/select 22
 
 /lmon/output/name ../data/test/lmon.root
 
 
 
-/run/beamOn 100000
+/run/beamOn 10
 

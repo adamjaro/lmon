@@ -27,7 +27,7 @@ def main():
     #infile = "../data/lmon_beam_18_beff2_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
 
-    iplot = 8
+    iplot = 7
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -47,7 +47,8 @@ def main():
 
     #selection for hit in tagger, contains B2eR aperture
     global gQ2sel
-    gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
+    #gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
+    gQ2sel = "lowQ2_IsHit==1"
 
     #call the plot function
     funclist[iplot]()
@@ -426,7 +427,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
