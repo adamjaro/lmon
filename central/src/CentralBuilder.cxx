@@ -43,11 +43,16 @@ void CentralBuilder::AddDetector(unsigned int i) {
   //construct detector or component of type 'type'
   Detector *det = 0x0;
 
-  if( type == "BoxCalR" ) {
-    det = new BoxCalR(name, fGeo, fTop);
+  //static G4LogicalVolume *solenoid_vol = 0; // solenoid volume
 
-  } else if( type == "SolenoidBeAST" ) {
+  if( type == "SolenoidBeAST" ) {
     new SolenoidBeAST(name, fGeo, fTop);
+    //SolenoidBeAST *sol = new SolenoidBeAST(name, fGeo, fTop);
+    //solenoid_vol = sol->GetLogicalVolume();
+
+  } else if( type == "BoxCalR" ) {
+    det = new BoxCalR(name, fGeo, fTop);
+    //det = new BoxCalR(name, fGeo, solenoid_vol);
 
   }
 

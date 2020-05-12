@@ -17,6 +17,9 @@
 #include "G4VisAttributes.hh"
 #include "G4Tubs.hh"
 #include "G4FieldManager.hh"
+#include "G4SubtractionSolid.hh"
+#include "G4RotationMatrix.hh"
+#include "G4Transform3D.hh"
 
 //local classes
 #include "SolenoidBeAST.h"
@@ -31,16 +34,28 @@ SolenoidBeAST::SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume *top)
   G4cout << "  SolenoidBeAST: " << nam << G4endl;
 
   //solenoid dimensions
-  //G4double length = 10000*mm;
-  G4double length = 6556*mm;
-  G4double radius = 2500*mm;
+  G4double length = geo->GetD(nam, "length") * mm;
+  G4double radius = geo->GetD(nam, "radius") * mm;
 
-  //cylinder shape
-  G4Tubs *shape = new G4Tubs(nam, 0, radius, length/2, 0., 360.*deg);
+  G4double zcut = 0; // cutout at negative z, position, mm
+  G4double rcut = 0; // radius of the cutout
+  geo->GetOptD(nam, "zcut", zcut);
+  geo->GetOptD(nam, "rcut", rcut);
+
+  //shape
+  G4VSolid *shape = 0;
+  if(rcut < 1e-3) {
+    //default cylinder
+    shape = new G4Tubs(nam, 0, radius, length/2, 0., 360.*deg);
+  } else {
+    //cylinder with cutout at negative z
+    shape = CylWithCutout(nam, radius, length, zcut, rcut);
+  }
 
   //logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, nam);
+  fVol = vol;
 
   //field map
   string map = geo->GetS(nam, "map");
@@ -74,6 +89,8 @@ SolenoidBeAST::SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume *top)
 //_____________________________________________________________________________
 void SolenoidBeAST::Field::GetFieldValue(const G4double p[4], G4double *B) const {
 
+  //G4cout << "Field::GetFieldValue, " << p << " " << p[0] << " " << p[1] << " " << p[2] << G4endl;
+
   //coordinates in cm, field in T
   double bx, by, bz;
   fMap->GetFieldValue(p[0]/cm, p[1]/cm, p[2]/cm, bx, by, bz);
@@ -86,7 +103,30 @@ void SolenoidBeAST::Field::GetFieldValue(const G4double p[4], G4double *B) const
 
 }//GetFieldValue
 
+//_____________________________________________________________________________
+G4VSolid *SolenoidBeAST::CylWithCutout(G4String nam, G4double r, G4double len, G4double zs, G4double r1) {
 
+  G4cout << "SolenoidBeAST::CylWithCutout" << G4endl;
+
+  //outer cylinder
+  G4Tubs *shape_outer = new G4Tubs(nam, 0, r, len/2, 0., 360.*deg);
+
+  //cutout inner cylinder
+  G4double lcut = (len/2)+zs;
+  G4Tubs *cutout = new G4Tubs(nam, 0, r1, lcut/2, 0., 360.*deg);
+
+  //cutout position at negative zs
+  G4double zcut = zs - lcut/2;
+
+  G4RotationMatrix rot(0, 0, 0);
+  G4ThreeVector pos(0, 0, zcut);
+  G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
+
+  G4SubtractionSolid *shape = new G4SubtractionSolid(nam, shape_outer, cutout, transform);
+
+  return shape;
+
+}//CylWithCutout
 
 
 

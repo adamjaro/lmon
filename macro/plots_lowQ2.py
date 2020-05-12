@@ -393,39 +393,48 @@ def el_hit_xy():
 
     #electron hit on the tagger in x and y
 
-    xbin = 1
-    xmin = 350
-    xmax = 580
-    #xmin = 280
-    #xmax = 1000
+    xybin = 1
+    xpos = 510 # s1
+    xysiz = 420
+    #xpos = 630 # s2
+    #xysiz = 280
+    #xpos = 0 # ecal
+    #xysiz = 1000
+    #xpos = 472 # Q3eR
+    #xysiz = 20
+    #xybin = 0.1
 
-    ybin = 1
-    #ymin = -8
-    #ymax = 8
-    ymin = -110
-    ymax = 110
+    #ybin = 1
+
+    nam = "lowQ2s1"
+    #nam = "lowQ2s2"
+    #nam = "ecal"
+    #nam = "Q3eR"
 
     can = ut.box_canvas()
 
     #x and y of the electrons
-    hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+    hXY = ut.prepare_TH2D("hXY", xybin, xpos-(xysiz/2.), xpos+(xysiz/2.), xybin, -xysiz/2., xysiz/2.)
     #hXY = ut.prepare_TH2D_n("hXY", 50, xmin, xmax, 50, ymin, ymax)
 
-    tree.Draw("lowQ2_hy:lowQ2_hx >> hXY", gQ2sel)
+    tree.Draw(nam+"_hy:"+nam+"_hx >> hXY", nam+"_IsHit==1")
     #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY")
 
     print "Entries:", hXY.GetEntries()
 
     ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
 
-    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.02, 0.12)
+    ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.09, 0.12)
 
     hXY.SetMinimum(0.98)
     hXY.SetContour(300)
+    hXY.GetXaxis().SetMoreLogLabels()
 
     hXY.Draw()
 
-    gPad.SetLogz()
+    gPad.SetGrid()
+
+    #gPad.SetLogz()
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")

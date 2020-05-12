@@ -1,0 +1,71 @@
+
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 40000 # mm
+
+new BeamQuadrupole Q1eR # Q1eR quadrupole
+
+  Q1eR.zpos = -3751 # mm
+  Q1eR.length = 1500 # mm
+  Q1eR.r1 = 40 # mm
+  Q1eR.r2 = 50.2 # mm
+  Q1eR.dr = 30 # mm
+  Q1eR.grad = 20.3 # T/m
+
+new ConeAperture bpipeQ1Q2 # drift space from Q1eR to Q2eR
+
+  bpipeQ1Q2.zpos = -4503 # mm
+  bpipeQ1Q2.length = 797 # mm
+  bpipeQ1Q2.r1 = 50.2 # mm
+  bpipeQ1Q2.r2 = 54 # mm
+  bpipeQ1Q2.dr = 2 # mm
+
+new BeamQuadrupole Q2eR # Q2eR quadrupole
+
+  Q2eR.zpos = -6202 # mm
+  Q2eR.length = 1800 # mm
+  Q2eR.r1 = 54 # mm
+  Q2eR.r2 = 67 # mm
+  Q2eR.grad = -10.1 # T/m
+
+new ConeAperture bpipeQ2B2 # drift space from Q2eR to B2eR
+
+  bpipeQ2B2.zpos = -7104 # mm
+  bpipeQ2B2.length = 2398 # mm
+  bpipeQ2B2.r1 = 67 # mm
+  bpipeQ2B2.r2 = 85 # mm
+  bpipeQ2B2.dr = 2 # mm
+
+new BeamMagnetV2 B2eR # B2eR beam dipole
+
+  B2eR.zpos = -12254 # mm, center of the magnet along z
+  B2eR.field = -0.200125 # tesla, nominal by Scott
+  B2eR.length = 5500 # mm, total length along z
+  B2eR.r1 = 85 # mm, entrance radius
+  B2eR.r2 = 124 # mm, exit radius
+  B2eR.rout = 200 # mm, vessel outer radius
+
+new BoxCalV2 Q3eR # marker at Q3eR location
+
+  Q3eR.zpos = -37995.904 # mm, nominal by Scott
+  Q3eR.xpos = 472.033 # mm
+  Q3eR.rot_y = -0.018332 # rad
+  Q3eR.zsiz = 1
+  Q3eR.xsiz = 1100 # mm
+  Q3eR.ysiz = 1100 # mm
+
+new ConeAperture rear_beampipe # beam after B2eR
+
+  rear_beampipe.zpos = -15010 # mm, entrance position in z
+  rear_beampipe.xpos = 50.42 # mm, entrance position in x
+  rear_beampipe.length = 22980 # total length
+  rear_beampipe.angle = -0.018332 # rad
+  rear_beampipe.r1 = 124 # mm, B2eR exit radius
+  rear_beampipe.r2 = 40 # mm, Q3eR entrance radius
+  rear_beampipe.dr = 2 # mm, vessel thickness
+  rear_beampipe.transparent = 1 # transparent for particles
+
+
+

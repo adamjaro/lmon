@@ -1,0 +1,18 @@
+
+#all components for beamline version with magnets in central detector
+
+include ../config/geom_beamline_close.in
+
+include ../config/geom_central_close.in
+
+include ../config/geom_lowQ2.in
+
+include ../config/geom_lumi.in
+
+#common top volume
+new top topmain
+
+  topmain.xsiz = 5000 # mm
+  topmain.ysiz = 5000 # mm
+  topmain.zsiz = 40000 # mm
+

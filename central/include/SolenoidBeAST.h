@@ -15,6 +15,8 @@ class SolenoidBeAST {
 
     SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume*);
 
+    G4LogicalVolume *GetLogicalVolume() const {return fVol;}
+
   private:
 
     class Field: public G4MagneticField {
@@ -23,6 +25,10 @@ class SolenoidBeAST {
       public:
         Field(BeastMagneticField *map): fMap(map) {}
     };
+
+    G4LogicalVolume *fVol; // solenoid logical volume
+
+    G4VSolid *CylWithCutout(G4String nam, G4double r, G4double len, G4double zs, G4double r1);
 
 };
 

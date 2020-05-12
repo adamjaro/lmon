@@ -34,10 +34,10 @@ def acc_quasi_real(do_plot=True):
     #range in the log_10(Q^2)
     #lqmin = -4.5
     lqmin = -10
-    lqmax = 0
+    lqmax = 2 # 0
 
     #bins calculation
-    prec = 0.08
+    prec = 0.05
     delt = 1e-6
 
     #number of events, 0 for all
@@ -62,7 +62,7 @@ def acc_quasi_real(do_plot=True):
 
     ut.set_graph(acc_qr, rt.kRed) # , rt.kRed
 
-    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.25)
+    frame = gPad.DrawFrame(lqmin, 0, lqmax, 1.1) # 0.25
 
     ytit = "Acceptance / {0:.1f} %".format(prec*100)
     ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.6, 1.2)

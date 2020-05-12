@@ -6,7 +6,7 @@ include ../config/geom_beamline.in
 #include ../config/geom_beamline_noquad.in
 
 #luminosity monitor
-#include ../config/geom_lumi.in
+include ../config/geom_lumi.in
 
 #low Q^2 tagger
 include ../config/geom_lowQ2.in

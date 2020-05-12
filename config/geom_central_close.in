@@ -11,14 +11,25 @@ new SolenoidBeAST solenoid # central solenoid magnet
 
   #field map
   solenoid.map = ~sim/magnetic_field/BeastMagneticField/data/mfield.4col.dat
-  #solenoid.length = 10000 # mm, total length along z
   solenoid.length = 6556 # mm
   solenoid.radius = 2500 # mm, solenoid radius
+  solenoid.zcut = -3000 # mm
+  solenoid.rcut = 70 # mm
 
 new BoxCalR ecal # backward electromagnetic calorimeter
 
   ecal.zpos = -3280 # mm, position of front face in z
-  ecal.r1 = 80 # mm, inner radius
+  #ecal.r1 = 90 # mm, inner radius
+  ecal.r1 = 100 # mm, inner radius
+
+new ConeAperture distSolEcal # space below the ecal
+
+  distSolEcal.zpos = -3280 # mm
+  distSolEcal.length = 2 # mm
+  distSolEcal.r1 = 70 # mm
+  distSolEcal.r2 = 70 # mm
+  #distSolEcal.dr = 20 # mm
+  distSolEcal.dr = 30 # mm, 30 for 100 ecal
 
 #make the central part of the beam pipe transparent
 central_beampipe.transparent = 1

@@ -23,7 +23,7 @@ def main():
     #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
 
-    iplot = 0
+    iplot = 10
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -452,11 +452,15 @@ def el_en_log10_theta_tag():
     emin = 3
     emax = 20
 
+    sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+
     can = ut.box_canvas()
 
     hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", ltbin, ltmin, ltmax, ebin, emin, emax)
 
-    tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", gQ2sel)
+    tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", sel)
 
     ytit = "#it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
     xtit = "log_{10}(#theta_{e}) / "+"{0:.1f} rad".format(ltbin)
@@ -468,10 +472,13 @@ def el_en_log10_theta_tag():
 
     gPad.SetGrid()
 
-    hEnThetaTag.SetContour(10)
+    hEnThetaTag.SetMinimum(0.98)
+    hEnThetaTag.SetContour(300)
+
+    #hEnThetaTag.SetContour(10)
     hEnThetaTag.Draw("colz")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en_log10_theta_tag

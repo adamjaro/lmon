@@ -9,12 +9,13 @@ TGraphAsymmErrors get_Q2_acc(TTree *tree, Double_t ebeam, Double_t theta_max, Do
   //tree->SetBranchStatus("lowQ2_IsHit", 1);
 
   Double_t el_gen, el_theta;
-  Bool_t lowQ2_IsHit, lowQ2s1_IsHit, lowQ2s2_IsHit;
+  Bool_t lowQ2_IsHit, lowQ2s1_IsHit, lowQ2s2_IsHit, ecal_IsHit;
   tree->SetBranchAddress("el_gen", &el_gen);
   tree->SetBranchAddress("el_theta", &el_theta);
   //tree->SetBranchAddress("lowQ2_IsHit", &lowQ2_IsHit);
   tree->SetBranchAddress("lowQ2s1_IsHit", &lowQ2s1_IsHit);
   tree->SetBranchAddress("lowQ2s2_IsHit", &lowQ2s2_IsHit);
+  tree->SetBranchAddress("ecal_IsHit", &ecal_IsHit);
 
   //number of events
   if(nev == 0) {
@@ -36,7 +37,8 @@ TGraphAsymmErrors get_Q2_acc(TTree *tree, Double_t ebeam, Double_t theta_max, Do
     //if(lowQ2_IsHit != kTRUE || TMath::Pi()-el_theta > theta_max) {
     //if(lowQ2_IsHit != kTRUE) {
     //if(lowQ2s2_IsHit != kTRUE) {
-    if(lowQ2s1_IsHit != kTRUE and lowQ2s2_IsHit != kTRUE) {
+    //if(lowQ2s1_IsHit != kTRUE and lowQ2s2_IsHit != kTRUE) {
+    if(lowQ2s1_IsHit != kTRUE and lowQ2s2_IsHit != kTRUE and ecal_IsHit != kTRUE) {
       continue;
     }
 
