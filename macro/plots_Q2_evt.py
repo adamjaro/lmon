@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "../data/test/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
@@ -22,6 +22,8 @@ def main():
     #infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
 
     iplot = 10
     funclist = []
@@ -37,6 +39,9 @@ def main():
     funclist.append( el_log10_theta_tag ) # 9
     funclist.append( el_en_log10_theta_tag ) # 10
     funclist.append( evt_Log10_Q2_x ) # 11
+    funclist.append( evt_Log10_Q2_separate ) # 12
+    funclist.append( evt_Log10_Q2_ecal_compare ) # 13
+    funclist.append( el_en_theta_tag ) # 14
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -47,10 +52,10 @@ def main():
     #gQ2sel = "lowQ2_IsHit==1 && TMath::Pi()-el_theta<0.01021"
     #gQ2sel = "lowQ2_IsHit==1"
     #gQ2sel = "lowQ2s1_IsHit==1"
-    #gQ2sel = "lowQ2s2_IsHit==1"
+    gQ2sel = "lowQ2s2_IsHit==1"
     #gQ2sel = "ecal_IsHit==1"
     #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
-    gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
 
     #open the input and run
     inp = TFile.Open(infile)
@@ -69,7 +74,7 @@ def evt_Log10_Q2():
     lqbin = 5e-2
     #lqmin = -6
     lqmin = -11
-    lqmax = 2
+    lqmax = 5
     #lqbin = 5e-3
     #lqmin = -2.2
     #lqmax = -1.8
@@ -443,17 +448,24 @@ def el_en_log10_theta_tag():
     #electron generated energy and log_10 of polar angle for electrons hitting the tagger
 
     #bins in log_10(theta)
-    ltbin = 0.1
-    ltmin = -7
-    ltmax = -1.2
+    #ltbin = 0.1
+    #ltmin = -7
+    #ltmax = -1.2
+    ltbin = 0.01
+    ltmin = -2
+    ltmax = 0
 
     #bins in energy
+    #ebin = 0.1
+    #emin = 2
+    #emax = 20
     ebin = 0.1
-    emin = 3
+    emin = 0
     emax = 20
 
-    sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1"
     #sel = "lowQ2s2_IsHit==1"
+    sel = "ecal_IsHit==1"
     #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
 
     can = ut.box_canvas()
@@ -463,7 +475,7 @@ def el_en_log10_theta_tag():
     tree.Draw("el_gen:TMath::Log10(TMath::Pi()-el_theta) >> hEnThetaTag", sel)
 
     ytit = "#it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
-    xtit = "log_{10}(#theta_{e}) / "+"{0:.1f} rad".format(ltbin)
+    xtit = "log_{10}(#theta_{e}) / "+"{0:.2f} rad".format(ltbin)
     ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.6, 1.3)
 
     ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
@@ -478,7 +490,7 @@ def el_en_log10_theta_tag():
     #hEnThetaTag.SetContour(10)
     hEnThetaTag.Draw("colz")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en_log10_theta_tag
@@ -526,6 +538,183 @@ def evt_Log10_Q2_x():
     can.SaveAs("01fig.pdf")
 
 #evt_Log10_Q2_x
+
+#_____________________________________________________________________________
+def evt_Log10_Q2_separate():
+
+    #log_10(Q^2) for each tagger station and ecal separately, kinematics formula
+
+    lqbin = 5e-2
+    #lqmin = -6
+    lqmin = -11
+    lqmax = 5
+    #lqbin = 5e-3
+    #lqmin = -2.2
+    #lqmax = -1.8
+
+    #gQ2sel = "lowQ2s1_IsHit==1"
+    #gQ2sel = "lowQ2s2_IsHit==1"
+    #gQ2sel = "ecal_IsHit==1"
+
+    hLog10Q2 = ut.prepare_TH1D("hLog10Q2", lqbin, lqmin, lqmax)
+    hQ2s1 = ut.prepare_TH1D("hQ2s1", lqbin, lqmin, lqmax)
+    hQ2s2 = ut.prepare_TH1D("hQ2s2", lqbin, lqmin, lqmax)
+    hQ2ecal = ut.prepare_TH1D("hQ2ecal", lqbin, lqmin, lqmax)
+    #hLog10Q2Tag = ut.prepare_TH1D("hLog10Q2Tag", lqbin, lqmin, lqmax)
+
+    tree.Draw(gL10Q2+" >> hLog10Q2")
+    tree.Draw(gL10Q2+" >> hQ2s1", "lowQ2s1_IsHit==1")
+    tree.Draw(gL10Q2+" >> hQ2s2", "lowQ2s2_IsHit==1")
+    #tree.Draw(gL10Q2+" >> hQ2ecal", "ecal_IsHit==1")
+
+    print "All events:", hLog10Q2.GetEntries()
+    #print "Selected  :", hLog10Q2Tag.GetEntries()
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(lqmin, 1, lqmax, 1e6)
+    frame.Draw()
+
+    ytit = "Events / {0:.3f}".format(lqbin)
+    #ut.put_yx_tit(hLog10Q2, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
+    ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.03, 0.02)
+
+    ut.line_h1(hLog10Q2, rt.kBlack, 3)
+    ut.line_h1(hQ2s1, rt.kYellow+1, 3)
+    ut.line_h1(hQ2s2, rt.kGreen+1, 3)
+    ut.line_h1(hQ2ecal, rt.kBlue, 3)
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    hLog10Q2.Draw("e1same")
+    hQ2s1.Draw("e1same")
+    hQ2s2.Draw("e1same")
+    #hQ2ecal.Draw("e1same")
+
+    #hLog10Q2.SetMaximum(2e5) # for qr
+
+    leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.15, 0.035)
+    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
+    leg.AddEntry(hLog10Q2, "All Pythia6 events", "l")
+    leg.AddEntry(hQ2s1, "Tagger 1", "l")
+    leg.AddEntry(hQ2s2, "Tagger 2", "l")
+    #leg.AddEntry(hQ2ecal, "ecal", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_Log10_Q2_separate
+
+#_____________________________________________________________________________
+def evt_Log10_Q2_ecal_compare():
+
+    #compare log_10(Q^2) from ecal for two separate inputs
+
+    infile1 = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    infile2 = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+
+    lqbin = 5e-2
+    lqmin = -2.5
+    lqmax = 2.5
+
+    inp1 = TFile.Open(infile1)
+    inp2 = TFile.Open(infile2)
+    tree1 = inp1.Get("DetectorTree")
+    tree2 = inp2.Get("DetectorTree")
+
+    hQ2ecal = ut.prepare_TH1D("hQ2ecal", lqbin, lqmin, lqmax)
+    hQ2ecal_close = ut.prepare_TH1D("hQ2ecal_close", lqbin, lqmin, lqmax)
+
+    tree1.Draw(gL10Q2+" >> hQ2ecal", "ecal_IsHit==1")
+    tree2.Draw(gL10Q2+" >> hQ2ecal_close", "ecal_IsHit==1")
+
+    print "All events:", hQ2ecal.GetEntries()
+    #print "Selected  :", hLog10Q2Tag.GetEntries()
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(lqmin, 10, lqmax, 1e5)
+    frame.Draw()
+
+    ytit = "Events / {0:.3f}".format(lqbin)
+    ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.03, 0.02)
+
+    ut.line_h1(hQ2ecal, rt.kBlue, 3)
+    ut.line_h1(hQ2ecal_close, rt.kRed, 3)
+
+    #hQ2ecal.SetMinimum(10)
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    hQ2ecal.Draw("e1same")
+    hQ2ecal_close.Draw("e1same")
+
+    #hLog10Q2.SetMaximum(2e5) # for qr
+
+    leg = ut.prepare_leg(0.6, 0.83, 0.2, 0.1, 0.035)
+    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
+    #leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
+    #leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
+    leg.AddEntry(hQ2ecal, "Default geometry", "l")
+    leg.AddEntry(hQ2ecal_close, "Magnets in central det", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_Log10_Q2_ecal_compare
+
+#_____________________________________________________________________________
+def el_en_theta_tag():
+
+    #electron generated energy and polar angle for electrons hitting the tagger
+
+    #bins in log_10(theta)
+    tbin = 0.001
+    tmin = 0.0001
+    tmax = 1
+
+    #bins in energy
+    ebin = 0.1
+    emin = 3
+    emax = 20
+
+    #sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    sel = "ecal_IsHit==1"
+    #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", tbin, tmin, tmax, ebin, emin, emax)
+
+    tree.Draw("el_gen:(TMath::Pi()-el_theta) >> hEnThetaTag", sel)
+
+    ytit = "#it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "#theta_{e} / "+"{0:.1f} rad".format(tbin)
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hEnThetaTag.SetMinimum(0.98)
+    hEnThetaTag.SetContour(300)
+
+    #hEnThetaTag.SetContour(10)
+    hEnThetaTag.Draw("colz")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_en_theta_tag
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

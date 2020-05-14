@@ -49,12 +49,13 @@ new BeamMagnetV2 B2eR # B2eR beam dipole
 
 new BoxCalV2 Q3eR # marker at Q3eR location
 
-  Q3eR.zpos = -37995.904 # mm, nominal by Scott
+  Q3eR.zpos = -37995.904 # mm
   Q3eR.xpos = 472.033 # mm
   Q3eR.rot_y = -0.018332 # rad
   Q3eR.zsiz = 1
   Q3eR.xsiz = 1100 # mm
   Q3eR.ysiz = 1100 # mm
+  Q3eR.vis_full = 0
 
 new ConeAperture rear_beampipe # beam after B2eR
 

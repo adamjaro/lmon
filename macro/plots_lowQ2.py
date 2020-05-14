@@ -11,7 +11,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "../data/test/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_only_1Mevt.root"
     #infile = "../data/lmon_18x275_lowQ2_47p2cm_1Mevt.root"
@@ -26,6 +26,8 @@ def main():
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
     #infile = "../data/lmon_beam_18_beff2_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
+    infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
 
     iplot = 7
     funclist = []
@@ -393,22 +395,24 @@ def el_hit_xy():
 
     #electron hit on the tagger in x and y
 
-    xybin = 1
-    xpos = 510 # s1
-    xysiz = 420
-    #xpos = 630 # s2
-    #xysiz = 280
-    #xpos = 0 # ecal
-    #xysiz = 1000
+    #xybin = 0.3 # s1
+    #xpos = 51
+    #xysiz = 42
+    #xybin = 0.1 # s2
+    #xpos = 63
+    #xysiz = 28
+    xybin = 0.5 # ecal
+    xpos = 0
+    xysiz = 200
     #xpos = 472 # Q3eR
     #xysiz = 20
     #xybin = 0.1
 
     #ybin = 1
 
-    nam = "lowQ2s1"
+    #nam = "lowQ2s1"
     #nam = "lowQ2s2"
-    #nam = "ecal"
+    nam = "ecal"
     #nam = "Q3eR"
 
     can = ut.box_canvas()
@@ -417,12 +421,12 @@ def el_hit_xy():
     hXY = ut.prepare_TH2D("hXY", xybin, xpos-(xysiz/2.), xpos+(xysiz/2.), xybin, -xysiz/2., xysiz/2.)
     #hXY = ut.prepare_TH2D_n("hXY", 50, xmin, xmax, 50, ymin, ymax)
 
-    tree.Draw(nam+"_hy:"+nam+"_hx >> hXY", nam+"_IsHit==1")
+    tree.Draw(nam+"_hy/10:"+nam+"_hx/10 >> hXY", nam+"_IsHit==1")
     #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY")
 
     print "Entries:", hXY.GetEntries()
 
-    ut.put_yx_tit(hXY, "Vertical #it{y} (mm)", "Horizontal #it{x} (mm)", 1.4, 1.2)
+    ut.put_yx_tit(hXY, "Vertical #it{y} (cm)", "Horizontal #it{x} (cm)", 1.4, 1.2)
 
     ut.set_margin_lbtr(gPad, 0.1, 0.09, 0.09, 0.12)
 
@@ -434,9 +438,9 @@ def el_hit_xy():
 
     gPad.SetGrid()
 
-    #gPad.SetLogz()
+    gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy

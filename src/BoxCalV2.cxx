@@ -55,7 +55,17 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
 
   //visibility
   G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 0, 1); // blue
+  G4bool vis_full = true;
+  geo->GetOptB(fNam, "vis_full", vis_full);
+  if(vis_full) {
+    //vis->SetColor(1, 0, 0, 0.6); // red
+    vis->SetColor(1, 0, 0); // red
+    //vis->SetLineWidth(2);
+    //vis->SetForceSolid(true);
+  } else {
+    vis->SetColor(0, 0, 1); // blue
+    vis->SetForceAuxEdgeVisible(true);
+  }
   vol->SetVisAttributes(vis);
 
   //rotation in x-z plane by rotation along y

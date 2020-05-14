@@ -47,9 +47,10 @@ CollimatorV2::CollimatorV2(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(1, 1, 0); // yellow
+  //vis->SetColor(1, 1, 0); // yellow
+  vis->SetColor(0.8, 0.8, 0.4); // yellow
   //vis->SetColor(1, 0, 1); // magenta
-  vis->SetLineWidth(2);
+  vis->SetLineWidth(1); // 2
   vol->SetVisAttributes(vis);
 
   //put the collimator to the top volume

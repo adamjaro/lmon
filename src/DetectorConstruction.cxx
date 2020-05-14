@@ -20,6 +20,7 @@
 #include "G4Event.hh"
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
+#include "G4Tubs.hh"
 
 //local classes
 #include "DetectorConstruction.h"
@@ -71,16 +72,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   //create the top volume
   G4String topnam = geo.GetTopName();
   G4double topx = geo.GetD(topnam, "xsiz") * mm;
-  G4double topy = geo.GetD(topnam, "ysiz") * mm;
+  //G4double topy = geo.GetD(topnam, "ysiz") * mm;
   G4double topz = geo.GetD(topnam, "zsiz") * mm;
 
   //top world volume
-  G4Box *top_s = new G4Box(topnam+"_s", topx, topy, topz);
+  //G4Box *top_s = new G4Box(topnam+"_s", topx, topy, topz);
+  G4Tubs *top_s = new G4Tubs(topnam+"_s", 0, topx, topz, 0., 360.*deg);
 
   //vacuum top material
   G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
   G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, topnam+"_l");
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
+  //G4VisAttributes *vis = new G4VisAttributes();
+  //vis->SetForceAuxEdgeVisible(false);
+  //vis->SetLineStyle(G4VisAttributes::dotted);
+  //top_l->SetVisAttributes(vis);
 
   G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, topnam+"_p", 0, false, 0);
 

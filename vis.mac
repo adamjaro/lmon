@@ -2,7 +2,8 @@
 #visualization according to B4 example
 
 #OpenGL view:
-/vis/open OGL 600x600-0+0
+#/vis/open OGL 600x600-0+0
+/vis/open OGL 3000x3000-0+0
 
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
@@ -10,12 +11,14 @@
 /vis/verbose errors
 #/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
+/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
 #
 # Draw geometry:
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 90. 180.
+#/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
 #/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
 #/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
@@ -29,6 +32,12 @@
 #/vis/viewer/set/targetPoint 0.472 0 -37.995 meter # Q3eR magnet
 /vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
 #/vis/viewer/set/targetPoint 0 0 -15010 mm # after B2eR
+
+#/vis/scene/add/text 2500 0 3000 mm 15 0 0 Solenoid field
+#/vis/scene/add/text 2900 0 -3280 mm 15 0 0 ecal
+#/vis/scene/add/text 760 0 -24000 mm 15 0 0 Tagger 1
+#/vis/scene/add/text 840 0 -37000 mm 15 0 0 Tagger 2
+#/vis/scene/add/text 0 -1100 -38000 mm 12 0 0 Marker at Q3eR
 
 #
 # Specify zoom value:

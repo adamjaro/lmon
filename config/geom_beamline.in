@@ -8,7 +8,7 @@ new top topv
 new BeamMagnetV2 B2eR # B2eR beam dipole
 
   B2eR.zpos = -12250 # mm, center of the magnet along z
-  B2eR.field = -0.200125 # tesla, nominal by Scott
+  B2eR.field = -0.200125 # tesla
   B2eR.length = 5500 # mm, total length along z
   B2eR.r1 = 97 # mm, entrance radius
   B2eR.r2 = 139 # mm, exit radius
@@ -16,7 +16,7 @@ new BeamMagnetV2 B2eR # B2eR beam dipole
 
 new BoxCalV2 Q3eR # marker at Q3eR location
 
-  Q3eR.zpos = -37995.904 # mm, nominal by Scott
+  Q3eR.zpos = -37995.904 # mm
   Q3eR.xpos = 472.033 # mm
   #Q3eR.zpos = -37996 # mm
   #Q3eR.xpos = 421.6 # mm
@@ -24,6 +24,7 @@ new BoxCalV2 Q3eR # marker at Q3eR location
   Q3eR.zsiz = 1
   Q3eR.xsiz = 1100 # mm
   Q3eR.ysiz = 1100 # mm
+  Q3eR.vis_full = 0
 
 new BeamQuadrupole Q1eR # Q1eR quadrupole
 

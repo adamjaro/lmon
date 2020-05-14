@@ -47,6 +47,7 @@ SolenoidBeAST::SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume *top)
   if(rcut < 1e-3) {
     //default cylinder
     shape = new G4Tubs(nam, 0, radius, length/2, 0., 360.*deg);
+    //shape = new G4Tubs(nam, 0, radius, length/2, 90*deg, 270.*deg); // for drawing
   } else {
     //cylinder with cutout at negative z
     shape = CylWithCutout(nam, radius, length, zcut, rcut);
@@ -75,7 +76,8 @@ SolenoidBeAST::SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume *top)
 
   //visibility
   G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 0, 1); // blue
+  //vis->SetColor(0, 0, 1); // blue
+  vis->SetColor(0.7, 0.15, 0.15); // dark red
   vis->SetLineWidth(2);
   //vis->SetForceSolid(true);
   //vis->SetForceAuxEdgeVisible(true);
@@ -110,6 +112,7 @@ G4VSolid *SolenoidBeAST::CylWithCutout(G4String nam, G4double r, G4double len, G
 
   //outer cylinder
   G4Tubs *shape_outer = new G4Tubs(nam, 0, r, len/2, 0., 360.*deg);
+  //G4Tubs *shape_outer = new G4Tubs(nam, 0, r, len/2, 90*deg, 270.*deg); // for drawing
 
   //cutout inner cylinder
   G4double lcut = (len/2)+zs;

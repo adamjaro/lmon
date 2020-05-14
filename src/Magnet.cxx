@@ -39,7 +39,7 @@ Magnet::Magnet(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) {
   G4VisAttributes *vis = new G4VisAttributes();
   //vis->SetColor(1, 1, 0); // yellow
   vis->SetColor(1, 0, 1); // magenta
-  vis->SetLineWidth(2);
+  vis->SetLineWidth(1); // 2
   mvol->SetVisAttributes(vis);
 
   //maginetic field

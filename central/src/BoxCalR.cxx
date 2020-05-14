@@ -41,6 +41,7 @@ BoxCalR::BoxCalR(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4double r2 = 2870*mm;
 
   G4Tubs *shape = new G4Tubs(fNam, r1, r2, length/2, 0., 360.*deg);
+  //G4Tubs *shape = new G4Tubs(fNam, r1, r2, length/2, 90*deg, 270.*deg);
 
   //logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_W");
@@ -48,10 +49,10 @@ BoxCalR::BoxCalR(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   //visibility
   G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 0, 1); // blue
+  //vis->SetColor(0, 0, 1); // blue
+  vis->SetColor(1, 0, 0); // red
   vis->SetLineWidth(2);
   //vis->SetForceSolid(true);
-  //vis->SetForceAuxEdgeVisible(true);
   vol->SetVisAttributes(vis);
 
   //put the calorimeter to the top volume
