@@ -14,11 +14,14 @@ new SolenoidBeAST solenoid # central solenoid magnet
   #solenoid.length = 10000 # mm, total length along z
   solenoid.length = 6556 # mm
   solenoid.radius = 2500 # mm, solenoid radius
+  #solenoid.set_uniform = 1 # override for uniform field along z
+  #solenoid.uniform_field = 1.5 # T, uniform field along z
 
 new BoxCalR ecal # backward electromagnetic calorimeter
 
   ecal.zpos = -3280 # mm, position of front face in z
   ecal.r1 = 80 # mm, inner radius
+  ecal.r2 = 2870 # mm, outer radius
 
 #make the central part of the beam pipe transparent
 central_beampipe.transparent = 1

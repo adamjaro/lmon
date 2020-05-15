@@ -17,6 +17,7 @@
 #/lmon/construct/geometry ../config/geom_beamline.in
 #/lmon/construct/geometry ../config/geom_beamline_close.in
 #/lmon/construct/geometry ../config/geom_central.in
+#/lmon/construct/geometry ../config/geom_central_close.in
 
 #TX input
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx

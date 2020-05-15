@@ -21,6 +21,7 @@ new BoxCalR ecal # backward electromagnetic calorimeter
   ecal.zpos = -3280 # mm, position of front face in z
   #ecal.r1 = 90 # mm, inner radius
   ecal.r1 = 100 # mm, inner radius
+  ecal.r2 = 2870 # mm, outer radius
 
 new ConeAperture distSolEcal # space below the ecal
 

@@ -38,7 +38,7 @@ BoxCalR::BoxCalR(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   //calorimeter shape
   G4double length = 200*mm;
   G4double r1 = geo->GetD(fNam, "r1") * mm;
-  G4double r2 = 2870*mm;
+  G4double r2 = geo->GetD(fNam, "r2") * mm;
 
   G4Tubs *shape = new G4Tubs(fNam, r1, r2, length/2, 0., 360.*deg);
   //G4Tubs *shape = new G4Tubs(fNam, r1, r2, length/2, 90*deg, 270.*deg);

@@ -20,6 +20,7 @@
 #include "G4SubtractionSolid.hh"
 #include "G4RotationMatrix.hh"
 #include "G4Transform3D.hh"
+#include "G4UniformMagField.hh"
 
 //local classes
 #include "SolenoidBeAST.h"
@@ -58,17 +59,30 @@ SolenoidBeAST::SolenoidBeAST(G4String nam, GeoParser *geo, G4LogicalVolume *top)
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, nam);
   fVol = vol;
 
-  //field map
-  string map = geo->GetS(nam, "map");
-  if(map.find("~") == 0) {
-    string hdir(getenv("HOME"));
-    map = hdir + "/" + map.substr(1);
+  //magnetic field
+  G4MagneticField *field = 0;
+  G4bool set_uniform = false; // override for uniform field along z
+  geo->GetOptB(nam, "set_uniform", set_uniform);
+
+  //construct the field
+  if( !set_uniform ) {
+
+    //field map
+    string map = geo->GetS(nam, "map");
+    if(map.find("~") == 0) {
+      string hdir(getenv("HOME"));
+      map = hdir + "/" + map.substr(1);
+    }
+    field = new Field(new BeastMagneticField(map.c_str()));
+
+  } else {
+
+    //override active for uniform field along z
+    G4double uniform_field = geo->GetD(nam, "uniform_field") * tesla;
+    field = new G4UniformMagField(G4ThreeVector(0, 0, uniform_field));
   }
 
-  //G4cout << map << G4endl;
-
-  //magnetic field
-  G4MagneticField *field = new Field(new BeastMagneticField(map.c_str()));
+  //set the field to field manager
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
   fman->CreateChordFinder(field);
