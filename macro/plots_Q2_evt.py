@@ -22,10 +22,11 @@ def main():
     #infile = "../data/lmon_pythia_5M_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
-    infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root"
+    infile = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
 
-    iplot = 10
+    iplot = 13
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -490,7 +491,7 @@ def el_en_log10_theta_tag():
     #hEnThetaTag.SetContour(10)
     hEnThetaTag.Draw("colz")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_en_log10_theta_tag
@@ -613,8 +614,10 @@ def evt_Log10_Q2_ecal_compare():
 
     #compare log_10(Q^2) from ecal for two separate inputs
 
-    infile1 = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
-    infile2 = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+    infile1 = "../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root"
+    #infile2 = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+    #infile2 = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt.root"
+    infile2 = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root"
 
     lqbin = 5e-2
     lqmin = -2.5
@@ -661,7 +664,8 @@ def evt_Log10_Q2_ecal_compare():
     #leg.AddEntry(hLog10Q2, "All Pythia6 scattered electrons", "l")
     #leg.AddEntry(hLog10Q2Tag, "Electrons hitting the tagger", "l")
     leg.AddEntry(hQ2ecal, "Default geometry", "l")
-    leg.AddEntry(hQ2ecal_close, "Magnets in central det", "l")
+    #leg.AddEntry(hQ2ecal_close, "Magnets in central det", "l")
+    leg.AddEntry(hQ2ecal_close, "1.5T solenoid", "l")
     leg.Draw("same")
 
     #ut.invert_col(rt.gPad)

@@ -164,7 +164,7 @@ def acc_gap(inp, lqmin = -2.4, lqmax = -0.5):
     #acceptance in selected gap region
 
     #bins calculation
-    prec = 0.02 # 0.02  0.06
+    prec = 0.015 # 0.02  0.06
     delt = 1e-6
 
     #number of events, 0 for all
@@ -258,16 +258,30 @@ def acc_gap_both():
 
     #acceptance in gap between taggers and ecal
 
-    acc_py = acc_gap("../data/ir6/lmon_pythia_5M_beff2_5Mevt.root")
-    acc_py_close = acc_gap("../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root", -2.4, 0)
+    lqmin = -2.9
+    lqmax = -0.2
+    #lqmin = -8
+    #lqmax = 3
+
+    acc_py = acc_gap("../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root", lqmin, lqmax)
+    #acc_py = acc_gap("../data/ir6/lmon_pythia_5M_beff2_NoSol_5Mevt.root", lqmin, lqmax)
+    #acc_py_close = acc_gap("../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root", -2.4, 0)
+    #acc_py_close = acc_gap("../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt.root", -2.9, -0.2)
+    acc_py_close = acc_gap("../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root", lqmin, lqmax)
+    #acc_py_close = acc_gap("../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root", lqmin, lqmax)
+    #acc_py_close = acc_gap("../data/ir6/lmon_pythia_5M_beff2_NoSol_5Mevt_v2.root", lqmin, lqmax)
+    #acc_py_3 = acc_gap("../data/ir6/lmon_pythia_5M_beff2_NoSol_5Mevt.root", lqmin, lqmax)
 
     #make the plot
     can = ut.box_canvas()
 
     ut.set_graph(acc_py, rt.kBlue)
     ut.set_graph(acc_py_close, rt.kRed)
+    #ut.set_graph(acc_py_3, rt.kGreen)
 
-    frame = gPad.DrawFrame(-3, 0, 0.1, 1.1)
+    #frame = gPad.DrawFrame(-3, 0, 0.1, 1.1)
+    frame = gPad.DrawFrame(-3, 0.03, 0.1, 1.4) # for log scale
+    #frame = gPad.DrawFrame(-10, 0, 4, 1.1)
     frame.Draw()
 
     #ytit = "Acceptance / {0:.1f} %".format(prec*100)
@@ -278,14 +292,20 @@ def acc_gap_both():
 
     gPad.SetGrid()
 
+    gPad.SetLogy()
+    frame.GetYaxis().SetMoreLogLabels()
+
     acc_py.Draw("psame")
     acc_py_close.Draw("psame")
+    #acc_py_3.Draw("psame")
 
     leg = ut.prepare_leg(0.2, 0.84, 0.2, 0.1, 0.035)
     #leg.AddEntry(acc_qr, "Quasi-real photoproduction", "lp")
     #leg.AddEntry(acc_py, "Pythia6", "lp")
     leg.AddEntry(acc_py, "Default geometry", "lp")
-    leg.AddEntry(acc_py_close, "Magnets in central det", "lp")
+    #leg.AddEntry(acc_py_close, "Magnets in central det", "lp")
+    leg.AddEntry(acc_py_close, "1.5T solenoid", "lp")
+    #leg.AddEntry(acc_py_3, "No solenoid", "lp")
     leg.Draw("same")
 
     #ut.invert_col(rt.gPad)

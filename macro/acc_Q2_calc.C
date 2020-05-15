@@ -27,6 +27,13 @@ struct acc_Q2_calc {
   acc_Q2_calc(TTree *t, Double_t eb, Double_t p, Double_t d, ULong64_t n=0):
     tree(t), ebeam(eb), prec(p), delt(d), nev(n), lQ2min(9999), lQ2max(9999), sel_mode(1) {
 
+    tree->SetBranchStatus("*", 0);
+    tree->SetBranchStatus("el_gen", 1);
+    tree->SetBranchStatus("el_theta", 1);
+    tree->SetBranchStatus("lowQ2s1_IsHit", 1);
+    tree->SetBranchStatus("lowQ2s2_IsHit", 1);
+    tree->SetBranchStatus("ecal_IsHit", 1);
+
     tree->SetBranchAddress("el_gen", &el_gen);
     tree->SetBranchAddress("el_theta", &el_theta);
     tree->SetBranchAddress("lowQ2s1_IsHit", &lowQ2s1_IsHit);
@@ -95,6 +102,7 @@ struct acc_Q2_calc {
   void release_tree() {
 
     tree->ResetBranchAddresses();
+    tree->SetBranchStatus("*", 1);
 
   }//release_tree
 
