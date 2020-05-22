@@ -24,6 +24,10 @@ MCEvent::MCEvent(): Detector(), fNam("MCEvent") {
 //_____________________________________________________________________________
 void MCEvent::BeginEvent(const G4Event *evt) {
 
+  //generator data
+  ReadEvtDat(evt);
+
+  //event vertex
   G4PrimaryVertex *pvtx = evt->GetPrimaryVertex();
   if(!pvtx) return;
 
@@ -48,6 +52,7 @@ void MCEvent::BeginEvent(const G4Event *evt) {
     //G4cout << "MCEvent::BeginEvent: " << part->GetPDGcode() << G4endl;
     //G4cout << part->GetPDGcode() << " " << part->GetPx()/GeV << " " << part->GetPy()/GeV << " " << part->GetPz()/GeV;
     //G4cout << " " << part->GetTotalEnergy()/GeV << G4endl;
+    //G4cout << " " << part->GetMass()/GeV << " " << part->GetCharge() << G4endl;
     //G4cout << "MCEvent::BeginEvent: " << part->GetPx()/GeV << " " << part->GetPy()/GeV << " " << part->GetPz()/GeV << G4endl;
     //G4cout << G4endl;
 
@@ -58,7 +63,26 @@ void MCEvent::BeginEvent(const G4Event *evt) {
 
   }//particles loop
 
+  //G4cout << G4endl;
+
 }//BeginEvent
+
+//_____________________________________________________________________________
+void MCEvent::ReadEvtDat(const G4Event *evt) {
+
+  //generator data
+
+  MCEvtDat *dat = dynamic_cast<MCEvtDat*>(evt->GetUserInformation());
+  if(!dat) return;
+
+  fDat.fTrueQ2 = dat->fTrueQ2;
+  fDat.fTrueX = dat->fTrueX;
+  fDat.fTrueY = dat->fTrueY;
+
+  //G4cout << fDat.fTrueQ2 << " " << fDat.fTrueX << " " << fDat.fTrueY << G4endl;
+  //G4cout << G4endl;
+
+}//ReadEvtDat
 
 //_____________________________________________________________________________
 void MCEvent::ReadPhoton(G4PrimaryParticle *part) {
@@ -128,6 +152,10 @@ void MCEvent::CreateOutput(TTree *tree) {
 
   DetUtils u("", tree);
 
+  u.AddBranch("true_x", &(fDat.fTrueX), "D");
+  u.AddBranch("true_y", &(fDat.fTrueY), "D");
+  u.AddBranch("true_Q2", &(fDat.fTrueQ2), "D");
+
   u.AddBranch("phot_gen", &fPhotGen, "D");
   u.AddBranch("phot_theta", &fPhotTheta, "D");
   u.AddBranch("phot_phi", &fPhotPhi, "D");
@@ -144,6 +172,10 @@ void MCEvent::CreateOutput(TTree *tree) {
 
 //_____________________________________________________________________________
 void MCEvent::ClearEvent() {
+
+  fDat.fTrueQ2 = 99999;
+  fDat.fTrueX = 99999;
+  fDat.fTrueY = 99999;
 
   fPartPdg.clear();
   fPartPx.clear();

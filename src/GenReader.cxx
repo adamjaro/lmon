@@ -15,7 +15,9 @@
 #include "GenReader.h"
 #include "TxReader.h"
 #include "Pythia6Reader.h"
+#include "TParticleReader.h"
 
+using namespace std;
 
 //_____________________________________________________________________________
 GenReader::GenReader() : G4VUserPrimaryGeneratorAction(), fGenType("tx"), fGen(0) {
@@ -24,8 +26,10 @@ GenReader::GenReader() : G4VUserPrimaryGeneratorAction(), fGenType("tx"), fGen(0
   fMsg = new G4GenericMessenger(this, "/lmon/input/");
   fMsg->DeclareProperty("type", fGenType);
 
-  fGenTX = new TxReader();
-  fGenPy = new Pythia6Reader();
+  //prepare the generators
+  fGenAll.insert( make_pair("tx", new TxReader()) );
+  fGenAll.insert( make_pair("pythia6", new Pythia6Reader()) );
+  fGenAll.insert( make_pair("tparticle", new TParticleReader()) );
 
 }//Pythia6Reader
 
@@ -41,13 +45,12 @@ void GenReader::GeneratePrimaries(G4Event *evt) {
 
   //G4cout << "GenReader::GeneratePrimaries " << fGenType << G4endl;
 
-  //select the reader
+  //select the reader at the first call
   if(!fGen) {
-    if(fGenType == "tx") {
-      fGen = fGenTX;
-    } else if (fGenType == "pythia6") {
-      fGen = fGenPy;
-    }
+    map<G4String, G4VPrimaryGenerator*>::iterator igen = fGenAll.find(fGenType);
+    if (igen == fGenAll.end()) return;
+
+    fGen = (*igen).second;
   }
 
   //generate the event

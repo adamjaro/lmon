@@ -1,7 +1,7 @@
 
 import ROOT as rt
 from ROOT import TMath, TH1D, TCanvas, TLegend, TLine, TIter, TH1, TH2D, TH2, TF2, TGraph
-from ROOT import RooHist, TLatex, gROOT, TIter, TGraphErrors, TGaxis, TF1, TFrame
+from ROOT import RooHist, TLatex, gROOT, TIter, TGraphErrors, TGaxis, TF1, TFrame, TH3D
 from ROOT.Fit import FitResult
 from ROOT import std, vector
 
@@ -159,6 +159,18 @@ def prepare_TH2D_n(name, nbinsX, xmin, xmax, nbinsY, ymin, ymax):
   hx.SetTitle("")
 
   return hx
+
+#_____________________________________________________________________________
+def prepare_TH3D(name, xbin, xmin, xmax, ybin, ymin, ymax, zbin, zmin, zmax):
+
+    #bins along x, y and z
+    nx, xmax = get_nbins(xbin, xmin, xmax)
+    ny, ymax = get_nbins(ybin, ymin, ymax)
+    nz, zmax = get_nbins(zbin, zmin, zmax)
+
+    hx = TH3D(name, name, nx, xmin, xmax, ny, ymin, ymax, nz, zmin, zmax)
+
+    return hx
 
 #_____________________________________________________________________________
 def put_yx_tit(hx, ytit, xtit, yofs=1.5, xofs=1.1):

@@ -20,16 +20,16 @@ def main():
     #infile = "../data/lmon_18x275_qr_xC_yA_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    #infile = "../data/lmon_pythia_5M_5Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    #infile = "../data/lmon_beam_18_beff2_10Mevt.root"
+    #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g05p01_1Mevt.root"
+    infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g02p02_1Mevt.root"
+    #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g05p01_1Mevt.root"
+    #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g02p02_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
-    infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
 
-    iplot = 7
+    iplot = 8
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -401,19 +401,19 @@ def el_hit_xy():
     #xybin = 0.1 # s2
     #xpos = 63
     #xysiz = 28
-    xybin = 0.5 # ecal
-    xpos = 0
-    xysiz = 200
-    #xpos = 472 # Q3eR
-    #xysiz = 20
-    #xybin = 0.1
+    #xybin = 0.5 # ecal
+    #xpos = 0
+    #xysiz = 200
+    xpos = 47.2 # Q3eR
+    xysiz = 2
+    xybin = 0.01
 
     #ybin = 1
 
     #nam = "lowQ2s1"
     #nam = "lowQ2s2"
-    nam = "ecal"
-    #nam = "Q3eR"
+    #nam = "ecal"
+    nam = "Q3eR"
 
     can = ut.box_canvas()
 
@@ -440,7 +440,7 @@ def el_hit_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_hit_xy
@@ -450,30 +450,19 @@ def el_Q3eR_xy():
 
     #electron hit at Q3eR position in x and y
 
-    #dxy = 25
-    #dxy = 140
-    dxy = 700
+    xysiz = 2 # cm
+    xybin = 0.01 # cm
 
-    #xbin = 0.1
-    xbin = 1
-    xmin = 400
-    #xmin = 460
-    xmax = xmin+dxy
 
-    #ybin = 0.1
-    ybin = 1
-    #ymin = -50
-    ymin = -dxy/2
-    ymax = ymin+dxy
+    #Q3eR geometry position
+    xpos = 472.033 # mm
 
     can = ut.box_canvas()
 
-    hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
+    hXY = ut.prepare_TH2D("hXY", xybin, -xysiz/2., xysiz/2., xybin, -xysiz/2., xysiz/2.)
 
-    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "Q3eR_IsHit==1")
-    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "", "", 10000)
-    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY", "Q3eR_hx>500")
-    tree.Draw("Q3eR_hy:Q3eR_hx >> hXY")
+    #tree.Draw("Q3eR_hy:Q3eR_hx >> hXY")
+    tree.Draw("Q3eR_hy/10:(Q3eR_hx-"+str(xpos)+")/10 >> hXY")
 
     print "Entries:", hXY.GetEntries()
 
@@ -486,17 +475,17 @@ def el_Q3eR_xy():
 
     hXY.Draw()
 
-    #Q3eR entering radius
-    r1 = TCrown(472.033, 0, 40, 0)
+    #Q3eR entering radius, cm
+    r1 = TCrown(0, 0, 4, 0)
     r1.SetLineColor(rt.kOrange)
     r1.SetLineStyle(rt.kDashed)
     r1.SetLineWidth(3)
-    r1.Draw("same")
+    #r1.Draw("same")
 
     gPad.SetGrid()
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #el_Q3eR_xy

@@ -6,6 +6,8 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 
+#include <map>
+
 class G4VPrimaryGenerator;
 
 class GenReader : public G4VUserPrimaryGeneratorAction {
@@ -25,8 +27,7 @@ class GenReader : public G4VUserPrimaryGeneratorAction {
 
     G4VPrimaryGenerator *fGen; // generator reader
 
-    G4VPrimaryGenerator *fGenPy; // pythia reader
-    G4VPrimaryGenerator *fGenTX; // TX reader
+    std::map<G4String, G4VPrimaryGenerator*> fGenAll; // all generators
 
 };
 

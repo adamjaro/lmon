@@ -7,9 +7,15 @@
 #/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_lowQ2.in
 #/lmon/construct/geometry ../config/geom_beamline.in
+#/lmon/construct/geometry ../config/geom_beamline_noquad.in
 #/lmon/construct/geometry ../config/geom_test.in
 
 /run/initialize
+
+#/lmon/input/type tparticle
+#/lmon/input/tparticle/name /home/jaroslav/sim/eic-lgen/lgen.root
+#/lmon/input/tparticle/select 11
+#/lmon/input/tparticle/select 22
 
 #/lmon/input/type tx
 #/lmon/input/tx/name /home/jaroslav/sim/read_pythia/data/pythia_5M_beff2.tx
@@ -18,6 +24,7 @@
 #/lmon/input/tx/select 22
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_10kevt.tx
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt.tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_esp_beff2_10kevt.tx
 
 #/lmon/input/type pythia6
 #/lmon/input/pythia6/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt_evt.dat
@@ -31,6 +38,6 @@
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
 
 
-/run/beamOn 10
+/run/beamOn 12
 #/units/list
 

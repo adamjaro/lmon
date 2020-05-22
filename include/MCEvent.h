@@ -5,6 +5,8 @@
 #include "Detector.h"
 #include "Rtypes.h"
 
+#include "MCEvtDat.h"
+
 class MCEvent : public Detector {
 
   public:
@@ -21,11 +23,14 @@ class MCEvent : public Detector {
 
   private:
 
+    void ReadEvtDat(const G4Event *evt);
     void ReadPhoton(G4PrimaryParticle *part);
     void ReadElectron(G4PrimaryParticle *part);
     void GetThetaPhi(G4PrimaryParticle *part, Double_t &theta, Double_t &phi);
 
     G4String fNam; // class name
+
+    MCEvtDat fDat; //event data
 
     // MC generated particles
     std::vector<Int_t> fPartPdg; //particle pdg
