@@ -7,6 +7,7 @@
 #/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_lowQ2.in
 #/lmon/construct/geometry ../config/geom_beamline.in
+#/lmon/construct/geometry ../config/geom_beamline_noquad.in
 
 #init and run
 /run/initialize
@@ -17,21 +18,21 @@
 #/lmon/input/pythia6/select -211
 #/lmon/input/pythia6/select 22
 
-/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/read_pythia/data/pythia_5M_beff2.tx
-#/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_qr_Qb_beff2_1p2Mevt.tx
-#/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_beam_18_beff2_10p1Mevt.tx
+#/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/read_pythia/data/pythia_5M_beff2.tx
+/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_qr_Qd_beff2_10p2Mevt.tx
+#/lmon/input/tx/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_beam_18_esp_beff2_1Mevt.tx
 
 #output
 #/lmon/output/name ../data/lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root
+#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_qr_Qd_beff2_1Mevt.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_beff2_1Mevt_v2.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_beam_18_beff2_10Mevt.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/lmon_pythia_5M_beff2_NoSol_5Mevt_v2.root
+#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g05p01_1Mevt.root
 
 #number of events
-/run/beamOn 5000000
+/run/beamOn 1000000
 
