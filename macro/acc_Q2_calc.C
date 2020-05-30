@@ -30,12 +30,14 @@ struct acc_Q2_calc {
     tree->SetBranchStatus("*", 0);
     tree->SetBranchStatus("el_gen", 1);
     tree->SetBranchStatus("el_theta", 1);
+    tree->SetBranchStatus("true_Q2", 1);
     tree->SetBranchStatus("lowQ2s1_IsHit", 1);
     tree->SetBranchStatus("lowQ2s2_IsHit", 1);
     tree->SetBranchStatus("ecal_IsHit", 1);
 
     tree->SetBranchAddress("el_gen", &el_gen);
     tree->SetBranchAddress("el_theta", &el_theta);
+    tree->SetBranchAddress("true_Q2", &true_Q2);
     tree->SetBranchAddress("lowQ2s1_IsHit", &lowQ2s1_IsHit);
     tree->SetBranchAddress("lowQ2s2_IsHit", &lowQ2s2_IsHit);
     tree->SetBranchAddress("ecal_IsHit", &ecal_IsHit);
@@ -58,7 +60,8 @@ struct acc_Q2_calc {
       tree->GetEntry(iev);
 
       //obtain the log_10(Q^2)
-      Double_t lQ2 = TMath::Log10(2.*ebeam*el_gen*(1.-TMath::Cos(TMath::Pi()-el_theta)));
+      //Double_t lQ2 = TMath::Log10(2.*ebeam*el_gen*(1.-TMath::Cos(TMath::Pi()-el_theta)));
+      Double_t lQ2 = TMath::Log10(true_Q2);
 
       //select the lQ2 in range if requested
       if(lQ2min<9998 and lQ2 < lQ2min) continue;
@@ -108,7 +111,7 @@ struct acc_Q2_calc {
 
   //input tree
   TTree *tree;
-  Double_t el_gen, el_theta;
+  Double_t el_gen, el_theta, true_Q2;
   Bool_t lowQ2_IsHit, lowQ2s1_IsHit, lowQ2s2_IsHit, ecal_IsHit;
 
   Double_t ebeam; // beam energy

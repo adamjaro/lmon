@@ -10,35 +10,39 @@ def main():
 
     #tagger acceptance as a function of Q2
 
-    iplot = 3
+    iplot = 4
     funclist = []
     funclist.append( acc_quasi_real ) # 0
     funclist.append( acc_pythia ) # 1
     funclist.append( acc_both ) # 2
     funclist.append( acc_gap_both ) # 3
+    funclist.append( acc_qr_py ) # 4
 
     funclist[iplot]()
 
 #main
 
 #_____________________________________________________________________________
-def acc_quasi_real(do_plot=True):
+def acc_quasi_real(do_plot=True, sel_mode=5):
+
+    #selection mode, 1 - s1,  2 - s2,  3 - s1 or s2,  4 - ecal,  5 - any
 
     #Quasi-real input
-    inp_qr = "../data/test/lmon.root"
+    #inp_qr = "../data/test/lmon.root"
     #inp_qr = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qc_10Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
+    inp_qr = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
 
     #range in the log_10(Q^2)
     #lqmin = -4.5
     lqmin = -10
-    lqmax = 2 # 0
+    lqmax = 5
 
     #bins calculation
-    prec = 0.05
+    prec = 0.01
     delt = 1e-6
 
     #number of events, 0 for all
@@ -49,11 +53,12 @@ def acc_quasi_real(do_plot=True):
     tree_qr, infile_qr = get_tree(inp_qr)
 
     #calculate the acceptance
-    #gROOT.LoadMacro("get_acc.C")
-    #gROOT.LoadMacro("get_Q2_acc.C")
+    acalc = rt.acc_Q2_calc(tree_qr, 18, prec, delt, nev)
+    acalc.sel_mode = sel_mode
 
-    #electron beam energy and B2eR acceptance
-    acc_qr = rt.get_Q2_acc(tree_qr, 18, 0.01021, prec, delt, nev)
+    acc_qr = acalc.get_acc()
+
+    acalc.release_tree()
 
     if do_plot is False:
         return acc_qr
@@ -85,7 +90,7 @@ def acc_quasi_real(do_plot=True):
 #acc_quasi_real
 
 #_____________________________________________________________________________
-def acc_pythia(do_plot=True, sel_mode=1):
+def acc_pythia(do_plot=True, sel_mode=5):
 
     #selection mode, 1 - s1,  2 - s2,  3 - s1 or s2,  4 - ecal,  5 - any
 
@@ -93,15 +98,16 @@ def acc_pythia(do_plot=True, sel_mode=1):
     #inp_py = "../data/lmon_pythia_5M_1Mevt.root"
     #inp_py = "../data/lmon_pythia_5M_beff2_1Mevt.root"
     #inp_py = "../data/lmon_pythia_5M_beff2_5Mevt.root"
-    inp_py = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
+    #inp_py = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
     #inp_py = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+    inp_py = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
 
     #range in the log_10(Q^2)
     lqmin = -10
     lqmax = 5
 
     #bins calculation
-    prec = 0.02 # 0.02  0.06
+    prec = 0.01 # 0.02  0.06
     delt = 1e-6
 
     #number of events, 0 for all
@@ -137,7 +143,7 @@ def acc_pythia(do_plot=True, sel_mode=1):
     #ut.set_graph(acc_py, rt.kRed) # , rt.kFullTriangleUp
     ut.set_graph(acc_py, rt.kBlack)
 
-    frame = gPad.DrawFrame(lqmin, 0, lqmax, 0.4)
+    frame = gPad.DrawFrame(lqmin, 0, lqmax, 1.1)
 
     ytit = "Acceptance / {0:.1f} %".format(prec*100)
     ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.6, 1.2)
@@ -312,6 +318,45 @@ def acc_gap_both():
     can.SaveAs("01fig.pdf")
 
 #acc_gap_both
+
+#_____________________________________________________________________________
+def acc_qr_py():
+
+    #acceptance for quasi-real photoproduction and for Pythia
+
+    #selection mode, 1 - s1,  2 - s2,  3 - s1 or s2,  4 - ecal,  5 - any
+
+    acc_qr = acc_quasi_real(False, 5)
+    acc_py = acc_pythia(False, 5)
+
+    #make the plot
+    can = ut.box_canvas()
+
+    ut.set_graph(acc_qr, rt.kRed)
+    ut.set_graph(acc_py, rt.kBlue)#, rt.kFullTriangleUp)
+
+    frame = gPad.DrawFrame(-10, 0, 5, 1.1) # 0.3
+    frame.Draw()
+
+    ut.put_yx_tit(frame, "Acceptance", "log_{10}(#it{Q}^{2})", 1.6, 1.2)
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    gPad.SetGrid()
+
+    acc_qr.Draw("psame")
+    acc_py.Draw("psame")
+
+    leg = ut.prepare_leg(0.18, 0.82, 0.2, 0.12, 0.035)
+    leg.AddEntry(acc_qr, "Quasi-real photoproduction", "lp")
+    leg.AddEntry(acc_py, "Pythia6", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_qr_py
 
 #_____________________________________________________________________________
 def get_tree(infile):

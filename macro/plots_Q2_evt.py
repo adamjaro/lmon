@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "../data/test/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
@@ -18,14 +18,12 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
-    #infile = "../data/lmon_pythia_5M_1Mevt.root"
-    #infile = "../data/lmon_pythia_5M_5Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_5Mevt.root"
-    #infile = "../data/lmon_pythia_5M_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    #infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+    #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
 
     iplot = 18
     funclist = []
@@ -48,6 +46,9 @@ def main():
     funclist.append( evt_true_lx_ly ) # 16
     funclist.append( evt_true_lx_ly_lQ2 ) # 17
     funclist.append( rel_true_Q2_el_Q2 ) # 18
+    funclist.append( evt_true_lQ2_lx_separate ) # 19
+    funclist.append( evt_true_lx ) # 20
+    funclist.append( evt_Q2_el_Q2 ) # 21
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -67,6 +68,8 @@ def main():
     inp = TFile.Open(infile)
     global tree
     tree = inp.Get("DetectorTree")
+    #tree = inp.Get("ltree")
+    #tree.Print()
 
     funclist[iplot]()
 
@@ -548,7 +551,7 @@ def evt_Log10_Q2_x():
 #_____________________________________________________________________________
 def evt_Log10_Q2_separate():
 
-    #log_10(Q^2) for each tagger station and ecal separately, kinematics formula
+    #log_10(Q^2) for each tagger station and ecal separately, kinematics formula or true Q^2
 
     lqbin = 5e-2
     #lqmin = -6
@@ -563,7 +566,7 @@ def evt_Log10_Q2_separate():
     #gQ2sel = "ecal_IsHit==1"
 
     #override to generator true Q2
-    gL10Q2 = "TMath::Log10(true_Q2)"
+    #gL10Q2 = "TMath::Log10(true_Q2)"
 
     hLog10Q2 = ut.prepare_TH1D("hLog10Q2", lqbin, lqmin, lqmax)
     hQ2s1 = ut.prepare_TH1D("hQ2s1", lqbin, lqmin, lqmax)
@@ -584,8 +587,10 @@ def evt_Log10_Q2_separate():
     frame.Draw()
 
     ytit = "Events / {0:.3f}".format(lqbin)
+    #xtit = "log_{10}(#it{Q}^{2})"
+    xtit = "log_{10}(#it{Q}^{2}_{e})"
     #ut.put_yx_tit(hLog10Q2, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
-    ut.put_yx_tit(frame, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
+    ut.put_yx_tit(frame, ytit, xtit, 1.4, 1.2)
 
     ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.03, 0.02)
 
@@ -604,12 +609,12 @@ def evt_Log10_Q2_separate():
 
     #hLog10Q2.SetMaximum(2e5) # for qr
 
-    leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.15, 0.035)
-    #leg.AddEntry(hLog10Q2, "All electrons from quasi-real photoproduction", "l")
-    leg.AddEntry(hLog10Q2, "All Pythia6 events", "l")
+    leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.16, 0.035)
+    leg.AddEntry(hLog10Q2, "All quasi-real electrons", "l")
+    #leg.AddEntry(hLog10Q2, "All Pythia6 events", "l")
     leg.AddEntry(hQ2s1, "Tagger 1", "l")
     leg.AddEntry(hQ2s2, "Tagger 2", "l")
-    leg.AddEntry(hQ2ecal, "ecal", "l")
+    leg.AddEntry(hQ2ecal, "ECAL", "l")
     leg.Draw("same")
 
     #ut.invert_col(rt.gPad)
@@ -747,7 +752,8 @@ def evt_true_lQ2_lx():
     #Q2sel = "lowQ2s2_IsHit==1"
     #Q2sel = "ecal_IsHit==1"
     #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
-    Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    Q2sel = ""
 
     lQ2form = "TMath::Log10(true_Q2)"
     lxform = "TMath::Log10(true_x)"
@@ -763,13 +769,13 @@ def evt_true_lQ2_lx():
     xtit = "log_{10}(#it{x})"+" / {0:.1f}".format(xbin)
     ut.put_yx_tit(hLog10Q2xTag, ytit, xtit, 1.6, 1.3)
 
-    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.11)
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.03, 0.14)
 
     gPad.SetGrid()
 
     hLog10Q2xTag.Draw()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_true_lQ2_lx
@@ -779,11 +785,11 @@ def evt_true_lx_ly():
 
     #generator true log_10(y) and log_10(x)
 
-    xbin = 0.1 # 2e-2
+    xbin = 0.05 # 2e-2
     xmin = -12
     xmax = 0
 
-    ybin = 0.1
+    ybin = 0.02
     ymin = -4.5
     ymax = 0
 
@@ -791,7 +797,8 @@ def evt_true_lx_ly():
     #Q2sel = "lowQ2s2_IsHit==1"
     #Q2sel = "ecal_IsHit==1"
     #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
-    Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    Q2sel = ""
 
     hXY = ut.prepare_TH2D("hXY", xbin, xmin, xmax, ybin, ymin, ymax)
 
@@ -816,7 +823,7 @@ def evt_true_lx_ly():
     #gPad.SetLogy()
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_true_lx_ly
@@ -830,7 +837,7 @@ def evt_true_lx_ly_lQ2():
     xmin = -12
     xmax = 0
 
-    ybin = 0.1
+    ybin = 0.05
     ymin = -4.5
     ymax = 0
 
@@ -843,6 +850,7 @@ def evt_true_lx_ly_lQ2():
     #Q2sel = "ecal_IsHit==1"
     #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
     Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    #Q2sel = ""
 
     hXYQ2 = ut.prepare_TH3D("hXYQ2", xbin, xmin, xmax, ybin, ymin, ymax, lqbin, lqmin, lqmax)
 
@@ -872,7 +880,7 @@ def evt_true_lx_ly_lQ2():
 
     pXYQ2.Draw("colz")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #evt_true_lx_ly_lQ2
@@ -882,18 +890,20 @@ def rel_true_Q2_el_Q2():
 
     #relative difference in true Q^2 and electron Q^2
 
-    dbin = 0.05
-    dmin = -10
-    dmax = 2
+    dbin = 0.01
+    dmin = -2.1
+    dmax = 1.1
 
-    lqbin = 0.05
-    lqmin = -11
+    lqbin = 0.02
+    #lqmin = -8 # taggers
+    #lqmax = 0
+    lqmin = -2.5 # ecal
     lqmax = 3
 
     #Q2sel = "lowQ2s1_IsHit==1"
     #Q2sel = "lowQ2s2_IsHit==1"
-    #Q2sel = "ecal_IsHit==1"
-    Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+    Q2sel = "ecal_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
     #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
 
     hRQ2 = ut.prepare_TH2D("hRQ2", lqbin, lqmin, lqmax, dbin, dmin, dmax)
@@ -904,11 +914,11 @@ def rel_true_Q2_el_Q2():
 
     tree.Draw("(true_Q2-"+Q2form+")/true_Q2:TMath::Log10(true_Q2) >> hRQ2", Q2sel)
 
-    #ytit = "log_{10}(#it{y})"+" / {0:.3f}".format(ybin)
-    #xtit = "log_{10}(#it{x})"+" / {0:.3f}".format(xbin)
-    #ut.put_yx_tit(hXY, ytit, xtit, 1.4, 1.4)
+    ytit = "#frac{Q^{2} - Q^{2}_{e}}{Q^{2}}"
+    xtit = "log_{10}(#it{Q}^{2})"#+" / {0:.3f}".format(xbin)
+    ut.put_yx_tit(hRQ2, ytit, xtit, 1.8, 1.4)
 
-    #ut.set_margin_lbtr(gPad, 0.1, 0.11, 0.03, 0.12)
+    ut.set_margin_lbtr(gPad, 0.15, 0.11, 0.01, 0.11)
 
     hRQ2.Draw()
 
@@ -919,10 +929,149 @@ def rel_true_Q2_el_Q2():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #rel_true_Q2_el_Q2
+
+#_____________________________________________________________________________
+def evt_true_lQ2_lx_separate():
+
+    #generator true log_10(Q^2) and x, separate for each detector
+
+    lqbin = 0.1
+    #lqmin = -5
+    lqmin = -10
+    lqmax = 3
+
+    #xbin = 0.01
+    xbin = 0.1
+    xmin = -12
+    xmax = 0
+
+    #Q2sel = "lowQ2s1_IsHit==1"
+    #Q2sel = "lowQ2s2_IsHit==1"
+    #Q2sel = "ecal_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    #Q2sel = ""
+
+    lQ2form = "TMath::Log10(true_Q2)"
+    lxform = "TMath::Log10(true_x)"
+
+    hLQ2xAll = ut.prepare_TH2D("hLQ2xAll", xbin*0.5, xmin, xmax, lqbin*0.5, lqmin, lqmax)
+    hLQ2xS1 = ut.prepare_TH2D("hLQ2xS1", xbin, xmin, xmax, lqbin, lqmin, lqmax)
+    hLQ2xS2 = ut.prepare_TH2D("hLQ2xS2", xbin, xmin, xmax, lqbin, lqmin, lqmax)
+    hLQ2xEcal = ut.prepare_TH2D("hLQ2xEcal", xbin, xmin, xmax, lqbin, lqmin, lqmax)
+
+    can = ut.box_canvas()
+
+    tree.Draw(lQ2form+":"+lxform+" >> hLQ2xAll")
+    tree.Draw(lQ2form+":"+lxform+" >> hLQ2xS1", "lowQ2s1_IsHit==1")
+    tree.Draw(lQ2form+":"+lxform+" >> hLQ2xS2", "lowQ2s2_IsHit==1")
+    tree.Draw(lQ2form+":"+lxform+" >> hLQ2xEcal", "ecal_IsHit==1")
+
+    ytit = "log_{10}(#it{Q}^{2})"#+" / {0:.3f}".format(lqbin)+" GeV^{2}"
+    xtit = "log_{10}(#it{x})"#+" / {0:.1f}".format(xbin)
+    ut.put_yx_tit(hLQ2xAll, ytit, xtit, 1.3, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.01)
+
+    gPad.SetGrid()
+
+    hLQ2xAll.SetFillColor(rt.kRed-3)
+
+    hLQ2xS1.SetFillColor(rt.kYellow)
+    hLQ2xS2.SetFillColor(rt.kGreen)
+    hLQ2xEcal.SetFillColor(rt.kBlue)
+
+    hLQ2xAll.Draw("box")
+    hLQ2xEcal.Draw("box same")
+    hLQ2xS2.Draw("box same")
+    hLQ2xS1.Draw("box same")
+
+    leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.18, 0.035)
+    leg.AddEntry(hLQ2xAll, "All quasi-real electrons", "f")
+    leg.AddEntry(hLQ2xS1, "Tagger 1", "f")
+    leg.AddEntry(hLQ2xS2, "Tagger 2", "f")
+    leg.AddEntry(hLQ2xEcal, "ECAL", "f")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_true_lQ2_lx_separate
+
+#_____________________________________________________________________________
+def evt_true_lx():
+
+    #generated true log_10(x)
+
+    xbin = 0.1
+    xmin = -12
+    xmax = 0
+
+    lxform = "TMath::Log10(true_x)"
+
+    hLxAll = ut.prepare_TH1D("hLxAll", xbin, xmin, xmax)
+
+    can = ut.box_canvas()
+
+    tree.Draw(lxform+" >> hLxAll")
+
+    hLxAll.Draw("l")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_true_lx
+
+#_____________________________________________________________________________
+def evt_Q2_el_Q2():
+
+    #comparison between true Q^2 and electron Q^2
+
+    lqbin = 0.02
+    lqmin = -10
+    lqmax = 3
+    #lqmin = -2.5 # ecal
+    #lqmax = 3
+
+    #Q2sel = "lowQ2s1_IsHit==1"
+    #Q2sel = "lowQ2s2_IsHit==1"
+    #Q2sel = "ecal_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+    #Q2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
+    Q2sel = ""
+
+    hQ2 = ut.prepare_TH2D("hQ2", lqbin, lqmin, lqmax, lqbin, lqmin, lqmax)
+
+    can = ut.box_canvas()
+
+    Q2form = "(2*18*el_gen*(1-TMath::Cos(TMath::Pi()-el_theta)))"
+    #Q2form = "gen_el_Q2" # from generator
+
+    tree.Draw("TMath::Log10("+Q2form+"):TMath::Log10(true_Q2) >> hQ2", Q2sel)
+
+    ytit = "Electron  log_{10}(#it{Q}^{2}_{e})"#+" / {0:.3f}".format(xbin)
+    xtit = "Generator true  log_{10}(#it{Q}^{2})"#+" / {0:.3f}".format(xbin)
+    ut.put_yx_tit(hQ2, ytit, xtit, 1.6, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.11, 0.03, 0.12)
+
+    hQ2.Draw()
+
+    hQ2.SetMinimum(0.98)
+    hQ2.SetContour(300)
+
+    gPad.SetGrid()
+
+    gPad.SetLogz()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_Q2_el_Q2
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
@@ -943,4 +1092,4 @@ if __name__ == "__main__":
 
 
 
-
+    
