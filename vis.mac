@@ -10,27 +10,27 @@
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
 #/vis/viewer/set/background 1 1 1 0.
-#/vis/viewer/set/lightsThetaPhi 120. 135. deg
-/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
+/vis/viewer/set/lightsThetaPhi 120. 135. deg
+#/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
 #
 # Draw geometry:
 /vis/drawVolume
 #
 # Specify view angle:
-#/vis/viewer/set/viewpointThetaPhi 90. 180.
-/vis/viewer/set/viewpointThetaPhi 45 45 deg
+/vis/viewer/set/viewpointThetaPhi 90. 180.
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
 #/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
 #/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
 #/vis/viewer/set/targetPoint 0 0 -2137 cm # collimator
 #/vis/viewer/set/targetPoint 0 0 -2800 cm # spectrometer magnet
-#/vis/viewer/set/targetPoint 0 0 -3185 cm # photon detector
+/vis/viewer/set/targetPoint 0 0 -37000 mm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
 #/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
 #/vis/viewer/set/targetPoint 0 0 -5.297 meter # Q1eR magnet
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 #/vis/viewer/set/targetPoint 0.472 0 -37.995 meter # Q3eR magnet
-/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
+#/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
 #/vis/viewer/set/targetPoint 0 0 -15010 mm # after B2eR
 
 #/vis/scene/add/text 2500 0 3000 mm 15 0 0 Solenoid field

@@ -20,8 +20,8 @@
 #/lmon/construct/geometry ../config/geom_central_close.in
 
 #input from TParticle array
-/lmon/input/type tparticle
-/lmon/input/tparticle/name /home/jaroslav/sim/eic-lgen/lgen.root
+#/lmon/input/type tparticle
+#/lmon/input/tparticle/name /home/jaroslav/sim/eic-lgen/lgen.root
 
 #TX input
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_10p1Mevt.tx

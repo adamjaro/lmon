@@ -26,13 +26,20 @@ new Magnet lumi_dipole
 
   lumi_dipole.zpos = -28000 # mm
 
+#filter in front of photon detector
+new GraphiteFilter filter
+
+  filter.zpos = -37000 # mm
+  filter.zsiz = 772.8 # mm
+
 #luminosity detectors
 
 #direct photon calorimeter
 new BoxCalV2 phot
 #new CompCal phot
 
-  phot.zpos = -37000 # mm
+  #phot.zpos = -37000 # mm
+  phot.zpos = -37774 # mm, after filter
   phot.ypos = 0
 
 #up spectrometer calorimeter

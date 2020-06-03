@@ -39,6 +39,7 @@
 #ifdef BUILD_CENTRAL
   #include "CentralBuilder.h"
 #endif
+#include "GraphiteFilter.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -99,6 +100,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
     #ifdef BUILD_CENTRAL
       CentralBuilder central(fTop, fGeo, fDet);
     #endif
+
+  } else if( type == "GraphiteFilter" ) {
+    new GraphiteFilter(name, fGeo, fTop);
 
   }
 
