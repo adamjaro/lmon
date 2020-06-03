@@ -20,15 +20,18 @@ def main():
 def make_qr():
 
     #quasi-real total cross section
-    sigma_qr = 53.839868617 # micro barn
-    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    #sigma_qr = 53.839868617 # micro barn
+    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    sigma_qr = 55.1027755249 # micro barn
+    infile = "../../lgen/data/lgen_18x275_qr_Qe_beff2_5Mevt.root"
 
     lqbin = 0.2
     lqmin = -11
     lqmax = 5
 
     inp = TFile.Open(infile)
-    tree = inp.Get("DetectorTree")
+    #tree = inp.Get("DetectorTree")
+    tree = inp.Get("ltree")
 
     #can = ut.box_canvas()
 
@@ -113,7 +116,7 @@ def make_both():
     leg.AddEntry(gQr, "Quasi-real photoproduction", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________

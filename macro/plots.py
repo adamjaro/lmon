@@ -127,7 +127,7 @@ def acceptance_autobin():
 
     edet = 1
 
-    prec = 0.08
+    prec = 0.07
     #prec = 0.02
     delt = 1e-2
 
@@ -168,16 +168,19 @@ def acceptance_autobin():
 
     #acceptance parametrization
     from spec_acc import spec_acc
-    acc = spec_acc()
+    #acc = spec_acc()
+    acc = spec_acc(8200, 0.26, 42, 242)
     acc.scale = iacc/acc.acc_func.Integral(2, 21)
 
     acc.acc_func.Draw("same")
 
-    leg = ut.prepare_leg(0.64, 0.84, 0.15, 0.15, 0.027) # x, y, dx, dy, tsiz
-    leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
+    leg = ut.prepare_leg(0.63, 0.86, 0.12, 0.1)#, 0.027) # x, y, dx, dy, tsiz
+    #leg.AddEntry(hAcc, "#frac{#it{N}(#it{E}_{up}>1 #bf{and} #it{E}_{down}>1 GeV)}{#it{N}_{all}}", "lp")
+    leg.AddEntry(hAcc, "Geant4", "lp")
+    leg.AddEntry(acc.acc_func, "Geometry model", "l")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acceptance_autobin
@@ -557,20 +560,20 @@ def phot_en():
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    infile = "../data/test/lmon.root"
+    #infile = "../data/test/lmon.root"
     #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
     #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
+    infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 10
+    iplot = 7
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1

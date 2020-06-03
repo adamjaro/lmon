@@ -16,13 +16,15 @@ def draw_signals():
 
     #draw signal pulses over multiple events
 
-    nevt = 12
+    #nevt = 12
+    nevt = 1000
 
     cell = "03x03"
 
-    emin = 0
+    emin = 17.5  # 0
+    emax = 3
 
-    ofs = 10  # 10 or 500
+    ofs = 0  # 10 or 500
 
     can = ut.box_canvas()
 
@@ -30,7 +32,11 @@ def draw_signals():
     frame.Draw()
     #frame.SetLineColor(rt.kWhite)
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.01, 0.03)
+    ytit = "Charge (# of photoelectrons)"
+    xtit = "Time (ns)"
+    ut.put_yx_tit(frame, ytit, xtit, 2.2, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.15, 0.1, 0.01, 0.03)
 
     hitTime = std.vector(float)()
     hitNphot = std.vector(int)()
@@ -51,7 +57,9 @@ def draw_signals():
 
         tree.GetEntry(i)
 
-        if phot_en.val/1e3 < emin: continue
+        #if phot_en.val/1e3 < emin: continue
+        if phot_en.val/1e3 < emin and phot_en.val/1e3 > emax:
+            continue
 
         nhits = hitTime.size()
 
@@ -70,7 +78,7 @@ def draw_signals():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
