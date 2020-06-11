@@ -25,7 +25,7 @@ def main():
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
     #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
 
-    iplot = 18
+    iplot = 22
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -49,6 +49,7 @@ def main():
     funclist.append( evt_true_lQ2_lx_separate ) # 19
     funclist.append( evt_true_lx ) # 20
     funclist.append( evt_Q2_el_Q2 ) # 21
+    funclist.append( evt_true_lQ2_ly_separate ) # 22
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -1072,6 +1073,66 @@ def evt_Q2_el_Q2():
     can.SaveAs("01fig.pdf")
 
 #evt_Q2_el_Q2
+
+#_____________________________________________________________________________
+def evt_true_lQ2_ly_separate():
+
+    #generator true log_10(Q^2) and y, separate for each detector
+
+    lqbin = 0.2
+    lqmin = -10
+    lqmax = 3
+
+    ybin = 0.1
+    ymin = -5
+    ymax = 0
+
+    lQ2form = "TMath::Log10(true_Q2)"
+    lyform = "TMath::Log10(true_y)"
+
+    hLQ2yAll = ut.prepare_TH2D("hLQ2yAll", ybin*0.2, ymin, ymax, lqbin*0.2, lqmin, lqmax)
+    #hLQ2yAll = ut.prepare_TH2D("hLQ2yAll", ybin, ymin, ymax, lqbin, lqmin, lqmax)
+    hLQ2yS1 = ut.prepare_TH2D("hLQ2yS1", ybin, ymin, ymax, lqbin, lqmin, lqmax)
+    hLQ2yS2 = ut.prepare_TH2D("hLQ2yS2", ybin, ymin, ymax, lqbin, lqmin, lqmax)
+    hLQ2yEcal = ut.prepare_TH2D("hLQ2yEcal", ybin, ymin, ymax, lqbin, lqmin, lqmax)
+
+    can = ut.box_canvas()
+
+    tree.Draw(lQ2form+":"+lyform+" >> hLQ2yAll")
+    tree.Draw(lQ2form+":"+lyform+" >> hLQ2yS1", "lowQ2s1_IsHit==1")
+    tree.Draw(lQ2form+":"+lyform+" >> hLQ2yS2", "lowQ2s2_IsHit==1")
+    tree.Draw(lQ2form+":"+lyform+" >> hLQ2yEcal", "ecal_IsHit==1")
+
+    ytit = "log_{10}(#it{Q}^{2})"#+" / {0:.3f}".format(lqbin)+" GeV^{2}"
+    xtit = "log_{10}(#it{y})"#+" / {0:.1f}".format(xbin)
+    ut.put_yx_tit(hLQ2yAll, ytit, xtit, 1.3, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.01)
+
+    gPad.SetGrid()
+
+    hLQ2yAll.SetFillColor(rt.kRed-3)
+
+    hLQ2yS1.SetFillColor(rt.kYellow)
+    hLQ2yS2.SetFillColor(rt.kGreen)
+    hLQ2yEcal.SetFillColor(rt.kBlue)
+
+    hLQ2yAll.Draw("box")
+    hLQ2yEcal.Draw("box same")
+    hLQ2yS2.Draw("box same")
+    hLQ2yS1.Draw("box same")
+
+    leg = ut.prepare_leg(0.12, 0.78, 0.2, 0.18, 0.035)
+    leg.AddEntry(hLQ2yAll, "All quasi-real electrons", "f")
+    leg.AddEntry(hLQ2yS1, "Tagger 1", "f")
+    leg.AddEntry(hLQ2yS2, "Tagger 2", "f")
+    leg.AddEntry(hLQ2yEcal, "ECAL", "f")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_true_lQ2_ly_separate
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

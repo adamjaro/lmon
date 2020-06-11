@@ -21,15 +21,17 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g05p01_1Mevt.root"
-    infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g02p02_1Mevt.root"
+    #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g02p02_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g05p01_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g02p02_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
 
-    iplot = 8
+    iplot = 0
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -75,7 +77,10 @@ def el_en():
     hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
 
     tree.Draw("el_gen >> hEnAll")
-    #tree.Draw("el_gen >> hEnTag", "lowQ2_IsHit == 1")
+    #tree.Draw("el_gen >> hEnTag", "lowQ2s1_IsHit == 1")
+    #tree.Draw("el_gen >> hEnTag", "lowQ2s2_IsHit == 1")
+    tree.Draw("lowQ2s2_en >> hEnTag", "lowQ2s2_IsHit == 1")
+    #tree.Draw("lowQ2s1_en >> hEnTag", "lowQ2s1_IsHit == 1")
     #tree.Draw("lowQ2_en/1e3 >> hEnTag", "lowQ2_IsHit == 1")
     #tree.Draw("lowQ2_EnPrim/1e3 >> hEnTag", "lowQ2_IsHit == 1")
 
@@ -91,8 +96,10 @@ def el_en():
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.05, 0.02)
 
     hEnAll.Draw()
-    #hEnTag.Draw("same")
+    hEnTag.Draw("same")
     #hEnTag.Draw()
+
+    gPad.SetLogy()
 
     leg = ut.prepare_leg(0.2, 0.8, 0.2, 0.1, 0.035)
     #leg.AddEntry(hEnAll, "All electrons", "l")
@@ -398,22 +405,22 @@ def el_hit_xy():
     #xybin = 0.3 # s1
     #xpos = 51
     #xysiz = 42
-    #xybin = 0.1 # s2
-    #xpos = 63
-    #xysiz = 28
+    xybin = 0.1 # s2
+    xpos = 63
+    xysiz = 28
     #xybin = 0.5 # ecal
     #xpos = 0
     #xysiz = 200
-    xpos = 47.2 # Q3eR
-    xysiz = 2
-    xybin = 0.01
+    #xpos = 47.2 # Q3eR
+    #xysiz = 2
+    #xybin = 0.01
 
     #ybin = 1
 
     #nam = "lowQ2s1"
-    #nam = "lowQ2s2"
+    nam = "lowQ2s2"
     #nam = "ecal"
-    nam = "Q3eR"
+    #nam = "Q3eR"
 
     can = ut.box_canvas()
 
@@ -421,8 +428,8 @@ def el_hit_xy():
     hXY = ut.prepare_TH2D("hXY", xybin, xpos-(xysiz/2.), xpos+(xysiz/2.), xybin, -xysiz/2., xysiz/2.)
     #hXY = ut.prepare_TH2D_n("hXY", 50, xmin, xmax, 50, ymin, ymax)
 
-    tree.Draw(nam+"_hy/10:"+nam+"_hx/10 >> hXY", nam+"_IsHit==1")
-    #tree.Draw("lowQ2_hy:lowQ2_hx >> hXY")
+    #tree.Draw(nam+"_hy/10:"+nam+"_hx/10 >> hXY", nam+"_IsHit==1")
+    tree.Draw(nam+"_hy/10:"+nam+"_hx/10 >> hXY", "phot_gen<1.8")
 
     print "Entries:", hXY.GetEntries()
 

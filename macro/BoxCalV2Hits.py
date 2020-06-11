@@ -1,4 +1,6 @@
 
+# BoxCalV2 hits python representation
+
 from ROOT import std
 
 #_____________________________________________________________________________
@@ -12,13 +14,11 @@ class BoxCalV2Hits:
         self.hy = std.vector(float)()
         self.hz = std.vector(float)()
 
-        self.tree = tree
-
-        self.tree.SetBranchAddress(name+"_HitPdg", self.pdg)
-        self.tree.SetBranchAddress(name+"_HitEn", self.en)
-        self.tree.SetBranchAddress(name+"_HitX", self.hx)
-        self.tree.SetBranchAddress(name+"_HitY", self.hy)
-        self.tree.SetBranchAddress(name+"_HitZ", self.hz)
+        tree.SetBranchAddress(name+"_HitPdg", self.pdg)
+        tree.SetBranchAddress(name+"_HitEn", self.en)
+        tree.SetBranchAddress(name+"_HitX", self.hx)
+        tree.SetBranchAddress(name+"_HitY", self.hy)
+        tree.SetBranchAddress(name+"_HitZ", self.hz)
 
     #_____________________________________________________________________________
     def GetPdg(self, ihit):
@@ -44,8 +44,11 @@ class BoxCalV2Hits:
     def GetN(self):
         return self.pdg.size()
 
-    #_____________________________________________________________________________
-    def read(self, i):
 
-        self.tree.GetEntry(i)
+
+
+
+
+
+
 

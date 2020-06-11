@@ -6,6 +6,40 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath, TF1
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def phot_theta():
+
+    #generated photon polar angle
+
+    tbin = 1e-3
+    tmin = 0
+    tmax = 2
+
+    can = ut.box_canvas()
+
+    hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
+
+    tree.Draw("(TMath::Pi()-phot_theta)*1e3 >> hT")
+
+    print "Entries:", hT.GetEntries()
+
+    hT.SetXTitle("mrad")
+    #hT.SetYTitle("Events / ({0:.3f} m)".format(zbin))
+
+    hT.SetTitleOffset(1.5, "Y")
+    hT.SetTitleOffset(1.2, "X")
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.03)
+
+    hT.Draw()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#phot_theta
+
+#_____________________________________________________________________________
 def ew_efrac():
 
     #fraction of energy carried by electron or positron
@@ -220,6 +254,8 @@ def ew_z():
     #photon impact point along z
 
     zbin = 0.004
+    #zmin = -22.5
+    #zmax = -20
     zmin = -22.5
     zmax = -20
 
@@ -244,7 +280,7 @@ def ew_z():
 
     gPad.SetLogy()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -277,7 +313,9 @@ def ew_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #_____________________________________________________________________________
@@ -289,13 +327,14 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_ewV1_tilt_10Mevt.root"
     #infile = "../data/lmon_18x275_ewV2_10Mevt.root"
     #infile = "../data/lmon_10GeV_ewV2_1Mevt.root"
-    infile = "../data/lmon_10GeV_ewV2_10Mevt.root"
+    #infile = "../data/lmon_10GeV_ewV2_10Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 5
+    iplot = 6
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1
@@ -303,6 +342,7 @@ if __name__ == "__main__":
     funclist.append( ew_conv_phi ) # 3
     funclist.append( ew_econv ) # 4
     funclist.append( ew_efrac ) # 5
+    funclist.append( phot_theta ) # 6
 
     #open the input
     inp = TFile.Open(infile)

@@ -6,6 +6,53 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 import plot_utils as ut
 
 #_____________________________________________________________________________
+def phot_gen_en():
+
+    #energy deposited in photon detector relative to generated photon energy
+
+    ebin = 0.1
+    emin = 1
+    emax = 20
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH2D("hE", ebin, emin, emax, ebin, emin, emax)
+
+    tree.Draw("phot_en:phot_gen >> hE")
+    #tree.Draw("phot_en >> hE", "lowQ2s1_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s1_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s2_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s1_en > 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s2_en > 1")
+
+    #hE.SetYTitle("Events / ({0:.3f}".format(ebin)+" GeV)")
+    #hE.SetXTitle("#it{E}_{#gamma} (GeV)")
+
+    #hE.SetTitleOffset(1.5, "Y")
+    #hE.SetTitleOffset(1.3, "X")
+
+    #gPad.SetTopMargin(0.01)
+    #gPad.SetRightMargin(0.02)
+    #gPad.SetBottomMargin(0.1)
+    #gPad.SetLeftMargin(0.11)
+
+    #hE.GetYaxis().SetMoreLogLabels()
+
+    hE.SetMinimum(0.98)
+    hE.SetContour(300)
+
+    hE.Draw()
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#phot_gen_en
+
+#_____________________________________________________________________________
 def phot_hits_xy():
 
     xbin = 1
@@ -17,7 +64,6 @@ def phot_hits_xy():
     hX = ut.prepare_TH2D("hX", xbin, xmin, xmax, xbin, xmin, xmax)
 
     from BoxCalV2Hits import BoxCalV2Hits
-
     hits = BoxCalV2Hits("phot", tree)
 
     nevt = tree.GetEntries()
@@ -25,18 +71,18 @@ def phot_hits_xy():
 
     for ievt in xrange(nevt):
 
-        hits.read(ievt)
+        tree.GetEntry(ievt)
 
         #if hits.GetN() <= 1: continue
         #print hits.GetN()
 
         for ihit in xrange(hits.GetN()):
 
-            if hits.GetPdg(ihit) == 22: continue
+            #if hits.GetPdg(ihit) == 22: continue
             #if hits.GetPdg(ihit) != 22: continue
 
             #if hits.GetEn(ihit) > 0.1: continue
-            #if hits.GetEn(ihit) < 1: continue
+            if hits.GetEn(ihit) < 0.1: continue
 
             hX.Fill(hits.GetX(ihit), hits.GetY(ihit))
 
@@ -504,21 +550,28 @@ def phot_en():
     #energy deposited in photon detector
 
     ebin = 0.1
-    emin = 1
+    emin = 0
     emax = 20
 
     can = ut.box_canvas()
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    #tree.Draw("phot_en/1000. >> hE")
-    tree.Draw("phot_en >> hE")
+    #tree.Draw("phot_en >> hE")
+    #tree.Draw("phot_gen >> hE")
     #tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
+    #tree.Draw("phot_en >> hE", "lowQ2s1_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s1_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s2_IsHit == 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s1_en > 1")
+    tree.Draw("phot_gen >> hE", "lowQ2s2_en > 1")
 
     #cross section parametrization
     import ConfigParser
     parse = ConfigParser.RawConfigParser()
-    parse.read("/home/jaroslav/sim/eic-lgen/lgen_18x275.ini")
+    parse.add_section("lgen")
+    #parse.set("lgen", "emin", emin)
+    parse.set("lgen", "emin", "0.05")
     import sys
     sys.path.append('/home/jaroslav/sim/eic-lgen/')
     from gen_zeus import gen_zeus
@@ -527,8 +580,8 @@ def phot_en():
     gen.dSigDe.SetLineWidth(3)
 
     #scale the cross section to the plot
-    norm = ebin * hE.Integral() / gen.dSigDe.Integral(emin, gen.Ee)
-    gen.ar2 = norm * gen.ar2
+    #norm = ebin * hE.Integral() / gen.dSigDe.Integral(emin, gen.Ee)
+    #gen.ar2 = norm * gen.ar2
 
     hE.SetYTitle("Events / ({0:.3f}".format(ebin)+" GeV)")
     hE.SetXTitle("#it{E}_{#gamma} (GeV)")
@@ -545,9 +598,13 @@ def phot_en():
 
     hE.Draw()
 
-    gen.dSigDe.Draw("same")
+    print "Entries:", hE.GetEntries()
+
+    #gen.dSigDe.Draw("same")
 
     gPad.SetLogy()
+
+    gPad.SetGrid()
 
     leg = ut.prepare_leg(0.53, 0.77, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
     leg.AddEntry(hE, "Geant model", "lp")
@@ -562,18 +619,18 @@ if __name__ == "__main__":
 
     #infile = "../data/test/lmon.root"
     #infile = "/home/jaroslav/sim/pdet/data/pdet_18x275_zeus_compcal_0p25T_1Mevt.daq.root"
-    #infile = "../data/lmon_18x275_all_0p5Mevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
-    #infile = "../data/lmon_18x275_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
+    #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 7
+    iplot = 11
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1
@@ -586,6 +643,7 @@ if __name__ == "__main__":
     funclist.append( acc_from_tmp ) # 8
     funclist.append( plot_spec_acc ) # 9
     funclist.append( phot_hits_xy ) # 10
+    funclist.append( phot_gen_en ) # 11
 
     #open the input
     inp = TFile.Open(infile)

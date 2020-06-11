@@ -527,8 +527,8 @@ def print_pad(pad):
 def invert_col(pad, bgcol=rt.kBlack):
 
    #set foreground and background color
-   #fgcol = rt.kGreen
-   fgcol = rt.kOrange-3
+   fgcol = rt.kGreen
+   #fgcol = rt.kOrange-3
 
    pad.SetFillColor(bgcol)
    pad.SetFrameLineColor(fgcol)
