@@ -9,15 +9,16 @@ from BoxCalV2Hits import BoxCalV2Hits
 #_____________________________________________________________________________
 def main():
 
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
-    iplot = 3
+    iplot = 4
     funclist = []
     funclist.append( hits_xy_s1 ) # 0
     funclist.append( hits_xy_s2 ) # 1
     funclist.append( hits_en_z_s1 ) # 2
     funclist.append( hits_en_z_s2 ) # 3
+    funclist.append( hits_en ) # 4
 
     #input
     inp = TFile.Open(infile)
@@ -186,6 +187,46 @@ def hits_en_z_s2():
     can.SaveAs("01fig.pdf")
 
 #hits_en_z_s2
+
+#_____________________________________________________________________________
+def hits_en():
+
+    #energy of the hits
+
+    ebin = 0.1
+    emin = 0
+    emax = 20
+
+    name = "lowQ2s1"
+
+    can = ut.box_canvas()
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    nevt = tree.GetEntries()
+    #nevt = 10000
+
+    hits = BoxCalV2Hits(name, tree)
+    for ievt in xrange(nevt):
+        tree.GetEntry(ievt)
+
+        en_evt = 0.
+
+        for ihit in xrange(hits.GetN()):
+            en_evt += hits.GetEn(ihit)
+
+        hE.Fill( en_evt )
+
+    hE.Draw()
+
+    gPad.SetGrid()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#hits_en
+
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

@@ -67,6 +67,9 @@ GenParticle::GenParticle(const std::string &txlin): fVx(0), fVy(0), fVz(0) {
   fMass = fDef->GetPDGMass();
   fCharge = fDef->GetPDGCharge();
 
+  //energy from mass and momentum
+  fEn = sqrt(fPx*fPx + fPy*fPy + fPz*fPz + fMass*fMass);
+
   //G4cout << "GenParticle::GenParticle: " << fPx << " " << fPy << " " << fPz << " " << fPdg << G4endl;
 
 }//GenParticle
@@ -75,21 +78,7 @@ GenParticle::GenParticle(const std::string &txlin): fVx(0), fVy(0), fVz(0) {
 void GenParticle::GenerateToVertex(G4PrimaryVertex *vtx) {
 
   //generate particle to the vertex
-
-  //particle momentum and energy
-  G4ParticleMomentum momentum(fPx*GeV, fPy*GeV, fPz*GeV);
-  G4ParticleMomentum momentum_direction = momentum.unit();
-  G4double mmag = momentum.mag();
-  G4double energy = sqrt( mmag*mmag + fMass+fMass ) - fMass;
-
-  //create the primary to put to the vertex
-  G4PrimaryParticle *part = new G4PrimaryParticle(fDef);
-  part->SetKineticEnergy(energy);
-  part->SetMomentumDirection(momentum_direction);
-
-  //mass and charge from the definition
-  part->SetMass(fMass);
-  part->SetCharge(fCharge);
+  G4PrimaryParticle *part = new G4PrimaryParticle(fPdg, fPx*GeV, fPy*GeV, fPz*GeV, fEn*GeV);
 
   //no polarization
   part->SetPolarization(0, 0, 0);
@@ -113,13 +102,14 @@ void GenParticle::ReadFromPythia6(tokenizer< char_separator<char> >::iterator &t
 
   //read particle momentum and vertex position from event in Pythia6 format
 
-  //momentum
+  //momentum and energy
   stringstream ss;
-  ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
-  ss >> fPz >> fPy >> fPx;
+  ss << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++) << " " << *(trk_it++);
+  ss >> fEn >> fPz >> fPy >> fPx;
 
-  //skip the energy and mass
-  ++trk_it;
+  //G4cout << fPx << " " << fPy << " " << fPz << " " << fEn << G4endl;
+
+  //skip the mass
   ++trk_it;
 
   //get vertex position

@@ -21,8 +21,6 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_10Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g05p01_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_g02p02_1Mevt.root"
     #infile = "../data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g05p01_1Mevt.root"
@@ -30,8 +28,12 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qb_beff2_Q3eR_1Mevt.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
-    iplot = 0
+    iplot = 10
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -43,6 +45,7 @@ def main():
     funclist.append( el_hit_xy ) # 7
     funclist.append( el_Q3eR_xy ) # 8
     funclist.append( gen_vtx_z ) # 9
+    funclist.append( evt_en ) # 10
 
     #input
     inp = TFile.Open(infile)
@@ -519,6 +522,51 @@ def gen_vtx_z():
     can.SaveAs("01fig.pdf")
 
 #gen_vtx_z
+
+#_____________________________________________________________________________
+def evt_en():
+
+    #energy in the tagger in event
+
+    ebin = 0.1
+    emin = 0
+    emax = 20
+
+    #name = "lowQ2s1"
+    name = "lowQ2s2"
+
+    elow = 0.5
+    #elow = -1
+
+    lumi = 1.45e6 # mb^-1 s^-1
+
+    #sigma = 0.053839868617 # mb, quasireal Qd
+    #sigma = 0.054700142803416348 # mb, pythia
+    sigma = 276.346654276 # mb, zeus 0.1 GeV
+
+    can = ut.box_canvas()
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    nall = float(tree.GetEntries())
+
+    #tree.Draw(name+"_en >> hE")
+    nsel = float(tree.Draw(name+"_en >> hE", name+"_en>"+str(elow)))
+
+    print nall, nsel
+
+    #event rate:
+    print sigma * lumi * nsel / nall
+
+    hE.Draw()
+
+    gPad.SetGrid()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#evt_en
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

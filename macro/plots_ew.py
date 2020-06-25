@@ -3,6 +3,8 @@
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TMath, TF1
 
+import ConfigParser
+
 import plot_utils as ut
 
 #_____________________________________________________________________________
@@ -10,31 +12,55 @@ def phot_theta():
 
     #generated photon polar angle
 
-    tbin = 1e-3
+    tbin = 1e-5
     tmin = 0
-    tmax = 2
+    tmax = 2e-3
 
     can = ut.box_canvas()
 
     hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
 
-    tree.Draw("(TMath::Pi()-phot_theta)*1e3 >> hT")
+    tree.Draw("(TMath::Pi()-phot_theta) >> hT")
 
     print "Entries:", hT.GetEntries()
 
-    hT.SetXTitle("mrad")
-    #hT.SetYTitle("Events / ({0:.3f} m)".format(zbin))
+    #theta parametrization
+    parse = ConfigParser.RawConfigParser()
+    parse.add_section("lgen")
+    parse.set("lgen", "emin", "1") # GeV
+    parse.set("lgen", "tmax", "0.002")
 
-    hT.SetTitleOffset(1.5, "Y")
-    hT.SetTitleOffset(1.2, "X")
+    import sys
+    sys.path.append('/home/jaroslav/sim/eic-lgen/')
+    from gen_zeus import gen_zeus
+    gen = gen_zeus(18, 275, parse) # Ee, Ep, GeV
+    tpar = gen.dSigDtheta
+    tpar.SetNpx(600)
+    tpar.SetLineWidth(3)
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.03)
+    #scale the parametrization to the plot
+    norm = tbin * hT.Integral() / tpar.Integral(0, tmax)
+    print "norm:", norm
+    gen.theta_const = norm * gen.theta_const
+
+    ut.put_yx_tit(hT, "Events", "#theta_{#gamma} (rad)", 1.5, 1.2)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.01, 0.08)
+
+    hT.SetMaximum(6e5)
 
     hT.Draw()
 
+    tpar.Draw("same")
+
     gPad.SetLogy()
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.37, 0.84, 0.2, 0.08, 0.035)
+    leg.AddEntry(tpar, "Bethe-Heitler parametrization", "l")
+    leg.AddEntry(hT, "Angular divergence applied", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phot_theta
@@ -328,7 +354,8 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_ewV2_10Mevt.root"
     #infile = "../data/lmon_10GeV_ewV2_1Mevt.root"
     #infile = "../data/lmon_10GeV_ewV2_10Mevt.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)

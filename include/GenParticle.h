@@ -34,6 +34,7 @@ class GenParticle {
     G4double fPx; // momentum in x, GeV
     G4double fPy; // momentum in y, GeV
     G4double fPz; // momentum in z, GeV
+    G4double fEn; // energy, GeV
 
     G4double fVx; // vertex position in x, mm
     G4double fVy; // vertex position in y, mm

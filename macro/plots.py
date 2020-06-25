@@ -623,8 +623,8 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
+    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)

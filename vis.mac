@@ -9,22 +9,24 @@
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
-#/vis/viewer/set/background 1 1 1 0.
-/vis/viewer/set/lightsThetaPhi 120. 135. deg
+/vis/viewer/set/background 1 1 1 0.
+#/vis/viewer/set/lightsThetaPhi 120. 135. deg
+/vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
 #/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
 #
 # Draw geometry:
 /vis/drawVolume
 #
 # Specify view angle:
-/vis/viewer/set/viewpointThetaPhi 90. 180.
+#/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-#/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
+/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
 #/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
 #/vis/viewer/set/targetPoint 0 0 -2137 cm # collimator
 #/vis/viewer/set/targetPoint 0 0 -2800 cm # spectrometer magnet
-/vis/viewer/set/targetPoint 0 0 -37000 mm # photon detector
+#/vis/viewer/set/targetPoint 0 0 -37000 mm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
 #/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
 #/vis/viewer/set/targetPoint 0 0 -5.297 meter # Q1eR magnet
@@ -38,6 +40,12 @@
 #/vis/scene/add/text 760 0 -24000 mm 15 0 0 Tagger 1
 #/vis/scene/add/text 840 0 -37000 mm 15 0 0 Tagger 2
 #/vis/scene/add/text 0 -1100 -38000 mm 12 0 0 Marker at Q3eR
+
+/vis/scene/add/text -1500 0 -20750 mm 15 0 0 Exit window
+/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
+/vis/scene/add/text -1300 0 -28000 mm 15 0 0 Dipole
+/vis/scene/add/text -1500 -400 -36500 mm 15 0 0 Spectormeter detectors
+/vis/scene/add/text -1500 0 -38000 mm 15 0 0 Photon detector
 
 #
 # Specify zoom value:
