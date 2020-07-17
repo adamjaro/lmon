@@ -10,15 +10,15 @@ def phot_gen_en():
 
     #energy deposited in photon detector relative to generated photon energy
 
-    ebin = 0.1
-    emin = 1
-    emax = 20
+    ebin = 5e-5
+    emin = 0
+    emax = 5e-3
 
     can = ut.box_canvas()
 
     hE = ut.prepare_TH2D("hE", ebin, emin, emax, ebin, emin, emax)
 
-    tree.Draw("phot_en:phot_gen >> hE")
+    tree.Draw("phot_en:phot_gen >> hE", "phot_gen<0.003")
     #tree.Draw("phot_en >> hE", "lowQ2s1_IsHit == 1")
     #tree.Draw("phot_gen >> hE", "lowQ2s1_IsHit == 1")
     #tree.Draw("phot_gen >> hE", "lowQ2s2_IsHit == 1")
@@ -549,22 +549,22 @@ def phot_en():
 
     #energy deposited in photon detector
 
-    ebin = 0.1
+    ebin = 1e-4
     emin = 0
-    emax = 20
+    emax = 0.11
 
     can = ut.box_canvas()
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    #tree.Draw("phot_en >> hE")
+    tree.Draw("phot_en >> hE")
     #tree.Draw("phot_gen >> hE")
     #tree.Draw("phot_gen >> hE", "phot_IsHit == 1")
     #tree.Draw("phot_en >> hE", "lowQ2s1_IsHit == 1")
     #tree.Draw("phot_gen >> hE", "lowQ2s1_IsHit == 1")
     #tree.Draw("phot_gen >> hE", "lowQ2s2_IsHit == 1")
     #tree.Draw("phot_gen >> hE", "lowQ2s1_en > 1")
-    tree.Draw("phot_gen >> hE", "lowQ2s2_en > 1")
+    #tree.Draw("phot_gen >> hE", "lowQ2s2_en > 1")
 
     #cross section parametrization
     import ConfigParser
@@ -624,7 +624,8 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    infile = "../data/lmon_18x275_uni_1keV_0p1GeV_phot_5Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
