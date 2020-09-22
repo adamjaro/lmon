@@ -31,9 +31,10 @@ def main():
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
     infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
 
-    iplot = 10
+    iplot = 0
     funclist = []
     funclist.append( el_en ) # 0
     funclist.append( el_theta ) # 1
@@ -80,9 +81,9 @@ def el_en():
     hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
 
     tree.Draw("el_gen >> hEnAll")
-    #tree.Draw("el_gen >> hEnTag", "lowQ2s1_IsHit == 1")
+    tree.Draw("el_gen >> hEnTag", "lowQ2s1_IsHit == 1")
     #tree.Draw("el_gen >> hEnTag", "lowQ2s2_IsHit == 1")
-    tree.Draw("lowQ2s2_en >> hEnTag", "lowQ2s2_IsHit == 1")
+    #tree.Draw("lowQ2s2_en >> hEnTag", "lowQ2s2_IsHit == 1")
     #tree.Draw("lowQ2s1_en >> hEnTag", "lowQ2s1_IsHit == 1")
     #tree.Draw("lowQ2_en/1e3 >> hEnTag", "lowQ2_IsHit == 1")
     #tree.Draw("lowQ2_EnPrim/1e3 >> hEnTag", "lowQ2_IsHit == 1")

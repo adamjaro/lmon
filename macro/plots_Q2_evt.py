@@ -18,14 +18,14 @@ def main():
     #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
-    #infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root"
     #infile = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root"
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
     #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
 
-    iplot = 22
+    iplot = 16
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
