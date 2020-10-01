@@ -326,8 +326,8 @@ def acc_qr_py():
 
     #selection mode, 1 - s1,  2 - s2,  3 - s1 or s2,  4 - ecal,  5 - any
 
-    acc_qr = acc_quasi_real(False, 5)
-    acc_py = acc_pythia(False, 5)
+    acc_qr = acc_quasi_real(False, 3)
+    acc_py = acc_pythia(False, 3)
 
     #make the plot
     can = ut.box_canvas()
@@ -335,7 +335,8 @@ def acc_qr_py():
     ut.set_graph(acc_qr, rt.kRed)
     ut.set_graph(acc_py, rt.kBlue)#, rt.kFullTriangleUp)
 
-    frame = gPad.DrawFrame(-10, 0, 5, 1.1) # 0.3
+    #frame = gPad.DrawFrame(-10, 0, 5, 0.3) # 0.3  1.1  0
+    frame = gPad.DrawFrame(-10, 0, 0, 0.3) # 0.3  1.1  0
     frame.Draw()
 
     ut.put_yx_tit(frame, "Acceptance", "log_{10}(#it{Q}^{2})", 1.6, 1.2)
@@ -353,7 +354,7 @@ def acc_qr_py():
     leg.AddEntry(acc_py, "Pythia6", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_qr_py

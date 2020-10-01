@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import ROOT as rt
-from ROOT import TF1, gPad, gROOT, gStyle, TFile
+from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem
 
 import plot_utils as ut
 from BoxCalV2Hits import BoxCalV2Hits
@@ -10,11 +10,12 @@ from BoxCalV2Hits import BoxCalV2Hits
 def main():
 
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
+    infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 5
+    iplot = 1
     funclist = []
     funclist.append( hits_xy_s1 ) # 0
     funclist.append( hits_xy_s2 ) # 1
@@ -41,15 +42,29 @@ def hits_xy_s1():
 
     #hits on s1 tagger in xy
 
-    xybin = 0.3
-    xpos = 51
-    xysiz = 42
+    #bin in mm
+    xybin = 3
+
+    #tagger location in x and z
+    xpos = 528.56 # mm
+    zpos = -24000 # mm
+    rot_y = -0.018332 # rad, rotation in x-z plane by rotation along y
+    #rot_y = 0
+
+    #front area, mm
+    xysiz = 430
+
+    #minimal z to select the front face
+    zmin = -5 # mm
+
+    #minimal energy for the hit
+    emin = 1 # GeV
 
     can = ut.box_canvas()
-    hXY = ut.prepare_TH2D("hXY", xybin, xpos-(xysiz/2.), xpos+(xysiz/2.), xybin, -xysiz/2., xysiz/2.)
+    hXY = ut.prepare_TH2D("hXY", xybin, -xysiz/2., xysiz/2., xybin, -xysiz/2., xysiz/2.)
 
     #nevt = tree.GetEntries()
-    nevt = 10000
+    nevt = 1000000
 
     hits = BoxCalV2Hits("lowQ2s1", tree)
     for ievt in xrange(nevt):
@@ -57,11 +72,17 @@ def hits_xy_s1():
 
         for ihit in xrange(hits.GetN()):
 
-            #if hits.GetEn(ihit) > 1.: continue
+            hit = hits.GetHit(ihit)
+            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
 
-            #print hits.GetX(ihit)/10, hits.GetY(ihit)/10
+            if hit.z < zmin: continue
+            if hit.en < emin: continue
 
-            hXY.Fill(hits.GetX(ihit)/10, hits.GetY(ihit)/10)
+            hXY.Fill(hit.x, hit.y)
+
+
+    ut.put_yx_tit(hXY, "#it{x} (mm)", "#it{y} (mm)")
+    ut.set_margin_lbtr(gPad, 0.11, 0.08, 0.01, 0.12)
 
     hXY.SetMinimum(0.98)
     hXY.SetContour(300)
@@ -82,23 +103,38 @@ def hits_xy_s2():
 
     #hits on s2 tagger in xy
 
-    xybin = 0.1
-    xpos = 63
-    xysiz = 28
+    #Tagger 2 position
+    xpos = 661.88 # mm
+    zpos = -37000 # mm
+    rot_y = -0.018332 # rad
+
+    #front area, mm
+    xysiz = 330
+
+    #minimal z to select the front face
+    zmin = -5 # mm
+
+    #bin in mm
+    xybin = 3
 
     can = ut.box_canvas()
-    hXY = ut.prepare_TH2D("hXY", xybin, xpos-(xysiz/2.), xpos+(xysiz/2.), xybin, -xysiz/2., xysiz/2.)
+    hXY = ut.prepare_TH2D("hXY", xybin, -xysiz/2., xysiz/2., xybin, -xysiz/2., xysiz/2.)
 
-    nevt = tree.GetEntries()
-    #nevt = 10000
+    #nevt = tree.GetEntries()
+    nevt = 100000
 
     hits = BoxCalV2Hits("lowQ2s2", tree)
     for ievt in xrange(nevt):
         tree.GetEntry(ievt)
 
         for ihit in xrange(hits.GetN()):
+            hit = hits.GetHit(ihit)
+            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
 
-            hXY.Fill(hits.GetX(ihit)/10, hits.GetY(ihit)/10)
+            if hit.z < zmin: continue
+            #if hit.en < emin: continue
+
+            hXY.Fill(hit.x, hit.y)
 
     hXY.SetMinimum(0.98)
     hXY.SetContour(300)
@@ -119,8 +155,12 @@ def hits_en_z_s1():
 
     #energy along the z position of the hit in s1
 
+    #tagger location in x and z
+    xpos = 528.56 # mm
     zpos = -24000 # mm
-    zbin = 0.1 # cm
+    rot_y = -0.018332 # rad, rotation in x-z plane by rotation along y
+
+    zbin = 0.05 # cm
     zmax = 2 # cm
     #zmin = -36 # cm
     zmin = -2 # cm
@@ -135,7 +175,7 @@ def hits_en_z_s1():
     ut.put_yx_tit(hEnZ, "#it{E} (GeV)", "#it{z} (cm)")
 
     nevt = tree.GetEntries()
-    #nevt = 10000
+    #nevt = 100000
 
     hits = BoxCalV2Hits("lowQ2s1", tree)
     for ievt in xrange(nevt):
@@ -144,7 +184,7 @@ def hits_en_z_s1():
         for ihit in xrange(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(0, 0, zpos)
+            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
 
             hEnZ.Fill( hit.z/10, hit.en) # cm
 
@@ -167,7 +207,11 @@ def hits_en_z_s2():
 
     #energy along the z position of the hit in s2
 
+    #Tagger 2 position
+    xpos = 661.88 # mm
     zpos = -37000 # mm
+    rot_y = -0.018332 # rad
+
     zbin = 0.1 # cm
     zmax = 2 # cm
     #zmin = -36 # cm
@@ -182,7 +226,7 @@ def hits_en_z_s2():
     ut.put_yx_tit(hEnZ, "#it{E} (GeV)", "#it{z} (cm)")
 
     nevt = tree.GetEntries()
-    #nevt = 10000
+    #nevt = 100000
 
     hits = BoxCalV2Hits("lowQ2s2", tree)
     for ievt in xrange(nevt):
@@ -191,7 +235,7 @@ def hits_en_z_s2():
         for ihit in xrange(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(0, 0, zpos)
+            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
 
             hEnZ.Fill( hit.z/10, hit.en) # cm
 
@@ -372,6 +416,8 @@ if __name__ == "__main__":
 
     main()
 
+    #beep when finished
+    gSystem.Exec("mplayer computerbeep_1.mp3 > /dev/null 2>&1")
 
 
 

@@ -25,7 +25,7 @@ def main():
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
     #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
 
-    iplot = 16
+    iplot = 10
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -458,24 +458,25 @@ def el_en_log10_theta_tag():
     #electron generated energy and log_10 of polar angle for electrons hitting the tagger
 
     #bins in log_10(theta)
-    #ltbin = 0.1
-    #ltmin = -7
-    #ltmax = -1.2
-    ltbin = 0.01
-    ltmin = -2
-    ltmax = 0
+    ltbin = 0.1
+    ltmin = -7
+    ltmax = -1.2
+    #ltbin = 0.01
+    #ltmin = -2
+    #ltmax = 0
 
     #bins in energy
-    #ebin = 0.1
-    #emin = 2
-    #emax = 20
     ebin = 0.1
-    emin = 0
-    emax = 20
+    emin = 2
+    emax = 14
+    #emax = 20
+    #ebin = 0.1
+    #emin = 0
+    #emax = 20
 
-    #sel = "lowQ2s1_IsHit==1"
+    sel = "lowQ2s1_IsHit==1"
     #sel = "lowQ2s2_IsHit==1"
-    sel = "ecal_IsHit==1"
+    #sel = "ecal_IsHit==1"
     #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
 
     can = ut.box_canvas()

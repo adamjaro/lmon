@@ -9,3 +9,4 @@ data/
 *.d
 *.pcm
 macro/tmp/
+*.mp3

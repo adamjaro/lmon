@@ -1,7 +1,7 @@
 
 # BoxCalV2 hits collection
 
-from ROOT import std
+from ROOT import std, TVector3
 
 #_____________________________________________________________________________
 class BoxCalV2Hits:
@@ -49,13 +49,15 @@ class BoxCalV2Hits:
             self.z = 0. # mm
 
         #_____________________________________________________________________________
-        def GlobalToLocal(self, x0, y0, z0):
+        def GlobalToLocal(self, x0, y0, z0, phi=0):
 
-            #transform to local detector coordinates
+            #local detector coordinates with rotation phi in x-z plane
+            pos = TVector3(self.x-x0, self.y-y0, self.z-z0)
+            pos.RotateY(-phi)
 
-            self.x -= x0
-            self.y -= y0
-            self.z -= z0
+            self.x = pos.X()
+            self.y = pos.Y()
+            self.z = pos.Z()
 
     #_____________________________________________________________________________
     def GetN(self):
