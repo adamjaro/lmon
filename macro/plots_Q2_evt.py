@@ -25,7 +25,7 @@ def main():
     #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
     #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
 
-    iplot = 10
+    iplot = 23
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -50,6 +50,8 @@ def main():
     funclist.append( evt_true_lx ) # 20
     funclist.append( evt_Q2_el_Q2 ) # 21
     funclist.append( evt_true_lQ2_ly_separate ) # 22
+    funclist.append( acc_el_en_log10_theta_tag ) # 23
+
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -467,14 +469,15 @@ def el_en_log10_theta_tag():
 
     #bins in energy
     ebin = 0.1
-    emin = 2
-    emax = 14
-    #emax = 20
+    emin = 1
+    #emax = 14
+    emax = 20
     #ebin = 0.1
     #emin = 0
     #emax = 20
 
-    sel = "lowQ2s1_IsHit==1"
+    sel = ""
+    #sel = "lowQ2s1_IsHit==1"
     #sel = "lowQ2s2_IsHit==1"
     #sel = "ecal_IsHit==1"
     #gQ2sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1 || ecal_IsHit==1"
@@ -1136,6 +1139,60 @@ def evt_true_lQ2_ly_separate():
 #evt_true_lQ2_ly_separate
 
 #_____________________________________________________________________________
+def acc_el_en_log10_theta_tag():
+
+    #Tagger acceptance in energy and theta
+
+    #bins in log_10(theta)
+    ltbin = 0.2
+    ltmin = -8
+    ltmax = 1
+
+    #bins in energy
+    ebin = 0.4
+    emin = 0
+    emax = 21
+
+    #sel = "lowQ2s1_IsHit==1"
+    sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", ltbin, ltmin, ltmax, ebin, emin, emax)
+    hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", ltbin, ltmin, ltmax, ebin, emin, emax)
+
+    form = "el_gen:TMath::Log10(TMath::Pi()-el_theta)"
+    tree.Draw(form+" >> hEnThetaTag", sel)
+    tree.Draw(form+" >> hEnThetaAll")
+
+    hEnThetaTag.Divide(hEnThetaAll)
+
+    ytit = "Electron energy #it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "Scattering angle log_{10}(#theta_{e}) / "+"{0:.2f} rad".format(ltbin)
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.4, 1.3)
+
+    hEnThetaTag.SetTitleOffset(1.5, "Z")
+    hEnThetaTag.SetZTitle("Acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hEnThetaTag.SetMinimum(0)
+    hEnThetaTag.SetMaximum(1)
+    hEnThetaTag.SetContour(300)
+
+    hEnThetaTag.Draw("colz")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_el_en_log10_theta_tag
+
+#_____________________________________________________________________________
 if __name__ == "__main__":
 
     gROOT.SetBatch()
@@ -1144,7 +1201,8 @@ if __name__ == "__main__":
 
     main()
 
-
+    #beep when done
+    gSystem.Exec("mplayer computerbeep_1.mp3 > /dev/null 2>&1")
 
 
 
