@@ -109,6 +109,17 @@ def set_H1D_col(hx, col):
     hx.SetLineColor(col);
 
 #_____________________________________________________________________________
+def set_F1(fx, col=rt.kRed):
+
+    fx.SetLineWidth(3)
+    fx.SetNpx(1000)
+    fx.SetTitle("")
+
+    fx.SetLineColor(col)
+
+#set_F1
+
+#_____________________________________________________________________________
 def set_axis(axis):
 
     axis.SetTextFont(42)

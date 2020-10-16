@@ -1154,8 +1154,8 @@ def acc_el_en_log10_theta_tag():
     emax = 21
 
     #sel = "lowQ2s1_IsHit==1"
-    sel = "lowQ2s2_IsHit==1"
-    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
 
     can = ut.box_canvas()
 
@@ -1175,7 +1175,7 @@ def acc_el_en_log10_theta_tag():
     hEnThetaTag.SetTitleOffset(1.5, "Z")
     hEnThetaTag.SetZTitle("Acceptance")
 
-    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.15)
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
 
     #gPad.SetLogz()
 

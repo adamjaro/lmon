@@ -1,7 +1,9 @@
 #!/usr/bin/python
 
+from ConfigParser import RawConfigParser
+
 import ROOT as rt
-from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem
+from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem, AddressOf
 
 import plot_utils as ut
 from BoxCalV2Hits import BoxCalV2Hits
@@ -11,11 +13,11 @@ def main():
 
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
-    infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
+    #infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 1
+    iplot = 6
     funclist = []
     funclist.append( hits_xy_s1 ) # 0
     funclist.append( hits_xy_s2 ) # 1
@@ -23,6 +25,7 @@ def main():
     funclist.append( hits_en_z_s2 ) # 3
     funclist.append( hits_en ) # 4
     funclist.append( rate_xy_s1 ) # 5
+    funclist.append( recchar ) # 6
 
     #input
     inp = TFile.Open(infile)
@@ -76,7 +79,7 @@ def hits_xy_s1():
             hit.GlobalToLocal(xpos, 0, zpos, rot_y)
 
             if hit.z < zmin: continue
-            if hit.en < emin: continue
+            #if hit.en < emin: continue
 
             hXY.Fill(hit.x, hit.y)
 
@@ -405,6 +408,104 @@ def rate_xy_s1():
     can.SaveAs("01fig.pdf")
 
 #rate_xy_s1
+
+#_____________________________________________________________________________
+def recchar():
+
+    #reconstruction characteristics
+
+    #tagger configuration
+    config = "recchar_s1.ini"
+    #config = "recchar_s2.ini"
+
+    cf = read_con(config)
+    #print type(cf("rot_y"))
+    #print cf("rot_y")
+    #print type(cf.str("name"))
+    #print cf.str("name")
+
+    #tagger parametrization
+    xpos = cf("xpos")
+    zpos = cf("zpos")
+    rot_y = cf("rot_y")
+    zmin = cf("zmin")
+
+    can = ut.box_canvas(3*768)
+    can.Divide(3,1)
+    hXY = ut.prepare_TH2D("hXY", cf("xybin"), -cf("xsiz")/2., cf("xsiz")/2., cf("xybin"), -cf("ysiz")/2., cf("ysiz")/2.)
+
+    #numerical minima and maxima
+    xlo = 1e9; xhi = -1e9; ylo = 1e9; yhi = -1e9
+
+    #nevt = tree.GetEntries()
+    nevt = 12
+
+    hits = BoxCalV2Hits(cf.str("name"), tree)
+    gROOT.ProcessLine("struct Entry {Double_t v;};")
+    gen_E = rt.Entry()
+    gen_theta = rt.Entry()
+    tree.SetBranchAddress("gen_E", AddressOf(gen_E, "v"))
+    tree.SetBranchAddress("gen_theta", AddressOf(gen_theta, "v"))
+
+    for ievt in xrange(nevt):
+        tree.GetEntry(ievt)
+
+        nhsel = 0
+
+        print gen_E.v, gen_theta.v
+
+        for ihit in xrange(hits.GetN()):
+
+            hit = hits.GetHit(ihit)
+            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
+
+            if hit.z < zmin: continue
+
+            nhsel += 1
+
+        #just one selected hit
+        if nhsel != 1: continue
+
+        hXY.Fill(hit.x, hit.y)
+
+        if hit.x < xlo: xlo = hit.x
+        if hit.y < ylo: ylo = hit.y
+
+        if hit.x > xhi: xhi = hit.x
+        if hit.y > yhi: yhi = hit.y
+
+    print "xlo:", xlo, "xhi:", xhi, "ylo:", ylo, "yhi:", yhi
+
+
+    ut.put_yx_tit(hXY, "#it{y} (mm)", "#it{x} (mm)")
+    hXY.SetMinimum(0.98)
+    hXY.SetContour(300)
+
+    can.cd(1)
+    ut.set_margin_lbtr(gPad, 0.11, 0.08, 0.01, 0.12)
+    hXY.Draw()
+    gPad.SetGrid()
+    gPad.SetLogz()
+
+    #ut.invert_col(rt.gPad)
+    ut.invert_col_can(can)
+    can.SaveAs("01fig.pdf")
+
+#recchar
+
+#_____________________________________________________________________________
+class read_con:
+    # read parameters from config parser
+    #_____________________________________________________________________________
+    def __init__(self, config):
+        self.con = RawConfigParser()
+        self.con.read(config)
+    #_____________________________________________________________________________
+    def __call__(self, par):
+        return self.con.getfloat("main", par)
+    #_____________________________________________________________________________
+    def str(self, par):
+        return self.con.get("main", par).strip("\"'")
 
 
 #_____________________________________________________________________________
