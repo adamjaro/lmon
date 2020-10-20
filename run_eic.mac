@@ -2,9 +2,9 @@
 #run macro for EIC nodes
 
 #detectors and components
-/lmon/construct/geometry ../config/geom_all.in
+#/lmon/construct/geometry ../config/geom_all.in
 #/lmon/construct/geometry ../config/geom_close_all.in
-#/lmon/construct/geometry ../config/geom_lumi.in
+/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_lowQ2.in
 #/lmon/construct/geometry ../config/geom_beamline.in
 #/lmon/construct/geometry ../config/geom_beamline_noquad.in
@@ -16,7 +16,8 @@
 /lmon/input/type tparticle
 #/lmon/input/tparticle/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root
 #/lmon/input/tparticle/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_py_18x275_Q2all_5Mevt.root
-/lmon/input/tparticle/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_zeus_0p1GeV_beff2_1Mevt.root
+#/lmon/input/tparticle/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_zeus_0p1GeV_beff2_1Mevt.root
+/lmon/input/tparticle/name /gpfs/mnt/gpfs02/eic/jadam/lgen/data/lgen_18x275_uni_1keV_0p1GeV_5Mevt.root
 
 #/lmon/input/type pythia6
 #/lmon/input/pythia6/name /direct/eic+u/jadam/test/pythia6_example.txt
@@ -30,14 +31,11 @@
 #output
 #/lmon/output/name ../data/lmon.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_qr_Qd_beff2_5Mevt.root
-/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root
+#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_beam_18_beff2_10Mevt.root
 #/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_py_18x275_Q2all_beff2_5Mevt.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root
-#/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/ir6/beam/lmon_beam_18_esp_beff2_noquad_g05p01_1Mevt.root
+/lmon/output/name /gpfs/mnt/gpfs02/eic/jadam/lmon/data/lmon_18x275_uni_1keV_0p1GeV_phot_5Mevt.root
 
 #number of events
-/run/beamOn 1000000
+/run/beamOn 5000000
 
