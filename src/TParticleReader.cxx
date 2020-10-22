@@ -86,6 +86,8 @@ void TParticleReader::GeneratePrimaryVertex(G4Event *evt) {
   //put the vertex to the event
   evt->AddPrimaryVertex(vtx);
 
+  //fDat->Print("TParticleReader y:", "true_y");
+
   //add event data if available
   if(fDat) evt->SetUserInformation(new MCEvtDat(*fDat));
 
@@ -115,9 +117,7 @@ void TParticleReader::OpenInput() {
   if(fTree->FindBranch("true_Q2")) {
 
     fDat = new MCEvtDat();
-    fTree->SetBranchAddress("true_Q2", &(fDat->fTrueQ2));
-    fTree->SetBranchAddress("true_x", &(fDat->fTrueX));
-    fTree->SetBranchAddress("true_y", &(fDat->fTrueY));
+    fDat->ConnectInput(fTree);
   }
 
   if(cdd) cdd->cd(); // move back to the previous file

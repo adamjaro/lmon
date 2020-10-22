@@ -75,11 +75,10 @@ void MCEvent::ReadEvtDat(const G4Event *evt) {
   MCEvtDat *dat = dynamic_cast<MCEvtDat*>(evt->GetUserInformation());
   if(!dat) return;
 
-  fDat.fTrueQ2 = dat->fTrueQ2;
-  fDat.fTrueX = dat->fTrueX;
-  fDat.fTrueY = dat->fTrueY;
+  //load the input data
+  fDat.LoadGenVal(*dat);
 
-  //G4cout << fDat.fTrueQ2 << " " << fDat.fTrueX << " " << fDat.fTrueY << G4endl;
+  //fDat.Print("MCEvent loc     y:", "true_y");
   //G4cout << G4endl;
 
 }//ReadEvtDat
@@ -152,9 +151,7 @@ void MCEvent::CreateOutput(TTree *tree) {
 
   DetUtils u("", tree);
 
-  u.AddBranch("true_x", &(fDat.fTrueX), "D");
-  u.AddBranch("true_y", &(fDat.fTrueY), "D");
-  u.AddBranch("true_Q2", &(fDat.fTrueQ2), "D");
+  fDat.CreateOutput(tree);
 
   u.AddBranch("phot_gen", &fPhotGen, "D");
   u.AddBranch("phot_theta", &fPhotTheta, "D");
@@ -172,10 +169,6 @@ void MCEvent::CreateOutput(TTree *tree) {
 
 //_____________________________________________________________________________
 void MCEvent::ClearEvent() {
-
-  fDat.fTrueQ2 = 99999;
-  fDat.fTrueX = 99999;
-  fDat.fTrueY = 99999;
 
   fPartPdg.clear();
   fPartPx.clear();

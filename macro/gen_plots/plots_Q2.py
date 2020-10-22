@@ -10,18 +10,21 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    basedir = "/home/jaroslav/sim/lgen/data"
+    #basedir = "/home/jaroslav/sim/lgen/data"
+    basedir = "/home/jaroslav/sim/GETaLM_data"
 
     #infile = "lgen_18x275_qr_Qd_beff2_10p2Mevt.root"
     #infile = "lgen_18x275_qr_Qd_beff2_5Mevt.root"
-    infile = "lgen_18x275_qr_Qe_beff2_5Mevt.root"
+    #infile = "lgen_18x275_qr_Qe_beff2_5Mevt.root"
     #infile = "lgen_10x100_qr_5Mevt.root"
     #infile = "lgen_5x41_qr_5Mevt.root"
     #infile = "lgen_py_18x275_Q2all_5Mevt.root"
     #infile = "lgen_py_5x41_Q2all_5Mevt.root"
     #infile = "lgen_py_10x100_Q2all_5Mevt.root"
+    infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "py/pythia_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 23
+    iplot = 17
     funclist = []
     funclist.append( gen_xy ) # 0
     funclist.append( gen_Q2 ) # 1
@@ -47,6 +50,7 @@ def main():
     funclist.append( gen_el_en_log10_theta ) # 21
     funclist.append( gen_el_en_log10_theta_lQ2 ) # 22
     funclist.append( gen_eta ) # 23
+    funclist.append( gen_el_pT ) # 24
 
     inp = TFile.Open(basedir+"/"+infile)
     global tree
@@ -794,21 +798,24 @@ def gen_true_W():
 
     # GeV^2
     #scm = 19800.8 # 18x275
-    scm = 820.8 # 5x41
+    #scm = 820.8 # 5x41
 
     #W range
     wbin = 0.1
     wmin = 0
-    wmax = 150
+    wmax = 200
 
     hW = ut.prepare_TH1D("hW", wbin, wmin, wmax)
     hW2 = ut.prepare_TH1D("hW2", wbin, wmin, wmax)
 
-    form = "TMath::Sqrt(true_y*"+str(scm)+"*(1.-true_x))"
-    form2 = "TMath::Sqrt(true_y*"+str(scm)+")"
+    #form = "TMath::Sqrt(true_y*"+str(scm)+"*(1.-true_x))"
+    #form2 = "TMath::Sqrt(true_y*"+str(scm)+")"
+    form3 = "TMath::Sqrt(true_W2)"
 
-    tree.Draw(form+" >> hW")
-    tree.Draw(form2+" >> hW2")
+    #tree.Draw(form+" >> hW")
+    tree.Draw(form3+" >> hW")
+    #tree.Draw(form2+" >> hW2")
+    #tree.Draw(form3+" >> hW2")
 
     can = ut.box_canvas()
 
@@ -816,11 +823,11 @@ def gen_true_W():
 
     #ut.set_H1D_col(hW2, rt.kRed)
     ut.line_h1(hW)
-    ut.line_h1(hW2, rt.kRed)
+    #ut.line_h1(hW2, rt.kRed)
 
 
     hW.Draw()
-    hW2.Draw("e1same")
+    #hW2.Draw("e1same")
 
     gPad.SetGrid()
     gPad.SetLogy()
@@ -942,11 +949,11 @@ def gen_eta():
 
     hEta = ut.prepare_TH1D("hEta", etabin, etamin, etamax)
 
-    form = "-TMath::Log(TMath::Tan(gen_theta/2.))"
+    can = ut.box_canvas()
+
+    form = "-TMath::Log(TMath::Tan(true_el_theta/2.))"
     #form = "-TMath::Log(TMath::Tan(el_theta/2.))"
     tree.Draw(form+" >> hEta")
-
-    can = ut.box_canvas()
 
     ut.put_yx_tit(hEta, "Events", "#eta", 1.4, 1.2)
 
@@ -959,6 +966,34 @@ def gen_eta():
     can.SaveAs("01fig.pdf")
 
 #gen_eta
+
+#_____________________________________________________________________________
+def gen_el_pT():
+
+    #electron pT
+
+    #eta range
+    ptbin = 0.3
+    ptmin = 0
+    ptmax = 100
+
+    hPt = ut.prepare_TH1D("hPt", ptbin, ptmin, ptmax)
+
+    can = ut.box_canvas()
+
+    tree.Draw("true_el_pT >> hPt")
+
+    ut.put_yx_tit(hPt, "Events", "#it{p}_{T}", 1.4, 1.2)
+
+    hPt.Draw()
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#gen_el_pT
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

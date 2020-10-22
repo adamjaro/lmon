@@ -12,15 +12,16 @@
 
 /run/initialize
 
-#/lmon/input/type tparticle
-#/lmon/input/tparticle/name /home/jaroslav/sim/eic-lgen/lgen.root
+/lmon/input/type tparticle
+/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_5Mevt.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qe_beff2_5Mevt.root
 #/lmon/input/tparticle/select 11
 #/lmon/input/tparticle/select 22
 
-/lmon/input/type tx
+#/lmon/input/type tx
 #/lmon/input/tx/name /home/jaroslav/sim/read_pythia/data/pythia_5M_beff2.tx
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_beff2_1p2Mevt.tx
-/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
+#/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
 #/lmon/input/tx/select 22
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_10kevt.tx
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_beam_18_beff2_10kevt.tx
@@ -34,7 +35,8 @@
 #/lmon/input/pythia6/select -211
 #/lmon/input/pythia6/select 22
 
-/lmon/output/name ../data/test/lmon.root
+#/lmon/output/name ../data/test/lmon.root
+/lmon/output/name ./lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
 
 
