@@ -34,7 +34,8 @@ def acc_quasi_real(do_plot=True, sel_mode=5):
     #inp_qr = "../data/lmon_18x275_qr_Qb_1Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qc_10Mevt.root"
     #inp_qr = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    inp_qr = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    #inp_qr = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    inp_qr = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
 
     #range in the log_10(Q^2)
     #lqmin = -4.5

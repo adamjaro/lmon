@@ -160,7 +160,17 @@ void h1_from_list(list<Double_t> &inp, TH1D &hx) {
 
 }//h1_from_list
 
+//_____________________________________________________________________________
+TH1D h1_from_list(string nam, list<Double_t>& inp, vector<Double_t>& bins) {
 
+  //create TH1D from input list
+  TH1D hx(nam.c_str(), nam.c_str(), bins.size()-1, bins.data());
+
+  h1_from_list(inp, hx);
+
+  return hx;
+
+}//h1_from_list
 
 
 

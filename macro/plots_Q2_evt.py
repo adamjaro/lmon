@@ -10,22 +10,10 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #infile = "../data/test/lmon.root"
-    #infile = "../data/lmon_18x275_qr_lowQ2_47p2cm_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_xB_yA_lowQ2_B2eRv2_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_xD_yC_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qa_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qb_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qb_beff2_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
-    infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
-    #infile = "../data/ir6/lmon_pythia_5M_beff2_5Mevt_v2.root"
-    #infile = "../data/ir6/lmon_pythia_5M_beff2_1p5T_5Mevt_v2.root"
-    #infile = "../data/ir6_close/lmon_pythia_5M_beff2_close_5Mevt.root"
-    #infile = "/home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qd_beff2_5Mevt.root"
+    infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 23
+    iplot = 8
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -51,7 +39,8 @@ def main():
     funclist.append( evt_Q2_el_Q2 ) # 21
     funclist.append( evt_true_lQ2_ly_separate ) # 22
     funclist.append( acc_el_en_log10_theta_tag ) # 23
-
+    funclist.append( el_pT_tag ) # 24
+    funclist.append( el_eta_tag ) # 25
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -136,32 +125,39 @@ def el_phi_tag():
 
     #bins in phi
     pbin = 1e-1
-    pmin = -TMath.Pi()
-    pmax = TMath.Pi()
+    pmin = -TMath.Pi() - 0.3
+    pmax = TMath.Pi() + 0.3
+
+    #sel = ""
+    sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
 
     #interval in log_10(Q^2)
-    lqmin = -1.5
-    lqmax = -0.9
-    lqsel = gL10Q2+" > "+str(lqmin)+" && "+gL10Q2+" < "+str(lqmax)
+    #lqmin = -1.5
+    #lqmax = -0.9
+    #lqsel = gL10Q2+" > "+str(lqmin)+" && "+gL10Q2+" < "+str(lqmax)
 
     #bins for selected log_10(Q^2)
-    pbins = 2e-2
+    #pbins = 2e-2
 
     can = ut.box_canvas()
 
     hPhiTag = ut.prepare_TH1D("hPhiTag", pbin, pmin, pmax)
-    hPhiTagQ2sel = ut.prepare_TH1D("hPhiTagQ2sel", pbins, pmin, pmax)
+    #hPhiTagQ2sel = ut.prepare_TH1D("hPhiTagQ2sel", pbins, pmin, pmax)
 
-    tree.Draw("el_phi >> hPhiTag", "lowQ2_IsHit == 1")
-    tree.Draw("el_phi >> hPhiTagQ2sel", "lowQ2_IsHit==1"+" && "+lqsel)
+    #tree.Draw("el_phi >> hPhiTag", sel)
+    tree.Draw("true_el_phi >> hPhiTag", sel)
+    #tree.Draw("el_phi >> hPhiTagQ2sel", "lowQ2_IsHit==1"+" && "+lqsel)
 
+    gPad.SetGrid()
     gPad.SetLogy()
 
     hPhiTag.Draw()
-    hPhiTagQ2sel.Draw("e1same")
+    #hPhiTagQ2sel.Draw("e1same")
     #hPhiTagQ2sel.Draw()
 
-    hPhiTag.SetMinimum(0.3)
+    #hPhiTag.SetMinimum(0.3)
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -173,33 +169,29 @@ def el_theta_tag():
 
     #electron generated polar angle for electrons hitting the tagger
 
-    #bins in theta
-    tbin = 5e-4
-    tmin = 0
-    tmax = 2.5e-2
+    #tbin = 5e-2
+    #tmin = 0
+    #tmax = TMath.Pi() + 1e-2
+    tbin = 2e-4
+    tmin = TMath.Pi() - 2.1e-2
+    tmax = TMath.Pi() + 0.5e-2
 
-    #interval in log_10(Q^2)
-    lqmin = -1.5
-    lqmax = -0.9
-    lqsel = gL10Q2+" > "+str(lqmin)+" && "+gL10Q2+" < "+str(lqmax)
-
-    #bins for selected log_10(Q^2)
-    #pbins = 2e-2
+    #sel = ""
+    sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
 
     can = ut.box_canvas()
 
     hThetaTag = ut.prepare_TH1D("hThetaTag", tbin, tmin, tmax)
-    hThetaTagQ2sel = ut.prepare_TH1D("hThetaTagQ2sel", tbin, tmin, tmax)
 
-    tree.Draw("TMath::Pi()-el_theta >> hThetaTag", gQ2sel)
-    #tree.Draw("TMath::Pi()-el_theta >> hThetaTagQ2sel", "lowQ2_IsHit==1"+" && "+lqsel)
+    #tree.Draw("el_theta >> hThetaTag", sel)
+    tree.Draw("true_el_theta >> hThetaTag", sel)
 
+    gPad.SetGrid()
     gPad.SetLogy()
 
     hThetaTag.Draw()
-    #hThetaTagQ2sel.Draw("e1same")
-
-    #hThetaTag.SetMinimum(0.3)
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -411,17 +403,26 @@ def el_en_tag():
 
     #bins in energy
     ebin = 0.1
-    emin = 8.5
-    emax = 18
+    emin = 0
+    emax = 30
+
+    #sel = ""
+    #sel = "lowQ2s1_IsHit==1"
+    sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
 
     can = ut.box_canvas()
 
-    #hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
-    hEnTag = ut.prepare_TH1D_n("hEnTag", 10, emin, emax)
+    hEnTag = ut.prepare_TH1D("hEnTag", ebin, emin, emax)
+    #hEnTag = ut.prepare_TH1D_n("hEnTag", 10, emin, emax)
 
-    tree.Draw("el_gen >> hEnTag", gQ2sel)
+    #tree.Draw("el_gen >> hEnTag", sel)
+    tree.Draw("true_el_E >> hEnTag", sel)
 
     hEnTag.Draw()
+
+    gPad.SetGrid()
+    gPad.SetLogy()
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -1163,6 +1164,7 @@ def acc_el_en_log10_theta_tag():
     hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", ltbin, ltmin, ltmax, ebin, emin, emax)
 
     form = "el_gen:TMath::Log10(TMath::Pi()-el_theta)"
+    #form = "true_el_E:TMath::Log10(TMath::Pi()-true_el_theta)"
     tree.Draw(form+" >> hEnThetaTag", sel)
     tree.Draw(form+" >> hEnThetaAll")
 
@@ -1191,6 +1193,71 @@ def acc_el_en_log10_theta_tag():
     can.SaveAs("01fig.pdf")
 
 #acc_el_en_log10_theta_tag
+
+#_____________________________________________________________________________
+def el_pT_tag():
+
+    #electron pT
+
+    #ptbin = 0.1
+    #ptmin = 0
+    #ptmax = 80
+    ptbin = 3e-3
+    ptmin = 0
+    ptmax = 0.3
+
+    #sel = ""
+    #sel = "lowQ2s1_IsHit==1"
+    sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+
+    can = ut.box_canvas()
+
+    hPt = ut.prepare_TH1D("hPt", ptbin, ptmin, ptmax)
+
+    tree.Draw("true_el_pT >> hPt", sel)
+
+    gPad.SetGrid()
+    gPad.SetLogy()
+
+    hPt.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_pT_tag
+
+#_____________________________________________________________________________
+def el_eta_tag():
+
+    #electron pseudorapidity
+
+    etabin = 0.3
+    etamin = -20
+    etamax = 10
+
+    #sel = ""
+    #sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+
+    can = ut.box_canvas()
+
+    hEta = ut.prepare_TH1D("hEta", etabin, etamin, etamax)
+
+    form = "-TMath::Log(TMath::Tan(true_el_theta/2.))"
+    #form = "-TMath::Log(TMath::Tan(el_theta/2.))"
+    tree.Draw(form+" >> hEta", sel)
+
+    gPad.SetGrid()
+    gPad.SetLogy()
+
+    hEta.Draw()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#el_eta_tag
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
