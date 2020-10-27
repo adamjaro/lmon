@@ -27,11 +27,13 @@ class acc_Q2_kine {
   Double_t prec; // precision
   Double_t delt; // size of steps
   Double_t bmin; // minimal bin width
+  Int_t modif; // modifier to input value
 
   //_____________________________________________________________________________
   acc_Q2_kine(TTree *t, string nam, string sel): tree(t),
-    prec(1e-2), delt(1e-6), nev(0), bmin(-1) {
+    prec(1e-2), delt(1e-6), nev(0), bmin(-1), modif(-1) {
 
+    //input tree
     tree->SetBranchStatus("*", 0);
     tree->SetBranchStatus(nam.c_str(), 1);
     tree->SetBranchStatus(sel.c_str(), 1);
@@ -39,7 +41,11 @@ class acc_Q2_kine {
     tree->SetBranchAddress(nam.c_str(), &val);
     tree->SetBranchAddress(sel.c_str(), &val_sel);
 
-  }//acc_Q2_calc
+    //modifiers to input value
+    mods[0] = &acc_Q2_kine::theta_to_eta;
+    mods[1] = &acc_Q2_kine::log10_Q2;
+
+  }//acc_Q2_kine
 
   //_____________________________________________________________________________
   TGraphAsymmErrors get() {
@@ -51,6 +57,11 @@ class acc_Q2_kine {
     if( nev==0 ) nev = tree->GetEntries();
     for(ULong64_t iev=0; iev<nev; iev++) {
       tree->GetEntry(iev);
+
+      //modifiers to input value
+      if( modif > -1 ) {
+        val = (this->*mods[modif])(val);
+      }
 
       //all events
       valAll.push_back(val);
@@ -222,6 +233,26 @@ private:
     return ig;
 
   }//integrate
+
+  //_____________________________________________________________________________
+  Double_t theta_to_eta(Double_t theta) {
+
+    //pseudorapidity from polar angle
+
+    return -TMath::Log(TMath::Tan(theta/2.));
+
+  }//theta_to_eta
+
+  //_____________________________________________________________________________
+  Double_t log10_Q2(Double_t Q2) {
+
+    //log_10(Q^2)
+
+    return TMath::Log10(Q2);
+
+  }//log10_Q2
+
+  Double_t (acc_Q2_kine::*mods[2])(Double_t); // modifiers to input value
 
   TTree *tree; // input tree
   Double_t val; // kinematics variable

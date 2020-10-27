@@ -13,7 +13,7 @@ def main():
     infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
     #infile = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 8
+    iplot = 26
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -41,6 +41,7 @@ def main():
     funclist.append( acc_el_en_log10_theta_tag ) # 23
     funclist.append( el_pT_tag ) # 24
     funclist.append( el_eta_tag ) # 25
+    funclist.append( acc_el_en_theta_tag ) # 26
 
     #kinematics formula for log_10(Q2)
     global gL10Q2
@@ -1258,6 +1259,60 @@ def el_eta_tag():
     can.SaveAs("01fig.pdf")
 
 #el_eta_tag
+
+#_____________________________________________________________________________
+def acc_el_en_theta_tag():
+
+    #Tagger acceptance in energy and theta
+
+    #bins in theta
+    tbin = 4e-4
+    tmin = TMath.Pi() - 2.1e-2
+    tmax = TMath.Pi() + 0.5e-2
+
+    #bins in energy
+    ebin = 0.3
+    emin = 0
+    emax = 21
+
+    sel = "lowQ2s1_IsHit==1"
+    #sel = "lowQ2s2_IsHit==1"
+    #sel = "lowQ2s1_IsHit==1 || lowQ2s2_IsHit==1"
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", tbin, tmin, tmax, ebin, emin, emax)
+    hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", tbin, tmin, tmax, ebin, emin, emax)
+
+    form = "true_el_E:true_el_theta"
+    tree.Draw(form+" >> hEnThetaTag", sel)
+    tree.Draw(form+" >> hEnThetaAll")
+
+    hEnThetaTag.Divide(hEnThetaAll)
+
+    ytit = "Electron energy #it{E} (GeV)"
+    xtit = "Electron polar angle #theta (rad)"
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.4, 1.3)
+
+    hEnThetaTag.SetTitleOffset(1.5, "Z")
+    hEnThetaTag.SetZTitle("Acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hEnThetaTag.SetMinimum(0)
+    hEnThetaTag.SetMaximum(1)
+    hEnThetaTag.SetContour(300)
+
+    hEnThetaTag.Draw("colz")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_el_en_theta_tag
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

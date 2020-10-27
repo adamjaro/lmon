@@ -13,14 +13,6 @@ def main():
     #basedir = "/home/jaroslav/sim/lgen/data"
     basedir = "/home/jaroslav/sim/GETaLM_data"
 
-    #infile = "lgen_18x275_qr_Qd_beff2_10p2Mevt.root"
-    #infile = "lgen_18x275_qr_Qd_beff2_5Mevt.root"
-    #infile = "lgen_18x275_qr_Qe_beff2_5Mevt.root"
-    #infile = "lgen_10x100_qr_5Mevt.root"
-    #infile = "lgen_5x41_qr_5Mevt.root"
-    #infile = "lgen_py_18x275_Q2all_5Mevt.root"
-    #infile = "lgen_py_5x41_Q2all_5Mevt.root"
-    #infile = "lgen_py_10x100_Q2all_5Mevt.root"
     infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
     #infile = "py/pythia_ep_18x275_Q2all_beff2_5Mevt.root"
 
@@ -732,7 +724,7 @@ def gen_true_lx_ly():
     #gPad.SetLogy()
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #gen_true_lx_ly
