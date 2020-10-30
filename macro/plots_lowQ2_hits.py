@@ -4,6 +4,7 @@ from ConfigParser import RawConfigParser
 
 import ROOT as rt
 from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem, AddressOf
+from ROOT import TMath
 
 import plot_utils as ut
 from BoxCalV2Hits import BoxCalV2Hits
@@ -13,9 +14,10 @@ def main():
 
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
-    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
+    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
     #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
     #infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
+    infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
 
     iplot = 6
     funclist = []
@@ -415,14 +417,10 @@ def recchar():
     #reconstruction characteristics
 
     #tagger configuration
-    config = "recchar_s1.ini"
-    #config = "recchar_s2.ini"
+    #config = "recchar_s1.ini"
+    config = "recchar_s2.ini"
 
     cf = read_con(config)
-    #print type(cf("rot_y"))
-    #print cf("rot_y")
-    #print type(cf.str("name"))
-    #print cf.str("name")
 
     #tagger parametrization
     xpos = cf("xpos")
@@ -433,26 +431,30 @@ def recchar():
     can = ut.box_canvas(3*768)
     can.Divide(3,1)
     hXY = ut.prepare_TH2D("hXY", cf("xybin"), -cf("xsiz")/2., cf("xsiz")/2., cf("xybin"), -cf("ysiz")/2., cf("ysiz")/2.)
+    hET = ut.prepare_TH2D("hET", cf("tbin"), cf("tmin"), cf("tmax"), cf("ebin"), cf("emin"), cf("emax"))
+    hQ2 = ut.prepare_TH1D("hQ2", cf("qbin"), cf("qmin"), cf("qmax"))
 
     #numerical minima and maxima
     xlo = 1e9; xhi = -1e9; ylo = 1e9; yhi = -1e9
+    elo = 1e9; ehi = -1e9; tlo = 1e9; thi = -1e9;
+    qlo = 1e9; qhi = -1e9;
 
-    #nevt = tree.GetEntries()
-    nevt = 12
+    nevt = tree.GetEntries()
+    #nevt = 1200
 
     hits = BoxCalV2Hits(cf.str("name"), tree)
     gROOT.ProcessLine("struct Entry {Double_t v;};")
-    gen_E = rt.Entry()
-    gen_theta = rt.Entry()
-    tree.SetBranchAddress("gen_E", AddressOf(gen_E, "v"))
-    tree.SetBranchAddress("gen_theta", AddressOf(gen_theta, "v"))
+    true_el_theta = rt.Entry()
+    true_el_E = rt.Entry()
+    true_Q2 = rt.Entry()
+    tree.SetBranchAddress("true_el_theta", AddressOf(true_el_theta, "v"))
+    tree.SetBranchAddress("true_el_E", AddressOf(true_el_E, "v"))
+    tree.SetBranchAddress("true_Q2", AddressOf(true_Q2, "v"))
 
     for ievt in xrange(nevt):
         tree.GetEntry(ievt)
 
         nhsel = 0
-
-        print gen_E.v, gen_theta.v
 
         for ihit in xrange(hits.GetN()):
 
@@ -466,6 +468,7 @@ def recchar():
         #just one selected hit
         if nhsel != 1: continue
 
+        #hit coordinats on front of the tagger
         hXY.Fill(hit.x, hit.y)
 
         if hit.x < xlo: xlo = hit.x
@@ -474,18 +477,55 @@ def recchar():
         if hit.x > xhi: xhi = hit.x
         if hit.y > yhi: yhi = hit.y
 
-    print "xlo:", xlo, "xhi:", xhi, "ylo:", ylo, "yhi:", yhi
+        #true electron energy and angle for the hit
+        en = true_el_E.v
+        lt = -TMath.Log10(TMath.Pi()-true_el_theta.v)
+        hET.Fill(lt, en)
 
+        if en < elo: elo = en
+        if en > ehi: ehi = en
+
+        if lt < tlo: tlo = lt
+        if lt > thi: thi = lt
+
+        #event true Q^2
+        lq = TMath.Log10(true_Q2.v)
+        hQ2.Fill( lq )
+
+        if lq < qlo: qlo = lq
+        if lq > qhi: qhi = lq
+
+    print "xlo:", xlo, "xhi:", xhi, "ylo:", ylo, "yhi:", yhi
+    print "elo:", elo, "ehi:", ehi, "tlo:", tlo, "thi:", thi
+    print "qlo:", qlo, "qhi:", qhi
 
     ut.put_yx_tit(hXY, "#it{y} (mm)", "#it{x} (mm)")
     hXY.SetMinimum(0.98)
     hXY.SetContour(300)
+
+    ut.put_yx_tit(hET, "#it{E} (GeV)", "-log_{10}(#pi-#theta) (rad)")
+    hET.SetMinimum(0.98)
+    hET.SetContour(300)
+
+    ut.put_yx_tit(hQ2, "Counts", "log_{10}(#it{Q}^{2}) (GeV^{2})")
+    ut.line_h1(hQ2, rt.kBlue)
 
     can.cd(1)
     ut.set_margin_lbtr(gPad, 0.11, 0.08, 0.01, 0.12)
     hXY.Draw()
     gPad.SetGrid()
     gPad.SetLogz()
+
+    can.cd(2)
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.12)
+    hET.Draw()
+    gPad.SetGrid()
+    gPad.SetLogz()
+
+    can.cd(3)
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.12)
+    hQ2.Draw()
+    gPad.SetGrid()
 
     #ut.invert_col(rt.gPad)
     ut.invert_col_can(can)
