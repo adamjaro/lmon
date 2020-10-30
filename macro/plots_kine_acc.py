@@ -14,7 +14,7 @@ def main():
     inp_qr = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
     inp_py = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 25
+    iplot = 26
     funclist = []
     funclist.append( acc_pT_s1 ) # 0
     funclist.append( acc_pT_s2 ) # 1
@@ -46,6 +46,8 @@ def main():
     funclist.append( el_theta_beff ) # 23
     funclist.append( el_eta_beff ) # 24
     funclist.append( el_phi_beff ) # 25
+
+    funclist.append( export_acc ) # 26
 
     global tree_qr; global tree_py
     tree_qr, infile_qr = get_tree(inp_qr)
@@ -970,7 +972,7 @@ def evt_W():
 #evt_W
 
 #_____________________________________________________________________________
-def acc_en_theta():
+def acc_en_theta(qrpy=0, tag=0, out=False):
 
     #Tagger acceptance in energy and theta
 
@@ -984,17 +986,29 @@ def acc_en_theta():
     emin = 0
     emax = 21
 
-    tree = tree_qr
-    lab_data = "QR"
-    #tree = tree_py
-    #lab_data = "Pythia6"
+    if qrpy == 0:
+        tree = tree_qr
+        lab_data = "QR"
+    else:
+        tree = tree_py
+        lab_data = "Pythia6"
 
-    #sel = "lowQ2s1_IsHit==1"
-    #lab_sel = "Tagger 1"
-    sel = "lowQ2s2_IsHit==1"
-    lab_sel = "Tagger 2"
+    if tag == 0:
+        sel = "lowQ2s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "lowQ2s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    #name for output
+    tnam = ["accTagger1_E_theta", "accTagger2_E_theta"]
+    dnam = ["_QR", "_Pythia6"]
+    nametit = tnam[tag] + dnam[qrpy]
+    print nametit
 
     can = ut.box_canvas()
+    if out == True:
+        can.SetName(nametit)
 
     hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", tbin, tmin, tmax, ebin, emin, emax)
     hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", tbin, tmin, tmax, ebin, emin, emax)
@@ -1024,12 +1038,17 @@ def acc_en_theta():
 
     hEnThetaTag.Draw("colz")
 
+    if out == True:
+        hEnThetaTag.SetNameTitle(nametit, nametit)
+        hEnThetaTag.Write()
+        return
+
     leg = ut.prepare_leg(0.12, 0.2, 0.24, 0.12, 0.04) # x, y, dx, dy, tsiz
     leg.AddEntry(None, lab_sel, "")
     leg.AddEntry(None, lab_data, "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_en_theta
@@ -1434,6 +1453,26 @@ def el_phi_beff():
     can.SaveAs("01fig.pdf")
 
 #el_phi_beff
+
+#_____________________________________________________________________________
+def export_acc():
+
+    #export acceptance data to output file
+    #
+    # qrpy: 0 - QR, 1 - Pythia6
+    # tag: 0 - Tagger 1, 1 - Tagger 2
+
+    out = TFile.Open("accTagger_Fig21_22_20201027.root", "recreate")
+
+    acc_en_theta(qrpy=1, tag=0, out=True)
+    acc_en_theta(qrpy=0, tag=0, out=True)
+
+    acc_en_theta(qrpy=1, tag=1, out=True)
+    acc_en_theta(qrpy=0, tag=1, out=True)
+
+    out.Close()
+
+#export_acc
 
 #_____________________________________________________________________________
 def gprint(g):

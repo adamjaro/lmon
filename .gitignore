@@ -10,3 +10,4 @@ data/
 *.pcm
 macro/tmp/
 *.mp3
+*.root
