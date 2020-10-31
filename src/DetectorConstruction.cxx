@@ -66,8 +66,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4cout << G4endl << "DetectorConstruction::Construct: " << fGeoName << G4endl;
 
   //run the geometry parser
-  GeoParser geo;
-  geo.LoadInput(fGeoName);
+  GeoParser geo(fGeoName);
 
   //create the top volume
   G4String topnam = geo.GetTopName();

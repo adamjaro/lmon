@@ -16,11 +16,30 @@ using namespace std;
 using namespace boost;
 
 //_____________________________________________________________________________
+GeoParser::GeoParser(G4String input): fIncDir(".") {
+
+  //default include directory for geometry inputs
+  string in(input);
+  if( in.find_last_of("/") != string::npos ) {
+    fIncDir = in.substr(0, in.find_last_of("/"));
+  }
+
+  //main geometry input
+  LoadInput(input);
+
+}//GeoParser
+
+//_____________________________________________________________________________
 void GeoParser::LoadInput(G4String input) {
 
   //load geometry input
 
   ifstream in(input);
+
+  if(in.fail()) {
+    string description = "Can't open input: '" + input + "'";
+    G4Exception("GeoParser::LoadInput", "InputNotOpen01", FatalException, description.c_str());
+  }
 
   char_separator<char> sep(" ");
   string line;
@@ -36,8 +55,6 @@ void GeoParser::LoadInput(G4String input) {
     //skip comments and empty lines
     if(line.empty() || line.find("#") == 0) continue;
 
-    //G4cout << "GeoParser::LoadInput: " << line << G4endl;
-
     tokenizer< char_separator<char> > cline(line, sep);
     token_it it = cline.begin();
 
@@ -49,6 +66,10 @@ void GeoParser::LoadInput(G4String input) {
     } else if( cmd == "new" ) {
       //new detector
       AddNew(it);
+
+    } else if( cmd == "inc_dir" ) {
+      //include directory for geometry inputs
+      fIncDir = *(++it);
 
     } else if( cmd.find(".") != string::npos ) {
       //detector parameter
@@ -68,7 +89,7 @@ void GeoParser::Include(token_it &it) {
   //include another geometry input
 
   G4String infile = *(++it);
-  LoadInput(infile);
+  LoadInput(fIncDir+"/"+infile);
 
 }//Include
 

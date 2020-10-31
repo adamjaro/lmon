@@ -1,13 +1,13 @@
 
 #all components for beamline version with magnets in central detector
 
-include ../config/geom_beamline_close.in
+include geom_beamline_close.in
 
-include ../config/geom_central_close.in
+include geom_central_close.in
 
-include ../config/geom_lowQ2.in
+include geom_lowQ2.in
 
-include ../config/geom_lumi.in
+include geom_lumi.in
 
 #common top volume
 new top topmain

@@ -9,10 +9,7 @@ class GeoParser {
 
   public:
 
-    GeoParser() {}
-
-    //load geometry input
-    void LoadInput(G4String input);
+    GeoParser(G4String input);
 
     //detectors and elements
     unsigned int GetN() const {return fDet.size();}
@@ -36,6 +33,8 @@ class GeoParser {
 
     typedef boost::tokenizer< boost::char_separator<char> >::iterator token_it;
 
+    void LoadInput(G4String input); // load geometry input
+
     void Include(token_it &it); // another geometry input
     void AddNew(token_it &it); // new detector or element
     void AddPar(token_it &it); // new geometry parameter
@@ -45,6 +44,8 @@ class GeoParser {
 
     std::vector< std::pair<G4String, G4String> > fDet; // detectors and components
     std::map<G4String, G4String> fPar; // geometry parameters
+
+    G4String fIncDir; // include directory for geometry inputs
 
 };
 
