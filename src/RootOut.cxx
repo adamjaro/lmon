@@ -27,7 +27,7 @@ using namespace std;
 RootOut::RootOut(): fOut(0), fDetTree(0) {
 
   //default name for output file
-  fOutputName = "../data/lmon.root";
+  fOutputName = "./lmon.root";
 
   //command for name of output file
   fMsg = new G4GenericMessenger(this, "/lmon/output/");
