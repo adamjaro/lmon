@@ -19,9 +19,9 @@
 
 - Run as a batch job for a given number of events
 
-<pre><code> ./run run.mac </pre></code>
+<pre><code> ./run_lmon run.mac </pre></code>
 
 - Or run with visualization
 
-<pre><code> ./run </pre></code>
+<pre><code> ./run_lmon </pre></code>
 

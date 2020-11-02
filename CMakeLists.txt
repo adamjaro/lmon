@@ -1,12 +1,12 @@
 
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(pdet)
+project(lmon)
 
 #shared library
-set (LIB det)
+set (LIB lmonBase)
 
 #executable
-set (BIN run)
+set (BIN run_lmon)
 
 #load GEANT
 find_package(Geant4 REQUIRED ui_all vis_all)
@@ -70,7 +70,7 @@ configure_file(include/central_config.h.in central_config.h)
 if(BUILD_CENTRAL)
   add_subdirectory(central)
   link_directories(${BEAST_INSTALL}/lib)
-  set(LIB_CENTRAL central bmf)
+  set(LIB_CENTRAL lmonCentral bmf)
   set(INCLUDE_CENTRAL "${PROJECT_SOURCE_DIR}/central/include")
 endif()
 

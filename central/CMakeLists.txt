@@ -1,6 +1,6 @@
 
 #central library
-set(CEN_LIB central)
+set(CEN_LIB lmonCentral)
 
 #local include
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
