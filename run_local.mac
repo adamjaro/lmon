@@ -36,7 +36,7 @@
 #/lmon/input/pythia6/select 22
 
 #/lmon/output/name ../data/test/lmon.root
-/lmon/output/name ./lmon.root
+#/lmon/output/name ./lmon.root
 #/lmon/output/name ../data/lmon_18x275_beff2_1Mevt_v3.root
 
 

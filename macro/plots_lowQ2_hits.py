@@ -1,25 +1,22 @@
 #!/usr/bin/python
 
-from ConfigParser import RawConfigParser
-
 import ROOT as rt
 from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem, AddressOf
 from ROOT import TMath
 
 import plot_utils as ut
 from BoxCalV2Hits import BoxCalV2Hits
+from TagV2Evt import TagV2Evt
+from read_con import read_con
 
 #_____________________________________________________________________________
 def main():
 
-    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
-    #infile = "../data/lmon_18x275_qr_Qd_beff2_1Mevt.root"
-    #infile = "../data/lmon_py_18x275_Q2all_beff2_5Mevt.root"
-    infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
+    infile = "../data/qr/lmon_qr_18x275_Qf_beff2_5Mevt.root"
 
-    iplot = 6
+    iplot = 7
     funclist = []
     funclist.append( hits_xy_s1 ) # 0
     funclist.append( hits_xy_s2 ) # 1
@@ -28,6 +25,7 @@ def main():
     funclist.append( hits_en ) # 4
     funclist.append( rate_xy_s1 ) # 5
     funclist.append( recchar ) # 6
+    funclist.append( diff_hitE_trueE ) # 7
 
     #input
     inp = TFile.Open(infile)
@@ -534,19 +532,49 @@ def recchar():
 #recchar
 
 #_____________________________________________________________________________
-class read_con:
-    # read parameters from config parser
-    #_____________________________________________________________________________
-    def __init__(self, config):
-        self.con = RawConfigParser()
-        self.con.read(config)
-    #_____________________________________________________________________________
-    def __call__(self, par):
-        return self.con.getfloat("main", par)
-    #_____________________________________________________________________________
-    def str(self, par):
-        return self.con.get("main", par).strip("\"'")
+def diff_hitE_trueE():
 
+    #energy in hit and true generated energy
+
+    #tagger configuration
+    config = "recchar_s1.ini"
+    #config = "recchar_s2.ini"
+
+    cf = read_con(config)
+
+    #event in tagger
+    evt = TagV2Evt(tree, cf)
+
+    nevt = tree.GetEntries()
+    #nevt = 320
+
+    #difference plot
+    ebin = 0.01
+    emin = -10
+    emax = 10
+
+    hEdiff = ut.prepare_TH1D("hEdiff", ebin, emin, emax)
+
+    can = ut.box_canvas()
+
+    for iev in xrange(nevt):
+
+        if not evt.read(iev): continue
+
+        hEdiff.Fill( (evt.hit_E - evt.true_el_E)*1000. )
+
+
+    ut.put_yx_tit(hEdiff, "Events", "(#it{E}_{hit} - #it{E}_{true}) #times 1000", 1.4, 1.2)
+
+    hEdiff.Draw()
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#diff_hitE_trueE
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

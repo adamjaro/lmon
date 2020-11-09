@@ -11,10 +11,11 @@ def main():
 
     #tagger acceptance in electron kinematics
 
-    inp_qr = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    #inp_qr = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    inp_qr = "../data/qr/lmon_qr_18x275_Qf_beff2_5Mevt.root"
     inp_py = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 26
+    iplot = 7
     funclist = []
     funclist.append( acc_pT_s1 ) # 0
     funclist.append( acc_pT_s2 ) # 1
@@ -208,7 +209,7 @@ def acc_theta_s1():
     leg.AddEntry(gThetaQr, "QR", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_theta_s1
@@ -262,7 +263,7 @@ def acc_theta_s2():
     leg.AddEntry(gThetaQr, "QR", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_theta_s2
@@ -388,7 +389,7 @@ def acc_en_s1():
     acc_qr = rt.acc_Q2_kine(tree_qr, "true_el_E", "lowQ2s1_IsHit")
     acc_qr.prec = 0.05
     acc_qr.bmin = 0.1
-    acc_qr.nev = int(1e5)
+    #acc_qr.nev = int(1e5)
     gEnQr = acc_qr.get()
 
     #gprint(gPtQr)
@@ -396,7 +397,7 @@ def acc_en_s1():
     acc_py = rt.acc_Q2_kine(tree_py, "true_el_E", "lowQ2s1_IsHit")
     acc_py.prec = 0.05
     acc_py.bmin = 0.1
-    acc_py.nev = int(1e5)
+    #acc_py.nev = int(1e5)
     gEnPy = acc_py.get()
 
     can = ut.box_canvas()
@@ -478,7 +479,7 @@ def acc_en_s2():
     leg.AddEntry(gEnQr, "QR", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_en_s2
@@ -642,7 +643,7 @@ def acc_lQ2_s1():
     leg.AddEntry(glQ2Qr, "QR", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_s1
@@ -694,7 +695,7 @@ def acc_lQ2_s2():
     leg.AddEntry(glQ2Qr, "QR", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_s2
