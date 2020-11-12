@@ -11,12 +11,15 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #infile = "qrec_s1.root"
-    infile = "qrec_s2.root"
+    infile = "qrec_s1.root"
+    #infile = "qrec_s1_xy5.root"
+    #infile = "qrec_s2.root"
+    #infile = "qrec_s2_xy5.root"
 
-    iplot = 0
+    iplot = 1
     funclist = []
     funclist.append( log10_Q2_rto ) # 0
+    funclist.append( lQ2_rec_gen ) # 1
 
     inp = TFile.Open(infile)
     global tree
@@ -155,6 +158,41 @@ def log10_Q2_rto():
 #log10_Q2_rto
 
 #_____________________________________________________________________________
+def lQ2_rec_gen():
+
+    #reconstructed and generated log_10(Q^2)
+
+    lqbin = 0.1
+    lqmin = -9
+    lqmax = 0
+
+    hLQ2 = ut.prepare_TH2D("hLQ2", lqbin, lqmin, lqmax, lqbin, lqmin, lqmax)
+
+    tree.Draw("rec_lq:true_lq >> hLQ2")
+
+    can = ut.box_canvas()
+
+    ytit = "Reconstructed log_{10}(Q^{2}) / "+"{0:.2f}".format(lqbin)
+    xtit = "Generated log_{10}(Q^{2}) / "+"{0:.2f}".format(lqbin)
+    ut.put_yx_tit(hLQ2, ytit, xtit, 1.4, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.11)
+
+    hLQ2.Draw()
+
+    hLQ2.SetMinimum(0.98)
+    hLQ2.SetContour(300)
+
+    gPad.SetGrid()
+
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#lQ2_rec_gen
+
+#_____________________________________________________________________________
 if __name__ == "__main__":
 
     gROOT.SetBatch()
@@ -163,7 +201,8 @@ if __name__ == "__main__":
 
     main()
 
-
+    #beep when done
+    gSystem.Exec("mplayer ../computerbeep_1.mp3 > /dev/null 2>&1")
 
 
 

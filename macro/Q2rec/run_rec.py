@@ -7,7 +7,7 @@ from sys import stdout
 sys.path.append('../')
 
 import ROOT as rt
-from ROOT import gROOT, TFile, TTree, AddressOf, TMath
+from ROOT import gROOT, gSystem, TFile, TTree, AddressOf, TMath
 
 from rmat import rmat
 from read_con import read_con
@@ -123,4 +123,8 @@ if __name__ == "__main__":
 
     #init and run
     main(cf)
+
+    #beep when done
+    gSystem.Exec("mplayer ../computerbeep_1.mp3 > /dev/null 2>&1")
+
 

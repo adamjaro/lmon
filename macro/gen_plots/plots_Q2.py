@@ -16,7 +16,7 @@ def main():
     infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
     #infile = "py/pythia_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 17
+    iplot = 26
     funclist = []
     funclist.append( gen_xy ) # 0
     funclist.append( gen_Q2 ) # 1
@@ -43,6 +43,8 @@ def main():
     funclist.append( gen_el_en_log10_theta_lQ2 ) # 22
     funclist.append( gen_eta ) # 23
     funclist.append( gen_el_pT ) # 24
+    funclist.append( true_el_en_mlt_lQ2 ) # 25
+    funclist.append( true_lQ2_en_mlt ) # 26
 
     inp = TFile.Open(basedir+"/"+infile)
     global tree
@@ -724,7 +726,7 @@ def gen_true_lx_ly():
     #gPad.SetLogy()
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #gen_true_lx_ly
@@ -900,7 +902,8 @@ def gen_el_en_log10_theta_lQ2():
     hEnThetaQ2 = ut.prepare_TH3D("hEnThetaQ2", ltbin, ltmin, ltmax, ebin, emin, emax, lqbin, lqmin, lqmax)
 
     #form = "TMath::Log10(true_Q2):el_en:TMath::Log10(TMath::Pi()-el_theta)"
-    form = "TMath::Log10(true_Q2):gen_E:TMath::Log10(TMath::Pi()-gen_theta)"
+    #form = "TMath::Log10(true_Q2):gen_E:TMath::Log10(TMath::Pi()-gen_theta)"
+    form = "TMath::Log10(true_Q2):true_el_E:TMath::Log10(TMath::Pi()-true_el_theta)"
     tree.Draw(form+" >> hEnThetaQ2")
 
     pEnThetaQ2 = hEnThetaQ2.Project3DProfile("yx")
@@ -986,6 +989,114 @@ def gen_el_pT():
     can.SaveAs("01fig.pdf")
 
 #gen_el_pT
+
+#_____________________________________________________________________________
+def true_el_en_mlt_lQ2():
+
+    #true electron energy, mlt = -log_10(pi-theta) and log10(Q^2) in reconstruction range
+
+    #bins in mlt = -log_10(pi-theta)
+    tbin = 0.1
+    tmin = 1.8
+    tmax = 5.2
+
+    #bins in energy
+    ebin = 0.4
+    emin = 2.2
+    emax = 18.1
+
+    #bins in Q2
+    lqbin = 0.1
+    lqmin = -9
+    lqmax = -1
+
+    can = ut.box_canvas()
+
+    hEnThetaQ2 = ut.prepare_TH3D("hEnThetaQ2", tbin, tmin, tmax, ebin, emin, emax, lqbin, lqmin, lqmax)
+
+    form = "TMath::Log10(true_Q2):true_el_E:(-TMath::Log10(TMath::Pi()-true_el_theta))"
+    tree.Draw(form+" >> hEnThetaQ2")
+
+    pEnThetaQ2 = hEnThetaQ2.Project3DProfile("yx")
+
+    ytit = "Electron energy #it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "mlt = -log_{10}(#pi-#theta_{e}) / "+"{0:.2f} rad".format(tbin)
+    ut.put_yx_tit(pEnThetaQ2, ytit, xtit, 1.4, 1.3)
+
+    pEnThetaQ2.SetTitleOffset(1.3, "Z")
+    pEnThetaQ2.SetZTitle("log_{10}(#it{Q}^{2} (GeV^{2}))")
+    pEnThetaQ2.SetTitle("")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.15)
+
+    #gPad.SetLogz()
+    gPad.SetGrid()
+
+    pEnThetaQ2.SetMinimum(lqmin)
+    pEnThetaQ2.SetMaximum(lqmax)
+    pEnThetaQ2.SetContour(300)
+
+    pEnThetaQ2.Draw("colz")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#true_el_en_mlt_lQ2
+
+#_____________________________________________________________________________
+def true_lQ2_en_mlt():
+
+    #true log10(Q^2), electron energy and mlt = -log_10(pi-theta)in reconstruction range
+
+    #bins in Q2
+    lqbin = 0.1
+    lqmin = -9
+    lqmax = -1
+
+    #bins in energy
+    ebin = 0.4
+    emin = 2.2
+    emax = 18.1
+
+    #bins in mlt = -log_10(pi-theta)
+    tbin = 0.1
+    tmin = 1.8
+    #tmax = 5.2
+    tmax = 4.3
+
+    can = ut.box_canvas()
+
+    hQ2EnMlt = ut.prepare_TH3D("hQ2EnMlt", lqbin, lqmin, lqmax, ebin, emin, emax, tbin, tmin, tmax)
+
+    form = "(-TMath::Log10(TMath::Pi()-true_el_theta)):true_el_E:(TMath::Log10(true_Q2))"
+    tree.Draw(form+" >> hQ2EnMlt")
+
+    pQ2EnMlt = hQ2EnMlt.Project3DProfile("yx")
+
+    ytit = "Electron energy #it{E}_{e} / "+"{0:.1f} GeV".format(ebin)
+    xtit = "log_{10}(#it{Q}^{2} (GeV^{2})) / "+"{0:.1f}".format(lqbin)+" GeV^{2}"
+    ztit = "mlt = -log_{10}(#pi-#theta)"
+    ut.put_yx_tit(pQ2EnMlt, ytit, xtit, 1.4, 1.3)
+
+    pQ2EnMlt.SetTitleOffset(1.3, "Z")
+    pQ2EnMlt.SetZTitle(ztit)
+    pQ2EnMlt.SetTitle("")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.01, 0.15)
+
+    #gPad.SetLogz()
+    gPad.SetGrid()
+
+    pQ2EnMlt.SetMinimum(tmin)
+    pQ2EnMlt.SetMaximum(tmax)
+    pQ2EnMlt.SetContour(300)
+
+    pQ2EnMlt.Draw("colz")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#true_lQ2_en_mlt
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

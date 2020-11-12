@@ -12,8 +12,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "rmat_s1.root"
+    #infile = "rmat_s1.root"
     #infile = "rmat_s2.root"
+    infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_100Mevt.root"
+    #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_100Mevt.root"
+    #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_xy5_100Mevt.root"
+    #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_xy5_100Mevt.root"
 
     #Rijk reconstruction matrix
     mat = rmat(infile=infile)
@@ -37,10 +41,10 @@ def plot_mlt(mat):
     #nx = 2
     #ny = 2
 
-    #theta_min = 1.8
-    #theta_max = 4.9
     theta_min = 1.8
-    theta_max = 5.2
+    #theta_max = 4.9
+    #theta_max = 5.2
+    theta_max = 4.3
 
     #theta_min = 2+1e-3
     #theta_max = 4.5-1e-3
@@ -149,12 +153,12 @@ def plot_mlt(mat):
         eminf = "{0:.2f}".format(emin)
         emaxf = "{0:.2f}".format(emax)
         desc = TLatex()
-        desc.SetTextSize(tsiz)
+        desc.SetTextSize(0.075) # tsiz
         etit = "#it{i}: "+str(i)+",  "+eminf+" < #it{E}_{e} < "+emaxf+" GeV"
         etit = "#color[2]{"+etit+"}"
         #desc.DrawLatex(380, 80, etit)
-        #desc.DrawLatex(-180, 150, etit)
-        desc.DrawLatex(-140, 80, etit)
+        desc.DrawLatex(-180, 150, etit)
+        #desc.DrawLatex(-140, 80, etit)
 
         ut.invert_col(gPad)
 
