@@ -14,10 +14,12 @@ def main():
 
     #infile = "rmat_s1.root"
     #infile = "rmat_s2.root"
-    infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_100Mevt.root"
+    #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_xy5_100Mevt.root"
     #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_xy5_100Mevt.root"
+    #infile = "../../data/uni/rmat_s1_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
+    infile = "../../data/uni/rmat_s2_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
 
     #Rijk reconstruction matrix
     mat = rmat(infile=infile)

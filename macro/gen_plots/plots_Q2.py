@@ -10,13 +10,14 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #basedir = "/home/jaroslav/sim/lgen/data"
+    #basedir = "/home/jaroslav/sim/GETaLM/cards"
     basedir = "/home/jaroslav/sim/GETaLM_data"
 
-    infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
     #infile = "py/pythia_ep_18x275_Q2all_beff2_5Mevt.root"
+    infile = "uni/uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
 
-    iplot = 26
+    iplot = 3
     funclist = []
     funclist.append( gen_xy ) # 0
     funclist.append( gen_Q2 ) # 1
@@ -45,6 +46,7 @@ def main():
     funclist.append( gen_el_pT ) # 24
     funclist.append( true_el_en_mlt_lQ2 ) # 25
     funclist.append( true_lQ2_en_mlt ) # 26
+    funclist.append( gen_mlt ) # 27
 
     inp = TFile.Open(basedir+"/"+infile)
     global tree
@@ -153,7 +155,7 @@ def gen_E():
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
     #tree.Draw("gen_E >> hE")
-    tree.Draw("el_en >> hE")
+    tree.Draw("true_el_E >> hE")
 
     can = ut.box_canvas()
 
@@ -177,12 +179,15 @@ def gen_theta():
 
     #theta range, rad
     tbin = 1e-3
-    tmin = 0
-    tmax = 0.2
+    #tmin = 0
+    #tmax = 0.2
+    tmin = 2.9
+    tmax = 3.15
 
     hTheta = ut.prepare_TH1D("hTheta", tbin, tmin, tmax)
 
-    tree.Draw("TMath::Pi()-gen_theta >> hTheta")
+    #tree.Draw("TMath::Pi()-true_el_theta >> hTheta")
+    tree.Draw("true_el_theta >> hTheta")
 
     can = ut.box_canvas()
 
@@ -191,6 +196,7 @@ def gen_theta():
     hTheta.Draw()
 
     gPad.SetLogy()
+    gPad.SetGrid()
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -518,7 +524,7 @@ def gen_phi():
 
     hPhi = ut.prepare_TH1D("hPhi", pbin, pmin, pmax)
 
-    tree.Draw("gen_phi >> hPhi")
+    tree.Draw("true_el_phi >> hPhi")
 
     can = ut.box_canvas()
 
@@ -527,6 +533,7 @@ def gen_phi():
     hPhi.Draw()
 
     #gPad.SetLogy()
+    gPad.SetGrid()
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
@@ -1097,6 +1104,35 @@ def true_lQ2_en_mlt():
     can.SaveAs("01fig.pdf")
 
 #true_lQ2_en_mlt
+
+#_____________________________________________________________________________
+def gen_mlt():
+
+    #electron mlt = -log_10(pi-true_el_theta)
+
+    #mlt range
+    tbin = 0.1
+    tmin = -2
+    tmax = 8
+
+    hT = ut.prepare_TH1D("hT", tbin, tmin, tmax)
+
+    can = ut.box_canvas()
+
+    form = "-TMath::Log10(TMath::Pi()-true_el_theta)"
+    tree.Draw(form+" >> hT")
+
+    ut.put_yx_tit(hT, "Events", "mlt", 1.4, 1.2)
+
+    hT.Draw()
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#gen_mlt
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

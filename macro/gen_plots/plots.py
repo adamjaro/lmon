@@ -110,7 +110,7 @@ def plot_dSigDe_all():
 
     parse = ConfigParser.RawConfigParser()
     parse.add_section("main")
-    parse.set("main", "emin", "0.5") # GeV
+    parse.set("main", "emin", "0.1") # GeV
 
     parse.set("main", "Ee", "18")
     parse.set("main", "Ep", "275")
@@ -539,7 +539,7 @@ if __name__ == "__main__":
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 4
+    iplot = 10
     funclist = []
     funclist.append( plot_dSigDe ) # 0
     funclist.append( plot_dSigDy ) # 1

@@ -114,11 +114,8 @@ void TParticleReader::OpenInput() {
   fTree->SetBranchAddress("particles", &fPart);
 
   //attach the generator data
-  if(fTree->FindBranch("true_Q2")) {
-
-    fDat = new MCEvtDat();
-    fDat->ConnectInput(fTree);
-  }
+  fDat = new MCEvtDat();
+  fDat->ConnectInput(fTree);
 
   if(cdd) cdd->cd(); // move back to the previous file
 
