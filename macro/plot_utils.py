@@ -141,7 +141,27 @@ def h1_to_graph(hx):
 
     tx = TGraphErrors(hx.GetNbinsX())
     for ibin in xrange(1,hx.GetNbinsX()+1):
+        #print ibin, hx.GetBinContent(ibin)
         tx.SetPoint(ibin-1, hx.GetBinCenter(ibin), hx.GetBinContent(ibin))
+
+    return tx
+
+#_____________________________________________________________________________
+def h1_to_graph_nz(hx, delt=0.001):
+
+    #skip bins with zero content
+
+    points = []
+    for ibin in xrange(1,hx.GetNbinsX()+1):
+        if hx.GetBinContent(ibin) < delt: continue
+
+        points.append( (hx.GetBinCenter(ibin), hx.GetBinContent(ibin)) )
+
+    tx = TGraphErrors(len(points))
+    i = 0
+    for p in points:
+        tx.SetPoint(i, p[0], p[1])
+        i += 1
 
     return tx
 

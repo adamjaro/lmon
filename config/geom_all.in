@@ -6,7 +6,8 @@ include geom_beamline.in
 #include geom_beamline_noquad.in
 
 #luminosity monitor
-include geom_lumi.in
+#include geom_lumi.in
+include geom_lumi_v2.in
 
 #low Q^2 tagger
 include geom_lowQ2.in

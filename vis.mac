@@ -9,7 +9,7 @@
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
-/vis/viewer/set/background 1 1 1 0.
+#/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
 /vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
 #/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
@@ -22,9 +22,9 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-/vis/viewer/set/targetPoint 0 0 -2170 cm # exit window flat
+/vis/viewer/set/targetPoint 0 0 -16250 mm # exit window lumi_v2
 #/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
-#/vis/viewer/set/targetPoint 0 0 -2137 cm # collimator
+#/vis/viewer/set/targetPoint 0 0 -22500 mm # collimator (was -2137 cm)
 #/vis/viewer/set/targetPoint 0 0 -2800 cm # spectrometer magnet
 #/vis/viewer/set/targetPoint 0 0 -37000 mm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
