@@ -187,7 +187,8 @@ def acceptance_autobin():
     #ut.set_graph(hAcc, rt.kBlue)
     ut.set_graph(hAcc)
 
-    hAcc.GetYaxis().SetTitle("Spectrometer acceptance / "+str(prec*1e2)+" %")
+    #hAcc.GetYaxis().SetTitle("Spectrometer acceptance / "+str(prec*1e2)+" %")
+    hAcc.GetYaxis().SetTitle("Spectrometer acceptance")
     hAcc.GetXaxis().SetTitle("Generated #it{E}_{#gamma} (GeV)")
     hAcc.SetTitle("")
 
@@ -549,9 +550,11 @@ def phot_en():
 
     #energy deposited in photon detector
 
-    ebin = 1e-4
+    #ebin = 1e-4
+    ebin = 0.1
     emin = 0
-    emax = 0.11
+    #emax = 0.11
+    emax = 19
 
     can = ut.box_canvas()
 
@@ -609,10 +612,12 @@ def phot_en():
     leg = ut.prepare_leg(0.53, 0.77, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
     leg.AddEntry(hE, "Geant model", "lp")
     leg.AddEntry(gen.dSigDe, "Bethe-Heitler cross section", "l")
-    leg.Draw("same")
+    #leg.Draw("same")
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
+
+#phot_en
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
@@ -622,16 +627,17 @@ if __name__ == "__main__":
     #infile = "../data/lmon_18x275_all_0p25T_100kevt.root"
     #infile = "../data/lmon_18x275_all_0p25T_1Mevt.root"
     #infile = "../data/lmon_18x275_beff2_1Mevt_v2.root"
-    #infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
+    infile = "../data/lmon_18x275_beff2_1Mevt_v3.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
-    infile = "../data/lmon_18x275_uni_1keV_0p1GeV_phot_5Mevt.root"
+    #infile = "../data/lmon_18x275_uni_1keV_0p1GeV_phot_5Mevt.root"
+    #infile = "../data/lumi1a/lmon_18x275_gamma_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 11
+    iplot = 7
     funclist = []
     funclist.append( phot_en ) # 0
     funclist.append( phot_xy ) # 1

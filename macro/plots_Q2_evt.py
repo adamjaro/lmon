@@ -10,10 +10,11 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
+    #infile = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
     #infile = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
+    infile = "../data/lmon_18x275_qr_Qd_beff2_5Mevt.root"
 
-    iplot = 26
+    iplot = 12
     funclist = []
     funclist.append( evt_Log10_Q2 ) # 0
     funclist.append( el_phi_tag ) # 1
@@ -573,7 +574,7 @@ def evt_Log10_Q2_separate():
     #gQ2sel = "ecal_IsHit==1"
 
     #override to generator true Q2
-    #gL10Q2 = "TMath::Log10(true_Q2)"
+    gL10Q2 = "TMath::Log10(true_Q2)"
 
     hLog10Q2 = ut.prepare_TH1D("hLog10Q2", lqbin, lqmin, lqmax)
     hQ2s1 = ut.prepare_TH1D("hQ2s1", lqbin, lqmin, lqmax)
@@ -594,8 +595,8 @@ def evt_Log10_Q2_separate():
     frame.Draw()
 
     ytit = "Events / {0:.3f}".format(lqbin)
-    #xtit = "log_{10}(#it{Q}^{2})"
-    xtit = "log_{10}(#it{Q}^{2}_{e})"
+    xtit = "log_{10}(#it{Q}^{2})"
+    #xtit = "log_{10}(#it{Q}^{2}_{e})"
     #ut.put_yx_tit(hLog10Q2, ytit, "log_{10}(#it{Q}^{2})", 1.4, 1.2)
     ut.put_yx_tit(frame, ytit, xtit, 1.4, 1.2)
 
@@ -617,7 +618,8 @@ def evt_Log10_Q2_separate():
     #hLog10Q2.SetMaximum(2e5) # for qr
 
     leg = ut.prepare_leg(0.2, 0.78, 0.2, 0.16, 0.035)
-    leg.AddEntry(hLog10Q2, "All quasi-real electrons", "l")
+    #leg.AddEntry(hLog10Q2, "All quasi-real electrons", "l")
+    leg.AddEntry(hLog10Q2, "All electrons", "l")
     #leg.AddEntry(hLog10Q2, "All Pythia6 events", "l")
     leg.AddEntry(hQ2s1, "Tagger 1", "l")
     leg.AddEntry(hQ2s2, "Tagger 2", "l")

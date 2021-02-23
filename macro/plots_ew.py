@@ -14,7 +14,8 @@ def phot_theta():
 
     tbin = 1e-5
     tmin = 0
-    tmax = 2e-3
+    #tmax = 2e-3
+    tmax = 7e-3
 
     can = ut.box_canvas()
 
@@ -28,7 +29,7 @@ def phot_theta():
     parse = ConfigParser.RawConfigParser()
     parse.add_section("lgen")
     parse.set("lgen", "emin", "1") # GeV
-    parse.set("lgen", "tmax", "0.002")
+    parse.set("lgen", "tmax", "0.006") # 0.002
 
     import sys
     sys.path.append('/home/jaroslav/sim/eic-lgen/')
@@ -60,7 +61,7 @@ def phot_theta():
     leg.AddEntry(hT, "Angular divergence applied", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phot_theta
@@ -282,8 +283,8 @@ def ew_z():
     zbin = 0.004
     #zmin = -22.5
     #zmax = -20
-    zmin = -22.5
-    zmax = -20
+    zmin = -19
+    zmax = -15
 
     can = ut.box_canvas()
 
@@ -309,14 +310,18 @@ def ew_z():
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
+#ew_z
+
 #_____________________________________________________________________________
 def ew_xy():
 
     #photon impact point in xy
 
     xbin = 1
-    xmin = -50
-    xmax = 50
+    #xmin = -50
+    #xmax = 50
+    xmin = -100
+    xmax = 100
 
     can = ut.box_canvas()
 
@@ -344,6 +349,8 @@ def ew_xy():
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
+#ew_xy
+
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
@@ -355,13 +362,14 @@ if __name__ == "__main__":
     #infile = "../data/lmon_10GeV_ewV2_1Mevt.root"
     #infile = "../data/lmon_10GeV_ewV2_10Mevt.root"
     #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_1Mevt.root"
-    infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    #infile = "../data/lmon_18x275_zeus_0p1GeV_beff2_NoFilter_1Mevt.root"
+    infile = "../data/lumi1a/lmon_18x275_gamma_1Mevt.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 6
+    iplot = 0
     funclist = []
     funclist.append( ew_xy ) # 0
     funclist.append( ew_z ) # 1
