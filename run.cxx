@@ -14,6 +14,7 @@ template std::vector<std::basic_string<char> > boost::program_options::to_intern
 #include "G4VisExecutive.hh"
 #include "G4UImanager.hh"
 #include "FTFP_BERT.hh"
+#include "FTFP_BERT_HP.hh"
 #include "G4OpticalPhysics.hh"
 
 //local headers
@@ -29,6 +30,8 @@ int main(int argc, char* argv[]) {
   //command line arguments
   po::options_description opt("Program arguments");
   opt.add_options()("vis", po::value<string>(), "visualization macro");
+  opt.add_options()("mac,m", po::value<string>(), "batch macro");
+  opt.add_options()("seed,s", po::value<long>(), "random seed");
 
   //parse the arguments
   po::variables_map opt_map;
@@ -37,15 +40,18 @@ int main(int argc, char* argv[]) {
   //visualization macro
   G4String vis_mac("init_vis.mac"); // default name
   if(opt_map.count("vis")) {
-
     //name from the argument
     vis_mac = G4String( opt_map["vis"].as<string>() );
   }
-
-  //single argument for batch execution
+  //batch macro
   G4String macro;
-  if( argc == 2 ) {
-    macro = argv[1];
+  if(opt_map.count("mac")) {
+    macro = G4String( opt_map["mac"].as<string>() );
+  }
+  //random seed
+  long random_seed = 0;
+  if(opt_map.count("seed")) {
+    random_seed = opt_map["seed"].as<long>();
   }
 
   //UI session
@@ -58,6 +64,11 @@ int main(int argc, char* argv[]) {
   //random engine
   G4Random::setTheEngine(new CLHEP::RanecuEngine);
 
+  //random seed
+  G4cout << "Input seed: " << random_seed << G4endl;;
+  G4Random::setTheSeed(random_seed);
+  G4cout << "Start seed: " << G4Random::getTheSeed() << G4endl;
+
   //default run manager
   G4RunManager *runManager = new G4RunManager;
 
@@ -65,7 +76,8 @@ int main(int argc, char* argv[]) {
   runManager->SetUserInitialization(new DetectorConstruction);
 
   //physics
-  FTFP_BERT *physicsList = new FTFP_BERT;
+  //FTFP_BERT *physicsList = new FTFP_BERT;
+  FTFP_BERT_HP *physicsList = new FTFP_BERT_HP;
   //G4OpticalPhysics *optics = new G4OpticalPhysics();
   //physicsList->RegisterPhysics(optics); // uncomment to turn optics on
   runManager->SetUserInitialization(physicsList);

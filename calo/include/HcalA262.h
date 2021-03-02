@@ -21,12 +21,18 @@ class HcalA262 : public Detector, public G4VSensitiveDetector {
 
     //called via Detector
     virtual const G4String& GetName() const {return fNam;}
+    virtual void ClearEvent();
+    //virtual void FinishEvent();
+    virtual void CreateOutput(TTree *tree);
 
   private:
 
     G4String fNam; // name of detector sensitive logical volume
 
+    G4int fNem; // number of EM layers to separate the sections
 
+    Double_t fEdepEM; // deposited energy in EM section
+    Double_t fEdepHAD; // deposited energy in HAD section
 
 
 
