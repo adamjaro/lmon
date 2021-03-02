@@ -1,0 +1,17 @@
+
+/lmon/construct/geometry geom_calo.in
+
+/run/initialize
+
+/lmon/input/type gun
+
+/gun/energy 12 GeV
+
+#/gun/particle proton
+/gun/particle pi+
+
+/gun/position 0 0 -15 mm
+/gun/direction 0 0 1
+
+/run/beamOn 1
+

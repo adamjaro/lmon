@@ -1,0 +1,14 @@
+
+new top topv
+
+  topv.xsiz = 5000 # mm
+  topv.ysiz = 5000 # mm
+  topv.zsiz = 5000 # mm
+
+new CaloBuilder calo # set to create the calorimeters
+
+new HcalA262 hcal
+
+
+
+

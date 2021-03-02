@@ -10,6 +10,7 @@
 //Geant
 #include "G4GenericMessenger.hh"
 #include "G4Event.hh"
+#include "G4ParticleGun.hh"
 
 //local classes
 #include "GenReader.h"
@@ -30,8 +31,9 @@ GenReader::GenReader() : G4VUserPrimaryGeneratorAction(), fGenType("tx"), fGen(0
   fGenAll.insert( make_pair("tx", new TxReader()) );
   fGenAll.insert( make_pair("pythia6", new Pythia6Reader()) );
   fGenAll.insert( make_pair("tparticle", new TParticleReader()) );
+  fGenAll.insert( make_pair("gun", new G4ParticleGun()) );
 
-}//Pythia6Reader
+}//GenReader
 
 //_____________________________________________________________________________
 GenReader::~GenReader() {

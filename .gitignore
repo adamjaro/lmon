@@ -11,3 +11,4 @@ data/
 macro/tmp/
 *.mp3
 *.root
+G4History.macro

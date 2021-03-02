@@ -41,6 +41,7 @@
 #endif
 #include "GraphiteFilter.h"
 #include "TrackDet.h"
+#include "CaloBuilder.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -107,6 +108,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "TrackDet" ) {
     det = new TrackDet(name, fGeo, fTop);
+
+  } else if( type == "CaloBuilder" ) {
+    CaloBuilder calo(fTop, fGeo, fDet);
 
   }
 
