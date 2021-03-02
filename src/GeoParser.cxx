@@ -229,6 +229,15 @@ void GeoParser::GetOptB(G4String name, G4String par, G4bool& val) {
 
 }//GetOptI
 
+//_____________________________________________________________________________
+void GeoParser::GetOptS(G4String name, G4String par, G4String& val) {
+
+  //optional G4String parameter
+
+  GetOptPar<G4String>(name, par, val);
+
+}//GetOptI
+
 
 
 

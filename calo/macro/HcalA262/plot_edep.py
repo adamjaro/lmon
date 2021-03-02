@@ -13,11 +13,14 @@ from math import ceil
 #_____________________________________________________________________________
 def main():
 
-    infile = "HCal.csv"
+    #infile = "HCal.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2a/piPos_en10_12kevt/HCal.csv"
+    infile = "/home/jaroslav/sim/hcal/data/hcal2a/el_en10_12kevt/HCal.csv"
 
-    iplot = 0
+    iplot = 1
     funclist = []
     funclist.append( fit_err_sum ) # 0
+    funclist.append( fit_err_sum_all ) # 1
 
     #open the input
     global inp
@@ -34,7 +37,7 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     #fit with error
 
     #primary energy for legend, GeV
-    prim_en = "12"
+    prim_en = "10"
 
     #w = 0.94
 
@@ -47,7 +50,7 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     sum_edep = inp["hcal_edep_EM"] + inp["hcal_edep_HAD"]
     #sum_edep = inp["hcal_edep"]
 
-    nbins = 20
+    nbins = 40
 
     plt.style.use("dark_background")
     col = "lime"
@@ -106,6 +109,34 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     return pars, cov
 
 #fit_err_sum
+
+#_____________________________________________________________________________
+def fit_err_sum_all():
+
+    #run the fit_err_sum function with a set of inputs
+
+    #input
+    en = [3, 5, 7, 10, 20, 30, 50, 75]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2a/el_en", "_12kevt/HCal.csv"]
+
+    #output log
+    out = open("out_all.txt", "w")
+
+    #loop over energies
+    for e in en:
+
+        pars, cov = fit_err_sum(infile[0]+str(e)+infile[1], "edep_"+str(e)+".pdf", e)
+
+        #out.write(str(e)+" | ")
+        #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
+        #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[1], np.sqrt(cov[1,1])) )
+        #out.write( "{0:.4f}\n".format(pars[1]/pars[0]) )
+        out.write(str(e)+" & ")
+        out.write( "{0:.4f} $\pm$ {1:.4f} & ".format(pars[0], np.sqrt(cov[0,0])) )
+        out.write( "{0:.4f} $\pm$ {1:.4f} & ".format(pars[1], np.sqrt(cov[1,1])) )
+        out.write( "{0:.4f}\\\\\n".format(pars[1]/pars[0]) )
+
+    out.close()
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

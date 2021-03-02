@@ -23,20 +23,32 @@
 //local classes
 #include "HcalA262.h"
 #include "DetUtils.h"
+#include "GeoParser.h"
 
 //_____________________________________________________________________________
-HcalA262::HcalA262(const G4String& nam, GeoParser*, G4LogicalVolume *top) : Detector(),
+HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Detector(),
   G4VSensitiveDetector(nam), fNam(nam) {
 
   G4cout << "  HcalA262: " << fNam << G4endl;
 
-  G4double modxy = 660*mm; // module transverse size
+  G4double modxy = 660; // module transverse size, mm
+  geo->GetOptD(nam, "modxy", modxy);
+  modxy = modxy*mm;
   fNem = 16; // number of layers in EM section
+  geo->GetOptI(nam, "n_em", fNem);
   G4int nHAD = 81; // number of layers in HAD section for 5 lambda_I
-  //G4double modxy = 20*mm; // module transverse size
-  //G4int nEM = 1; // number of layers in EM section
-  //G4int nHAD = 2; // number of layers in HAD section
+  geo->GetOptI(nam, "n_had", nHAD);
   G4int nlay = fNem + nHAD;
+
+  //scintillator material
+  G4String scin_mat_name = "G4_POLYSTYRENE";
+  geo->GetOptS(nam, "scin_mat_name", scin_mat_name);
+
+  //print the optional parameters
+  G4cout << "    modxy: " << modxy << G4endl;
+  G4cout << "    n_em: " << fNem << G4endl;
+  G4cout << "    n_had: " << nHAD << G4endl;
+  G4cout << "    scin_mat_name: " << scin_mat_name << G4endl;
 
   G4double abso_z = 10*mm; // absorber thickness along z
   G4double scin_z = 2.5*mm; // scintillator thickness along z
@@ -104,7 +116,7 @@ HcalA262::HcalA262(const G4String& nam, GeoParser*, G4LogicalVolume *top) : Dete
   G4Box *scin_shape = new G4Box(fNam, modxy/2, modxy/2, scin_z/2);
 
   //predefined scintillator material as a placeholder
-  G4Material *scin_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+  G4Material *scin_mat = G4NistManager::Instance()->FindOrBuildMaterial(scin_mat_name);
 
   //scintillator logical volume
   G4LogicalVolume *scin_vol = new G4LogicalVolume(scin_shape, scin_mat, fNam);

@@ -28,6 +28,7 @@ class GeoParser {
     void GetOptD(G4String name, G4String par, G4double& val);
     void GetOptI(G4String name, G4String par, G4int& val);
     void GetOptB(G4String name, G4String par, G4bool& val);
+    void GetOptS(G4String name, G4String par, G4String& val);
 
   private:
 
