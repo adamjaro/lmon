@@ -15,12 +15,18 @@ def main():
 
     #infile = "HCal.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2a/piPos_en10_12kevt/HCal.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2a/el_en10_12kevt/HCal.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2a/el_en3_12kevt/HCal.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax1/HCal_el_en3_12kevt.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en3.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en10.csv"
+    infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en50.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax3/HCal_en3.csv"
 
-    iplot = 1
+    iplot = 2
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
+    funclist.append( plot_EM ) # 2
 
     #open the input
     global inp
@@ -37,9 +43,9 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     #fit with error
 
     #primary energy for legend, GeV
-    prim_en = "10"
+    prim_en = "x"
 
-    #w = 0.94
+    global inp
 
     #separate input
     if infile is not None:
@@ -47,22 +53,24 @@ def fit_err_sum(infile=None, outfile=None, en=None):
         inp = read_csv(infile)
         prim_en = str(en)
 
+    #inp = inp[inp["hcal_edep_EM"] > 0.2]
+
     sum_edep = inp["hcal_edep_EM"] + inp["hcal_edep_HAD"]
     #sum_edep = inp["hcal_edep"]
 
     nbins = 40
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
 
     #data plot
-    hx = plt.hist(sum_edep, bins = nbins, color = "lime", density = True, label = "edep")
-    #hx = plt.hist(sum_edep, bins = nbins, color = "blue", density = True, label = "edep")
+    #hx = plt.hist(sum_edep, bins = nbins, color = "lime", density = True, label = "edep")
+    hx = plt.hist(sum_edep, bins = nbins, color = "blue", density = True, label = "edep")
 
     #Gaussian fit
     centers = (0.5*(hx[1][1:]+hx[1][:-1]))
@@ -79,13 +87,12 @@ def fit_err_sum(infile=None, outfile=None, en=None):
 
     plt.plot(x, y, "k-", label="norm", color="red")
 
-    #ax.set_xlabel("ECal + HCal (GeV)")
-    ax.set_xlabel("HCal (GeV)")
+    ax.set_xlabel("EM + HAD (GeV)")
     ax.set_ylabel("Counts / {0:.3f} GeV".format((xmax-xmin)/nbins))
 
-    mean_str = "{0:.3f} \pm {1:.3f}".format(pars[0], np.sqrt(cov[0,0]))
-    sigma_str = "{0:.3f} \pm {1:.3f}".format(pars[1], np.sqrt(cov[1,1]))
-    res_str = "{0:.3f}".format(pars[1]/pars[0])
+    mean_str = "{0:.4f} \pm {1:.4f}".format(pars[0], np.sqrt(cov[0,0]))
+    sigma_str = "{0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    res_str = "{0:.4f}".format(pars[1]/pars[0])
     fit_param = r"\begin{align*}\mu &= " + mean_str + r"\\ \sigma &= " + sigma_str + r"\\"
     fit_param += r"\sigma/\mu &= " + res_str + r"\end{align*}"
 
@@ -93,7 +100,8 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     leg_items = [Line2D([0], [0], lw=0), Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
-    ax.legend(leg_items, ["$E(\pi^+)$ = "+str(prim_en)+" GeV", "Gaussian fit", fit_param])
+    #ax.legend(leg_items, ["$E(\pi^+)$ = "+str(prim_en)+" GeV", "Gaussian fit", fit_param])
+    ax.legend(leg_items, ["$E$ = "+str(prim_en)+" GeV", "Gaussian fit", fit_param])
 
     #output log
     out = open("out.txt", "w")
@@ -117,15 +125,24 @@ def fit_err_sum_all():
 
     #input
     en = [3, 5, 7, 10, 20, 30, 50, 75]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2a/el_en", "_12kevt/HCal.csv"]
+    #en = [10, 20, 30, 50, 75]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2a/el_en", "_12kevt/HCal.csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax1/HCal_el_en", "_12kevt.csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en", ".csv"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2ax3/HCal_en", ".csv"]
+
+    #template for output
+    outfile = "edep_"
+    #outfile = "edep_hcal2ax3_"
 
     #output log
     out = open("out_all.txt", "w")
+    enres = ["en = [", "res = ["]
 
     #loop over energies
     for e in en:
 
-        pars, cov = fit_err_sum(infile[0]+str(e)+infile[1], "edep_"+str(e)+".pdf", e)
+        pars, cov = fit_err_sum(infile[0]+str(e)+infile[1], outfile+str(e)+".pdf", e)
 
         #out.write(str(e)+" | ")
         #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
@@ -135,8 +152,55 @@ def fit_err_sum_all():
         out.write( "{0:.4f} $\pm$ {1:.4f} & ".format(pars[0], np.sqrt(cov[0,0])) )
         out.write( "{0:.4f} $\pm$ {1:.4f} & ".format(pars[1], np.sqrt(cov[1,1])) )
         out.write( "{0:.4f}\\\\\n".format(pars[1]/pars[0]) )
+        enres[0] += str(e) + ", "
+        enres[1] += "{0:.4f}, ".format(pars[1]/pars[0])
+
+    out.write("\n")
+    for i in range(len(enres)):
+        out.write( enres[i][:-2] + "]\n" )
 
     out.close()
+
+#fit_err_sum_all
+
+#_____________________________________________________________________________
+def plot_EM():
+
+    #energy in EM section
+
+    nbins = 60
+    emax = 2
+    #emax = 0.3
+
+    #primary energy for legend, GeV
+    #prim_en = "10"
+    prim_en = "50"
+
+    #global inp
+    #inp = inp[inp["hcal_edep_EM"] > 0.05]
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+
+    #data plot
+    hx = plt.hist(inp["hcal_edep_EM"], bins = nbins, range=(0, emax), color = "blue", density = False, label = "edep")
+
+    ax.set_xlabel("EM (GeV)")
+    ax.set_ylabel("Counts")
+
+    set_grid(plt, col)
+
+    leg_items = [Line2D([0], [0], lw=0)]
+    ax.legend(leg_items, ["Energy in EM section (E = "+prim_en+" GeV)"])
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+
+#plot_EM
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
@@ -153,9 +217,9 @@ def set_axes_color(ax, col):
 #set_axes_color
 
 #_____________________________________________________________________________
-def set_grid(px):
+def set_grid(px, col="lime"):
 
-    px.grid(True, color = "lime", linewidth = 0.5, linestyle = "--")
+    px.grid(True, color = col, linewidth = 0.5, linestyle = "--")
 
 #set_grid
 

@@ -26,11 +26,20 @@ def linear():
 
     #hcal2a, e-
     en = [3, 5, 7, 10, 20, 30, 50, 75]
-    res = [0.1398, 0.1082, 0.0922, 0.0776, 0.0546, 0.0446, 0.0345, 0.0284]
+    #res = [0.1398, 0.1082, 0.0922, 0.0776, 0.0546, 0.0446, 0.0345, 0.0284]
+    #res = [0.1392, 0.1084, 0.0911, 0.0746, 0.0542, 0.0444, 0.0349, 0.0289] # hcal2ax1
+    #res = [0.2306, 0.2118, 0.1959, 0.1820, 0.1596, 0.1534, 0.1459, 0.1369] # hcal2ax2
+    res = [0.2316, 0.2089, 0.1959, 0.1913, 0.1728, 0.1653, 0.1636, 0.1589] # hcal2ax3
+    #res = [0.2161, 0.2231, 0.1966, 0.1826, 0.1552, 0.1442, 0.1344, 0.1212] # hcal2ax2 EM > 0.1
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #en = [5, 7, 10, 20, 30, 50, 75]
+    #res = [0.2231, 0.1966, 0.1826, 0.1552, 0.1442, 0.1344, 0.1212] # hcal2ax2 EM > 0.1
+    #en = [10, 20, 30, 50, 75]
+    #res = [0.1835, 0.1554, 0.1438, 0.1357, 0.1223] # hcal2ax2 EM > 0.2
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -50,8 +59,8 @@ def linear():
 
     #output log
     out = open("out.txt", "w")
-    out.write( "a = {0:.3f} +/- {1:.3f}\n".format(pars[0], np.sqrt(cov[0,0])) )
-    out.write( "b = {0:.3f} +/- {1:.3f}".format(pars[1], np.sqrt(cov[1,1])) )
+    out.write( "a = {0:.4f} +/- {1:.4f}\n".format(pars[0], np.sqrt(cov[0,0])) )
+    out.write( "b = {0:.4f} +/- {1:.4f}".format(pars[1], np.sqrt(cov[1,1])) )
     out.close()
 
     #plot the fit function
@@ -60,26 +69,31 @@ def linear():
     #y = resf(x, pars[0], pars[1], pars[2])
     y = resf2(x, pars[0], pars[1])
 
-    plt.plot(x, y, "k-", label="resf", color="red")
+    plt.plot(x, y, "k-", label="resf", color="blue")
 
-    #ZEUS resolution at 44%
-    #yZEUS = resf2(x, 0., 0.44)
-    #plt.plot(x, yZEUS, "k-", label="ZEUS", color="blue")
+    #ZEUS resolution
+    yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
+    #yZEUS = resf2(x, 0.235, 0.012) # electrons
+    plt.plot(x, yZEUS, "k--", label="ZEUS", color="red")
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    #ax.set_title("Hadron resolution for HcalA262")
+    ax.set_title("Hadron resolution for HcalA262, Geant 4.10.02.p02")
+    #ax.set_title("Electron resolution for HcalA262")
     ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
+    #ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
     ax.set_ylabel("Resolution $\sigma/\mu$")
 
     #fit parameters on the plot
     fit_param = ""
     fit_param += r"\begin{align*}"
-    fit_param += r"a &= {0:.3f} \pm {1:.3f}\\".format(pars[0], np.sqrt(cov[0,0]))
-    fit_param += r"b &= {0:.3f} \pm {1:.3f}".format(pars[1], np.sqrt(cov[1,1]))
+    fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
+    fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
     fit_param += r"\end{align*}"
 
-    leg_items = [Line2D([0], [0], lw=2, color="blue"), Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
-    ax.legend(leg_items, [r"$\frac{\sigma(E)}{E} = \frac{44\%}{\sqrt{E}}$", r"$\frac{\sigma(E)}{E} = a\ \oplus\ \frac{b}{\sqrt{E}}$", fit_param])
+    leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"), Line2D([0], [0], lw=2, color="blue"), Line2D([0], [0], lw=0)]
+    ax.legend(leg_items, [r"NIM A262 (1987) 229-242", r"$\frac{\sigma(E)}{E} = \frac{a}{\sqrt{E}} \oplus\ b$", fit_param])
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -128,9 +142,9 @@ def resf(E, a, b, c):
 #_____________________________________________________________________________
 def resf2(E, a, b):
 
-    #resolution function  sigma/E = sqrt( a^2 + b^2/E )
+    #resolution function  sigma/E = sqrt( a^2/E + b^2 )
 
-    r = np.sqrt( a**2 + (b**2)/E )
+    r = np.sqrt( (a**2)/E + b**2 )
 
     return r
 
@@ -155,5 +169,10 @@ if __name__ == "__main__":
 
     main()
 
-    os.system("mplayer computerbeep_1.mp3 > /dev/null 2>&1")
+    os.system("mplayer ../../../macro/computerbeep_1.mp3 > /dev/null 2>&1")
+
+
+
+
+
 
