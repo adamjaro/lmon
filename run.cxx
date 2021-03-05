@@ -13,8 +13,7 @@ template std::vector<std::basic_string<char> > boost::program_options::to_intern
 #include "G4RunManager.hh"
 #include "G4VisExecutive.hh"
 #include "G4UImanager.hh"
-#include "FTFP_BERT.hh"
-#include "FTFP_BERT_HP.hh"
+#include "G4PhysListFactory.hh"
 #include "G4OpticalPhysics.hh"
 
 //local headers
@@ -32,6 +31,7 @@ int main(int argc, char* argv[]) {
   opt.add_options()("vis", po::value<string>(), "visualization macro");
   opt.add_options()("mac,m", po::value<string>(), "batch macro");
   opt.add_options()("seed,s", po::value<long>(), "random seed");
+  opt.add_options()("phys", po::value<string>(), "physics list");
 
   //parse the arguments
   po::variables_map opt_map;
@@ -52,6 +52,11 @@ int main(int argc, char* argv[]) {
   long random_seed = 0;
   if(opt_map.count("seed")) {
     random_seed = opt_map["seed"].as<long>();
+  }
+  //physics_list
+  G4String physics_name("FTFP_BERT");
+  if(opt_map.count("phys")) {
+    physics_name = G4String( opt_map["phys"].as<string>() );
   }
 
   //UI session
@@ -76,8 +81,8 @@ int main(int argc, char* argv[]) {
   runManager->SetUserInitialization(new DetectorConstruction);
 
   //physics
-  //FTFP_BERT *physicsList = new FTFP_BERT;
-  FTFP_BERT_HP *physicsList = new FTFP_BERT_HP;
+  G4PhysListFactory phys_factory;
+  G4VModularPhysicsList *physicsList = phys_factory.GetReferencePhysList(physics_name);
   //G4OpticalPhysics *optics = new G4OpticalPhysics();
   //physicsList->RegisterPhysics(optics); // uncomment to turn optics on
   runManager->SetUserInitialization(physicsList);
