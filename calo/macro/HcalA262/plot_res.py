@@ -29,17 +29,23 @@ def linear():
     #res = [0.1398, 0.1082, 0.0922, 0.0776, 0.0546, 0.0446, 0.0345, 0.0284]
     #res = [0.1392, 0.1084, 0.0911, 0.0746, 0.0542, 0.0444, 0.0349, 0.0289] # hcal2ax1
     #res = [0.2306, 0.2118, 0.1959, 0.1820, 0.1596, 0.1534, 0.1459, 0.1369] # hcal2ax2
-    res = [0.2316, 0.2089, 0.1959, 0.1913, 0.1728, 0.1653, 0.1636, 0.1589] # hcal2ax3
+    #res = [0.2316, 0.2089, 0.1959, 0.1913, 0.1728, 0.1653, 0.1636, 0.1589] # hcal2ax3
     #res = [0.2161, 0.2231, 0.1966, 0.1826, 0.1552, 0.1442, 0.1344, 0.1212] # hcal2ax2 EM > 0.1
+    #res = [0.2306, 0.2077, 0.1970, 0.1853, 0.1801, 0.1774, 0.1667, 0.1632] # hcal2ax4
+    #res = [0.3410, 0.2630, 0.2184, 0.1670, 0.1219, 0.1050, 0.0929, 0.0826] # hcal2b
+    #res = [0.1408, 0.1090, 0.0899, 0.0770, 0.0546, 0.0442, 0.0344, 0.0282] # hcal2bx1 (e-)
+    #res = [0.3153, 0.2468, 0.2013, 0.1581, 0.1175, 0.1042, 0.0908, 0.0825] # hcal2bx2
+    #res = [0.2310, 0.1890, 0.1601, 0.1266, 0.0875, 0.0741, 0.0599, 0.0530] # hcal2bx3
+    res = [0.1395, 0.1073, 0.0894, 0.0758, 0.0524, 0.0432, 0.0342, 0.0281] # hcal2bx4 (e-)
 
     #en = [5, 7, 10, 20, 30, 50, 75]
     #res = [0.2231, 0.1966, 0.1826, 0.1552, 0.1442, 0.1344, 0.1212] # hcal2ax2 EM > 0.1
     #en = [10, 20, 30, 50, 75]
     #res = [0.1835, 0.1554, 0.1438, 0.1357, 0.1223] # hcal2ax2 EM > 0.2
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -53,43 +59,45 @@ def linear():
 
     #fit the resolution
     #pars, cov = curve_fit(resf, en, res)  #  , [0.004, 0.026, 1.9]
-    pars, cov = curve_fit(resf2, en, res)  #  , [0.004, 0.026]
+    #pars, cov = curve_fit(resf2, en, res)  #  , [0.004, 0.026]
+    pars, cov = curve_fit(resf3, en, res)
 
     print pars
 
     #output log
     out = open("out.txt", "w")
     out.write( "a = {0:.4f} +/- {1:.4f}\n".format(pars[0], np.sqrt(cov[0,0])) )
-    out.write( "b = {0:.4f} +/- {1:.4f}".format(pars[1], np.sqrt(cov[1,1])) )
+    #out.write( "b = {0:.4f} +/- {1:.4f}".format(pars[1], np.sqrt(cov[1,1])) )
     out.close()
 
     #plot the fit function
     x = np.linspace(en[0], en[-1], 300)
     #y = resf(x, 0.004, 0.026, 1.9)
     #y = resf(x, pars[0], pars[1], pars[2])
-    y = resf2(x, pars[0], pars[1])
+    #y = resf2(x, pars[0], pars[1])
+    y = resf3(x, pars[0])
 
     plt.plot(x, y, "k-", label="resf", color="blue")
 
     #ZEUS resolution
-    yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
-    #yZEUS = resf2(x, 0.235, 0.012) # electrons
+    #yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
+    yZEUS = resf2(x, 0.235, 0.012) # electrons
     plt.plot(x, yZEUS, "k--", label="ZEUS", color="red")
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
     #ax.set_title("Hadron resolution for HcalA262")
-    ax.set_title("Hadron resolution for HcalA262, Geant 4.10.02.p02")
-    #ax.set_title("Electron resolution for HcalA262")
-    ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
-    #ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
+    #ax.set_title("Hadron resolution for HcalA262, FTFP$\_$BERT$\_$HP")
+    ax.set_title("Electron resolution for HcalA262")
+    #ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
+    ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
     ax.set_ylabel("Resolution $\sigma/\mu$")
 
     #fit parameters on the plot
     fit_param = ""
     fit_param += r"\begin{align*}"
     fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
-    fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    #fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
     fit_param += r"\end{align*}"
 
     leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"), Line2D([0], [0], lw=2, color="blue"), Line2D([0], [0], lw=0)]
@@ -145,6 +153,15 @@ def resf2(E, a, b):
     #resolution function  sigma/E = sqrt( a^2/E + b^2 )
 
     r = np.sqrt( (a**2)/E + b**2 )
+
+    return r
+
+#_____________________________________________________________________________
+def resf3(E, a):
+
+    #resolution function  sigma/E = sqrt( a^2/E )
+
+    r = np.sqrt( (a**2)/E )
 
     return r
 

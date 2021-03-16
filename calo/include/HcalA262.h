@@ -27,6 +27,8 @@ class HcalA262 : public Detector, public G4VSensitiveDetector {
 
   private:
 
+    G4double BirksCorrectedEnergyDeposit(G4Step *step);
+
     G4String fNam; // name of detector sensitive logical volume
 
     G4int fNem; // number of EM layers to separate the sections
@@ -34,7 +36,8 @@ class HcalA262 : public Detector, public G4VSensitiveDetector {
     Double_t fEdepEM; // deposited energy in EM section
     Double_t fEdepHAD; // deposited energy in HAD section
 
-
+    G4bool fUseBirksCorrection; // use Birks correction to deposited energy
+    G4double fBirksCoefficient; // value of Birks coefficient in mm/MeV
 
 
 

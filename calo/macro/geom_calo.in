@@ -11,6 +11,8 @@ new HcalA262 hcal
 
   #hcal.scin_mat_name = G4_PLASTIC_SC_VINYLTOLUENE
   #hcal.n_had = 65
+  #hcal.use_Birks_correction = 1
+  #hcal.Birks_coefficient = 0.127
 
 
 

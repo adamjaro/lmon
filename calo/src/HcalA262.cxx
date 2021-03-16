@@ -6,6 +6,7 @@
 //_____________________________________________________________________________
 
 //C++
+#include "math.h"
 
 //ROOT
 #include "TTree.h"
@@ -44,11 +45,19 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4String scin_mat_name = "G4_POLYSTYRENE";
   geo->GetOptS(nam, "scin_mat_name", scin_mat_name);
 
+  //Birks correction
+  fUseBirksCorrection = true;
+  fBirksCoefficient = 0.126*mm/MeV;
+  geo->GetOptB(nam, "use_Birks_correction", fUseBirksCorrection);
+  geo->GetOptD(nam, "Birks_coefficient", fBirksCoefficient);
+
   //print the optional parameters
   G4cout << "    modxy: " << modxy << G4endl;
   G4cout << "    n_em: " << fNem << G4endl;
   G4cout << "    n_had: " << nHAD << G4endl;
   G4cout << "    scin_mat_name: " << scin_mat_name << G4endl;
+  G4cout << "    use_Birks_correction: " << fUseBirksCorrection << G4endl;
+  G4cout << "    Birks_coefficient: " << fBirksCoefficient << G4endl;
 
   G4double abso_z = 10*mm; // absorber thickness along z
   G4double scin_z = 2.5*mm; // scintillator thickness along z
@@ -135,8 +144,8 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
 //_____________________________________________________________________________
 G4bool HcalA262::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //deposited energy in step
-  G4double edep = step->GetTotalEnergyDeposit()/GeV;
+  //deposited energy in step (GeV), Birks correction if requested
+  G4double edep = BirksCorrectedEnergyDeposit(step);
 
   //scintillator location
   const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
@@ -155,6 +164,29 @@ G4bool HcalA262::ProcessHits(G4Step *step, G4TouchableHistory*) {
   return true;
 
 }//ProcessHits
+
+//_____________________________________________________________________________
+G4double HcalA262::BirksCorrectedEnergyDeposit(G4Step *step) {
+
+  //deposited energy in step, MeV
+  G4double edep_step = step->GetTotalEnergyDeposit()/MeV;
+
+  if(!fUseBirksCorrection) return edep_step/GeV; // to GeV
+
+  //Birks attenuation
+  G4double step_length = step->GetStepLength()*mm;
+  G4double particle_charge = step->GetTrack()->GetDefinition()->GetPDGCharge();
+
+  //value of fBirksCoefficient is in mm/MeV
+  G4double edep = edep_step;
+  if( std::abs(edep_step*step_length*particle_charge) > 1e-12 ) {
+
+    edep = edep_step/(1. + fBirksCoefficient*edep_step/step_length);
+  }
+
+  return edep/GeV; //to GeV
+
+}//BirksCorrectedEnergyDeposit
 
 //_____________________________________________________________________________
 void HcalA262::ClearEvent() {

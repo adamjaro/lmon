@@ -19,10 +19,15 @@ def main():
     #infile = "/home/jaroslav/sim/hcal/data/hcal2ax1/HCal_el_en3_12kevt.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en3.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en10.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en50.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en50.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2ax3/HCal_en3.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2ax4/HCal_en10.csv"
+    #infile = "/home/jaroslav/sim/lmon-lite/calo/macro/HCal_1200.csv"
+    #infile = "/home/jaroslav/sim/lmon-lite/calo/macro/HCal_en75_1200.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2b/HCal_en50.csv"
+    infile = "/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en50.csv"
 
-    iplot = 2
+    iplot = 1
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
@@ -60,17 +65,17 @@ def fit_err_sum(infile=None, outfile=None, en=None):
 
     nbins = 40
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
 
     #data plot
-    #hx = plt.hist(sum_edep, bins = nbins, color = "lime", density = True, label = "edep")
-    hx = plt.hist(sum_edep, bins = nbins, color = "blue", density = True, label = "edep")
+    hx = plt.hist(sum_edep, bins = nbins, color = "lime", density = True, label = "edep")
+    #hx = plt.hist(sum_edep, bins = nbins, color = "blue", density = True, label = "edep")
 
     #Gaussian fit
     centers = (0.5*(hx[1][1:]+hx[1][:-1]))
@@ -129,11 +134,17 @@ def fit_err_sum_all():
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2a/el_en", "_12kevt/HCal.csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax1/HCal_el_en", "_12kevt.csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax2/HCal_en", ".csv"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2ax3/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax3/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2ax4/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2b/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx2/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx3/HCal_en", ".csv"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2bx4/HCal_en", ".csv"]
 
     #template for output
     outfile = "edep_"
-    #outfile = "edep_hcal2ax3_"
+    #outfile = "edep_hcal2bx3_"
 
     #output log
     out = open("out_all.txt", "w")
