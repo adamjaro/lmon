@@ -4,16 +4,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy.optimize import curve_fit
 from matplotlib.lines import Line2D
+from pandas import DataFrame
 
 import os
 
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 2
     funclist = []
     funclist.append( linear ) # 0
     funclist.append( logx_sqrtE ) # 1
+    funclist.append( individual_par ) # 2
+
 
     funclist[iplot]()
 
@@ -36,16 +39,21 @@ def linear():
     #res = [0.1408, 0.1090, 0.0899, 0.0770, 0.0546, 0.0442, 0.0344, 0.0282] # hcal2bx1 (e-)
     #res = [0.3153, 0.2468, 0.2013, 0.1581, 0.1175, 0.1042, 0.0908, 0.0825] # hcal2bx2
     #res = [0.2310, 0.1890, 0.1601, 0.1266, 0.0875, 0.0741, 0.0599, 0.0530] # hcal2bx3
-    res = [0.1395, 0.1073, 0.0894, 0.0758, 0.0524, 0.0432, 0.0342, 0.0281] # hcal2bx4 (e-)
+    #res = [0.1395, 0.1073, 0.0894, 0.0758, 0.0524, 0.0432, 0.0342, 0.0281] # hcal2bx4 (e-)
+    res = [0.2288, 0.1870, 0.1594, 0.1248, 0.0873, 0.0731, 0.0591, 0.0518] # hcal2c, pass2
+    #res = [0.2179, 0.1795, 0.1532, 0.1239, 0.0892, 0.0758, 0.0629, 0.0557] # hcal2cx1
+    #res = [0.2714, 0.2278, 0.1958, 0.1533, 0.1090, 0.0947, 0.0810, 0.0725] # hcal2cx2
+    #res = [0.2136, 0.1918, 0.1729, 0.1559, 0.1300, 0.1213, 0.1123, 0.1040] # hcal2cx3
+    #res = [0.2131, 0.1778, 0.1531, 0.1262, 0.0932, 0.0808, 0.0686, 0.0615] # hcal2cx4
 
     #en = [5, 7, 10, 20, 30, 50, 75]
     #res = [0.2231, 0.1966, 0.1826, 0.1552, 0.1442, 0.1344, 0.1212] # hcal2ax2 EM > 0.1
     #en = [10, 20, 30, 50, 75]
     #res = [0.1835, 0.1554, 0.1438, 0.1357, 0.1223] # hcal2ax2 EM > 0.2
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -59,45 +67,45 @@ def linear():
 
     #fit the resolution
     #pars, cov = curve_fit(resf, en, res)  #  , [0.004, 0.026, 1.9]
-    #pars, cov = curve_fit(resf2, en, res)  #  , [0.004, 0.026]
-    pars, cov = curve_fit(resf3, en, res)
+    pars, cov = curve_fit(resf2, en, res)  #  , [0.004, 0.026]
+    #pars, cov = curve_fit(resf3, en, res)
 
     print pars
 
     #output log
     out = open("out.txt", "w")
     out.write( "a = {0:.4f} +/- {1:.4f}\n".format(pars[0], np.sqrt(cov[0,0])) )
-    #out.write( "b = {0:.4f} +/- {1:.4f}".format(pars[1], np.sqrt(cov[1,1])) )
+    out.write( "b = {0:.4f} +/- {1:.4f}".format(pars[1], np.sqrt(cov[1,1])) )
     out.close()
 
     #plot the fit function
     x = np.linspace(en[0], en[-1], 300)
     #y = resf(x, 0.004, 0.026, 1.9)
     #y = resf(x, pars[0], pars[1], pars[2])
-    #y = resf2(x, pars[0], pars[1])
-    y = resf3(x, pars[0])
+    y = resf2(x, pars[0], pars[1])
+    #y = resf3(x, pars[0])
 
     plt.plot(x, y, "k-", label="resf", color="blue")
 
     #ZEUS resolution
-    #yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
-    yZEUS = resf2(x, 0.235, 0.012) # electrons
+    yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
+    #yZEUS = resf2(x, 0.235, 0.012) # electrons
     plt.plot(x, yZEUS, "k--", label="ZEUS", color="red")
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
-    #ax.set_title("Hadron resolution for HcalA262")
+    ax.set_title("Hadron resolution for HcalA262")
     #ax.set_title("Hadron resolution for HcalA262, FTFP$\_$BERT$\_$HP")
-    ax.set_title("Electron resolution for HcalA262")
-    #ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
-    ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
+    #ax.set_title("Electron resolution for HcalA262")
+    ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
+    #ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
     ax.set_ylabel("Resolution $\sigma/\mu$")
 
     #fit parameters on the plot
     fit_param = ""
     fit_param += r"\begin{align*}"
     fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
-    #fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
     fit_param += r"\end{align*}"
 
     leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"), Line2D([0], [0], lw=2, color="blue"), Line2D([0], [0], lw=0)]
@@ -137,6 +145,59 @@ def logx_sqrtE():
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 
 #logx_sqrtE
+
+#_____________________________________________________________________________
+def individual_par():
+
+    #individual resolution parametrizations
+
+    #energy range
+    emin = 3
+    emax = 75
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    set_axes_color(ax, col)
+
+    plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
+
+    #input data
+    inp = {
+        "label": ["c",    "cx1",    "cx2",    "cx3",    "cx4"],
+        "kB":    [0.126,  0.08,     0.5,      0.01,     0.06],
+        "a":     [0.4035, 0.3827,   0.4792,   0.3446,   0.3727],
+        "b":     [0.0157, 0.0324,   0.0428,   0.1033,   0.0447],
+        "col":   ["blue", "gold",   "violet", "orange", "lime"]
+    }
+    df = DataFrame(inp).sort_values(by="kB")
+
+    #make the plot
+    x = np.linspace(emin, emax, 300)
+    leg_items = [Line2D([0], [0], lw=0)]
+    leg_val = [r"$k_B$ in mm/MeV, $\frac{\sigma(E)}{E} = \frac{a}{\sqrt{E}} \oplus\ b$"]
+    for index, i in df.iterrows():
+
+        plt.plot(x, resf2(x, i["a"], i["b"]), "k-", color=i["col"])
+        leg_items.append(Line2D([0], [0], lw=2, color=i["col"]))
+        leg_val.append(r"$k_B$: {0:.3f}, $a$ = {1:.3f}, $b$ = {2:.3f}".format(i["kB"], i["a"], i["b"]))
+
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+
+    ax.set_title("Hadron resolution for HcalA262")
+    ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
+    ax.set_ylabel("Resolution $\sigma/\mu$")
+
+    ax.legend(leg_items, leg_val)
+
+    plt.savefig("01fig.pdf", bbox_inches = "tight")
+
+#individual_par
 
 #_____________________________________________________________________________
 def resf(E, a, b, c):

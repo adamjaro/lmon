@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pandas import read_csv
+from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from scipy.stats import norm
@@ -25,13 +25,16 @@ def main():
     #infile = "/home/jaroslav/sim/lmon-lite/calo/macro/HCal_1200.csv"
     #infile = "/home/jaroslav/sim/lmon-lite/calo/macro/HCal_en75_1200.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2b/HCal_en50.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en50.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en50.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
+    infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en50.csv"
 
     iplot = 1
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
     funclist.append( plot_EM ) # 2
+    funclist.append( fit_range ) # 3
 
     #open the input
     global inp
@@ -63,7 +66,7 @@ def fit_err_sum(infile=None, outfile=None, en=None):
     sum_edep = inp["hcal_edep_EM"] + inp["hcal_edep_HAD"]
     #sum_edep = inp["hcal_edep"]
 
-    nbins = 40
+    nbins = 60
 
     plt.style.use("dark_background")
     col = "lime"
@@ -140,7 +143,12 @@ def fit_err_sum_all():
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx2/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx3/HCal_en", ".csv"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2bx4/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx4/HCal_en", ".csv"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2c/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx1/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx2/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx3/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx4/HCal_en", ".csv"]
 
     #template for output
     outfile = "edep_"
@@ -153,7 +161,8 @@ def fit_err_sum_all():
     #loop over energies
     for e in en:
 
-        pars, cov = fit_err_sum(infile[0]+str(e)+infile[1], outfile+str(e)+".pdf", e)
+        #pars, cov = fit_err_sum(infile[0]+str(e)+infile[1], outfile+str(e)+".pdf", e)
+        pars, cov = fit_range(infile[0]+str(e)+infile[1], outfile+str(e)+".pdf", e)
 
         #out.write(str(e)+" | ")
         #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
@@ -173,6 +182,92 @@ def fit_err_sum_all():
     out.close()
 
 #fit_err_sum_all
+
+#_____________________________________________________________________________
+def fit_range(infile=None, outfile=None, en=None):
+
+    #fit in selected range
+
+    #primary energy for legend, GeV
+    prim_en = "x"
+
+    global inp
+
+    #separate input
+    if infile is not None:
+        global inp
+        inp = read_csv(infile)
+        prim_en = str(en)
+
+    sum_edep = inp["hcal_edep_EM"] + inp["hcal_edep_HAD"]
+    #sum_edep = inp["hcal_edep"]
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+
+    #data plot
+    hx = plt.hist(sum_edep, bins = nbins, color = "lime", density = True, label = "edep")
+
+    #bin centers for the fit
+    centers = (0.5*(hx[1][1:]+hx[1][:-1]))
+
+    #pass1, fit over the full range
+    fit_data = DataFrame({"E": centers, "density": hx[0]})
+    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
+
+    print "pass1:", pars[0], pars[1]
+
+    #pass2, fit in +/- 2*sigma range
+    fitran = [pars[0] - 2.*pars[1], pars[0] + 2.*pars[1]] # fit range at 2*sigma
+    fit_data = fit_data[ fit_data["E"].between(fitran[0], fitran[1], inclusive=False) ] # select the data to the range
+    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
+
+    print "pass2:", pars[0], pars[1]
+
+    #fit function
+    x = np.linspace(fitran[0], fitran[1], 300)
+    y = norm.pdf(x, pars[0], pars[1])
+
+    plt.plot(x, y, "k-", label="norm", color="red")
+
+    ax.set_xlabel("EM + HAD (GeV)")
+    ax.set_ylabel("Counts / {0:.3f} GeV".format((plt.xlim()[1]-plt.xlim()[0])/nbins))
+
+    plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
+
+    mean_str = "{0:.4f} \pm {1:.4f}".format(pars[0], np.sqrt(cov[0,0]))
+    sigma_str = "{0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    res_str = "{0:.4f}".format(pars[1]/pars[0])
+    fit_param = r"\begin{align*}\mu &= " + mean_str + r"\\ \sigma &= " + sigma_str + r"\\"
+    fit_param += r"\sigma/\mu &= " + res_str + r"\end{align*}"
+
+    #plot legend
+    leg_items = [Line2D([0], [0], lw=0), Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    ax.legend(leg_items, ["$E$ = "+str(prim_en)+" GeV", "Gaussian fit", fit_param])
+
+    #output log
+    out = open("out.txt", "w")
+    out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
+    out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[1], np.sqrt(cov[1,1])) )
+    out.write( "{0:.4f}".format(pars[1]/pars[0]) )
+    out.close()
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    if outfile is not None:
+        fig.savefig(outfile, bbox_inches = "tight")
+
+    return pars, cov
+
+#fit_range
 
 #_____________________________________________________________________________
 def plot_EM():
