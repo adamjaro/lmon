@@ -64,6 +64,9 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4double spacer_z = 3.5*mm; // spacer size along z
   G4double layer_z = abso_z + spacer_z; // total layer thickness along z
 
+  //output on deposited energy in individual layers
+  fELayer = new std::vector<Float_t>(nlay);
+
   //calorimeter top module
   G4double modz = nlay*layer_z; // module length along z
   G4String modnam = fNam+"_mod"; // module name
@@ -148,14 +151,18 @@ G4bool HcalA262::ProcessHits(G4Step *step, G4TouchableHistory*) {
   G4double edep = BirksCorrectedEnergyDeposit(step);
 
   //scintillator location
+  int lay_id = 1;
   const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
 
   //separate the deposition into the EM and HAD sections
-  if( hnd->GetCopyNumber(1) < fNem ) {
+  if( hnd->GetCopyNumber(lay_id) < fNem ) {
     fEdepEM += edep;
   } else {
     fEdepHAD += edep;
   }
+
+  //energy in individual layers
+  fELayer->at(hnd->GetCopyNumber(lay_id)) += edep;
 
   //if( step->GetTotalEnergyDeposit() < 1e-5 ) return true;
 
@@ -194,6 +201,8 @@ void HcalA262::ClearEvent() {
   fEdepEM = 0;
   fEdepHAD = 0;
 
+  std::fill(fELayer->begin(), fELayer->end(), 0.);
+
 }//ClearEvent
 /*
 //_____________________________________________________________________________
@@ -201,6 +210,9 @@ void HcalA262::FinishEvent() {
 
   G4cout << fEdepEM << " " << fEdepHAD << G4endl;
 
+  for(unsigned i=0; i<fELayer->size(); i++) {
+    G4cout << "i: " << i << " " << fELayer->at(i) << G4endl;
+  }
 }//FinishEvent
 */
 //_____________________________________________________________________________
@@ -210,6 +222,8 @@ void HcalA262::CreateOutput(TTree *tree) {
 
   u.AddBranch("_edep_EM", &fEdepEM, "D");
   u.AddBranch("_edep_HAD", &fEdepHAD, "D");
+
+  tree->Branch((fNam+"_edep_layers").c_str(), fELayer);
 
 }//CreateOutput
 
