@@ -6,6 +6,7 @@ from matplotlib.lines import Line2D
 from scipy.stats import norm
 from scipy.optimize import curve_fit
 import numpy as np
+import collections
 
 import os
 from math import ceil
@@ -29,12 +30,13 @@ def main():
     #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
     infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en50.csv"
 
-    iplot = 1
+    iplot = 4
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
     funclist.append( plot_EM ) # 2
     funclist.append( fit_range ) # 3
+    funclist.append( plot_shower_shape ) # 4
 
     #open the input
     global inp
@@ -144,11 +146,12 @@ def fit_err_sum_all():
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx2/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx3/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2bx4/HCal_en", ".csv"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2c/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2c/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx1/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx2/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx3/HCal_en", ".csv"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx4/HCal_en", ".csv"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".csv"]
 
     #template for output
     outfile = "edep_"
@@ -307,6 +310,68 @@ def plot_EM():
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
 #plot_EM
+
+#_____________________________________________________________________________
+def plot_shower_shape():
+
+    #input
+    en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".csv"]
+
+    #geometry for scintillator plates
+    z0 = 11.75 # mm, center of the first scintillator
+    dz = 13.5 # mm, total layer thickness along z
+    nlay = 97 # all layers
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    set_axes_color(ax, col)
+
+    plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
+
+    leg_items = []
+    leg_val = []
+
+    #sort by energy
+    en = collections.OrderedDict(sorted(en.items()))
+
+    #loop over energies
+    for e in en.iterkeys():
+
+        #input for a given energy
+        df = read_csv(infile[0]+str(e)+infile[1])
+
+        #layer positions and energies
+        zlay = []
+        elay = []
+
+        #loop over layers
+        for ilay in range(nlay):
+
+            zlay.append( z0 + ilay*dz )
+            elay.append( df["hcal_edep_layer"+str(ilay)].mean() )
+
+        #plot for a given energy
+        plt.plot(zlay, elay, ls="steps", color=en[e])
+
+        #legend for a given energy
+        leg_items.append(Line2D([0], [0], lw=2, color=en[e]))
+        leg_val.append("$E(\pi^+)$ = "+str(e)+" GeV")
+
+    ax.legend(leg_items, leg_val)
+
+    ax.set_title("Shower profile for HcalA262")
+    ax.set_xlabel("Longitudinal position $z$ (mm)")
+    ax.set_ylabel("Mean energy in layer (GeV)")
+
+    plt.savefig("01fig.pdf", bbox_inches = "tight")
+
+#plot_shower_shape
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
