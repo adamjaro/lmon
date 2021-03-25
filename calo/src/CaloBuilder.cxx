@@ -21,6 +21,7 @@
 
 //local detectors and components
 #include "HcalA262.h"
+#include "UcalA290.h"
 
 //_____________________________________________________________________________
 CaloBuilder::CaloBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -45,9 +46,8 @@ void CaloBuilder::AddDetector(unsigned int i) {
   if( type == "HcalA262" ) {
     det = new HcalA262(name, fGeo, fTop);
 
-  //} else if( type == "BoxCalR" ) {
-    //det = new BoxCalR(name, fGeo, fTop);
-    //det = new BoxCalR(name, fGeo, solenoid_vol);
+  } else if( type == "UcalA290" ) {
+    det = new UcalA290(name, fGeo, fTop);
 
   }
 
