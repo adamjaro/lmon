@@ -345,7 +345,7 @@ void UcalA290::CreateOutput(TTree *tree) {
 
   u.AddBranch("_edep_EMC", &fEdepEMC, "D");
   u.AddBranch("_edep_HAC1", &fEdepHAC1, "D");
-  u.AddBranch("_edep_HAC2", &fEdepHAC1, "D");
+  u.AddBranch("_edep_HAC2", &fEdepHAC2, "D");
 
   tree->Branch((fNam+"_edep_layers").c_str(), fELayer);
 

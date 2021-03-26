@@ -8,11 +8,11 @@
 #/gun/energy 10 GeV
 /gun/momentum 0 0 10 GeV
 
-#/gun/particle pi+
-/gun/particle proton
+/gun/particle pi+
+#/gun/particle proton
 
 /gun/position 0 0 -15 mm
 /gun/direction 0 0 1
 
-/run/beamOn 3
+/run/beamOn 1
 
