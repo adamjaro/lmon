@@ -32,7 +32,7 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
 
   G4cout << "  UcalA290: " << fNam << G4endl;
 
-  fModXY = 800.; // module transverse size, mm
+  fModXY = 800.; // module transverse size (800), mm
 
   G4double al_z = 15; // aluminum front plate, thickness in z, mm
 
@@ -50,6 +50,10 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4int nLayEMC = 25; // number of EMC layers, after the front Al plate with its scintillator layer
 
   G4int nLayHAC = 80; // number of layers in each HAC1 and HAC2 sections
+
+  G4bool use_clad = true; // use cladding for absorber layers
+  geo->GetOptB(nam, "use_clad", use_clad);
+  G4cout << "    use_clad: " << use_clad << G4endl;
 
   //Birks correction
   fUseBirksCorrection = true;
@@ -94,8 +98,15 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4LogicalVolume *scinv = MakeScinLayer(mod_mat, scin_z, spacer_z);
 
   //absorber layers in EMC and HAC sections
-  G4LogicalVolume *abso_vol_emc = MakeAbsoLayer(abso_z, clad_emc_z, "emc");
-  G4LogicalVolume *abso_vol_hac = MakeAbsoLayer(abso_z, clad_hac_z, "hac");
+  G4LogicalVolume *abso_vol_emc, *abso_vol_hac;
+  if(use_clad) {
+    abso_vol_emc = MakeAbsoLayer(abso_z, clad_emc_z, "emc");
+    abso_vol_hac = MakeAbsoLayer(abso_z, clad_hac_z, "hac");
+  } else {
+    abso_vol_emc = MakeAbsoNoClad(abso_z, "emc");
+    abso_vol_hac = MakeAbsoNoClad(abso_z, "hac");
+  }
+
 
   //scintillator positioning
   G4double scin_hz = dynamic_cast<G4Box*>(scinv->GetSolid())->GetZHalfLength(); // half of z for scintillator layer
@@ -259,6 +270,30 @@ G4LogicalVolume *UcalA290::MakeAbsoLayer(G4double abso_z, G4double clad_z, G4Str
   return layer_vol;
 
 }//MakeAbsoLayer
+
+//_____________________________________________________________________________
+G4LogicalVolume *UcalA290::MakeAbsoNoClad(G4double abso_z, G4String eh) {
+
+  //uranium absorber layer with no cladding
+
+  G4String nam = fNam+"_abso_layer_"+eh;
+  G4Box *layer_shape = new G4Box(nam, fModXY/2, fModXY/2, abso_z/2);
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_U");
+  G4LogicalVolume *layer_vol = new G4LogicalVolume(layer_shape, mat, nam);
+
+  //absorber visibility for the entire layer
+  G4VisAttributes *vis = new G4VisAttributes();
+  if(eh == "hac") {
+    vis->SetColor(1, 1, 0); // yellow
+  } else {
+    vis->SetColor(1, 0, 0); // RGB
+  }
+  vis->SetForceSolid(true);
+  layer_vol->SetVisAttributes(vis);
+
+  return layer_vol;
+
+}//MakeAbsoNoClad
 
 //_____________________________________________________________________________
 G4bool UcalA290::ProcessHits(G4Step *step, G4TouchableHistory*) {

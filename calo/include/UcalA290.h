@@ -34,6 +34,7 @@ class UcalA290 : public Detector, public G4VSensitiveDetector {
     void MakeAlFront(G4LogicalVolume *modv, G4double al_z);
     G4LogicalVolume *MakeScinLayer(G4Material *mod_mat, G4double scin_z, G4double spacer_z);
     G4LogicalVolume *MakeAbsoLayer(G4double abso_z, G4double clad_z, G4String eh);
+    G4LogicalVolume *MakeAbsoNoClad(G4double abso_z, G4String eh);
 
     G4String fNam; // name of detector sensitive logical volume
 

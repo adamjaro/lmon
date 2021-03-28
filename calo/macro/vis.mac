@@ -23,6 +23,7 @@
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
 /vis/viewer/set/targetPoint 0 0 0 m
+#/vis/viewer/set/targetPoint 0 0 1527.5 mm
 
 #
 # Specify zoom value:

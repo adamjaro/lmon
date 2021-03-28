@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pandas import read_csv, DataFrame
+from pandas import read_csv, DataFrame, read_hdf
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from scipy.stats import norm
@@ -316,7 +316,8 @@ def plot_shower_shape():
 
     #input
     en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".csv"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".csv"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
 
     #geometry for scintillator plates
     z0 = 11.75 # mm, center of the first scintillator
@@ -344,7 +345,8 @@ def plot_shower_shape():
     for e in en.iterkeys():
 
         #input for a given energy
-        df = read_csv(infile[0]+str(e)+infile[1])
+        #df = read_csv(infile[0]+str(e)+infile[1])
+        df = read_hdf(infile[0]+str(e)+infile[1])
 
         #layer positions and energies
         zlay = []
