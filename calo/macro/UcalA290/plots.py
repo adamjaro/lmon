@@ -14,7 +14,7 @@ from math import ceil, log10, sqrt
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 3
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_sec_fraction ) # 1
@@ -29,15 +29,18 @@ def momentum_res():
 
     #energy resolution as a function of beam momentum
 
-    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
-    momentum += [20, 30, 50, 75, 100]
+    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
+    #momentum += [20, 30, 50, 75, 100]
+    momentum = [1, 2, 5, 10, 30, 75] # 0.5, 
 
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]  # +str(pbeam)+
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x2/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]  # +str(pbeam)+
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p", ".h5"]
 
     #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736]
-    alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736, 0.7985971943887775, 0.8148296593186373, 0.8292585170340682, 0.8418837675350701, 0.8581162324649299]
+    #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736, 0.7985971943887775, 0.8148296593186373, 0.8292585170340682, 0.8418837675350701, 0.8581162324649299]
     #alpha_min = [1.04749498997996, 0.7733466933867736, 0.7228456913827656, 0.7318637274549098, 0.7535070140280562, 0.7462925851703407, 0.7589178356713426, 0.7589178356713426, 0.7697394789579158, 0.7931863727454911, 0.8112224448897796, 0.8364729458917837, 0.8454909819639278, 0.8581162324649299]
+    #alpha_min = [0.805811623246493, 0.8545090180360722, 0.8779559118236473, 0.919438877755511, 0.9609218436873748, 1.0006012024048097]
+    alpha_min = [1. for i in momentum]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -71,12 +74,14 @@ def momentum_alpha():
 
     #minimal alpha as a function of beam momentum
 
-    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
-    momentum += [20, 30, 50, 75, 100]
+    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
+    #momentum += [20, 30, 50, 75, 100]
+    momentum = [0.5, 1, 2, 5, 10, 30, 75]
 
     #momentum = [10]
 
-    alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]
+    #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]
+    alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -106,7 +111,8 @@ def fit_alpha(alpha=None, pbeam=None):
 
     #polynomial fit for resolution as a function of alpha
 
-    #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]
+    #alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
+    #pbeam = 10
 
     #res = [1.6095357603323173, 1.1914606471540563, 0.9766833753243835, 0.8965160801980067, 0.8941847587425313, 0.9335774779851417, 1.0, 1.0767531351804083, 1.1561039821761605]
     res = run_alpha(alpha, pbeam)
@@ -156,14 +162,14 @@ def run_alpha(alpha=None, pbeam=None):
 
     #alpha = [0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15]
     #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]
-    #alpha = [1]
+    #pbeam = 10
 
     #infile = "/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p10.csv"
     #infile = "/home/jaroslav/sim/hcal/data/ucal1a1x1/HCal_p10.csv"
     #infile = "/home/jaroslav/sim/hcal/data/ucal1a2/HCal_p10.csv"
 
     #inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p"+str(pbeam)+".h5")
-    inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1x2/HCal_p"+str(pbeam)+".h5")
+    inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p"+str(pbeam)+".h5")
 
     plt.style.use("dark_background")
     col = "lime"
@@ -281,9 +287,9 @@ def run_sec_fraction():
 
     momentum_mc = [0.5, 1, 2, 5, 10, 30, 75]
 
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x2/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x3/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"

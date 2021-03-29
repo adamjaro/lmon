@@ -16,7 +16,7 @@ def main():
 
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x3"
+    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x6"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 

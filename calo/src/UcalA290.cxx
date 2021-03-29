@@ -32,6 +32,8 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
 
   G4cout << "  UcalA290: " << fNam << G4endl;
 
+  DefineMaterials();
+
   fModXY = 800.; // module transverse size (800), mm
 
   G4double al_z = 15; // aluminum front plate, thickness in z, mm
@@ -167,7 +169,7 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
     current_z += 2*scin_hz;
 
   }//HAC layers loop
-
+/*
   //print the scintillator positions
   G4cout << "---- Scintillator positions ----" << G4endl;
   for(unsigned i=0; i<scin_pos.size(); i++) {
@@ -175,7 +177,7 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
     G4cout << scin_pos[i] << G4endl;
   }
   G4cout << "---- Scintillator positions ----" << G4endl;
-
+*/
 }//UcalA290
 
 //_____________________________________________________________________________
@@ -346,6 +348,33 @@ G4double UcalA290::BirksCorrectedEnergyDeposit(G4Step *step) {
   return edep/GeV; //to GeV
 
 }//BirksCorrectedEnergyDeposit
+
+//_____________________________________________________________________________
+void UcalA290::DefineMaterials() {
+
+  G4String name, symbol;
+  G4double a, z, density, abundance, fraction;
+  G4int iz, n, ncomponents;
+
+  //depleted uranium, DESY 89-128 1989
+  if( !G4Material::GetMaterial("DepletedUranium", false) ) {
+    G4Isotope *U5 = new G4Isotope(name="U235", iz=92, n=235, a=235.01*g/mole);
+    G4Isotope *U8 = new G4Isotope(name="U238", iz=92, n=238, a=238.03*g/mole);
+
+    G4Element *elDU = new G4Element(name="depleted Uranium", symbol="U", ncomponents=2);
+    elDU->AddIsotope(U8, abundance = 99.797*perCent);
+    elDU->AddIsotope(U5, abundance = 0.203*perCent);
+
+    G4Element *elNb = new G4Element(name="Nb", symbol="Nb", z = 41., a = 92.906*g/mole);
+
+    G4Material *mDU = new G4Material("DepletedUranium", density=18.5*g/cm3, ncomponents=2);
+    mDU->AddElement(elDU, fraction=98.6*perCent);
+    mDU->AddElement(elNb, fraction=1.4*perCent);
+
+    //G4cout << G4NistManager::Instance()->FindOrBuildMaterial("DepletedUranium") << G4endl;
+  }
+
+}//DefineMaterials
 
 //_____________________________________________________________________________
 void UcalA290::ClearEvent() {
