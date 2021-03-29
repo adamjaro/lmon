@@ -14,7 +14,7 @@ from math import ceil, log10, sqrt
 #_____________________________________________________________________________
 def main():
 
-    iplot = 4
+    iplot = 1
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_sec_fraction ) # 1
@@ -277,13 +277,13 @@ def run_sec_fraction():
 
     #ratios of energy deposition in individual sections
 
-    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
-    p2 = [20, 30, 50, 75, 100]
-    #momentum = [10]
-    momentum += p2
+    momentum_data = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+
+    momentum_mc = [0.5, 1, 2, 5, 10, 30, 75]
 
     infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x2/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x3/HCal_p", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -292,7 +292,7 @@ def run_sec_fraction():
     fE = []
     f1 = []
     f2 = []
-    for p in momentum:
+    for p in momentum_mc:
 
         fE12 = get_sec_fraction(infile[0]+str(p)+infile[1], p)
         fE.append(fE12[0])
@@ -321,13 +321,13 @@ def run_sec_fraction():
     fA2 += [10.3, 13.0, 14.5, 16.5, 16.9]
 
 
-    plt.plot(momentum, fAE, "k--", color="red")
-    plt.plot(momentum, fA1, "k--", color="red")
-    plt.plot(momentum, fA2, "k--", color="red")
+    plt.plot(momentum_data, fAE, "k--", color="red")
+    plt.plot(momentum_data, fA1, "k--", color="red")
+    plt.plot(momentum_data, fA2, "k--", color="red")
 
-    plt.plot(momentum, fE, "o", color="blue")
-    plt.plot(momentum, f1, "o", color="yellow")
-    plt.plot(momentum, f2, "o", color="lime")
+    plt.plot(momentum_mc, fE, "o", color="blue")
+    plt.plot(momentum_mc, f1, "o", color="yellow")
+    plt.plot(momentum_mc, f2, "o", color="lime")
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 

@@ -6,12 +6,13 @@ from scipy.optimize import curve_fit
 from matplotlib.lines import Line2D
 from pandas import DataFrame
 
+from math import sqrt
 import os
 
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
     funclist = []
     funclist.append( linear ) # 0
     funclist.append( logx_sqrtE ) # 1
@@ -40,8 +41,8 @@ def linear():
     #res = [0.3153, 0.2468, 0.2013, 0.1581, 0.1175, 0.1042, 0.0908, 0.0825] # hcal2bx2
     #res = [0.2310, 0.1890, 0.1601, 0.1266, 0.0875, 0.0741, 0.0599, 0.0530] # hcal2bx3
     #res = [0.1395, 0.1073, 0.0894, 0.0758, 0.0524, 0.0432, 0.0342, 0.0281] # hcal2bx4 (e-)
-    #res = [0.2288, 0.1870, 0.1594, 0.1248, 0.0873, 0.0731, 0.0591, 0.0518] # hcal2c, pass2
-    res = [0.2179, 0.1795, 0.1532, 0.1239, 0.0892, 0.0758, 0.0629, 0.0557] # hcal2cx1
+    res = [0.2288, 0.1870, 0.1594, 0.1248, 0.0873, 0.0731, 0.0591, 0.0518] # hcal2c, pass2
+    #res = [0.2179, 0.1795, 0.1532, 0.1239, 0.0892, 0.0758, 0.0629, 0.0557] # hcal2cx1
     #res = [0.2714, 0.2278, 0.1958, 0.1533, 0.1090, 0.0947, 0.0810, 0.0725] # hcal2cx2
     #res = [0.2136, 0.1918, 0.1729, 0.1559, 0.1300, 0.1213, 0.1123, 0.1040] # hcal2cx3
     #res = [0.2131, 0.1778, 0.1531, 0.1262, 0.0932, 0.0808, 0.0686, 0.0615] # hcal2cx4
@@ -121,8 +122,8 @@ def logx_sqrtE():
 
     #logarithmic horizontal axis and values of (sigma/mu)*sqrt(E)
 
-    en = [6, 8, 12, 16, 25, 38, 52, 64]
-    res = [0.1982, 0.1841, 0.1712, 0.1608, 0.1499, 0.1418, 0.1315, 0.1280]
+    en = [3, 5, 7, 10, 20, 30, 50, 75]
+    res = [0.2288, 0.1870, 0.1594, 0.1248, 0.0873, 0.0731, 0.0591, 0.0518] # hcal2c, pass2
 
     plt.style.use("dark_background")
     col = "lime"
@@ -136,12 +137,15 @@ def logx_sqrtE():
     plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
 
     #transform to (sigma/mu)*sqrt(E)
-    resE = []
-    for i in range(len(res)):
-        resE.append(res[i]*np.sqrt(en[i]))
+    res = [1e2*sqrt(en[i])*res[i] for i in range(len(res))]
+
+    ax.set_ylim([20, 60])
+    ax.set_xlim([1, 100])
+
+    ax.set_xscale("log")
 
     #resolution data
-    plt.plot(en, resE, marker="o", linestyle="")
+    plt.plot(en, res, marker="o", linestyle="")
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 

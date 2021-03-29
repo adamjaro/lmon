@@ -37,6 +37,7 @@ class UcalA290 : public Detector, public G4VSensitiveDetector {
     G4LogicalVolume *MakeAbsoNoClad(G4double abso_z, G4String eh);
 
     G4String fNam; // name of detector sensitive logical volume
+    GeoParser *fGeo; // geometry parser
 
     G4double fModXY; // module transverse size, mm
 

@@ -17,4 +17,6 @@ new CaloBuilder calo # set to create the calorimeters
 new UcalA290 ucal
 
   #ucal.use_clad = 0
+  #ucal.abso_z = 10
+  #ucal.abso_mat_name = G4_Pb
 

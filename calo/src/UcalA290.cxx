@@ -28,7 +28,7 @@
 
 //_____________________________________________________________________________
 UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Detector(),
-  G4VSensitiveDetector(nam), fNam(nam) {
+  G4VSensitiveDetector(nam), fNam(nam), fGeo(geo) {
 
   G4cout << "  UcalA290: " << fNam << G4endl;
 
@@ -38,10 +38,12 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
 
   //scintillator layer
   G4double scin_z = 2.6; // scintillator thickness in z, mm
-  G4double spacer_z = 4.; // spacer for scinillators, thickness in z, mm
+  G4double spacer_z = 4.; // spacer for scintillators, thickness in z, mm
 
   //absorber layers
   G4double abso_z = 3.3; // uranium thickness, mm
+  geo->GetOptD(nam, "abso_z", abso_z);
+  G4cout << "    abso_z: " << abso_z << G4endl;
   G4double clad_emc_z = 0.2; // cladding in EMC layers, mm
   G4double clad_hac_z = 0.4; // cladding in HAC layers, mm
 
@@ -248,7 +250,12 @@ G4LogicalVolume *UcalA290::MakeAbsoLayer(G4double abso_z, G4double clad_z, G4Str
 
   //DU absorber plate
   G4Box *abso_shape = new G4Box(fNam+"_abso_du_plate_"+eh, fModXY/2, fModXY/2, abso_z/2);
-  G4Material *abso_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_U");
+
+  G4String abso_mat_name = "G4_U";
+  fGeo->GetOptS(fNam, "abso_mat_name", abso_mat_name);
+  G4cout << "    abso_mat_name: " << abso_mat_name << G4endl;
+  G4Material *abso_mat = G4NistManager::Instance()->FindOrBuildMaterial(abso_mat_name);
+
   G4LogicalVolume *abso_vol = new G4LogicalVolume(abso_shape, abso_mat, abso_shape->GetName());
   abso_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
@@ -278,7 +285,12 @@ G4LogicalVolume *UcalA290::MakeAbsoNoClad(G4double abso_z, G4String eh) {
 
   G4String nam = fNam+"_abso_layer_"+eh;
   G4Box *layer_shape = new G4Box(nam, fModXY/2, fModXY/2, abso_z/2);
-  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_U");
+
+  G4String abso_mat_name = "G4_U";
+  fGeo->GetOptS(fNam, "abso_mat_name", abso_mat_name);
+  G4cout << "    abso_mat_name: " << abso_mat_name << G4endl;
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial(abso_mat_name);
+
   G4LogicalVolume *layer_vol = new G4LogicalVolume(layer_shape, mat, nam);
 
   //absorber visibility for the entire layer

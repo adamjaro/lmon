@@ -13,5 +13,5 @@
 /gun/position 0 0 -15 mm
 /gun/direction 0 0 1
 
-/run/beamOn 1
+#/run/beamOn 1
 
