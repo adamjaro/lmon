@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-from pandas import read_csv, DataFrame, read_hdf
+from pandas import DataFrame, read_hdf
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from scipy.stats import norm
@@ -16,98 +16,68 @@ def main():
 
     iplot = 0
     funclist = []
-    funclist.append( run_alpha ) # 0
-    funclist.append( run_eh ) # 1
+    funclist.append( run_signal ) # 0
 
     funclist[iplot]()
 
 #_____________________________________________________________________________
-def run_eh():
+def run_signal():
 
-    #e/h ratio
     beam = [3, 5, 7, 10, 20, 30, 50, 75]
+    #beam = [10]
 
-    inp_h = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
-    inp_e = ["/home/jaroslav/sim/hcal/data/hcal2cx5/HCal_en", ".h5"]
+    #81./16 = 5.0625
+
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2cx6/HCal_en", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
     #col = "black"
 
-    eh = []
+    had_em = []
     for i in beam:
 
-        mean_h, sigma_h = gfit(inp_h[0]+str(i)+inp_h[1], 1.)
-        mean_e, sigma_e = gfit(inp_e[0]+str(i)+inp_e[1], 1.)
+        inp = read_hdf(infile[0]+str(i)+infile[1])
 
-        #print i, mean_e, mean_h, mean_e/mean_h
-        eh.append(mean_e/mean_h)
+        mean_em = inp["hcal_edep_EM"].mean()
+        mean_had = inp["hcal_edep_HAD"].mean()
 
-    print eh
+        #print i, mean_em, mean_had, mean_had/mean_em
 
-    #eh = [0.9794002736470295, 1.0047705480458915, 0.9993314733476454, 0.9915415124811879, 0.9927651323442229, 0.9971136899733369, 0.9975166634190157, 1.000640450250562]
+        #mean_em, sigma_em = gfit(inp, "hcal_edep_EM")
+        #mean_had, sigma_had = gfit(inp, "hcal_edep_HAD")
+
+        had_em.append(mean_had/mean_em)
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_ylim([0.9, 1.1])
+    ax.set_ylim([4, 6])
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
     ax.set_xlabel("Incident energy $E$ (GeV)")
-    ax.set_ylabel("e/h")
+    #ax.set_ylabel("$\mu_{\mathrm{HAD}}/\mu_{\mathrm{EM}}$")
+    ax.set_ylabel(r"$\frac{\mu_{\mathrm{HAD}}}{\mu_{\mathrm{EM}}}$", rotation=0)
 
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(beam, eh, "o", color="blue")
+    x = np.linspace(beam[0], beam[-1], 300)
+    plt.plot(x, [5.062 for i in x], "k--", color="red")
+
+    plt.plot(beam, had_em, "o", color="blue")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
-#run_eh
+#run_signal
 
 #_____________________________________________________________________________
-def run_alpha():
+def gfit(inp, sec_name):
 
-    #Gaussian fit for a given alpha
+    #Gaussian fit at a given energy
 
-    alpha = [0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15]
-    #alpha = [1]
-
-    #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en50.h5"
-
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
-
-    res = []
-    for a in alpha:
-        mean, sigma = gfit(infile, a)
-        res.append( sigma/mean )
-
-        #print a, res
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-
-    set_axes_color(ax, col)
-    set_grid(plt, col)
-
-    plt.plot(alpha, res, "o", color="blue")
-
-    fig.savefig("01fig.pdf", bbox_inches = "tight")
-
-#run_alpha
-
-#_____________________________________________________________________________
-def gfit(infile, alpha):
-
-    #Gaussian fit for energy resolution at a given momentum
-
-    inp = read_hdf(infile)
-
-    sum_edep = inp["hcal_edep_EM"] + alpha*inp["hcal_edep_HAD"]
+    sum_edep = inp[sec_name]
 
     nbins = 60
 
@@ -161,13 +131,11 @@ def gfit(infile, alpha):
 
     #plot legend
     #leg_items = [Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
+    leg_items = [Line2D([0], [0], lw=0)]
     #plt.rc("text", usetex = True)
     #plt.rc('text.latex', preamble='\usepackage{amsmath}')
     #ax.legend(leg_items, ["Gaussian fit", fit_param])
-
-    #simple legend
-    leg_items = [Line2D([0], [0], lw=0) for i in range(3)]
-    ax.legend(leg_items, ["mu: {0:.4f}".format(pars[0]),"sig: {0:.4f}".format(pars[1]), "r: {0:.4f}".format(pars[1]/pars[0])])
+    ax.legend(leg_items, ["{0:.4f}, {1:.4f}, {2:.4f}".format(pars[0], pars[1], pars[1]/pars[0])])
 
     #output log
     #out = open("out.txt", "w")

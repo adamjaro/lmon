@@ -14,48 +14,284 @@ from math import ceil, log10, sqrt
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 7
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_sec_fraction ) # 1
     funclist.append( fit_alpha ) # 2
     funclist.append( momentum_alpha ) # 3
     funclist.append( momentum_res ) # 4
+    funclist.append( res_fit ) # 5
+    funclist.append( run_eh ) # 6
+    funclist.append( res_fit_sqrtE ) # 7
+    funclist.append( res_plot_sqrtE ) # 8
 
     funclist[iplot]()
 
 #_____________________________________________________________________________
-def momentum_res():
+def res_plot_sqrtE():
 
-    #energy resolution as a function of beam momentum
+    #plot to energy resolution as (sigma/E)*sqrt(momentum) hadrons at lower energies
 
-    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
-    #momentum += [20, 30, 50, 75, 100]
-    momentum = [1, 2, 5, 10, 30, 75] # 0.5, 
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [0.5, 1, 2, 5, 10]
+    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
 
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]  # +str(pbeam)+
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
 
-    #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736]
-    #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736, 0.7985971943887775, 0.8148296593186373, 0.8292585170340682, 0.8418837675350701, 0.8581162324649299]
-    #alpha_min = [1.04749498997996, 0.7733466933867736, 0.7228456913827656, 0.7318637274549098, 0.7535070140280562, 0.7462925851703407, 0.7589178356713426, 0.7589178356713426, 0.7697394789579158, 0.7931863727454911, 0.8112224448897796, 0.8364729458917837, 0.8454909819639278, 0.8581162324649299]
-    #alpha_min = [0.805811623246493, 0.8545090180360722, 0.8779559118236473, 0.919438877755511, 0.9609218436873748, 1.0006012024048097]
-    alpha_min = [1. for i in momentum]
+    #res = momentum_res(momentum, infile)
+
+    res = [0.2838831056142533, 0.24308875514375924, 0.22443441037740325, 0.19537093015098062, 0.18340595444261454, 0.15666256845498736, 0.1386693229664264, 0.12502941356892427, 0.11346620729169443]
+
+    res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
 
     plt.style.use("dark_background")
     col = "lime"
     #col = "black"
 
-    res = []
-    for i in range(len(momentum)):
-        inp = read_hdf(infile[0]+str(momentum[i])+infile[1])
-        res.append( gfit(inp, alpha_min[i], momentum[i]) )
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
 
-    print res
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    ax.set_title("Hadron resolution for UcalA290")
+    ax.set_xlabel("Incident momentum $E_{\mathrm{beam}}$ (GeV/c)")
+    ax.set_ylabel(r"$\frac{\sigma}{\langle E\rangle}\sqrt{E_b}$ (%)")
 
-    #res = [0.378309214646451, 0.330370519825307, 0.2980614162915459, 0.2565883204529302, 0.23708631123491672, 0.20745290032813926, 0.18080942863875213, 0.16890713625696185, 0.15452339236086574]
+    set_axes_color(ax, col)
+    set_grid(plt, col)
 
-    res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
+    ax.set_ylim([15, 40])
+
+    ax.set_xscale("log")
+
+    #NIM A290 (1990) 95-108
+    x = np.linspace(1.5, momentum[-1], 300)
+    plt.plot(x, [34. for i in x], "k--", color="red")
+
+    #plot the data
+    plt.plot(momentum, res, "o", color="blue")
+
+    leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"),
+        Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor="b", markersize=8)]
+    leg_data = [r"34\%$\sqrt{E_b}$, NIM A290 (1990) 95-108", "Geant4"]
+    ax.legend(leg_items, leg_data, loc="upper left")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+
+#res_plot_sqrtE
+
+#_____________________________________________________________________________
+def res_fit_sqrtE():
+
+    #constant fit to energy resolution as (sigma/E)*sqrt(momentum)
+
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [0.5, 1, 2, 5, 10]
+    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x9/HCal_p", ".h5"]
+
+    #res = momentum_res(momentum, infile, 0.)
+    #res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
+    #print "res:", res
+
+    res = [16.644077984532505, 16.800854013708676, 16.56571076890314, 16.517630999298508, 16.396527506654685, 16.60227826662247, 16.504357512786232, 16.882765218234848, 16.62133245903896, 16.63418578632388, 16.817940430994863, 16.855077183222992, 16.853218047953135, 17.217925624703895]
+
+    pars, cov = curve_fit(lambda x, a: a, momentum, res)
+    print pars
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    ax.set_title("Electron resolution for UcalA290")
+    ax.set_xlabel("Incident momentum $E_{\mathrm{beam}}$ (GeV/c)")
+    ax.set_ylabel(r"$\frac{\sigma}{\langle E\rangle}\sqrt{E_b}$ (%)")
+    #ax.set_ylabel("Counts / {0:.3f} GeV".format((plt.xlim()[1]-plt.xlim()[0])/nbins))
+
+    ax.set_ylim([15.5, 19])
+
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    ax.set_xscale("log")
+
+    #plot the fit function
+    x = np.linspace(momentum[0], momentum[-1], 300)
+    plt.plot(x, [pars[0] for i in x], "k-", color="blue") # fit result
+    plt.plot(x, [18. for i in x], "k--", color="red", lw=2) # DESY 89-128 (1989)
+
+    #plot the data
+    plt.plot(momentum, res, "o", color="blue")
+
+    leg_items = [leg_lin("red", "--"), leg_dot(fig, "blue"), leg_lin("blue")]
+    #leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"), Line2D([0], [0], lw=2, color="blue")]
+    fit_str = r"${0:.3f} \pm {1:.3f}$".format(pars[0], np.sqrt(cov[0,0]))
+    leg_data = [r"18\%$\sqrt{E_b}$, DESY 89-128 (1989)", "Geant4", fit_str+r" \%$\sqrt{E_b}$"]
+    ax.legend(leg_items, leg_data)
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+
+#_____________________________________________________________________________
+def run_eh():
+
+    #electron/hadron ratio
+
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [0.5, 1, 2, 5, 10]
+    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+
+    inp_h = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    inp_e = ["/home/jaroslav/sim/hcal/data/ucal1a1x9/HCal_p", ".h5"]
+
+    #alpha_min = momentum_alpha(momentum, inp_h)
+
+    #alpha_min = [0.9895791583166331, 0.8324649298597193, 0.8549098196392785, 0.8933867735470942, 0.917434869739479, 0.9575150300601202, 0.9799599198396793]
+
+    #eh = []
+    #for i in range(len(momentum)):
+        #mean_h = gfit(read_hdf(inp_h[0]+str(momentum[i])+inp_h[1]), alpha_min[i], momentum[i], False)
+        #mean_e = gfit(read_hdf(inp_e[0]+str(momentum[i])+inp_e[1]), 1., momentum[i], False)
+
+        #eh.append( mean_e/mean_h )
+
+    #print "eh:", eh
+
+    eh = [0.6710367192217798, 0.6978615698806179, 0.7248563885176406, 0.7359698639512071, 0.7565368947811402, 0.7672193053655327, 0.7683990947565533, 0.7610777401818467, 0.7660452817093534, 0.7734914761554214, 0.7818216493529542, 0.7883494157856383, 0.7955606453991899, 0.8023750715362553]
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    ax.set_title("Electron/hadron ratio for UcalA290")
+    ax.set_xlabel("Incident momentum $E_{\mathrm{beam}}$ (GeV/c)")
+    ax.set_ylabel("e/h")
+
+    ax.set_ylim([0.5, 1.2])
+
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    ax.set_xscale("log")
+
+    #line at e/h = 1
+    x = np.linspace(momentum[0], momentum[-1], 300)
+    plt.plot(x, [1. for i in x], "k--", color="red", lw=2)
+
+    #plot the data
+    plt.plot(momentum, eh, "o", color="blue")
+
+    leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"),
+        Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor="b", markersize=8)]
+    leg_data = ["e/h = 1", "Geant4"]
+    ax.legend(leg_items, leg_data, ncol=1)
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+
+#_____________________________________________________________________________
+def res_fit():
+
+    #parametric fit to energy resolution
+
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [0.5, 1, 2, 5, 10]
+    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
+
+    #res = momentum_res(momentum, infile)
+
+    res = [0.2838831056142533, 0.24308875514375924, 0.22443441037740325, 0.19537093015098062, 0.18340595444261454, 0.15666256845498736, 0.1386693229664264, 0.12502941356892427, 0.11346620729169443, 0.09567066107870396, 0.08747710760544869, 0.08278921863315548, 0.07940527435151651, 0.07636821452527176]
+
+    pars, cov = curve_fit(resf2, momentum, res)
+    print pars
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #plot the fit function
+    x = np.linspace(momentum[0], momentum[-1], 300)
+    plt.plot(x, resf2(x, pars[0], pars[1]), "k-", color="blue")
+    x1 = np.linspace(momentum[1], momentum[-1], 300)
+    plt.plot(x1, resf2(x1, 0.35, 0), "k--", color="red")
+
+    #plot the data
+    plt.plot(momentum, res, "o", color="blue")
+
+    ax.set_xscale("log")
+
+    ax.set_title("Hadron resolution for UcalA290")
+    ax.set_xlabel("Incident momentum $E_{\mathrm{beam}}$ (GeV/c)")
+    ax.set_ylabel(r"Resolution $\sigma/\langle E\rangle$")
+
+    #fit parameters on the plot
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    fit_param = ""
+    fit_param += r"\begin{align*}"
+    fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
+    fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    fit_param += r"\end{align*}"
+
+    leg_items = [leg_lin("red", "--"), leg_dot(fig, "blue"), leg_lin("blue"), leg_txt()]
+    ax.legend(leg_items, [r"35\%$\sqrt{E_b},$ DESY 89-128 (1989)", "Geant4",
+        r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$", fit_param])
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+
+#_____________________________________________________________________________
+def resf2(E, a, b):
+
+    #resolution function  sigma/E = sqrt( a^2/E + b^2 )
+    return np.sqrt( (a**2)/E + b**2 )
+
+#_____________________________________________________________________________
+def momentum_res(momentum=None, infile=None, alpha_fix=None):
+
+    #energy resolution as a function of beam momentum
+
+    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
+    #momentum += [20, 30, 50, 75, 100]
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x9/HCal_p", ".h5"]
+
+    if alpha_fix is not None:
+        alpha_min = [alpha_fix for i in momentum]
+    else:
+        alpha_min = momentum_alpha(momentum, infile)
+
+    res = [gfit(read_hdf(infile[0]+str(momentum[i])+infile[1]), alpha_min[i], momentum[i]) for i in range(len(momentum))]
+
+    print "alpha_min:", alpha_min
+    print "res:", res
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    res_plot = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
 
     #print res
 
@@ -65,20 +301,27 @@ def momentum_res():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(momentum, res, "o", color="blue")
+    #ax.set_xscale("log")
+
+    plt.plot(momentum, res_plot, "o", color="blue")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+    return res
 
 #_____________________________________________________________________________
-def momentum_alpha():
+def momentum_alpha(momentum=None, infile=None):
 
     #minimal alpha as a function of beam momentum
 
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
     #momentum += [20, 30, 50, 75, 100]
-    momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
 
     #momentum = [10]
+
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
 
     #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]
     alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
@@ -87,35 +330,38 @@ def momentum_alpha():
     col = "lime"
     #col = "black"
 
-    alpha_min = []
-    for p in momentum:
-        alpha_min.append( fit_alpha(alpha, p) )
+    alpha_min = [fit_alpha(alpha, p, infile) for p in momentum]
 
     print alpha_min
 
-    #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736]
-    #alpha_min = [1.0438877755511022, 0.7769539078156313, 0.7246492985971944, 0.7336673346693388, 0.7498997995991985, 0.7444889779559118, 0.7589178356713426, 0.7553106212424849, 0.7733466933867736, 0.7985971943887775, 0.8148296593186373, 0.8292585170340682, 0.8418837675350701, 0.8581162324649299]
+    #normalization for alpha at momentum = 30 GeV
+    alpha_min_plot = [i/alpha_min[-2] for i in alpha_min]
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
+    ax.set_ylim([0.5, 1.2])
+
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(momentum, alpha_min, "o", color="blue")
+    plt.plot(momentum, alpha_min_plot, "o", color="blue")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+    return alpha_min
 
 #_____________________________________________________________________________
-def fit_alpha(alpha=None, pbeam=None):
+def fit_alpha(alpha=None, pbeam=None, infile=None):
 
     #polynomial fit for resolution as a function of alpha
 
     #alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
+    #alpha =[0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1]
     #pbeam = 10
 
-    #res = [1.6095357603323173, 1.1914606471540563, 0.9766833753243835, 0.8965160801980067, 0.8941847587425313, 0.9335774779851417, 1.0, 1.0767531351804083, 1.1561039821761605]
-    res = run_alpha(alpha, pbeam)
+    res = run_alpha(alpha, pbeam, infile)
 
     plt.style.use("dark_background")
     col = "lime"
@@ -141,9 +387,14 @@ def fit_alpha(alpha=None, pbeam=None):
     alpha_min = x[ np.where( y==y.min() ) ][0]
     print "alpha_min:", alpha_min
 
+    #normalization
+    #res = [i/res[-3] for i in res]
+    #ax.set_ylim([0.8, 1.6])
+
     plt.plot(alpha, res, "o", color="blue")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
 
     return alpha_min
 
@@ -156,11 +407,11 @@ def poly_alpha(r, a, b, c, d):
     return a + b*r + c*r**2 + d*r**3
 
 #_____________________________________________________________________________
-def run_alpha(alpha=None, pbeam=None):
+def run_alpha(alpha=None, pbeam=None, infile=None):
 
     #Gaussian fit for a given alpha
 
-    #alpha = [0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15]
+    #alpha = [1]
     #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2]
     #pbeam = 10
 
@@ -168,8 +419,8 @@ def run_alpha(alpha=None, pbeam=None):
     #infile = "/home/jaroslav/sim/hcal/data/ucal1a1x1/HCal_p10.csv"
     #infile = "/home/jaroslav/sim/hcal/data/ucal1a2/HCal_p10.csv"
 
-    #inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p"+str(pbeam)+".h5")
-    inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p"+str(pbeam)+".h5")
+    #inp = read_hdf("/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p"+str(pbeam)+".h5")
+    inp = read_hdf(infile[0]+str(pbeam)+infile[1])
 
     plt.style.use("dark_background")
     col = "lime"
@@ -193,13 +444,14 @@ def run_alpha(alpha=None, pbeam=None):
     plt.plot(alpha, res, "o", color="blue")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
 
     return res
 
 #run_alpha
 
 #_____________________________________________________________________________
-def gfit(inp, alpha, pbeam=None):
+def gfit(inp, alpha, pbeam=None, res_out=True):
 
     #Gaussian fit for energy resolution at a given momentum
 
@@ -229,14 +481,14 @@ def gfit(inp, alpha, pbeam=None):
     fit_data = DataFrame({"E": centers, "density": hx[0]})
     pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
 
-    print "pass1:", pars[0], pars[1]
+    #print "pass1:", pars[0], pars[1]
 
     #pass2, fit in +/- 2*sigma range
     fitran = [pars[0] - 2.*pars[1], pars[0] + 2.*pars[1]] # fit range at 2*sigma
     fit_data = fit_data[ fit_data["E"].between(fitran[0], fitran[1], inclusive=False) ] # select the data to the range
     pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
 
-    print "pass2:", pars[0], pars[1]
+    #print "pass2:", pars[0], pars[1]
 
     #fit function
     x = np.linspace(fitran[0], fitran[1], 300)
@@ -251,30 +503,37 @@ def gfit(inp, alpha, pbeam=None):
 
     set_grid(plt, col)
 
-    mean_str = "{0:.4f} \pm {1:.4f}".format(pars[0], np.sqrt(cov[0,0]))
-    sigma_str = "{0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    #mean_str = "{0:.4f} \pm {1:.4f}".format(pars[0], np.sqrt(cov[0,0]))
+    #sigma_str = "{0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
     res = pars[1]/pars[0]
-    res_str = "{0:.4f}".format(res)
-    fit_param = r"\begin{align*}\mu &= " + mean_str + r"\\ \sigma &= " + sigma_str + r"\\"
-    fit_param += r"\sigma/\mu &= " + res_str + r"\end{align*}"
+    #res_str = "{0:.4f}".format(res)
+    #fit_param = r"\begin{align*}\mu &= " + mean_str + r"\\ \sigma &= " + sigma_str + r"\\"
+    #fit_param += r"\sigma/\mu &= " + res_str + r"\end{align*}"
 
     #plot legend
-    leg_items = [Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
-    plt.rc("text", usetex = True)
-    plt.rc('text.latex', preamble='\usepackage{amsmath}')
-    ax.legend(leg_items, ["Gaussian fit", fit_param])
+    #leg_items = [Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
+    #plt.rc("text", usetex = True)
+    #plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    #ax.legend(leg_items, ["Gaussian fit", fit_param])
+
+    #simple legend
+    leg_items = [Line2D([0], [0], lw=0) for i in range(3)]
+    ax.legend(leg_items, ["mu: {0:.4f}".format(pars[0]),"sig: {0:.4f}".format(pars[1]), "r: {0:.4f}".format(pars[1]/pars[0])])
 
     #output log
-    out = open("out.txt", "w")
-    out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
-    out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[1], np.sqrt(cov[1,1])) )
-    out.write( "{0:.4f}".format(pars[1]/pars[0]) )
-    out.close()
+    #out = open("out.txt", "w")
+    #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
+    #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[1], np.sqrt(cov[1,1])) )
+    #out.write( "{0:.4f}".format(pars[1]/pars[0]) )
+    #out.close()
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
-    return res
+    if res_out:
+        return res
+    else:
+        return pars[0]
 
 #gfit
 
@@ -285,11 +544,13 @@ def run_sec_fraction():
 
     momentum_data = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
 
-    momentum_mc = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum_mc = [0.5, 1, 2, 5, 10, 30, 75]
+    momentum_mc = momentum_data
 
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x2/HCal_p", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x6/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x7/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -311,11 +572,12 @@ def run_sec_fraction():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    #momentum_plot = [log10(i) for i in momentum]
-
-    #print momentum_plot
+    ax.set_title("Fraction of energy deposit in each section")
+    ax.set_xlabel("Incident momentum (GeV/c)")
+    ax.set_ylabel("(%)")
 
     ax.set_xscale("log")
+    ax.set_ylim([-3, 90])
 
     #data from NIM A290 (1990) 95-108, Table 11
     fAE = [71.7, 64.2, 59.7, 55.5, 53.5, 46.0, 40.1, 36.4, 32.9]
@@ -326,14 +588,34 @@ def run_sec_fraction():
     fA1 += [61.8, 61.2, 61.7, 62.1, 62.0]
     fA2 += [10.3, 13.0, 14.5, 16.5, 16.9]
 
+    plt.plot(momentum_mc, fE, "k-", color="blue")
+    plt.plot(momentum_mc, f1, "k-", color="red")
+    plt.plot(momentum_mc, f2, "k-", color="lime")
 
-    plt.plot(momentum_data, fAE, "k--", color="red")
-    plt.plot(momentum_data, fA1, "k--", color="red")
-    plt.plot(momentum_data, fA2, "k--", color="red")
+    plt.plot(momentum_data, fAE, "o", color="blue")
+    plt.plot(momentum_data, fA1, "o", color="red")
+    plt.plot(momentum_data, fA2, "o", color="lime")
 
-    plt.plot(momentum_mc, fE, "o", color="blue")
-    plt.plot(momentum_mc, f1, "o", color="yellow")
-    plt.plot(momentum_mc, f2, "o", color="lime")
+    #plt.plot(momentum_data, fAE, "k--", color="red")
+    #plt.plot(momentum_data, fA1, "k--", color="red")
+    #plt.plot(momentum_data, fA2, "k--", color="red")
+
+    #plt.plot(momentum_mc, fE, "o", color="blue")
+    #plt.plot(momentum_mc, f1, "o", color="yellow")
+    #plt.plot(momentum_mc, f2, "o", color="lime")
+
+    leg_items = [Line2D([0], [0], lw=2, ls="-", color="blue"), Line2D([0], [0], lw=0), Line2D([0], [0], lw=2, ls="-", color="red"),
+        Line2D([0], [0], lw=2, ls="-", color="lime"), Line2D([0], [0], lw=0)]
+    leg_data = ["EMC", "Points: data", "HAC1", "HAC2 (all Geant4)"]
+    leg1 = plt.legend(leg_items, leg_data, ncol=3)
+
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    leg2i = [leg_txt(), leg_txt()]
+    leg2d = ["NIM A290 (1990) 95-108", "DESY 89-128 (1989) $\geq$20 GeV/c"]
+    plt.legend(leg2i, leg2d, loc="center right")
+
+    plt.gca().add_artist(leg1)
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -363,6 +645,18 @@ def get_sec_fraction(infile, p):
     return fE, f1, f2
 
 #get_sec_fraction
+
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

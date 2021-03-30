@@ -316,8 +316,9 @@ def plot_shower_shape():
 
     #input
     en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
-    #infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".csv"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx5/HCal_en", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2cx6/HCal_en", ".h5"]
 
     #geometry for scintillator plates
     z0 = 11.75 # mm, center of the first scintillator
