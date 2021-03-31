@@ -45,6 +45,8 @@ class UcalA290 : public Detector, public G4VSensitiveDetector {
     G4bool fUseBirksCorrection; // use Birks correction to deposited energy
     G4double fBirksCoefficient; // value of Birks coefficient in mm/MeV
 
+    G4double fMaxTime; // maximal time for signal integration
+
     unsigned fStartHAC1; // first layer in HAC1 section
     unsigned fStartHAC2; // first layer in HAC2 section
 

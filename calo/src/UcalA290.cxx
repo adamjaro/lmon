@@ -68,6 +68,8 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4cout << "    use_Birks_correction: " << fUseBirksCorrection << G4endl;
   G4cout << "    Birks_coefficient: " << fBirksCoefficient << G4endl;
 
+  fMaxTime = 50.*ns; //maximal time for signal integration, ns
+
   //module length along z, given by the sum of all layers
   G4double modz = al_z + spacer_z + nLayEMC*(abso_z+2*clad_emc_z+spacer_z) + 2*gap_emc + nLayHAC*2*(abso_z+2*clad_hac_z+spacer_z);
 
@@ -311,6 +313,9 @@ G4LogicalVolume *UcalA290::MakeAbsoNoClad(G4double abso_z, G4String eh) {
 
 //_____________________________________________________________________________
 G4bool UcalA290::ProcessHits(G4Step *step, G4TouchableHistory*) {
+
+  //maximal time for signal integration
+  if( step->GetPostStepPoint()->GetGlobalTime()/ns > fMaxTime ) return true;
 
   //scintillator location
   int lay_id = 1;

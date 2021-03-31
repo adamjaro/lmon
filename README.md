@@ -1,10 +1,10 @@
-# Geant simulation of luminosity monitor for the EIC at BNL
+# Geant simulation of luminosity monitor and electron tagger for the EIC
 
 ## Dependencies
 
-- Geat 4
+- Geant4
 - ROOT 5/6
-- boost (already required by ROOT)
+- boost
 
 ## Steps to checkout the repository and compile
 
@@ -19,7 +19,7 @@
 
 - Run as a batch job for a given number of events
 
-<pre><code> ./run_lmon run.mac </pre></code>
+<pre><code> ./run_lmon -m run.mac </pre></code>
 
 - Or run with visualization
 

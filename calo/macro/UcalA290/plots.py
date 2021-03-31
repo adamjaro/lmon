@@ -14,7 +14,7 @@ from math import ceil, log10, sqrt
 #_____________________________________________________________________________
 def main():
 
-    iplot = 7
+    iplot = 1
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_sec_fraction ) # 1
@@ -34,15 +34,19 @@ def res_plot_sqrtE():
     #plot to energy resolution as (sigma/E)*sqrt(momentum) hadrons at lower energies
 
     #momentum = [0.5, 1, 2, 5, 10, 30, 75]
-    #momentum = [0.5, 1, 2, 5, 10]
-    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
+    momentum = [0.5, 1, 2, 5, 10]
+    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
 
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
     #res = momentum_res(momentum, infile)
 
-    res = [0.2838831056142533, 0.24308875514375924, 0.22443441037740325, 0.19537093015098062, 0.18340595444261454, 0.15666256845498736, 0.1386693229664264, 0.12502941356892427, 0.11346620729169443]
+    #ucal1a1x8, lowE
+    #res = [0.2838831056142533, 0.22443441037740325, 0.18340595444261454, 0.1386693229664264, 0.11346620729169443]
+
+    #ucal1a1x13, lowE
+    res = [0.43099730898493366, 0.39953239509912547, 0.2733814887982889, 0.198492847444043, 0.1265011811951121]
 
     res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
 
@@ -62,7 +66,8 @@ def res_plot_sqrtE():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    ax.set_ylim([15, 40])
+    #ax.set_ylim([15, 40])
+    ax.set_ylim([15, 80])
 
     ax.set_xscale("log")
 
@@ -207,14 +212,19 @@ def res_fit():
 
     #momentum = [0.5, 1, 2, 5, 10, 30, 75]
     #momentum = [0.5, 1, 2, 5, 10]
-    momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+    #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
+    momentum = [1, 2, 5, 10, 30, 75]
 
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x7/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
     #res = momentum_res(momentum, infile)
 
-    res = [0.2838831056142533, 0.24308875514375924, 0.22443441037740325, 0.19537093015098062, 0.18340595444261454, 0.15666256845498736, 0.1386693229664264, 0.12502941356892427, 0.11346620729169443, 0.09567066107870396, 0.08747710760544869, 0.08278921863315548, 0.07940527435151651, 0.07636821452527176]
+    #ucal1a1x7 (FTFP_BERT_HP) from 1 GeV
+    #res = [0.2487898552536001, 0.1934683820708509, 0.1508641186714976, 0.12823935570197714, 0.10117973567558321, 0.09115878726569006]
+
+    #ucal1a1x13 (LHEP) from 1 GeV, 0.5 GeV = 0.43099730898493366,    1 GeV = 0.39953239509912547
+    res = [0.39953239509912547, 0.2733814887982889, 0.198492847444043, 0.1265011811951121, 0.0781079458675066, 0.05745226370685749]
 
     pars, cov = curve_fit(resf2, momentum, res)
     print pars
@@ -233,7 +243,7 @@ def res_fit():
     x = np.linspace(momentum[0], momentum[-1], 300)
     plt.plot(x, resf2(x, pars[0], pars[1]), "k-", color="blue")
     x1 = np.linspace(momentum[1], momentum[-1], 300)
-    plt.plot(x1, resf2(x1, 0.35, 0), "k--", color="red")
+    plt.plot(x, resf2(x, 0.35, 0), "k--", color="red")
 
     #plot the data
     plt.plot(momentum, res, "o", color="blue")
@@ -271,11 +281,11 @@ def momentum_res(momentum=None, infile=None, alpha_fix=None):
     #energy resolution as a function of beam momentum
 
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
-    #momentum += [20, 30, 50, 75, 100]
+    #momentum = [1]
     #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #alpha_fix = 0.2677555110220441
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x9/HCal_p", ".h5"]
 
     if alpha_fix is not None:
         alpha_min = [alpha_fix for i in momentum]
@@ -358,8 +368,9 @@ def fit_alpha(alpha=None, pbeam=None, infile=None):
     #polynomial fit for resolution as a function of alpha
 
     #alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
-    #alpha =[0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1]
-    #pbeam = 10
+    #alpha = [0.01, 0.2, 0.4, 0.6, 0.7, 0.8, 0.9, 1, 1.1]
+    #pbeam = 1
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
     res = run_alpha(alpha, pbeam, infile)
 
@@ -549,8 +560,8 @@ def run_sec_fraction():
 
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x7/HCal_p", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x12/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
