@@ -14,7 +14,7 @@ from math import ceil, log10, sqrt
 #_____________________________________________________________________________
 def main():
 
-    iplot = 6
+    iplot = 5
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_sec_fraction ) # 1
@@ -323,7 +323,7 @@ def res_fit():
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x7/HCal_p", ".h5"]
     infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
 
-    res = momentum_res(momentum, infile)
+    res = momentum_res(momentum, infile, 1.)
 
     #ucal1a1x7
     #res = [0.3091057050823727, 0.2487898552536001, 0.1934683820708509, 0.1508641186714976, 0.12823935570197714, 0.10117973567558321, 0.09115878726569006]
@@ -339,6 +339,12 @@ def res_fit():
 
     #ucal1a1x16
     #res = [0.2068699823265314, 0.17316781690838748, 0.12649665622126444, 0.09975481624514367, 0.06948645860132327, 0.059007251358228506]
+
+    #ucal1a1x18
+    #res = [0.20671506378705654, 0.1728425902177635, 0.12617174325992855, 0.09875371819047679, 0.06850699626508167, 0.058131701939992446]
+
+    #ucal1a1x19, alpha start at 0.4
+    #res = [0.26000393682806455, 0.22743016022549548, 0.1656982878216819, 0.11024052155131378, 0.06679325935407834, 0.0466133282808186]
 
     pars, cov = curve_fit(resf2, momentum, res)
     print pars
@@ -680,7 +686,7 @@ def run_sec_fraction():
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1/HCal_p", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x7/HCal_p", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x14/HCal_p", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x19/HCal_p", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"

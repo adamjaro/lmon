@@ -24,4 +24,5 @@ new UcalA290 ucal
   #ucal.max_time = 40
   #ucal.n_emc = 16
   #ucal.n_hac = 49
+  ucal.clad_mat_name = G4_Fe
 

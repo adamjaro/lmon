@@ -275,7 +275,10 @@ G4LogicalVolume *UcalA290::MakeAbsoLayer(G4double abso_z, G4double clad_z, G4Str
 
   //stainless steel cladding
   G4Box *clad_shape = new G4Box(fNam+"_abso_clad_"+eh, fModXY/2, fModXY/2, clad_z/2);
-  G4Material *clad_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_STAINLESS-STEEL");
+  G4String clad_mat_name = "G4_STAINLESS-STEEL";
+  fGeo->GetOptS(fNam, "clad_mat_name", clad_mat_name);
+  G4cout << "    clad_mat_name: " << clad_mat_name << G4endl;
+  G4Material *clad_mat = G4NistManager::Instance()->FindOrBuildMaterial(clad_mat_name);
   G4LogicalVolume *clad_vol = new G4LogicalVolume(clad_shape, clad_mat, clad_shape->GetName());
   clad_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
