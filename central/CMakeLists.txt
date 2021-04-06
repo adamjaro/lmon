@@ -14,3 +14,7 @@ add_library (${CEN_LIB} SHARED ${central_sources} ${central_headers})
 target_include_directories(${CEN_LIB} PUBLIC ${BEAST_INSTALL}/include)
 target_link_libraries(${CEN_LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
 
+#add for top cmake
+set(COMPONENT_LIBS ${COMPONENT_LIBS} ${CEN_LIB} bmf PARENT_SCOPE)
+set(COMPONENT_INCLUDE ${COMPONENT_INCLUDE} ${CMAKE_CURRENT_SOURCE_DIR}/include PARENT_SCOPE)
+

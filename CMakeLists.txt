@@ -8,10 +8,8 @@ set (LIB lmonBase)
 #executable
 set (BIN run_lmon)
 
-#load GEANT
+#Geant
 find_package(Geant4 REQUIRED ui_all vis_all)
-
-#GEANT include
 include(${Geant4_USE_FILE})
 
 #local include
@@ -22,49 +20,20 @@ file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cxx)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.h)
 
 #BOOST
-set(BOOST_LIB boost_program_options)
+find_package(Boost COMPONENTS program_options REQUIRED)
+include_directories(${Boost_INCLUDE_DIRS})
 
 #ROOT
+find_package(ROOT REQUIRED COMPONENTS Core EG Hist Physics RIO Tree MathCore)
+include(${ROOT_USE_FILE})
 
-#compiler flags
-execute_process(COMMAND root-config --cflags OUTPUT_VARIABLE ROOT_FLAGS_CMD)
-string(REPLACE "\n" "" ROOT_FLAGS "${ROOT_FLAGS_CMD}")
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_FLAGS}")
-
-#libraries
-set(ROOT_DEPS Core EG Hist Physics RIO Tree MathCore)
-
-#path to libraries
-execute_process(COMMAND root-config --libdir OUTPUT_VARIABLE ROOT_LIBDIR_CMD)
-string(REPLACE "\n" "" ROOT_LIBDIR "${ROOT_LIBDIR_CMD}")
-link_directories (${ROOT_LIBDIR})
-
-#generate ROOT dictionary for detectors by CINT/CLING
+#dictionary for detectors
 set (DICT G__DET.cxx)
-set (CLING rootcint)
-set (LINKDEF LinkDef.h)
-#set (HDRS_DET Detector.h SensDetDummy.h ExitWinZEUS.h)
-set (HDRS_DET Detector.h SensDetDummy.h)
-
-#include for CLING
-get_directory_property(incdirs INCLUDE_DIRECTORIES)
-foreach(_inc ${incdirs})
-  set(dict_include ${dict_include} -I${_inc})
-endforeach()
-
-# command to invoke CLING, options -c -p are used by root5
-# and deprecated in root6
-add_custom_command (
-  OUTPUT ${DICT}
-  COMMAND ${CLING}
-  ARGS -f ${DICT} -c -p ${dict_include}
-  ${HDRS_DET} ${LINKDEF}
-  DEPENDS include/ExitWinZEUS.h include/${LINKDEF}
-  WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-)
+ROOT_GENERATE_DICTIONARY(G__DET Detector.h SensDetDummy.h ExitWinZEUS.h LINKDEF include/LinkDef.h)
 
 #component libraries
 set(COMPONENT_LIBS)
+set(COMPONENT_INCLUDE)
 
 #central detector
 option(BUILD_CENTRAL "Build central detector" OFF)
@@ -73,44 +42,32 @@ configure_file(include/central_config.h.in central_config.h)
 if(BUILD_CENTRAL)
   add_subdirectory(central)
   link_directories(${BEAST_INSTALL}/lib)
-  #set(LIB_CENTRAL lmonCentral bmf)
-  set(COMPONENT_LIBS ${COMPONENT_LIBS} lmonCentral bmf)
-  set(INCLUDE_CENTRAL "${PROJECT_SOURCE_DIR}/central/include")
 endif()
 
 #calorimeter set
 add_subdirectory(calo)
-set(INCLUDE_CALO "${PROJECT_SOURCE_DIR}/calo/include")
 
 #base shared library
 #add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})
-target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${INCLUDE_CENTRAL} ${INCLUDE_CALO})
-target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_DEPS})
+target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${COMPONENT_INCLUDE})
+target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
 
 #binary executable
 add_executable(${BIN} run.cxx)
-#target_include_directories(${BIN} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${INCLUDE_CENTRAL})
-#target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${BOOST_LIB} ${LIB_CENTRAL})
-target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${BOOST_LIB} ${COMPONENT_LIBS})
+target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${Boost_LIBRARIES} ${COMPONENT_LIBS})
 
-#copy macros to build directory
-set(MACRO
-  gui.mac
-  init_vis.mac
-  init_vis_lowQ2.mac
-  vis.mac
-  run.mac
-  run_eic.mac
-  run_lowQ2.mac
-  run_local.mac
-)
 
-foreach(_mac ${MACRO})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_mac}
-    ${PROJECT_BINARY_DIR}/${_mac}
-    COPYONLY
-  )
-endforeach()
+
+
+
+
+
+
+
+
+
+
+
+
 

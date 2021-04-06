@@ -12,7 +12,7 @@ import os
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
     funclist = []
     funclist.append( linear ) # 0
     funclist.append( logx_sqrtE ) # 1
@@ -65,7 +65,7 @@ def linear():
     plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
 
     #resolution data
-    plt.plot(en, res, marker="o", linestyle="")
+    plt.plot(en, res, marker="o", linestyle="", color="blue")
 
     #fit the resolution
     #pars, cov = curve_fit(resf, en, res)  #  , [0.004, 0.026, 1.9]
@@ -90,18 +90,26 @@ def linear():
     plt.plot(x, y, "k-", label="resf", color="blue")
 
     #ZEUS resolution
-    yZEUS = resf2(x, 0.44, 0) # 44% for hadrons
+    yZEUS = resf2(x, 0.442, 0) # 44% for hadrons
     #yZEUS = resf2(x, 0.235, 0.012) # electrons
     plt.plot(x, yZEUS, "k--", label="ZEUS", color="red")
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
-    ax.set_title("Hadron resolution for HcalA262")
+    #ax.set_title("Hadron resolution for HcalA262")
     #ax.set_title("Hadron resolution for HcalA262, FTFP$\_$BERT$\_$HP")
     #ax.set_title("Electron resolution for HcalA262")
-    ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
+    #ax.set_xlabel("Incident energy $E(\pi^+)$ (GeV)")
     #ax.set_xlabel("Incident energy $E(e^-)$ (GeV)")
-    ax.set_ylabel("Resolution $\sigma/\mu$")
+    #ax.set_ylabel("Resolution $\sigma/\mu$")
+    ax.set_title("Lead - scintillator (HcalA262)")
+    ax.set_xlabel("Incident energy $E$ (GeV)")
+    ax.set_ylabel(r"Resolution $\sigma/\langle E\rangle$")
+
+    ax.set_xscale("log")
+
+    xlabels = [str(i) for i in en]
+    plt.xticks(en, xlabels)
 
     #fit parameters on the plot
     fit_param = ""
@@ -110,8 +118,9 @@ def linear():
     fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
     fit_param += r"\end{align*}"
 
-    leg_items = [Line2D([0], [0], lw=2, ls="--", color="red"), Line2D([0], [0], lw=2, color="blue"), Line2D([0], [0], lw=0)]
-    ax.legend(leg_items, [r"NIM A262 (1987) 229-242", r"$\frac{\sigma(E)}{E} = \frac{a}{\sqrt{E}} \oplus\ b$", fit_param])
+    leg_items = [leg_lin("red", "--"), leg_txt(), leg_dot(fig, "blue"), leg_lin("blue")]
+    res_form = r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$"
+    ax.legend(leg_items, [r"44.2\%$\sqrt{E}$, NIM A262 (1987) 229-242", res_form, "FTFP\_BERT\_HP", fit_param])
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -231,7 +240,17 @@ def resf3(E, a):
 
     return r
 
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
 
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
