@@ -120,9 +120,9 @@ def res_plot_sqrtE():
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
 
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x14/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
 
-    #res = momentum_res(momentum, infile)
+    res = momentum_res(momentum, infile)
 
     #ucal1a1x8, lowE
     #res = [0.2838831056142533, 0.22443441037740325, 0.18340595444261454, 0.1386693229664264, 0.11346620729169443]
@@ -131,7 +131,7 @@ def res_plot_sqrtE():
     #res = [0.43099730898493366, 0.39953239509912547, 0.2733814887982889, 0.198492847444043, 0.1265011811951121]
 
     #ucal1a1x14
-    res = [0.24892602928406607, 0.21270770571685138, 0.17568570190131028, 0.1299071862358565, 0.09825270880539203]
+    #res = [0.24892602928406607, 0.21270770571685138, 0.17568570190131028, 0.1299071862358565, 0.09825270880539203]
 
     res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
 
@@ -181,24 +181,24 @@ def res_fit_sqrtE():
     #momentum = [0.5, 1, 2, 5, 10]
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
 
-    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x15/HCal_p", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x17/HCal_p", ".h5"]
 
-    #res = momentum_res(momentum, infile, 0.)
-    #res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
+    res = momentum_res(momentum, infile, 0.)
+    res = [1e2*sqrt(momentum[i])*res[i] for i in range(len(res))]
     #print "res:", res
 
     #ucal1a1x9
-    res_hp = [16.55747824146128, 16.384272943997463, 16.508043919939492, 16.671275162901097, 16.77235291645076, 16.530274919642263]
+    #res_hp = [16.55747824146128, 16.384272943997463, 16.508043919939492, 16.671275162901097, 16.77235291645076, 16.530274919642263]
 
     #ucal1a1x15
     #res = [16.291617388340107, 16.628767502152353, 16.374232178668688, 16.491520680094066, 16.638970712964852, 16.248897413950367]
 
     #ucal1a1x15, alpha_fix = 0
-    res = [16.282453944335717, 16.626924386373293, 16.39676132785705, 16.60629560846151, 16.81161128219131, 16.577261933165815]
+    #res = [16.282453944335717, 16.626924386373293, 16.39676132785705, 16.60629560846151, 16.81161128219131, 16.577261933165815]
 
     pars, cov = curve_fit(lambda x, a: a, momentum, res)
     print pars
-    pars_hp, cov_hp = curve_fit(lambda x, a: a, momentum, res_hp)
+    #pars_hp, cov_hp = curve_fit(lambda x, a: a, momentum, res_hp)
 
     plt.style.use("dark_background")
     col = "lime"
@@ -227,11 +227,11 @@ def res_fit_sqrtE():
     #plot the fit function
     x = np.linspace(momentum[0], momentum[-1], 300)
     plt.plot(x, [pars[0] for i in x], "k-", color="blue") # fit result
-    plt.plot(x, [pars_hp[0] for i in x], "k-", color="lime")
+    #plt.plot(x, [pars_hp[0] for i in x], "k-", color="lime")
     plt.plot(x, [18. for i in x], "k--", color="red", lw=2) # DESY 89-128 (1989)
 
     #plot the data
-    plt.plot(momentum, res_hp, "o", color="lime")
+    #plt.plot(momentum, res_hp, "o", color="lime")
     plt.plot(momentum, res, "o", color="blue")
 
     leg_items = [leg_lin("red", "--"), leg_dot(fig, "blue"), leg_lin("blue")]
@@ -251,29 +251,30 @@ def run_eh():
     #momentum = [0.5, 1, 2, 5, 10]
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10, 20, 30, 50, 75, 100]
 
-    #inp_h = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
-    #inp_e = ["/home/jaroslav/sim/hcal/data/ucal1a1x9/HCal_p", ".h5"]
-    inp_h = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
+    inp_h = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
     inp_e = ["/home/jaroslav/sim/hcal/data/ucal1a1x15/HCal_p", ".h5"]
+    #inp_h = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
+    #inp_e = ["/home/jaroslav/sim/hcal/data/ucal1a1x17/HCal_p", ".h5"]
 
-    #alpha_min = momentum_alpha(momentum, inp_h)
+    alpha_min = momentum_alpha(momentum, inp_h)
 
     #alpha_min = [0.9895791583166331, 0.8324649298597193, 0.8549098196392785, 0.8933867735470942, 0.917434869739479, 0.9575150300601202, 0.9799599198396793]
+    #alpha_min = [1 for i in momentum]
 
-    #eh = []
-    #for i in range(len(momentum)):
-    #    mean_h = gfit(read_hdf(inp_h[0]+str(momentum[i])+inp_h[1]), alpha_min[i], momentum[i], False)
-    #    mean_e = gfit(read_hdf(inp_e[0]+str(momentum[i])+inp_e[1]), 1., momentum[i], False)
+    eh = []
+    for i in range(len(momentum)):
+        mean_h = gfit(read_hdf(inp_h[0]+str(momentum[i])+inp_h[1]), alpha_min[i], momentum[i], False)
+        mean_e = gfit(read_hdf(inp_e[0]+str(momentum[i])+inp_e[1]), 1., momentum[i], False)
 
-    #    eh.append( mean_e/mean_h )
+        eh.append( mean_e/mean_h )
 
-    #print "eh:", eh
+    print "eh:", eh
 
     #13, 14
     #eh = [1.4254201979679175, 1.333817245331037, 1.2254584352361864, 1.2091745707938342, 1.1177133536161117, 1.0604032983195375]
 
     #16, 15
-    eh = [0.795153547151302, 0.8215223644742312, 0.822585959756733, 0.8183503791187793, 0.8173938355698834, 0.8107797859893775]
+    #eh = [0.795153547151302, 0.8215223644742312, 0.822585959756733, 0.8183503791187793, 0.8173938355698834, 0.8107797859893775]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -336,7 +337,8 @@ def res_fit():
     #ucal1a1x14
     #res = [0.24892602928406607, 0.21270770571685138, 0.17568570190131028, 0.1299071862358565, 0.09825270880539203, 0.06696819130681524, 0.054282547580092794]
 
-    res = [0.2068699823265314, 0.17316781690838748, 0.12649665622126444, 0.09975481624514367, 0.06948645860132327, 0.059007251358228506]
+    #ucal1a1x16
+    #res = [0.2068699823265314, 0.17316781690838748, 0.12649665622126444, 0.09975481624514367, 0.06948645860132327, 0.059007251358228506]
 
     pars, cov = curve_fit(resf2, momentum, res)
     print pars
@@ -398,7 +400,7 @@ def momentum_res(momentum=None, infile=None, alpha_fix=None):
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
     #momentum = [1]
     #momentum = [0.5, 1, 2, 5, 10, 30, 75]
-    #alpha_fix = 0.2677555110220441
+    #alpha_fix = 1.2
     #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
 
 
@@ -406,6 +408,8 @@ def momentum_res(momentum=None, infile=None, alpha_fix=None):
         alpha_min = [alpha_fix for i in momentum]
     else:
         alpha_min = momentum_alpha(momentum, infile)
+
+    #alpha_min = [1.7, 1.4, 1.2, 1, 1, 1]
 
     res = [gfit(read_hdf(infile[0]+str(momentum[i])+infile[1]), alpha_min[i], momentum[i]) for i in range(len(momentum))]
 
@@ -442,11 +446,11 @@ def momentum_alpha(momentum=None, infile=None):
 
     #momentum = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
     #momentum += [20, 30, 50, 75, 100]
-    #momentum = [0.5, 1, 2, 5, 10, 30, 75]
+    #momentum = [1, 2, 5, 10, 30, 75]
 
     #momentum = [10]
 
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x8/HCal_p", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
 
     #alpha = [0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3]
     alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
@@ -484,8 +488,8 @@ def fit_alpha(alpha=None, pbeam=None, infile=None):
 
     #alpha = [0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
     #alpha = [0.01, 0.2, 0.4, 0.6, 0.7, 0.8, 0.9, 1, 1.1]
-    #pbeam = 1
-    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x13/HCal_p", ".h5"]
+    #pbeam = 10
+    #infile = ["/home/jaroslav/sim/hcal/data/ucal1a1x16/HCal_p", ".h5"]
 
     res = run_alpha(alpha, pbeam, infile)
 

@@ -21,4 +21,7 @@ new UcalA290 ucal
   #ucal.use_clad = 0
   #ucal.abso_z = 10
   #ucal.abso_mat_name = G4_Pb
+  #ucal.max_time = 40
+  #ucal.n_emc = 16
+  #ucal.n_hac = 49
 

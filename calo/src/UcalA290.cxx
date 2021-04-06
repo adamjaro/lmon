@@ -10,6 +10,7 @@
 
 //ROOT
 #include "TTree.h"
+#include "TH1F.h"
 
 //Geant
 #include "G4NistManager.hh"
@@ -52,8 +53,10 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4double gap_emc = 10; // gap for semiconductor detectors in EMC section, mm
 
   G4int nLayEMC = 25; // number of EMC layers, after the front Al plate with its scintillator layer
+  geo->GetOptI(nam, "n_emc", nLayEMC);
 
   G4int nLayHAC = 80; // number of layers in each HAC1 and HAC2 sections
+  geo->GetOptI(nam, "n_hac", nLayHAC);
 
   G4bool use_clad = true; // use cladding for absorber layers
   geo->GetOptB(nam, "use_clad", use_clad);
@@ -68,7 +71,10 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4cout << "    use_Birks_correction: " << fUseBirksCorrection << G4endl;
   G4cout << "    Birks_coefficient: " << fBirksCoefficient << G4endl;
 
-  fMaxTime = 50.*ns; //maximal time for signal integration, ns
+  fMaxTime = 50.; //maximal time for signal integration, ns
+  geo->GetOptD(nam, "max_time", fMaxTime);
+  fMaxTime = fMaxTime*ns;
+  G4cout << "    max_time: " << fMaxTime << G4endl;
 
   //module length along z, given by the sum of all layers
   G4double modz = al_z + spacer_z + nLayEMC*(abso_z+2*clad_emc_z+spacer_z) + 2*gap_emc + nLayHAC*2*(abso_z+2*clad_hac_z+spacer_z);
@@ -83,8 +89,9 @@ UcalA290::UcalA290(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   //positions of scintillator centers along the module
   std::vector<G4double> scin_pos;
 
-  //output on deposited energy in individual layers
-  fELayer = new std::vector<Float_t>(nLayEMC+1+2*nLayHAC);
+  //event outputs
+  fELayer = new std::vector<Float_t>(nLayEMC+1+2*nLayHAC); // deposited energy in individual layers
+  fTimeStep = new TH1F("time_step", "time_step", 20, 0, 200); // time in step, ns
 
   //top calorimeter volume, box shape
   G4String modnam = fNam+"_mod"; // module name
@@ -314,8 +321,12 @@ G4LogicalVolume *UcalA290::MakeAbsoNoClad(G4double abso_z, G4String eh) {
 //_____________________________________________________________________________
 G4bool UcalA290::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
+  //step time
+  G4double time = step->GetPostStepPoint()->GetGlobalTime()/ns;
+  fTimeStep->Fill( time );
+
   //maximal time for signal integration
-  if( step->GetPostStepPoint()->GetGlobalTime()/ns > fMaxTime ) return true;
+  if( time > fMaxTime ) return true;
 
   //scintillator location
   int lay_id = 1;
@@ -390,6 +401,8 @@ void UcalA290::ClearEvent() {
 
   std::fill(fELayer->begin(), fELayer->end(), 0.);
 
+  fTimeStep->Reset();
+
 }//ClearEvent
 
 //_____________________________________________________________________________
@@ -429,6 +442,8 @@ void UcalA290::CreateOutput(TTree *tree) {
   u.AddBranch("_edep_HAC2", &fEdepHAC2, "D");
 
   tree->Branch((fNam+"_edep_layers").c_str(), fELayer);
+
+  tree->Branch((fNam+"_time_step").c_str(), fTimeStep);
 
 }//CreateOutput
 

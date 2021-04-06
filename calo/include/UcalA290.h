@@ -8,6 +8,7 @@
 #include "G4VSensitiveDetector.hh"
 
 class GeoParser;
+class TH1F;
 
 class UcalA290 : public Detector, public G4VSensitiveDetector {
 
@@ -54,7 +55,7 @@ class UcalA290 : public Detector, public G4VSensitiveDetector {
     Double_t fEdepHAC1; // deposited energy in HAC1 section
     Double_t fEdepHAC2; // deposited energy in HAC2 section
     std::vector<Float_t> *fELayer; // deposited energy in individual layers
-
+    TH1F *fTimeStep; // time in step distribution in event, ns
 
 
 

@@ -16,7 +16,7 @@ def main():
     #beam += [100, 50, 20, 7, 3, 1.5, 0.75]
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x16"
+    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x17"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 
