@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_eh ) # 1
@@ -30,22 +30,23 @@ def run_eh():
     inp_h = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
     inp_e = ["/home/jaroslav/sim/hcal/data/hcal2cx5/HCal_en", ".h5"]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
-    eh = []
-    for i in beam:
+    #eh = []
+    #for i in beam:
 
-        mean_h, sigma_h = gfit(inp_h[0]+str(i)+inp_h[1], 1.)
-        mean_e, sigma_e = gfit(inp_e[0]+str(i)+inp_e[1], 1.)
+    #    mean_h, sigma_h = gfit(inp_h[0]+str(i)+inp_h[1], 1.)
+    #    mean_e, sigma_e = gfit(inp_e[0]+str(i)+inp_e[1], 1.)
 
         #print i, mean_e, mean_h, mean_e/mean_h
-        eh.append(mean_e/mean_h)
+    #    eh.append(mean_e/mean_h)
 
-    print eh
+    #print eh
 
-    #eh = [0.9794002736470295, 1.0047705480458915, 0.9993314733476454, 0.9915415124811879, 0.9927651323442229, 0.9971136899733369, 0.9975166634190157, 1.000640450250562]
+    #hcal2c2, hcal2cx5, alpha_fix = 1
+    eh = [0.9794002736470295, 1.0047705480458915, 0.9993314733476454, 0.9915415124811879, 0.9927651323442229, 0.9971136899733369, 0.9975166634190157, 1.000640450250562]
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -60,7 +61,17 @@ def run_eh():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
+    ax.set_xscale("log")
+    plt.xticks(beam, [str(i) for i in beam])
+
+    #line at e/h = 1
+    x = np.linspace(beam[0], beam[-1], 300)
+    plt.plot(x, [1. for i in x], "k--", color="red", lw=2)
+
     plt.plot(beam, eh, "o", color="blue")
+
+    leg_items = [leg_lin("red", "--"), leg_dot(fig, "blue")]
+    ax.legend(leg_items, ["e/h = 1", "FTFP\_BERT\_HP, 10.5.p01"])
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -184,6 +195,17 @@ def gfit(infile, alpha):
 
 #gfit
 
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

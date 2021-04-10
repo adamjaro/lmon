@@ -30,9 +30,9 @@ def run_signal():
 
     infile = ["/home/jaroslav/sim/hcal/data/hcal2cx6/HCal_en", ".h5"]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     had_em = []
     for i in beam:
@@ -52,7 +52,7 @@ def run_signal():
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_ylim([4, 6])
+    ax.set_ylim([4.5, 6])
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
@@ -60,13 +60,21 @@ def run_signal():
     #ax.set_ylabel("$\mu_{\mathrm{HAD}}/\mu_{\mathrm{EM}}$")
     ax.set_ylabel(r"$\frac{\mu_{\mathrm{HAD}}}{\mu_{\mathrm{EM}}}$", rotation=0)
 
+    ax.set_xscale("log")
+    plt.xticks(beam, [str(i) for i in beam])
+
     set_axes_color(ax, col)
     set_grid(plt, col)
 
     x = np.linspace(beam[0], beam[-1], 300)
-    plt.plot(x, [5.062 for i in x], "k--", color="red")
+    plt.plot(x, [5.06 for i in x], "k--", color="red")
 
     plt.plot(beam, had_em, "o", color="blue")
+
+    leg = legend()
+    leg.add_entry(leg_lin("red", "--"), "81/16 = 5.06")
+    leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT\_HP, 10.5.p01")
+    leg.draw(ax)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -152,6 +160,28 @@ def gfit(inp, sec_name):
 
 #gfit
 
+#_____________________________________________________________________________
+class legend:
+    def __init__(self):
+        self.items = []
+        self.data = []
+    def add_entry(self, i, d):
+        self.items.append(i)
+        self.data.append(d)
+    def draw(self, px, **kw):
+        return px.legend(self.items, self.data, **kw)
+
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

@@ -14,12 +14,12 @@ def main():
 
     #data directory
     #basedir = "/home/jaroslav/sim/lmon/calo/macro"
-    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x18"
+    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x19"
 
     #infile = basedir + "/lmon.root"
     infile = basedir + "/lmon_p75.root"
 
-    iplot = 1
+    iplot = 0
     funclist = []
     funclist.append( plot_single ) # 0
     funclist.append( plot_mean ) # 1

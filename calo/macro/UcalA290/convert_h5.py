@@ -12,11 +12,11 @@ def main():
 
     #beam = [0.5, 0.75, 1, 1.5, 2, 3, 5, 7, 10]
     #beam += [20, 30, 50, 75, 100]
-    beam = [0.5, 1, 2, 5, 10, 30, 75]
-    #beam += [100, 50, 20, 7, 3, 1.5, 0.75]
+    #beam = [0.5, 1, 2, 5, 10, 30, 75]
+    beam = [100, 50, 20, 7, 3, 1.5, 0.75]
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x19"
+    basedir = "/home/jaroslav/sim/hcal/data/ucal1a1x17"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 
