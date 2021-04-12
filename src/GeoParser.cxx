@@ -188,26 +188,31 @@ G4bool GeoParser::GetB(G4String name, G4String par) {
 }//GetB
 
 //_____________________________________________________________________________
-template<typename par_type> void GeoParser::GetOptPar(G4String name, G4String par, par_type& val) {
+template<typename par_type> bool GeoParser::GetOptPar(G4String name, G4String par, par_type& val) {
 
   //get value 'val' for optional parameter 'par' as par_type for detector named 'name'
 
   map<G4String, G4String>::iterator ival;
   ival = fPar.find(name+"."+par);
 
-  if( ival == fPar.end() ) return;
+  if( ival == fPar.end() ) return false;
 
   istringstream st( (*ival).second );
   st >> val;
 
+  return true;
+
 }//GetOptPar
 
 //_____________________________________________________________________________
-void GeoParser::GetOptD(G4String name, G4String par, G4double& val) {
+void GeoParser::GetOptD(G4String name, G4String par, G4double& val, const Unit& un) {
 
   //optional G4double parameter
 
-  GetOptPar<G4double>(name, par, val);
+  if( !GetOptPar<G4double>(name, par, val) ) return;
+
+  //apply the units if provided
+  if(un.apply) val *= un.u;
 
 }//GetOptD
 

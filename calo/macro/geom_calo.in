@@ -7,15 +7,15 @@ new top topv
 
 new CaloBuilder calo # set to create the calorimeters
 
-#new HcalA262 hcal
+new HcalA262 hcal
 
-  #hcal.modxy = 700 # module transverse size, mm
+  hcal.modxy = 700 # module transverse size, mm
   #hcal.scin_mat_name = G4_PLASTIC_SC_VINYLTOLUENE
   #hcal.n_had = 65
   #hcal.use_Birks_correction = 1
   #hcal.Birks_coefficient = 0.127
 
-new UcalA290 ucal
+#new UcalA290 ucal
 
   #ucal.abso_mat_name = DepletedUranium
   #ucal.use_clad = 0
@@ -24,5 +24,5 @@ new UcalA290 ucal
   #ucal.max_time = 40
   #ucal.n_emc = 16
   #ucal.n_hac = 49
-  ucal.clad_mat_name = G4_Fe
+  #ucal.clad_mat_name = G4_Fe
 

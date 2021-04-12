@@ -25,7 +25,19 @@ class GeoParser {
     G4int GetI(G4String name, G4String par);
     G4bool GetB(G4String name, G4String par);
 
-    void GetOptD(G4String name, G4String par, G4double& val);
+    //units for optional parameters
+    class Unit {
+      public:
+        Unit(): apply(false), u(0) {}
+        Unit(G4double uu): apply(true), u(uu) {}
+      private:
+        bool apply; // flag to indicate that the unit was provided
+        G4double u; // unit for the parameter
+        friend class GeoParser;
+    };
+
+    //optional parameters
+    void GetOptD(G4String name, G4String par, G4double& val, const Unit& un = Unit());
     void GetOptI(G4String name, G4String par, G4int& val);
     void GetOptB(G4String name, G4String par, G4bool& val);
     void GetOptS(G4String name, G4String par, G4String& val);
@@ -41,7 +53,7 @@ class GeoParser {
     void AddPar(token_it &it); // new geometry parameter
 
     template<typename par_type> par_type GetPar(G4String name, G4String par);
-    template<typename par_type> void GetOptPar(G4String name, G4String par, par_type& val);
+    template<typename par_type> bool GetOptPar(G4String name, G4String par, par_type& val);
 
     std::vector< std::pair<G4String, G4String> > fDet; // detectors and components
     std::map<G4String, G4String> fPar; // geometry parameters

@@ -32,37 +32,45 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
 
   G4cout << "  HcalA262: " << fNam << G4endl;
 
-  G4double modxy = 660; // module transverse size, mm
-  geo->GetOptD(nam, "modxy", modxy);
-  modxy = modxy*mm;
+  G4double modxy = 660*mm; // module transverse size, mm
+  geo->GetOptD(nam, "modxy", modxy, GeoParser::Unit(mm));
   fNem = 16; // number of layers in EM section
   geo->GetOptI(nam, "n_em", fNem);
   G4int nHAD = 81; // number of layers in HAD section for 5 lambda_I
   geo->GetOptI(nam, "n_had", nHAD);
   G4int nlay = fNem + nHAD;
 
-  //scintillator material
+  //scintillator and absorber material
   G4String scin_mat_name = "G4_POLYSTYRENE";
   geo->GetOptS(nam, "scin_mat_name", scin_mat_name);
+  G4String abso_mat_name = "G4_Pb";
+  geo->GetOptS(nam, "abso_mat_name", abso_mat_name);
+
+  G4double abso_z = 10*mm; // absorber thickness along z
+  geo->GetOptD(nam, "abso_z", abso_z, GeoParser::Unit(mm));
+  G4double scin_z = 2.5*mm; // scintillator thickness along z
+  geo->GetOptD(nam, "scin_z", scin_z, GeoParser::Unit(mm));
+  G4double spacer_z = 3.5*mm; // spacer size along z
+  geo->GetOptD(nam, "spacer_z", spacer_z, GeoParser::Unit(mm));
+  G4double layer_z = abso_z + spacer_z; // total layer thickness along z
 
   //Birks correction
   fUseBirksCorrection = true;
   fBirksCoefficient = 0.126*mm/MeV;
   geo->GetOptB(nam, "use_Birks_correction", fUseBirksCorrection);
-  geo->GetOptD(nam, "Birks_coefficient", fBirksCoefficient);
+  geo->GetOptD(nam, "Birks_coefficient", fBirksCoefficient, GeoParser::Unit(mm/MeV));
 
   //print the optional parameters
   G4cout << "    modxy: " << modxy << G4endl;
   G4cout << "    n_em: " << fNem << G4endl;
   G4cout << "    n_had: " << nHAD << G4endl;
   G4cout << "    scin_mat_name: " << scin_mat_name << G4endl;
+  G4cout << "    abso_mat_name: " << abso_mat_name << G4endl;
+  G4cout << "    abso_z: " << abso_z << G4endl;
+  G4cout << "    scin_z: " << scin_z << G4endl;
+  G4cout << "    spacer_z: " << spacer_z << G4endl;
   G4cout << "    use_Birks_correction: " << fUseBirksCorrection << G4endl;
   G4cout << "    Birks_coefficient: " << fBirksCoefficient << G4endl;
-
-  G4double abso_z = 10*mm; // absorber thickness along z
-  G4double scin_z = 2.5*mm; // scintillator thickness along z
-  G4double spacer_z = 3.5*mm; // spacer size along z
-  G4double layer_z = abso_z + spacer_z; // total layer thickness along z
 
   //output on deposited energy in individual layers
   fELayer = new std::vector<Float_t>(nlay);
@@ -109,7 +117,7 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4Box *abso_shape = new G4Box(abso_nam, modxy/2, modxy/2, abso_z/2);
 
   //absorber material
-  G4Material *abso_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Pb");
+  G4Material *abso_mat = G4NistManager::Instance()->FindOrBuildMaterial(abso_mat_name);
 
   //absorber logical volume
   G4LogicalVolume *abso_vol = new G4LogicalVolume(abso_shape, abso_mat, abso_nam);
