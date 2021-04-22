@@ -40,6 +40,9 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   geo->GetOptI(nam, "n_had", nHAD);
   G4int nlay = fNem + nHAD;
 
+  G4double zpos = 0*mm; // front position along positive z, mm
+  geo->GetOptD(nam, "zpos", zpos, GeoParser::Unit(mm));
+
   //scintillator and absorber material
   G4String scin_mat_name = "G4_POLYSTYRENE";
   geo->GetOptS(nam, "scin_mat_name", scin_mat_name);
@@ -64,6 +67,7 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4cout << "    modxy: " << modxy << G4endl;
   G4cout << "    n_em: " << fNem << G4endl;
   G4cout << "    n_had: " << nHAD << G4endl;
+  G4cout << "    zpos: " << zpos << G4endl;
   G4cout << "    scin_mat_name: " << scin_mat_name << G4endl;
   G4cout << "    abso_mat_name: " << abso_mat_name << G4endl;
   G4cout << "    abso_z: " << abso_z << G4endl;
@@ -95,7 +99,7 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   //modv->SetVisAttributes(modvis);
 
   //put the module to the top
-  new G4PVPlacement(0, G4ThreeVector(0, 0, modz/2), modv, modnam, top, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos+modz/2), modv, modnam, top, false, 0);
 
   //layer with absorber and scintillator plates
   G4String lay_nam = fNam+"_layer"; //layer name

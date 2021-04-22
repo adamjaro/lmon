@@ -13,7 +13,7 @@ def main():
     beam = [3, 5, 7, 10, 20, 30, 50, 75]
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/hcal2cx6"
+    basedir = "/home/jaroslav/sim/hcal/data/hcal3ax1"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 
@@ -21,8 +21,12 @@ def main():
 
         run_convert(basedir, i)
 
+    print "All done"
+
 #_____________________________________________________________________________
 def run_convert(basedir, beam):
+
+    print "Converting for:", beam
 
     infile = basedir + "/lmon_en"+str(beam)+".root"
     outfile = basedir + "/HCal_en"+str(beam)+".h5"
@@ -68,6 +72,8 @@ def run_convert(basedir, beam):
         df_inp.append(lin)
 
     df = DataFrame(df_inp, columns=col)
+
+    print df
 
     out = HDFStore(outfile)
     out["hcal"] = df

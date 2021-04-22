@@ -5,8 +5,8 @@
 
 /lmon/input/type gun
 
-#/gun/energy 10 GeV
-/gun/momentum 0 0 10 GeV
+/gun/energy 10 GeV
+#/gun/momentum 0 0 1 GeV
 
 /gun/particle pi+
 #/gun/particle mu-
@@ -14,5 +14,5 @@
 /gun/position 0 0 -15 mm
 /gun/direction 0 0 1
 
-#/run/beamOn 1
+/run/beamOn 1
 

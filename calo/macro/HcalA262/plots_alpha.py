@@ -14,12 +14,90 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 2
     funclist = []
     funclist.append( run_alpha ) # 0
     funclist.append( run_eh ) # 1
+    funclist.append( run_res ) # 2
 
     funclist[iplot]()
+
+#_____________________________________________________________________________
+def run_res():
+
+    #energy resolution as a function of energy
+
+    #GeV
+    en = [3, 5, 7, 10, 20, 30, 50, 75]
+    #en = [10]
+
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3a/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3ax1/HCal_en", ".h5"]
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    res = []
+    for i in en:
+        mean, sigma = gfit(inp[0]+str(i)+inp[1], 1.)
+        res.append( sigma/mean )
+
+    #print res
+
+    #res = [0.26083651824598386, 0.20830177294832528, 0.1719577008925196, 0.15239249536493935, 0.13622102149109735, 0.12226436738270607, 0.12239779598312915, 0.1220989616622746]
+
+    #fit the resolution
+    pars, cov = curve_fit(resf2, en, res)
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    set_axes_color(ax, col)
+
+    plt.grid(True, color = col, linewidth = 0.5, linestyle = "--")
+
+    #resolution data
+    plt.plot(en, res, marker="o", linestyle="", color="blue")
+
+    #plot the fit function
+    x = np.linspace(en[0], en[-1], 300)
+    y = resf2(x, pars[0], pars[1])
+
+    plt.plot(x, y, "k-", label="resf", color="blue")
+
+    ax.set_xscale("log")
+    plt.xticks(en, [str(i) for i in en])
+
+    plt.rc("text", usetex = True)
+    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    ax.set_xlabel("Incident energy $E$ (GeV)")
+    ax.set_ylabel(r"Resolution $\sigma/\langle E\rangle$")
+
+    #fit parameters for legend
+    fit_param = ""
+    fit_param += r"\begin{align*}"
+    fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
+    fit_param += r"b &= {0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
+    fit_param += r"\end{align*}"
+
+    leg = legend()
+    leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT\_HP, 10.7.p01")
+    leg.add_entry(leg_lin("blue"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$")
+    leg.add_entry(leg_txt(), fit_param)
+    leg.draw(plt, col)
+
+    plt.savefig("01fig.pdf", bbox_inches = "tight")
+
+#run_res
+
+#_____________________________________________________________________________
+def resf2(E, a, b):
+
+    #resolution function  sigma/E = sqrt( a^2/E + b^2 )
+    return np.sqrt( (a**2)/E + b**2 )
+
+#resf2
 
 #_____________________________________________________________________________
 def run_eh():
@@ -27,31 +105,29 @@ def run_eh():
     #e/h ratio
     beam = [3, 5, 7, 10, 20, 30, 50, 75]
 
-    inp_h = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
-    inp_e = ["/home/jaroslav/sim/hcal/data/hcal2cx5/HCal_en", ".h5"]
+    inp_h = ["/home/jaroslav/sim/hcal/data/hcal3a/HCal_en", ".h5"]
+    inp_e = ["/home/jaroslav/sim/hcal/data/hcal3ax1/HCal_en", ".h5"]
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     #eh = []
     #for i in beam:
-
     #    mean_h, sigma_h = gfit(inp_h[0]+str(i)+inp_h[1], 1.)
     #    mean_e, sigma_e = gfit(inp_e[0]+str(i)+inp_e[1], 1.)
-
-        #print i, mean_e, mean_h, mean_e/mean_h
     #    eh.append(mean_e/mean_h)
-
     #print eh
 
     #hcal2c2, hcal2cx5, alpha_fix = 1
-    eh = [0.9794002736470295, 1.0047705480458915, 0.9993314733476454, 0.9915415124811879, 0.9927651323442229, 0.9971136899733369, 0.9975166634190157, 1.000640450250562]
+    #eh = [0.9794002736470295, 1.0047705480458915, 0.9993314733476454, 0.9915415124811879, 0.9927651323442229, 0.9971136899733369, 0.9975166634190157, 1.000640450250562]
+
+    eh = [1.2043151051440364, 1.1608734893714028, 1.1389287513817081, 1.143370959029314, 1.151118138852424, 1.1522250055361773, 1.162840657742684, 1.1702070246063314]
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_ylim([0.9, 1.1])
+    ax.set_ylim([0.9, 1.3])
 
     plt.rc("text", usetex = True)
     plt.rc('text.latex', preamble='\usepackage{amsmath}')
@@ -70,8 +146,10 @@ def run_eh():
 
     plt.plot(beam, eh, "o", color="blue")
 
-    leg_items = [leg_lin("red", "--"), leg_dot(fig, "blue")]
-    ax.legend(leg_items, ["e/h = 1", "FTFP\_BERT\_HP, 10.5.p01"])
+    leg = legend()
+    leg.add_entry(leg_lin("red", "--"), "e/h = 1")
+    leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT\_HP, 10.7.p01")
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -158,42 +236,36 @@ def gfit(infile, alpha):
     ax.set_xlabel("Calorimeter signal (GeV)")
     ax.set_ylabel("Counts / {0:.3f} GeV".format((plt.xlim()[1]-plt.xlim()[0])/nbins))
 
-    #ax.set_title(r"$\text{"+infile+"}$")
-    #print infile
-
     set_grid(plt, col)
 
-    #mean_str = "{0:.4f} \pm {1:.4f}".format(pars[0], np.sqrt(cov[0,0]))
-    #sigma_str = "{0:.4f} \pm {1:.4f}".format(pars[1], np.sqrt(cov[1,1]))
-    #res = pars[1]/pars[0]
-    #res_str = "{0:.4f}".format(res)
-    #fit_param = r"\begin{align*}\mu &= " + mean_str + r"\\ \sigma &= " + sigma_str + r"\\"
-    #fit_param += r"\sigma/\mu &= " + res_str + r"\end{align*}"
-
-    #plot legend
-    #leg_items = [Line2D([0], [0], lw=2, color="red"), Line2D([0], [0], lw=0)]
-    #plt.rc("text", usetex = True)
-    #plt.rc('text.latex', preamble='\usepackage{amsmath}')
-    #ax.legend(leg_items, ["Gaussian fit", fit_param])
-
-    #simple legend
-    leg_items = [Line2D([0], [0], lw=0) for i in range(3)]
-    ax.legend(leg_items, ["mu: {0:.4f}".format(pars[0]),"sig: {0:.4f}".format(pars[1]), "r: {0:.4f}".format(pars[1]/pars[0])])
-
-    #output log
-    #out = open("out.txt", "w")
-    #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[0], np.sqrt(cov[0,0])) )
-    #out.write( "{0:.4f} +/- {1:.4f} | ".format(pars[1], np.sqrt(cov[1,1])) )
-    #out.write( "{0:.4f}".format(pars[1]/pars[0]) )
-    #out.close()
+    leg = legend()
+    leg.add_entry(leg_txt(), "mu: {0:.4f}".format(pars[0]))
+    leg.add_entry(leg_txt(), "sig: {0:.4f}".format(pars[1]))
+    leg.add_entry(leg_txt(), "r: {0:.4f}".format(pars[1]/pars[0]))
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
     return pars[0], pars[1]
-    #return res
 
 #gfit
+
+#_____________________________________________________________________________
+class legend:
+    def __init__(self):
+        self.items = []
+        self.data = []
+    def add_entry(self, i, d):
+        self.items.append(i)
+        self.data.append(d)
+    def draw(self, px, col=None, **kw):
+        leg = px.legend(self.items, self.data, **kw)
+        if col is not None:
+            px.setp(leg.get_texts(), color=col)
+            if col is not "black":
+                leg.get_frame().set_edgecolor("orange")
+        return leg
 
 #_____________________________________________________________________________
 def leg_lin(col, sty="-"):
@@ -210,10 +282,12 @@ def leg_dot(fig, col, siz=8):
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
 
+    #[t.set_color('red') for t in ax.xaxis.get_ticklines()]
+    #[t.set_color('red') for t in ax.xaxis.get_ticklabels()]
+
     ax.xaxis.label.set_color(col)
     ax.yaxis.label.set_color(col)
-    ax.tick_params(axis = "x", colors = col)
-    ax.tick_params(axis = "y", colors = col)
+    ax.tick_params(which = "both", colors = col)
     ax.spines["bottom"].set_color(col)
     ax.spines["left"].set_color(col)
     ax.spines["top"].set_color(col)
