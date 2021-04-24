@@ -7,7 +7,7 @@ new top topv
 
 new CaloBuilder calo # set to create the calorimeters
 
-#new HcalA262 hcal
+new HcalA262 hcal
 
   hcal.modxy = 700 # module transverse size, mm
   #hcal.scin_mat_name = G4_PLASTIC_SC_VINYLTOLUENE
@@ -19,7 +19,7 @@ new CaloBuilder calo # set to create the calorimeters
   hcal.abso_mat_name = G4_Fe
   hcal.abso_z = 20 # mm
   hcal.scin_z = 3 # mm
-  hcal.zpos = 235 # mm
+  hcal.zpos = 180 # mm
 
 #new UcalA290 ucal
 
@@ -32,5 +32,6 @@ new CaloBuilder calo # set to create the calorimeters
   #ucal.n_hac = 49
   #ucal.clad_mat_name = G4_Fe
 
-new WScFiZX ecal
+#new WScFiZX ecal
+new WScFiZXv2 ecal
 

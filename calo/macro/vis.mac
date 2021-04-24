@@ -22,8 +22,8 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-/vis/viewer/set/targetPoint 0 0 0 m
-#/vis/viewer/set/targetPoint 0 0 1527.5 mm
+#/vis/viewer/set/targetPoint 0 0 0 m
+/vis/viewer/set/targetPoint 0 0 180 mm
 
 #
 # Specify zoom value:
@@ -35,11 +35,8 @@
 #/vis/viewer/set/lineSegmentsPerCircle 100
 #
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 -20.75 1 meter # exit window
-#/vis/scene/add/axes 0 0 -3280 105 mm
-/vis/scene/add/axes 0 0 0 400 mm
-#/vis/scene/add/axes 0.4 0 -27 0.1 meter # low Q^2 tagger
-#/vis/scene/add/axes 0.267 0 -27 0.1 meter # beam along the tagger
+/vis/scene/add/axes -350 -350 0 700 mm
+#/vis/scene/add/axes 0 0 0 400 mm
 #
 #
 # Draw smooth trajectories at end of event, showing trajectory points

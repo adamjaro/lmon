@@ -83,6 +83,8 @@ HcalA262::HcalA262(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : 
   G4double modz = nlay*layer_z; // module length along z
   G4String modnam = fNam+"_mod"; // module name
 
+  G4cout << "    modz: " << modz << G4endl;
+
   //box shape for the module
   G4Box *mods = new G4Box(modnam, modxy/2, modxy/2, modz/2);
 

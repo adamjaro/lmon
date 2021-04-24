@@ -10,10 +10,11 @@ from pandas import DataFrame, HDFStore
 #_____________________________________________________________________________
 def main():
 
-    beam = [3, 5, 7, 10, 20, 30, 50, 75]
+    #beam = [3, 5, 7, 10, 20, 30, 50, 75]
+    beam = [6, 8, 12, 16, 25, 32, 64]
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/hcal3ax1"
+    basedir = "/home/jaroslav/sim/hcal/data/hcal3b"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 
@@ -39,15 +40,17 @@ def run_convert(basedir, beam):
     hcal_edep_EM = rt.EntryD()
     hcal_edep_HAD = rt.EntryD()
     hcal_edep_layers = std.vector(float)()
+    ecal_edep = rt.EntryD()
     tree.SetBranchAddress("hcal_edep_EM", AddressOf(hcal_edep_EM, "v"))
     tree.SetBranchAddress("hcal_edep_HAD", AddressOf(hcal_edep_HAD, "v"))
     tree.SetBranchAddress("hcal_edep_layers", hcal_edep_layers)
+    tree.SetBranchAddress("ecal_edep", AddressOf(ecal_edep, "v"))
 
     tree.GetEntry(0)
     nlay = hcal_edep_layers.size()
 
     #output DataFrame
-    col = ["hcal_edep_EM", "hcal_edep_HAD"]
+    col = ["ecal_edep", "hcal_edep_EM", "hcal_edep_HAD"]
     lnam = {}
     for i in range(nlay):
         n = "hcal_edep_layer"+str(i)
@@ -62,6 +65,7 @@ def run_convert(basedir, beam):
         tree.GetEntry(iev)
 
         lin = []
+        lin.append(ecal_edep.v)
         lin.append(hcal_edep_EM.v)
         lin.append(hcal_edep_HAD.v)
 

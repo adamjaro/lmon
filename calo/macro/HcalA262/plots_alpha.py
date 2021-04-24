@@ -28,11 +28,13 @@ def run_res():
     #energy resolution as a function of energy
 
     #GeV
-    en = [3, 5, 7, 10, 20, 30, 50, 75]
+    #en = [3, 5, 7, 10, 20, 30, 50, 75]
     #en = [10]
+    en = [6, 8, 12, 16, 25, 32, 64]
 
     #inp = ["/home/jaroslav/sim/hcal/data/hcal3a/HCal_en", ".h5"]
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3ax1/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3b/HCal_en", ".h5"]
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3ax1/HCal_en", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -40,7 +42,7 @@ def run_res():
 
     res = []
     for i in en:
-        mean, sigma = gfit(inp[0]+str(i)+inp[1], 1.)
+        mean, sigma = gfit(inp[0]+str(i)+inp[1], 1.2)
         res.append( sigma/mean )
 
     #print res
@@ -160,11 +162,11 @@ def run_alpha():
 
     #Gaussian fit for a given alpha
 
-    alpha = [0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15]
+    #alpha = [0.8, 0.85, 0.9, 0.95, 1, 1.05, 1.1, 1.15]
     #alpha = [1]
+    alpha = [0.8, 1., 1.2, 1.4, 1.6, 1.8]
 
-    #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en50.h5"
+    infile = "/home/jaroslav/sim/hcal/data/hcal3b/HCal_en6.h5"
 
     plt.style.use("dark_background")
     col = "lime"
@@ -196,7 +198,8 @@ def gfit(infile, alpha):
 
     inp = read_hdf(infile)
 
-    sum_edep = inp["hcal_edep_EM"] + alpha*inp["hcal_edep_HAD"]
+    #sum_edep = inp["hcal_edep_EM"] + alpha*inp["hcal_edep_HAD"]
+    sum_edep = inp["ecal_edep"] + alpha*inp["hcal_edep_HAD"]
 
     nbins = 60
 
@@ -239,6 +242,7 @@ def gfit(infile, alpha):
     set_grid(plt, col)
 
     leg = legend()
+    leg.add_entry(leg_txt(), "alpha: "+str(alpha))
     leg.add_entry(leg_txt(), "mu: {0:.4f}".format(pars[0]))
     leg.add_entry(leg_txt(), "sig: {0:.4f}".format(pars[1]))
     leg.add_entry(leg_txt(), "r: {0:.4f}".format(pars[1]/pars[0]))
