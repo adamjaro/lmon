@@ -11,10 +11,12 @@ from pandas import DataFrame, HDFStore
 def main():
 
     #beam = [3, 5, 7, 10, 20, 30, 50, 75]
-    beam = [6, 8, 12, 16, 25, 32, 64]
+    #beam = [6, 8, 12, 16, 25, 32, 64]
+    beam = [3, 5, 7, 10, 20, 30, 50, 75] # 1.5, 2, 
+    #abso_z = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28]
 
     #data directory
-    basedir = "/home/jaroslav/sim/hcal/data/hcal3b"
+    basedir = "/home/jaroslav/sim/hcal/data/hcal3c3"
 
     gROOT.ProcessLine("struct EntryD {Double_t v;};")
 
@@ -31,6 +33,8 @@ def run_convert(basedir, beam):
 
     infile = basedir + "/lmon_en"+str(beam)+".root"
     outfile = basedir + "/HCal_en"+str(beam)+".h5"
+    #infile = basedir + "/lmon_a"+str(beam)+".root"
+    #outfile = basedir + "/HCal_a"+str(beam)+".h5"
 
     #lmon input
     inp = TFile.Open(infile)
