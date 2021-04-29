@@ -30,13 +30,17 @@ def main():
     #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
     infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en50.csv"
 
-    iplot = 4
+    iplot = 8
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
     funclist.append( plot_EM ) # 2
     funclist.append( fit_range ) # 3
     funclist.append( plot_shower_shape ) # 4
+    funclist.append( plot_shower_layers ) # 5
+    funclist.append( plot_tail ) # 6
+    funclist.append( plot_signal_notail ) # 7
+    funclist.append( plot_ratio_tail ) # 8
 
     #open the input
     global inp
@@ -316,9 +320,9 @@ def plot_shower_shape():
 
     #input
     en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
-    #infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal2c2/HCal_en", ".h5"]
     #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx5/HCal_en", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal2cx6/HCal_en", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal2cx6/HCal_en", ".h5"]
 
     #geometry for scintillator plates
     z0 = 11.75 # mm, center of the first scintillator
@@ -377,12 +381,260 @@ def plot_shower_shape():
 #plot_shower_shape
 
 #_____________________________________________________________________________
+def plot_shower_layers():
+
+    #mean energy in a given layer
+
+    en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en", ".h5"]
+
+    nlay = 51
+    #nlay = 51 # all layers
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+
+    set_axes_color(ax, col)
+    set_grid(ax, col)
+
+    #sort by energy
+    en = collections.OrderedDict(sorted(en.items()))
+
+    leg = legend()
+    #leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc")
+    #leg.add_entry(leg_txt(), "FTFP_BERT_HP, 10.7.p01")
+
+    #loop over energies
+    for e in en.iterkeys():
+
+        #input for a given energy
+        df = read_hdf(infile[0]+str(e)+infile[1])
+
+        #layer number and energy
+        ilay = []
+        elay = []
+
+        #loop over layers
+        for i in range(nlay):
+
+            ilay.append( i-0.5 )
+            ilay.append( i+0.5 )
+            me = df["hcal_edep_layer"+str(i)].mean()
+            elay.append( me )
+            elay.append( me )
+
+        #plot for a given energy
+        plt.plot(ilay, elay, color=en[e], ls="steps")
+        leg.add_entry(leg_lin(en[e]), str(e)+" GeV")
+
+    ax.set_xlabel("Layer number in HAD")
+    ax.set_ylabel("Mean energy in layer (GeV)")
+
+    leg = leg.draw(plt, col)
+
+    leg2 = legend()
+    leg2.add_entry(leg_txt(), "W/ScFi + Fe/Sc")
+    leg2.draw(plt, col, loc="upper center")
+
+    plt.gca().add_artist(leg)
+
+    plt.savefig("01fig.pdf", bbox_inches = "tight")
+
+#plot_shower_layers
+
+#_____________________________________________________________________________
+def plot_tail():
+
+    #energy in last three HAD layers as tail catcher
+
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en75.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en30.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en20.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en10.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en7.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en5.h5"
+    infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en3.h5"
+
+    inp = read_hdf(infile)
+
+    tail = inp["hcal_edep_layer48"] + inp["hcal_edep_layer49"] + inp["hcal_edep_layer50"]
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    plt.hist(tail, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#plot_tail
+
+#_____________________________________________________________________________
+def plot_signal_notail():
+
+    #energy in last three HAD layers as tail catcher
+
+    infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en75.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en30.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en20.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en10.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en7.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en5.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en3.h5"
+
+    inp = read_hdf(infile)
+
+    tailmax = 1e-6
+    #tailmax = 0.01
+
+    #print inp["hcal_edep_HAD"]
+
+    #print inp.query("(hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)<0.1")
+
+    inp = inp.query("(hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)<"+str(tailmax))
+
+    #return
+
+    #tail = inp["hcal_edep_layer48"] + inp["hcal_edep_layer49"] + inp["hcal_edep_layer50"]
+    #print tail
+
+    #alpha*
+    sum_edep = inp["ecal_edep"] + inp["hcal_edep_HAD"]
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #plt.hist(tail, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+    plt.hist(sum_edep, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#plot_signal_notail
+
+#_____________________________________________________________________________
+def plot_ratio_tail():
+
+    #ratio in tailcatcher (last three HAD layers) to total
+
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en75.h5"
+    infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en30.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en20.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en10.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en7.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en5.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en3.h5"
+
+    inp = read_hdf(infile)
+
+    #tailmax = 1e-6
+    #tailmax = 0.01
+
+    #print inp["hcal_edep_HAD"]
+
+    #print inp.query("(hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)<0.1")
+
+    print "Events before:", len(inp)
+
+    #cut on tailcatcher/total
+    inp = inp.query("((hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)/(ecal_edep+hcal_edep_HAD))<0.001")
+
+    print "Events after:", len(inp)
+
+    #inp = inp.query("(hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)<"+str(tailmax))
+
+    #return
+
+    #tail = inp["hcal_edep_layer48"] + inp["hcal_edep_layer49"] + inp["hcal_edep_layer50"]
+    #print tail
+
+    sum_edep = (inp["hcal_edep_layer48"]+inp["hcal_edep_layer49"]+inp["hcal_edep_layer50"])/(inp["ecal_edep"]+inp["hcal_edep_HAD"])
+
+    #print sum_edep
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #plt.hist(tail, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+    plt.hist(sum_edep, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#plot_ratio_tail
+
+#_____________________________________________________________________________
+class legend:
+    def __init__(self):
+        self.items = []
+        self.data = []
+    def add_entry(self, i, d):
+        self.items.append(i)
+        self.data.append(d)
+    def draw(self, px, col=None, **kw):
+        leg = px.legend(self.items, self.data, **kw)
+        if col is not None:
+            px.setp(leg.get_texts(), color=col)
+            if col is not "black":
+                leg.get_frame().set_edgecolor("orange")
+        return leg
+
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
+
+#_____________________________________________________________________________
 def set_axes_color(ax, col):
 
     ax.xaxis.label.set_color(col)
     ax.yaxis.label.set_color(col)
-    ax.tick_params(axis = "x", colors = col)
-    ax.tick_params(axis = "y", colors = col)
+    ax.tick_params(which = "both", colors = col)
     ax.spines["bottom"].set_color(col)
     ax.spines["left"].set_color(col)
     ax.spines["top"].set_color(col)

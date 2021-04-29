@@ -24,6 +24,7 @@
 #include "UcalA290.h"
 #include "WScFiZX.h"
 #include "WScFiZXv2.h"
+#include "WScFiZXv3.h"
 
 //_____________________________________________________________________________
 CaloBuilder::CaloBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -56,6 +57,9 @@ void CaloBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "WScFiZXv2" ) {
     det = new WScFiZXv2(name, fGeo, fTop);
+
+  } else if( type == "WScFiZXv3" ) {
+    det = new WScFiZXv3(name, fGeo, fTop);
 
   }
 

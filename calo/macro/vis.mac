@@ -9,7 +9,7 @@
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
-/vis/viewer/set/background 1 1 1 0.
+#/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
 /vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
 #/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
@@ -22,8 +22,8 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-#/vis/viewer/set/targetPoint 0 0 0 m
-/vis/viewer/set/targetPoint 0 0 180 mm
+/vis/viewer/set/targetPoint 0 0 0 m
+#/vis/viewer/set/targetPoint 0 0 180 mm
 
 #
 # Specify zoom value:
@@ -35,7 +35,9 @@
 #/vis/viewer/set/lineSegmentsPerCircle 100
 #
 # Draw coordinate axes:
-/vis/scene/add/axes -350 -350 0 700 mm
+/vis/scene/add/axes -400 -400 0 800 mm
+#/vis/scene/add/axes -37 -37 0 75 mm
+#/vis/scene/add/axes 0 0 -30 75 mm
 #/vis/scene/add/axes 0 0 0 400 mm
 #
 #

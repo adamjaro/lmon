@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 8
     funclist = []
     funclist.append( fit_alpha ) # 0
     funclist.append( run_eh ) # 1
@@ -23,8 +23,52 @@ def main():
     funclist.append( run_eh_abso ) # 4
     funclist.append( gfit ) # 5
     funclist.append( plot_signal ) # 6
+    funclist.append( gfit_notail ) # 7
+    funclist.append( compare_notail ) # 8
 
     funclist[iplot]()
+
+#_____________________________________________________________________________
+def compare_notail():
+
+    #compare the signal with and without the tail removal
+
+    infile = "/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en50.h5"
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    ax.set_xlabel(r"EM + $\alpha$HAD (GeV)")
+    ax.set_ylabel("Normalized counts")
+
+    #tail is not removed
+    alpha = fit_alpha(infile, use_notail=False)
+    x, y, hx, sum_edep = gfit(infile, alpha, True)
+    plt.hist(sum_edep, bins=nbins, color="violet", density=True, histtype="step", lw=1.5)
+
+    #no tail
+    x, y, hx, sum_notail = gfit_notail(infile, fit_alpha(infile), True)
+    plt.hist(sum_notail, bins=nbins, color="blue", density=True, histtype="step", lw=1.5)
+
+    ax.set_yscale("log")
+
+    #Gaussian fit for no tail
+    yrange = plt.ylim()
+    plt.plot(x, y, "k--", color="red", lw=1)
+    ax.set_ylim(yrange[0], yrange[1])
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#compare_notail
 
 #_____________________________________________________________________________
 def plot_signal():
@@ -33,14 +77,16 @@ def plot_signal():
 
     en = [3, 5, 7, 10, 20, 30, 50] # , 75
     #en = [3, 50]
+    #en = [50]
 
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
 
-    #alpha = run_alpha(inp, en)
-    #print alpha
+    alpha = run_alpha(inp, en)
+    print alpha
 
-    alpha = [1.2148296593186374, 1.2148296593186374, 1.2248496993987976, 1.2549098196392785, 1.2769539078156313, 1.2729458917835672, 1.3070140280561122]
-    #alpha = [1.2148296593186374, 1.3070140280561122]
+    #alpha = [1.1827655310621243, 1.1907815631262526, 1.1987975951903809, 1.2028056112224448, 1.2268537074148296, 1.2248496993987976, 1.2529058116232465]
+    #alpha = [1.1827655310621243, 1.2529058116232465]
+    #alpha = [1.2529058116232465]
 
     nbins = 60
 
@@ -60,15 +106,35 @@ def plot_signal():
         #data input
         infile = read_hdf(inp[0]+str(en[i])+inp[1])
 
+        x, y, hx, sum_edep = gfit_notail(inp[0]+str(en[i])+inp[1], alpha[i], True)
+
+        #print hx[0]
+        #print
+        #print hx[1]
+
+        #print
+        #print len(hx[0])
+        #print len(hx[1])
+
+        #binsiz = hx[1][1] - hx[1][0]
+        #print binsiz
+
         #signal
-        sum_edep = infile["ecal_edep"] + alpha[i]*infile["hcal_edep_HAD"]
         plt.hist(sum_edep, bins=nbins, color="blue", density=True, histtype="step", lw=1.5)
+        #plt.bar(hx[1][:-1], hx[0], width=binsiz, align="edge") # , fill=False, hatch="|"
 
         #Gaussian fit to the signal
-        p0, p1, fitran = gfit(inp[0]+str(en[i])+inp[1], alpha[i], True)
-        x = np.linspace(fitran[0], fitran[1], 300)
-        y= norm.pdf(x, p0, p1)
-        plt.plot(x, y, "k-", color="red", lw=1)
+        plt.plot(x, y, "k--", color="red", lw=1)
+
+        #signal
+        #sum_edep = infile["ecal_edep"] + alpha[i]*infile["hcal_edep_HAD"]
+        #plt.hist(sum_edep, bins=nbins, color="blue", density=True, histtype="step", lw=1.5)
+
+        #Gaussian fit to the signal
+        #p0, p1, fitran = gfit(inp[0]+str(en[i])+inp[1], alpha[i], True)
+        #x = np.linspace(fitran[0], fitran[1], 300)
+        #y= norm.pdf(x, p0, p1)
+        #plt.plot(x, y, "k-", color="red", lw=1)
 
         #label for a given energy
         xpos =  x[ np.where( y==y.max() ) ][0]
@@ -80,7 +146,8 @@ def plot_signal():
     leg = legend()
     leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (20/3 mm)")
     leg.add_entry(leg_lin("blue"), "FTFP_BERT_HP, 10.7.p01")
-    leg.add_entry(leg_lin("red"), "Gaussian fit in $\pm 2\sigma$")
+    leg.add_entry(leg_lin("red"), "Gaussian fit")
+    #leg.add_entry(leg_lin("red"), "Gaussian fit in $\pm 2\sigma$")
     leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
@@ -204,10 +271,9 @@ def run_res():
     en = [3, 5, 7, 10, 20, 30, 50, 75]
     #en = [3, 5]
 
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
     #inp = ["/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en", ".h5"]
-    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c2/HCal_en", ".h5"]
-    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c3/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
 
     plt.style.use("dark_background")
     col = "lime"
@@ -217,7 +283,8 @@ def run_res():
     print alpha
 
     #resolution as sigma/mean
-    res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
+    res = [ms[1]/ms[0] for ms in [gfit_notail(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
+    #res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
     #res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], 1) for i in range(len(en))]]
 
     print res
@@ -350,7 +417,7 @@ def run_alpha(inp=None, en=None):
 #run_alpha
 
 #_____________________________________________________________________________
-def fit_alpha(infile=None):
+def fit_alpha(infile=None, use_notail=True):
 
     #Gaussian fit for a given alpha
 
@@ -360,7 +427,7 @@ def fit_alpha(infile=None):
     #alpha = [0.2, 0.4, 0.6, 0.8, 1., 1.2, 1.4, 1.6]
 
     #infile = "/home/jaroslav/sim/hcal/data/hcal3c/HCal_en50.h5"
-    #infile = "/home/jaroslav/sim/hcal/data/hcal3d2/HCal_a16.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
 
     plt.style.use("dark_background")
     col = "lime"
@@ -368,7 +435,11 @@ def fit_alpha(infile=None):
 
     res = []
     for a in alpha:
-        mean, sigma = gfit(infile, a)
+
+        if use_notail is True:
+            mean, sigma = gfit_notail(infile, a)
+        else:
+            mean, sigma = gfit(infile, a)
         res.append( sigma/mean )
 
         #print a, res
@@ -422,7 +493,7 @@ def poly_alpha(alpha, a, b, c, d):
 #poly_alpha
 
 #_____________________________________________________________________________
-def gfit(infile=None, alpha=None, put_fitran=False):
+def gfit(infile=None, alpha=None, put_hx=False):
 
     #Gaussian fit for energy resolution at a given energy
 
@@ -489,12 +560,80 @@ def gfit(infile=None, alpha=None, put_fitran=False):
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
-    if put_fitran is True:
-        return pars[0], pars[1], fitran
+    if put_hx is True:
+        return x, y, hx, sum_edep
 
     return pars[0], pars[1]
 
 #gfit
+
+#_____________________________________________________________________________
+def gfit_notail(infile=None, alpha=None, put_hx=False):
+
+    #Gaussian fit with empty tail catcher
+
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
+    #alpha = 1.3
+
+    #open the input
+    inp = read_hdf(infile)
+
+    print infile
+    print "All simulated entries:", len(inp)
+
+    #remove the tail
+    #tailmax = 1e-12
+    #inp = inp.query("(hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)<"+str(tailmax))
+
+    #cut on tailcatcher/total
+    tailmax = 0.001
+    inp = inp.query("((hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)/(ecal_edep+hcal_edep_HAD))<"+str(tailmax))
+
+    print "After tail removal:   ", len(inp)
+
+    sum_edep = inp["ecal_edep"] + alpha*inp["hcal_edep_HAD"]
+
+    nbins = 60
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #data plot
+    hx = plt.hist(sum_edep, bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    #Gaussian fit, bin centers and values
+    centers = (0.5*(hx[1][1:]+hx[1][:-1]))
+    fit_data = DataFrame({"E": centers, "density": hx[0]})
+    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
+
+    #fit function
+    x = np.linspace(plt.xlim()[0], plt.xlim()[1], 300)
+    y = norm.pdf(x, pars[0], pars[1])
+    plt.plot(x, y, "k-", label="norm", color="red")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), (infile.split("/"))[-1])
+    leg.add_entry(leg_txt(), "alpha: "+str(alpha))
+    leg.add_entry(leg_txt(), "mu: {0:.4f}".format(pars[0]))
+    leg.add_entry(leg_txt(), "sig: {0:.4f}".format(pars[1]))
+    leg.add_entry(leg_txt(), "r: {0:.4f}".format(pars[1]/pars[0]))
+    leg.draw(plt, col)
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+    if put_hx is True:
+        return x, y, hx, sum_edep
+
+    return pars[0], pars[1]
+
+#gfit_notail
 
 #_____________________________________________________________________________
 class legend:
