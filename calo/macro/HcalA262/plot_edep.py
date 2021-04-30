@@ -28,9 +28,9 @@ def main():
     #infile = "/home/jaroslav/sim/hcal/data/hcal2b/HCal_en50.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2bx1/HCal_en50.csv"
     #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en10.csv"
-    infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en50.csv"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal2c/HCal_en50.csv"
 
-    iplot = 8
+    iplot = 5
     funclist = []
     funclist.append( fit_err_sum ) # 0
     funclist.append( fit_err_sum_all ) # 1
@@ -43,8 +43,8 @@ def main():
     funclist.append( plot_ratio_tail ) # 8
 
     #open the input
-    global inp
-    inp = read_csv(infile)
+    #global inp
+    #inp = read_csv(infile)
 
     #call the plot function
     funclist[iplot]()
@@ -386,11 +386,10 @@ def plot_shower_layers():
     #mean energy in a given layer
 
     en = {3:"blue", 5:"magenta", 7:"lime", 10:"gold", 20:"darkviolet", 30:"orange", 50:"cyan", 75:"red"}
-    #infile = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
-    infile = ["/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en", ".h5"]
+    #infile = ["/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en", ".h5"]
+    infile = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
 
-    nlay = 51
-    #nlay = 51 # all layers
+    nlay = 51 # all layers
 
     plt.style.use("dark_background")
     col = "lime"
@@ -438,7 +437,7 @@ def plot_shower_layers():
     leg = leg.draw(plt, col)
 
     leg2 = legend()
-    leg2.add_entry(leg_txt(), "W/ScFi + Fe/Sc")
+    leg2.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
     leg2.draw(plt, col, loc="upper center")
 
     plt.gca().add_artist(leg)

@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 8
+    iplot = 1
     funclist = []
     funclist.append( fit_alpha ) # 0
     funclist.append( run_eh ) # 1
@@ -33,13 +33,14 @@ def compare_notail():
 
     #compare the signal with and without the tail removal
 
-    infile = "/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en50.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en50.h5"
+    infile = "/home/jaroslav/sim/hcal/data/hcal3e/HCal_en50.h5"
 
     nbins = 60
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -62,8 +63,16 @@ def compare_notail():
 
     #Gaussian fit for no tail
     yrange = plt.ylim()
-    plt.plot(x, y, "k--", color="red", lw=1)
+    plt.plot(x, y, "k-", color="red", lw=1)
     ax.set_ylim(yrange[0], yrange[1])
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
+    leg.add_entry(leg_txt(), "FTFP_BERT_HP, 10.7.p01")
+    leg.add_entry(leg_txt(), "$E$ = 50 GeV")
+    leg.add_entry(leg_lin("violet"), "No cuts")
+    leg.add_entry(leg_lin("blue"), "tailcatcher/total < 0.001")
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -79,7 +88,8 @@ def plot_signal():
     #en = [3, 50]
     #en = [50]
 
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
 
     alpha = run_alpha(inp, en)
     print alpha
@@ -90,9 +100,9 @@ def plot_signal():
 
     nbins = 60
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -124,7 +134,7 @@ def plot_signal():
         #plt.bar(hx[1][:-1], hx[0], width=binsiz, align="edge") # , fill=False, hatch="|"
 
         #Gaussian fit to the signal
-        plt.plot(x, y, "k--", color="red", lw=1)
+        plt.plot(x, y, "k-", color="red", lw=1)
 
         #signal
         #sum_edep = infile["ecal_edep"] + alpha[i]*infile["hcal_edep_HAD"]
@@ -143,8 +153,11 @@ def plot_signal():
 
     set_grid(plt, col)
 
+    #ax.set_yscale("log")
+    #ax.set_ylim(1e-3, 35)
+
     leg = legend()
-    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (20/3 mm)")
+    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
     leg.add_entry(leg_lin("blue"), "FTFP_BERT_HP, 10.7.p01")
     leg.add_entry(leg_lin("red"), "Gaussian fit")
     #leg.add_entry(leg_lin("red"), "Gaussian fit in $\pm 2\sigma$")
@@ -271,13 +284,12 @@ def run_res():
     en = [3, 5, 7, 10, 20, 30, 50, 75]
     #en = [3, 5]
 
-    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
-    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en", ".h5"]
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     alpha = run_alpha(inp, en)
     print alpha
@@ -326,7 +338,7 @@ def run_res():
     fit_param += r"\end{align*}"
 
     leg = legend()
-    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (20/3 mm)")
+    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
     #leg.add_entry(leg_txt(), "W/ScFi (17cm, 10$^\circ$/1$^\circ$)")
     #leg.add_entry(leg_txt(), "+ Fe/Sc (20/3 mm)")
     leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT\_HP, 10.7.p01")
@@ -352,32 +364,31 @@ def run_eh():
     #e/h ratio
     en = [3, 5, 7, 10, 20, 30, 50, 75]
 
-    #inp_h = ["/home/jaroslav/sim/hcal/data/hcal3c/HCal_en", ".h5"]
-    #inp_h = ["/home/jaroslav/sim/hcal/data/hcal3c2/HCal_en", ".h5"]
-    inp_h = ["/home/jaroslav/sim/hcal/data/hcal3c3/HCal_en", ".h5"]
-    inp_e = ["/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en", ".h5"]
+    inp_h = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
+    inp_e = ["/home/jaroslav/sim/hcal/data/hcal3e1/HCal_en", ".h5"]
+    #inp_e = ["/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en", ".h5"]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
-    #alpha = run_alpha(inp_h, en)
+    alpha = run_alpha(inp_h, en)
 
-    #eh = []
-    #for i in range(len(en)):
-    #    mean_h, sigma_h = gfit(inp_h[0]+str(en[i])+inp_h[1], alpha[i])
-    #    mean_e, sigma_e = gfit(inp_e[0]+str(en[i])+inp_e[1], 1.)
-    #    eh.append(mean_e/mean_h)
-    #print eh
+    eh = []
+    for i in range(len(en)):
+        mean_h, sigma_h = gfit_notail(inp_h[0]+str(en[i])+inp_h[1], alpha[i])
+        mean_e, sigma_e = gfit(inp_e[0]+str(en[i])+inp_e[1], 1.)
+        eh.append(mean_e/mean_h)
+    print eh
 
     #eh = [1.1843121055569938, 1.1712184048681817, 1.1510946757405278, 1.1299514803026915, 1.115021115675016, 1.1142540693206178, 1.0940572767145802, 1.0858602110652527]
 
-    eh = [1.0783978255818747, 1.0470998098908393, 1.0095102295698088, 0.9892973774844975, 0.9610145332516115, 0.951324266586261, 0.9394926546022618, 0.9310279185588818]
+    #eh = [1.0783978255818747, 1.0470998098908393, 1.0095102295698088, 0.9892973774844975, 0.9610145332516115, 0.951324266586261, 0.9394926546022618, 0.9310279185588818]
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
 
-    ax.set_ylim([0.9, 1.3])
+    ax.set_ylim([0.9, 1.15]) # 1.3
 
     #plt.rc("text", usetex = True)
     #plt.rc('text.latex', preamble='\usepackage{amsmath}')
@@ -397,7 +408,7 @@ def run_eh():
     plt.plot(en, eh, "o", color="blue")
 
     leg = legend()
-    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (20/3 mm)")
+    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
     leg.add_entry(leg_dot(fig, "blue"), "FTFP_BERT_HP, 10.7.p01")
     leg.add_entry(leg_lin("red", "--"), "e/h = 1")
     leg.draw(plt, col)
@@ -429,9 +440,9 @@ def fit_alpha(infile=None, use_notail=True):
     #infile = "/home/jaroslav/sim/hcal/data/hcal3c/HCal_en50.h5"
     #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     res = []
     for a in alpha:
@@ -497,8 +508,9 @@ def gfit(infile=None, alpha=None, put_hx=False):
 
     #Gaussian fit for energy resolution at a given energy
 
-    #infile = "/home/jaroslav/sim/hcal/data/hcal3c/HCal_en50.h5"
-    #alpha = 1.3
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3e1/HCal_en50.h5"
+    #infile = "/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en50.h5"
+    #alpha = 1.
 
     inp = read_hdf(infile)
 
@@ -507,9 +519,9 @@ def gfit(infile=None, alpha=None, put_hx=False):
 
     nbins = 60
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -530,16 +542,17 @@ def gfit(infile=None, alpha=None, put_hx=False):
 
     #print "pass1:", pars[0], pars[1]
 
-    #pass2, fit in +/- 2*sigma range
-    smax = 2
-    fitran = [pars[0] - smax*pars[1], pars[0] + smax*pars[1]] # fit range at 2*sigma
-    fit_data = fit_data[ fit_data["E"].between(fitran[0], fitran[1], inclusive=False) ] # select the data to the range
-    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
+    #pass2, fit in +/- smax sigma range
+    #smax = 2
+    #fitran = [pars[0] - smax*pars[1], pars[0] + smax*pars[1]] # fit range at 2*sigma
+    #fit_data = fit_data[ fit_data["E"].between(fitran[0], fitran[1], inclusive=False) ] # select the data to the range
+    #pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["E"], fit_data["density"])
 
     #print "pass2:", pars[0], pars[1]
 
     #fit function
-    x = np.linspace(fitran[0], fitran[1], 300)
+    #x = np.linspace(fitran[0], fitran[1], 300)
+    x = np.linspace(plt.xlim()[0], plt.xlim()[1], 300)
     y = norm.pdf(x, pars[0], pars[1])
 
     plt.plot(x, y, "k-", label="norm", color="red")
@@ -595,9 +608,9 @@ def gfit_notail(infile=None, alpha=None, put_hx=False):
 
     nbins = 60
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
