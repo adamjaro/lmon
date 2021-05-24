@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
     funclist = []
     funclist.append( fit_alpha ) # 0
     funclist.append( run_eh ) # 1
@@ -437,8 +437,9 @@ def fit_alpha(infile=None, use_notail=True):
     #alpha = [0.4, 0.6, 0.8, 1., 1.2, 1.4, 1.6, 1.8]
     #alpha = [0.2, 0.4, 0.6, 0.8, 1., 1.2, 1.4, 1.6]
 
-    #infile = "/home/jaroslav/sim/hcal/data/hcal3c/HCal_en50.h5"
+    infile = "/home/jaroslav/sim/hcal/data/hcal3e/HCal_en50.h5"
     #infile = "/home/jaroslav/sim/hcal/data/hcal3c4/HCal_en50.h5"
+    #    inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
 
     #plt.style.use("dark_background")
     #col = "lime"
@@ -480,7 +481,7 @@ def fit_alpha(infile=None, use_notail=True):
 
     leg = legend()
     leg.add_entry(leg_txt(), (infile.split("/"))[-1])
-    leg.add_entry(leg_lin("blue"), "a + b*alpha + c*alpha^2 + d*alpha^3")
+    leg.add_entry(leg_lin("red"), "a + b*alpha + c*alpha^2 + d*alpha^3")
     leg.add_entry(leg_txt(), "a: {0:.4f} +/- {1:.4f}".format( pars[0], np.sqrt(cov[0,0]) ))
     leg.add_entry(leg_txt(), "b: {0:.4f} +/- {1:.4f}".format( pars[1], np.sqrt(cov[1,1]) ))
     leg.add_entry(leg_txt(), "c: {0:.4f} +/- {1:.4f}".format( pars[2], np.sqrt(cov[2,2]) ))

@@ -5,7 +5,7 @@
 
 /lmon/input/type gun
 
-/gun/energy 10 GeV
+/gun/energy 30 GeV
 #/gun/momentum 0 0 1 keV
 
 /gun/particle pi+
