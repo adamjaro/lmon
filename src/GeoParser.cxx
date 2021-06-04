@@ -205,41 +205,43 @@ template<typename par_type> bool GeoParser::GetOptPar(G4String name, G4String pa
 }//GetOptPar
 
 //_____________________________________________________________________________
-void GeoParser::GetOptD(G4String name, G4String par, G4double& val, const Unit& un) {
+G4bool GeoParser::GetOptD(G4String name, G4String par, G4double& val, const Unit& un) {
 
   //optional G4double parameter
 
-  if( !GetOptPar<G4double>(name, par, val) ) return;
+  if( !GetOptPar<G4double>(name, par, val) ) return false;
 
   //apply the units if provided
   if(un.apply) val *= un.u;
 
+  return true;
+
 }//GetOptD
 
 //_____________________________________________________________________________
-void GeoParser::GetOptI(G4String name, G4String par, G4int& val) {
+G4bool GeoParser::GetOptI(G4String name, G4String par, G4int& val) {
 
   //optional G4int parameter
 
-  GetOptPar<G4int>(name, par, val);
+  return GetOptPar<G4int>(name, par, val);
 
 }//GetOptI
 
 //_____________________________________________________________________________
-void GeoParser::GetOptB(G4String name, G4String par, G4bool& val) {
+G4bool GeoParser::GetOptB(G4String name, G4String par, G4bool& val) {
 
   //optional G4bool parameter
 
-  GetOptPar<G4bool>(name, par, val);
+  return GetOptPar<G4bool>(name, par, val);
 
 }//GetOptI
 
 //_____________________________________________________________________________
-void GeoParser::GetOptS(G4String name, G4String par, G4String& val) {
+G4bool GeoParser::GetOptS(G4String name, G4String par, G4String& val) {
 
   //optional G4String parameter
 
-  GetOptPar<G4String>(name, par, val);
+  return GetOptPar<G4String>(name, par, val);
 
 }//GetOptI
 

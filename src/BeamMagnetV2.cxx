@@ -27,11 +27,29 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   G4cout << "  BeamMagnetV2: " << fNam << G4endl;
 
-  //position along z
-  G4double zpos = geo->GetD(fNam, "zpos") * mm; // center along z
+  //center position along z, mm
+  G4double zpos = -1;
+  geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
+
+  //total length in z, mm
+  G4double length = -1;
+  geo->GetOptD(fNam, "length", length, GeoParser::Unit(mm));
+
+  //start and end along z, meters
+  G4double z1 = -1, z2 = -1;
+  G4bool z1def = geo->GetOptD(fNam, "z1", z1, GeoParser::Unit(m));
+  G4bool z2def = geo->GetOptD(fNam, "z2", z2, GeoParser::Unit(m));
+
+  //center along z and length from z1 and z2
+  if(z1def and z2def) {
+    zpos = z1 + (z2-z1)/2.;
+    length = std::abs(z2) - std::abs(z1);
+  }
+
+  G4cout << "    zpos: " << zpos << G4endl;
+  G4cout << "    length: " << length << G4endl;
 
   //conical inner core
-  G4double length = geo->GetD(fNam, "length") * mm; // total length in z
   G4double r1 = geo->GetD(fNam, "r1") * mm; // entrance radius
   G4double r2 = geo->GetD(fNam, "r2") * mm; // exit radius
 

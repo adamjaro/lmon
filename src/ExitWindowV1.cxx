@@ -6,10 +6,10 @@
 //_____________________________________________________________________________
 
 //C++
-#include <string>
+#include <math.h>
+#include <vector>
 
 //ROOT
-#include "TMath.h"
 #include "TTree.h"
 
 //Geant
@@ -27,107 +27,74 @@
 //local classes
 #include "ExitWindowV1.h"
 #include "DetUtils.h"
+#include "GeoParser.h"
 
 using namespace std;
 
 //_____________________________________________________________________________
-ExitWindowV1::ExitWindowV1(const G4String& nam, G4double zpos, geom geo, G4LogicalVolume *top): Detector(),
-    G4VSensitiveDetector(nam), fNam(nam), fZpos(zpos), fTop(top) {
+ExitWindowV1::ExitWindowV1(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
+    G4VSensitiveDetector(nam), fNam(nam) {
 
   G4cout << "ExitWindowV1: " << fNam << G4endl;
 
-  //material for the exit window
-  fMat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+  //transverse and longitudinal size
+  G4double dxy = geo->GetD(nam, "dxy")*mm;
+  G4double dz = geo->GetD(nam, "dz")*mm;
 
-  //select the geometry
-  if(geo == kFlat) {
-    ConstructFlat();
-  }
-  if(geo == kTilt) {
-    ConstructTilt();
-  }
+  //center position along z
+  G4double zpos = geo->GetD(nam, "zpos")*m;
+
+  //tilt angle along y, given from z axis towards x axis
+  G4double tilt = geo->GetD(nam, "tilt")*mrad;
+  tilt -= CLHEP::pi/2;
+
+  //box shape, Al material
+  G4Box *shape = new G4Box(nam+"_shape", dxy/2, dxy/2, dz/2);
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
+  G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, nam);
+
+  G4VisAttributes *vis = new G4VisAttributes();
+  vis->SetColor(0, 1, 0, 0.5);
+  vis->SetForceSolid(true);
+  vol->SetVisAttributes(vis);
+
+  //put the exit window to the top
+  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), tilt); //is typedef to CLHEP::HepRotation
+  G4ThreeVector pos(0, 0, zpos);
+  G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
+  new G4PVPlacement(transform, vol, vol->GetName(), top, false, 0);
 
   ClearEvent();
 
 }//ExitWindowV1
 
 //_____________________________________________________________________________
-void ExitWindowV1::ConstructFlat() {
-
-  // flat geometry, perpendicular to electron beam axis
-
-  G4cout << "ExitWindowV1::ConstructFlat" << G4endl;
-
-  G4double radius = 5.*cm;
-  G4double dz = 1*cm;
-
-  G4Tubs *shape = new G4Tubs(fNam, 0., radius, dz/2., 0., 360.*deg);
-  G4LogicalVolume *vol = new G4LogicalVolume(shape, fMat, fNam);
-
-  G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 1, 0, 0.5);
-  vis->SetForceSolid(true);
-  vol->SetVisAttributes(vis);
-
-  new G4PVPlacement(0, G4ThreeVector(0, 0, fZpos-dz/2.), vol, fNam, fTop, false, 0);
-
-}//ConstructFlat
-
-//_____________________________________________________________________________
-void ExitWindowV1::ConstructTilt() {
-
-  // tilted geometry, angle to electron beam axis
-
-  G4cout << "ExitWindowV1::ConstructTilt" << G4endl;
-
-  G4double dx = 2.9*meter;
-  G4double dz = 1.*mm;
-
-  G4Box *shape = new G4Box(fNam, dx/2., dx/2., dz/2.);
-  G4LogicalVolume *vol = new G4LogicalVolume(shape, fMat, fNam);
-
-  G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 1, 0, 0.5);
-  vis->SetForceSolid(true);
-  vol->SetVisAttributes(vis);
-
-  //100 mrad in x-z plane
-  //theta = pi/2 - 100 mrad
-  G4RotationMatrix rot(0, 1.470796*rad, 1.570796*rad); //phi, theta, psi, is typedef to CLHEP::HepRotation
-  //G4RotationMatrix rot(0, 0, 0);
-  G4ThreeVector pos(0, 0, fZpos);
-  G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
-
-  new G4PVPlacement(transform, vol, fNam, fTop, false, 0);
-
-}//ConstructTilt
-
-//_____________________________________________________________________________
 G4bool ExitWindowV1::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   G4Track *track = step->GetTrack();
 
-  //select primary track
-  if( track->GetParentID() != 0 ) return true;
+  //add the hit
+  fHitPdg.push_back( track->GetDynamicParticle()->GetPDGcode() );
+  fHitEn.push_back( track->GetTotalEnergy()/GeV );
 
-  //set flag for primary photon makin a step in exit window
-  fIsHit = kTRUE;
+  //hit position
+  const G4ThreeVector hp = step->GetPreStepPoint()->GetPosition();
+  fHitX.push_back( hp.x()/mm );
+  fHitY.push_back( hp.y()/mm );
+  fHitZ.push_back( hp.z()/mm );
 
-  //first point on the exit window
-  if( fPhotZ > 9998.) {
+  //deposited energy in hit
+  fHitEdep.push_back( step->GetTotalEnergyDeposit()/GeV );
 
-    //const G4ThreeVector point = step->GetPreStepPoint()->GetPosition();
-    const G4ThreeVector point = step->GetPostStepPoint()->GetPosition();
+  //flag for primary particle in hit
+  Int_t prim = 0;
+  if( track->GetParentID() == 0 ) {prim = 1;}
+  fHitPrim.push_back( prim );
 
-    fPhotX = point.x();
-    fPhotY = point.y();
-    fPhotZ = point.z();
-  }
-
-  //conversion to a pair
-  G4int nsec = 0; // number of secondaries
-  G4int apdg[2] = {0, 0}; // absolute value of pdg
+  //conversion to e+e- pair and number of secondaries
+  Int_t nsec = 0; // number of secondaries
   G4int sign = 1; // sing of the pair
+  G4bool electron = true;
   const vector<const G4Track*> *sec = step->GetSecondaryInCurrentStep();
   vector<const G4Track*>::const_iterator i;
   //secondary loop
@@ -135,49 +102,20 @@ G4bool ExitWindowV1::ProcessHits(G4Step *step, G4TouchableHistory*) {
     const G4Track *t = *i;
     const G4ParticleDefinition *def = t->GetParticleDefinition();
 
-    //get the pdg
     G4int pdg = def->GetPDGEncoding();
     sign *= pdg;
+    electron = (abs(pdg) == 11) and electron;
 
-    //abs of the pdg
-    if(nsec < 2) {
-      apdg[nsec] = TMath::Abs( pdg );
-    }
     nsec++;
   }//secondary loop
 
-  //sign +/- 1
-  if(sign < 0) {
-    sign = -1;
-  } else {
-    sign = 1;
-  }
+  //number of secondaries in hit
+  fHitNsec.push_back( nsec );
 
-  //select pair conversion
-  if(nsec != 2 || sign > 0) return true;
-
-  //test for e+e- conversion
-  if(apdg[0] == 11 && apdg[1] == 11) {
-
-    fConv = kTRUE;
-  }
-
-  //test for mu+mu- conversion
-  if(apdg[0] == 13 && apdg[1] == 13) {
-
-    fMuConv = kTRUE;
-  }
-
-  //location of the conversion
-  const G4ThreeVector cp = step->GetPostStepPoint()->GetPosition();
-  fConvX = cp.x();
-  fConvY = cp.y();
-  fConvZ = cp.z();
-
-  //step lenght with the conversion
-  fConvStepLen = step->GetStepLength();
-
-  //G4cout << "conv " << sign << G4endl;
+  //evaluate the conversion in the hit
+  Int_t conv = 0;
+  if(nsec == 2 and sign < 0 and electron) {conv = 1;}
+  fHitConv.push_back( conv );
 
   return true;
 
@@ -186,61 +124,36 @@ G4bool ExitWindowV1::ProcessHits(G4Step *step, G4TouchableHistory*) {
 //_____________________________________________________________________________
 void ExitWindowV1::CreateOutput(TTree *tree) {
 
-  //set output branches of exit window
-
   DetUtils u(fNam, tree); // prefix for variable names and tree for AddBranch
 
-  u.AddBranch("_IsHit", &fIsHit, "O");
-
-  u.AddBranch("_photX", &fPhotX, "D");
-  u.AddBranch("_photY", &fPhotY, "D");
-  u.AddBranch("_photZ", &fPhotZ, "D");
-
-  u.AddBranch("_conv", &fConv, "O");
-  u.AddBranch("_muconv", &fMuConv, "O");
-
-  u.AddBranch("_convX", &fConvX, "D");
-  u.AddBranch("_convY", &fConvY, "D");
-  u.AddBranch("_convZ", &fConvZ, "D");
-
-  u.AddBranch("_steplen", &fConvStepLen, "D");
-  u.AddBranch("_convlen", &fPhotConvLen, "D");
+  u.AddBranch("_HitPdg", &fHitPdg);
+  u.AddBranch("_HitEn", &fHitEn);
+  u.AddBranch("_HitX", &fHitX);
+  u.AddBranch("_HitY", &fHitY);
+  u.AddBranch("_HitZ", &fHitZ);
+  u.AddBranch("_HitPrim", &fHitPrim);
+  u.AddBranch("_HitConv", &fHitConv);
+  u.AddBranch("_HitEdep", &fHitEdep);
+  u.AddBranch("_HitNsec", &fHitNsec);
 
 }//CreateOutput
 
 //_____________________________________________________________________________
 void ExitWindowV1::ClearEvent() {
 
-  //G4cout << "ExitWindowV1::ClearEvent" << G4endl;
-
-  //default values
-
-  fIsHit = kFALSE;
-
-  fPhotX = 9999.;
-  fPhotY = 9999.;
-  fPhotZ = 9999.;
-
-  fConv = kFALSE;
-  fMuConv = kFALSE;
-
-  fConvStepLen = -9999.;
-  fPhotConvLen = -9999.;
-
-  fConvX = 9999.;
-  fConvY = 9999.;
-  fConvZ = 9999.;
+  fHitPdg.clear();
+  fHitEn.clear();
+  fHitX.clear();
+  fHitY.clear();
+  fHitZ.clear();
+  fHitPrim.clear();
+  fHitConv.clear();
+  fHitEdep.clear();
+  fHitNsec.clear();
 
 }//ClearEvent
 
-//_____________________________________________________________________________
-void ExitWindowV1::FinishEvent() {
 
-  // length between photon first point and conversion point
-  fPhotConvLen = (fConvX-fPhotX)*(fConvX-fPhotX) + (fConvY-fPhotY)*(fConvY-fPhotY) + (fConvZ-fPhotZ)*(fConvZ-fPhotZ);
-  fPhotConvLen = TMath::Sqrt(fPhotConvLen);
-
-}//FinishEvent
 
 
 

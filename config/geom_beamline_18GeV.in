@@ -1,0 +1,56 @@
+
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 40000 # mm
+
+new BeamQuadrupole Q1eR # Q1eR quadrupole
+
+  Q1eR.z1 = -5.3 # start along z, meters
+  Q1eR.z2 = -7.1 # end along z, meters
+  Q1eR.r1 = 66 # mm
+  Q1eR.r2 = 79 # mm
+  Q1eR.grad = 13.3153 # T/m
+
+new BeamQuadrupole Q2eR # Q2eR quadrupole
+
+  Q2eR.z1 = -7.6 # m
+  Q2eR.z2 = -9 # m
+  Q2eR.r1 = 83 # mm
+  Q2eR.r2 = 94 # mm
+  Q2eR.grad = -12.0595 # T/m
+
+new BeamMagnetV2 B2AeR # B2AeR beam dipole
+
+  B2AeR.z1 = -9.61 # m
+  B2AeR.z2 = -11.39 # m
+  B2AeR.field = 0.192 # T
+  B2AeR.r1 = 97 # mm, entrance radius
+  B2AeR.r2 = 139 # mm, exit radius
+  B2AeR.rout = 200 # mm, vessel outer radius
+
+new BeamMagnetV2 B2BeR # B2BeR beam dipole
+
+  B2BeR.z1 = -11.685 # m
+  B2BeR.z2 = -14.865 # m
+  B2BeR.field = 0.238 # T
+  B2BeR.r1 = 139 # mm
+  B2BeR.r2 = 139 # mm
+  B2BeR.rout = 200 # mm
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

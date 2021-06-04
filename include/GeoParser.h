@@ -37,10 +37,10 @@ class GeoParser {
     };
 
     //optional parameters
-    void GetOptD(G4String name, G4String par, G4double& val, const Unit& un = Unit());
-    void GetOptI(G4String name, G4String par, G4int& val);
-    void GetOptB(G4String name, G4String par, G4bool& val);
-    void GetOptS(G4String name, G4String par, G4String& val);
+    G4bool GetOptD(G4String name, G4String par, G4double& val, const Unit& un = Unit());
+    G4bool GetOptI(G4String name, G4String par, G4int& val);
+    G4bool GetOptB(G4String name, G4String par, G4bool& val);
+    G4bool GetOptS(G4String name, G4String par, G4String& val);
 
   private:
 

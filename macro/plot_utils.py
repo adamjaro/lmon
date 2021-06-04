@@ -305,7 +305,7 @@ def line_h1(hx, col=rt.kBlue, wdt=-1):
 
     #set H1 to show as a line of bin content
 
-    for ibin in xrange(1,hx.GetNbinsX()+1):
+    for ibin in range(1,hx.GetNbinsX()+1):
         hx.SetBinError(ibin, 0.)
 
     hx.SetLineColor(col)
@@ -547,12 +547,12 @@ def print_pad(pad):
   
   next = TIter(pad.GetListOfPrimitives())
 
-  print "#####################"
+  print("#####################")
   obj = next()
   while obj != None:
-    print obj.GetName(), obj.ClassName()
+    print(obj.GetName(), obj.ClassName())
     obj = next()
-  print "#####################"
+  print("#####################")
 
 #_____________________________________________________________________________
 def invert_col(pad, bgcol=rt.kBlack):

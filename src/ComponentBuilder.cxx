@@ -71,6 +71,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   } else if( type == "BeamMagnetV2" ) {
     det = new BeamMagnetV2(name, fGeo, fTop);
 
+  } else if( type == "ExitWindowV1" ) {
+    det = new ExitWindowV1(name, fGeo, fTop);
+
   } else if( type == "ExitWindowV2" ) {
     det = new ExitWindowV2(name, fGeo, fTop);
 

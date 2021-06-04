@@ -22,18 +22,17 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-/vis/viewer/set/targetPoint 0 0 -16250 mm # exit window lumi_v2
-#/vis/viewer/set/targetPoint 0 0 -2025 cm # exit window tilt
+/vis/viewer/set/targetPoint 0 0 -18.644 m # exit window lumi_v2
 #/vis/viewer/set/targetPoint 0 0 -22500 mm # collimator (was -2137 cm)
 #/vis/viewer/set/targetPoint 0 0 -2800 cm # spectrometer magnet
 #/vis/viewer/set/targetPoint 0 0 -37000 mm # photon detector
 #/vis/viewer/set/targetPoint 0 0 -3135 cm # spectrometer detectors
 #/vis/viewer/set/targetPoint 0 0 -9.504 meter # B2eR magnet
-#/vis/viewer/set/targetPoint 0 0 -5.297 meter # Q1eR magnet
+#/vis/viewer/set/targetPoint 0 0 -5.3 meter # Q1eR magnet
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 #/vis/viewer/set/targetPoint 0.472 0 -37.995 meter # Q3eR magnet
 #/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
-#/vis/viewer/set/targetPoint 0 0 -15010 mm # after B2eR
+#/vis/viewer/set/targetPoint 0 0 -14.865 m # after B2eR
 
 #/vis/scene/add/text 2500 0 3000 mm 15 0 0 Solenoid field
 #/vis/scene/add/text 2900 0 -3280 mm 15 0 0 ecal
@@ -41,11 +40,11 @@
 #/vis/scene/add/text 840 0 -37000 mm 15 0 0 Tagger 2
 #/vis/scene/add/text 0 -1100 -38000 mm 12 0 0 Marker at Q3eR
 
-/vis/scene/add/text -1500 0 -20750 mm 15 0 0 Exit window
-/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
-/vis/scene/add/text -1300 0 -28000 mm 15 0 0 Dipole
-/vis/scene/add/text -1500 -400 -36500 mm 15 0 0 Spectormeter detectors
-/vis/scene/add/text -1500 0 -38000 mm 15 0 0 Photon detector
+#/vis/scene/add/text -1500 0 -20750 mm 15 0 0 Exit window
+#/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
+#/vis/scene/add/text -1300 0 -28000 mm 15 0 0 Dipole
+#/vis/scene/add/text -1500 -400 -36500 mm 15 0 0 Spectormeter detectors
+#/vis/scene/add/text -1500 0 -38000 mm 15 0 0 Photon detector
 
 #
 # Specify zoom value:
@@ -57,8 +56,8 @@
 #/vis/viewer/set/lineSegmentsPerCircle 100
 #
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 -20.75 1 meter # exit window
-#/vis/scene/add/axes 0 0 -3280 105 mm
+/vis/scene/add/axes 0 0 -18644 300 mm # exit window
+#/vis/scene/add/axes 0 0 -14.865 0.14 m
 #/vis/scene/add/axes 0 0 0 0.1 m
 #/vis/scene/add/axes 0.4 0 -27 0.1 meter # low Q^2 tagger
 #/vis/scene/add/axes 0.267 0 -27 0.1 meter # beam along the tagger
