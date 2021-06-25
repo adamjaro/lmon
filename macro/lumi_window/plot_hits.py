@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 
+from math import tan
+
 import ROOT as rt
 from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem
 from ROOT import addressof, TTree, TCrown
@@ -28,14 +30,14 @@ def make_prim_tree():
 
     #input
     #inp = TFile.Open("../../lmon.root")
-    inp = TFile.Open("../../data/ew/ew1b.root")
+    inp = TFile.Open("../../data/ew/ew1bx1.root")
     tree = inp.Get("DetectorTree")
 
     #number of events, negative for all
     nev = -1
 
     #output
-    out = TFile("prim.root", "recreate")
+    out = TFile("prim_bx1.root", "recreate")
     gROOT.ProcessLine( "struct EntryF {Float_t v;};" )
     x = rt.EntryF()
     y = rt.EntryF()
@@ -91,12 +93,12 @@ def xy_proj():
     xymax = 50
     xybin = 0.5
 
-    inp = TFile.Open("prim.root")
+    inp = TFile.Open("prim_bx2.root")
     tree = inp.Get("prim_tree")
 
     can = ut.box_canvas()
 
-    #gStyle.SetPalette(56)
+    gStyle.SetPalette(55)
 
     hXY = ut.prepare_TH2D("hXY", xybin, -xymax, xymax, xybin, -xymax, xymax)
 
@@ -104,18 +106,38 @@ def xy_proj():
 
     hXY.Draw("colz")
 
-    #circle at two mrad, radius (mm) = 18644*tan(0.002) = 37 mm
-    circle = TCrown(0., 0., 37, 37)
+    #circles at a given apperture, radius (mm) = z0*tan(tmax), example: 18644*tan(0.002) = 37 mm
+    z0 = 18644. # mm, exit window position in z
+
+    # 2 mrad circle
+    tmax = 2. # mrad, apperture by maximal theta for photons
+    radius = z0*tan(tmax*1e-3)
+    circle = TCrown(0., 0., radius, radius)
     circle.SetLineStyle(2)
     circle.SetLineWidth(4)
+    #circle.SetLineColor(rt.kGreen+1)
     circle.SetLineColor(rt.kRed)
     circle.Draw("same")
 
-    hXY.SetXTitle("#it{x} (mm)")
-    hXY.SetYTitle("#it{y} (mm)")
+    #fraction of events at 2 mrad
+    nev = tree.GetEntries()
+    nrad = float(tree.Draw("", "TMath::Sqrt(x*x+y*y)<"+str(radius)))
+    print(nrad, "{0:.2f}".format(100.*nrad/nev))
 
-    hXY.SetTitleOffset(1.6, "Y")
-    hXY.SetTitleOffset(1.3, "X")
+    # 1 mrad circle
+    tmax = 1. # mrad, apperture by maximal theta for photons
+    radius = z0*tan(tmax*1e-3)
+    circle2 = TCrown(0., 0., radius, radius)
+    circle2.SetLineStyle(2)
+    circle2.SetLineWidth(4)
+    circle2.SetLineColor(rt.kOrange)
+    circle2.Draw("same")
+
+    #fraction of events at 1 mrad
+    nrad = float(tree.Draw("", "TMath::Sqrt(x*x+y*y)<"+str(radius)))
+    print(nrad, "{0:.2f}".format(100.*nrad/nev))
+
+    ut.put_yx_tit(hXY, "#it{y} (mm)", "#it{x} (mm)")
 
     ut.set_margin_lbtr(gPad, 0.11, 0.12, 0.02, 0.11)
 
@@ -126,7 +148,7 @@ def xy_proj():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #xy_proj
@@ -140,7 +162,7 @@ def z_proj():
     zmax = 200
     zbin = 0.5
 
-    inp = TFile.Open("prim.root")
+    inp = TFile.Open("prim_bx2.root")
     tree = inp.Get("prim_tree")
 
     can = ut.box_canvas()
@@ -150,15 +172,39 @@ def z_proj():
     tree.Draw("z >> hZ")
     ut.line_h1(hZ)
 
-    #lines at 250 mrad projected in z, z (mm) = 37./tan(0.25) = 144.9
-    zhigh = ut.cut_line(144.9, 0.5, hZ, True)
-    zhigh.Draw("same")
-    zlow = ut.cut_line(-144.9, 0.5, hZ, True)
-    zlow.Draw("same")
+    #lines at 250 mrad projected in z for a given aperture tmax in mrad, example: z (mm) = 18644*tan(0.002)/tan(0.25) = 144.9
+    z0 = 18644. # mm, exit window position in z
+
+    #lines for 2 mrad aperture
+    tmax = 2. # mrad, apperture by maximal theta for photons
+    zlim = z0*tan(tmax*1e-3)/tan(0.25)
+    zline = [ut.cut_line(zlim, 0.75, hZ, True), ut.cut_line(-zlim, 0.75, hZ, True)]
+    zline[0].SetLineColor(rt.kRed)
+    zline[1].SetLineColor(rt.kRed)
+    zline[0].Draw("same")
+    zline[1].Draw("same")
+
+    #fraction of events at 2 mrad aperture in z, cross check to the xy projection
+    nz = float( tree.Draw("", "TMath::Abs(z)<"+str(zlim)) )
+    nev = tree.GetEntries()
+    print(nz, "{0:.2f}".format(100.*nz/nev))
+
+    #lines at 1 mrad aperture
+    tmax = 1. # mrad, apperture by maximal theta for photons
+    zlim = z0*tan(tmax*1e-3)/tan(0.25)
+    zline2 = [ut.cut_line(zlim, 0.75, hZ, True), ut.cut_line(-zlim, 0.75, hZ, True)]
+    zline2[0].SetLineColor(rt.kOrange)
+    zline2[1].SetLineColor(rt.kOrange)
+    zline2[0].Draw("same")
+    zline2[1].Draw("same")
+
+    #fraction of events at 1 mrad aperture in z, cross check to the xy projection
+    nz = float( tree.Draw("", "TMath::Abs(z)<"+str(zlim)) )
+    print(nz, "{0:.2f}".format(100.*nz/nev))
 
     ut.put_yx_tit(hZ, "Counts", "#it{z} (mm)")
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.01)
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.03)
 
     gPad.SetGrid()
 

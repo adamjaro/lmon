@@ -5,9 +5,16 @@ new top topv
   topv.ysiz = 5000 # mm
   topv.zsiz = 40000 # mm
 
-new TrackDet tdet
+new BoxCalV2 Q3eR # marker at Q3eR location
 
-  tdet.zpos = -30 # mm
+  Q3eR.zpos = -37700 # mm
+  Q3eR.xpos = -460.03 # mm
+  #Q3eR.rot_y = 0.01808 # rad
+  Q3eR.rot_y = 0.11 # rad
+  Q3eR.zsiz = 1
+  Q3eR.xsiz = 700 # mm
+  Q3eR.ysiz = 700 # mm
+  Q3eR.vis_full = 0
 
 
 

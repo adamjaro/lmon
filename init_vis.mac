@@ -11,26 +11,28 @@
 #/run/numberOfThreads 4
 
 #detectors and components
-/lmon/construct/geometry config/geom_all.in
-#/lmon/construct/geometry ../config/geom_close_all.in
+#/lmon/construct/geometry config/geom_all.in
 #/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_beamline.in
-#/lmon/construct/geometry config/geom_beamline_18GeV.in
+/lmon/construct/geometry config/geom_beamline_18GeV.in
 #/lmon/construct/geometry ../config/geom_central.in
-#/lmon/construct/geometry ../config/geom_central_close.in
+#/lmon/construct/geometry config/geom_test.in
 
-/lmon/input/type gun
+#/lmon/input/type gun
 #/gun/energy 18 GeV
 #/gun/particle e-
-/gun/energy 10 GeV
-/gun/particle gamma
-/gun/position 0 0 0 mm
-/gun/direction 0 0 -1
+#/gun/energy 10 GeV
+#/gun/particle gamma
+#/gun/position 0 0 0 mm
+#/gun/direction 0 0 -1
 
 
 #input from TParticle array
-#/lmon/input/type tparticle
+/lmon/input/type tparticle
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root
+/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_1Mevt.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_div202xy_1Mevt.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_1Mevt.root
 #/lmon/input/tparticle/select 22
 #/lmon/input/tparticle/select 11
 

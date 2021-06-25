@@ -2,13 +2,13 @@
 #local running
 
 #detectors and components
-/lmon/construct/geometry config/geom_all.in
+#/lmon/construct/geometry config/geom_all.in
 #/lmon/construct/geometry ../config/geom_close_all.in
 #/lmon/construct/geometry ../config/geom_lumi.in
 #/lmon/construct/geometry ../config/geom_lowQ2.in
 #/lmon/construct/geometry ../config/geom_beamline.in
-#/lmon/construct/geometry config/geom_beamline_18GeV.in
-#/lmon/construct/geometry ../config/geom_test.in
+/lmon/construct/geometry config/geom_beamline_18GeV.in
+#/lmon/construct/geometry config/geom_test.in
 
 /run/initialize
 
@@ -19,8 +19,10 @@
 #/gun/direction 0 0 -1
 
 /lmon/input/type tparticle
-/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p1_d200_beff3_5Mevt.root
-/lmon/input/tparticle/select 22
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_5x41_Lif_emin0p5_beff3_5Mevt.root
+#/lmon/input/tparticle/select 22
+/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_1Mevt.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_div202xy_1Mevt.root
 
 #/lmon/input/type tx
 #/lmon/input/tx/name /home/jaroslav/sim/lgen/data/lgen_18x275_qr_Qb_1p2Mevt.tx
@@ -30,10 +32,10 @@
 #/lmon/input/pythia6/name ../pythia6_pp_255.txt
 #/lmon/input/pythia6/select -211
 
-lmon/output/name lmon.root
-#/lmon/output/name data/ew/ew1e.root
+/lmon/output/name lmon.root
+#/lmon/output/name data/ew/ew1bx2.root
 
 
-/run/beamOn 12
+/run/beamOn 100000
 #/units/list
 

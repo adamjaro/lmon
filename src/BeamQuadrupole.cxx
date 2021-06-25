@@ -51,9 +51,20 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   G4cout << "    zpos: " << zpos << G4endl;
   G4cout << "    length: " << length << G4endl;
 
-  //inner radii
-  G4double r1 = geo->GetD(fNam, "r1") * mm; // inner radius closer to the IP
-  G4double r2 = geo->GetD(fNam, "r2") * mm; // inner radious further from the IP
+  //inner radii closer to the IP (r1) and further from the IP (r2)
+  G4double r1 = 1*mm, r2 = 1*mm;
+  geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
+  //radii from diameters
+  G4double d1, d2;
+  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
+    r1 = d1/2;
+  }
+  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
+    r2 = d2/2;
+  }
+  G4cout << "    r1: " << r1 << G4endl;
+  G4cout << "    r2: " << r2 << G4endl;
 
   //radial thickness, mm
   G4double dr = 40;
@@ -70,10 +81,14 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
 
   //quadrupole field inside the core
   G4double grad = geo->GetD(fNam, "grad") * tesla/meter; // field gradient, T/m
-  G4double angle = 90; // deg, field angle
-  geo->GetOptD(fNam, "angle", angle);
-  G4RotationMatrix *rot = new G4RotationMatrix(G4ThreeVector(0, 0, 1), angle*deg); //is typedef to CLHEP::HepRotation
-  G4QuadrupoleMagField *field = new G4QuadrupoleMagField(grad, G4ThreeVector(0, 0, zpos), rot);
+  G4QuadrupoleMagField *field = 0x0;
+  G4double angle = 0*deg; // deg, field angle
+  if( geo->GetOptD(fNam, "angle", angle, GeoParser::Unit(deg)) ) {
+    G4RotationMatrix *rot = new G4RotationMatrix(G4ThreeVector(0, 0, 1), angle); //is typedef to CLHEP::HepRotation
+    field = new G4QuadrupoleMagField(grad, G4ThreeVector(0, 0, 0), rot);
+  } else {
+    field = new G4QuadrupoleMagField(grad);
+  }
 
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);

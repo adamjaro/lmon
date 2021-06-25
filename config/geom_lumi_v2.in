@@ -13,7 +13,7 @@ new ExitWindowV1 ew
 
   ew.zpos = -18.644 # meter
   ew.dxy = 400 # mm, surface size
-  ew.dz = 1 # mm, thickness
+  ew.dz = 2.6 # mm, thickness
   ew.tilt = 250 # mrad
 
 #photon exit window version 2

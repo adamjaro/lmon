@@ -70,8 +70,9 @@ BoxCalV2::BoxCalV2(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): D
 
   //rotation in x-z plane by rotation along y
   G4double rot_y = 0;
-  geo->GetOptD(fNam, "rot_y", rot_y);
-  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), rot_y*rad); //is typedef to CLHEP::HepRotation
+  geo->GetOptD(fNam, "rot_y", rot_y, GeoParser::Unit(rad));
+  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), rot_y); //is typedef to CLHEP::HepRotation
+  G4cout << "    phi, theta, psi: " << rot.getPhi() << " " << rot.getTheta() << " " << rot.getPsi() << G4endl;
 
   //placement with rotation at a given position in x, y and z
   G4double xpos = 0; // center position in x, mm

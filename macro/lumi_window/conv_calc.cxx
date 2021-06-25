@@ -24,16 +24,14 @@ using namespace std;
 class conv_calc {
   public:
   //_____________________________________________________________________________
-  conv_calc(TTree *t, Double_t p, Double_t d): tree(t), prec(p), delt(d) {
-
-    tree->SetBranchAddress("gen_en", &gen_en);
-    tree->SetBranchAddress("conv", &conv);
-    tree->SetBranchAddress("clean", &clean);
+  conv_calc(Double_t p, Double_t d): prec(p), delt(d) {
 
     nev = 0;
 
     conv_in_all = false;
     clean_in_sel = false;
+
+    tree = 0x0;
 
   }//conv_calc
 
@@ -86,6 +84,24 @@ class conv_calc {
     return conv;
 
   }//get_conv
+
+  //_____________________________________________________________________________
+  void set_tree(TTree *t) {
+
+    tree = t;
+
+    tree->SetBranchAddress("gen_en", &gen_en);
+    tree->SetBranchAddress("conv", &conv);
+    tree->SetBranchAddress("clean", &clean);
+
+  }//set_tree
+
+  //_____________________________________________________________________________
+  void release_tree() {
+
+    tree->ResetBranchAddresses();
+
+  }//release_tree
 
 
   //input tree

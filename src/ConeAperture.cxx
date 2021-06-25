@@ -36,11 +36,29 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   geo->GetOptD(fNam, "xpos", xpos);
 
   //cone length
-  G4double length = geo->GetD(fNam, "length") * mm;
+  G4double length = 1*mm;
+  geo->GetOptD(fNam, "length", length, GeoParser::Unit(mm));
+  //length from z2
+  G4double z2;
+  if( geo->GetOptD(fNam, "z2", z2, GeoParser::Unit(mm)) ) {
+    length = TMath::Abs(z2 - zpos);
+  }
 
-  //cone radii
-  G4double r1 = geo->GetD(fNam, "r1") * mm; // inner radius closer to the IP
-  G4double r2 = geo->GetD(fNam, "r2") * mm; // inner radious further from the IP
+  //cone inner radii closer to the IP (r1), further from the IP (r2)
+  G4double r1 = 1*mm, r2 = 1*mm;
+  geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
+  //radii from diameters
+  G4double d1, d2;
+  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
+    r1 = d1/2;
+  }
+  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
+    r2 = d2/2;
+  }
+  G4cout << "    r1: " << r1 << G4endl;
+  G4cout << "    r2: " << r2 << G4endl;
+
   G4double dr = geo->GetD(fNam, "dr") * mm; // cone radial thickness
 
   //conical shape

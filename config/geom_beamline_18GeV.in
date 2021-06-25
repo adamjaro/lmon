@@ -9,25 +9,27 @@ new BeamQuadrupole Q1eR # Q1eR quadrupole
 
   Q1eR.z1 = -5.3 # start along z, meters
   Q1eR.z2 = -7.1 # end along z, meters
-  Q1eR.r1 = 66 # mm
-  Q1eR.r2 = 79 # mm
+  Q1eR.d1 = 96 # mm
+  Q1eR.d2 = 111 # mm
   Q1eR.grad = 13.3153 # T/m
+  Q1eR.angle = 90 # deg
 
 new BeamQuadrupole Q2eR # Q2eR quadrupole
 
   Q2eR.z1 = -7.6 # m
   Q2eR.z2 = -9 # m
-  Q2eR.r1 = 83 # mm
-  Q2eR.r2 = 94 # mm
+  Q2eR.d1 = 129 # mm
+  Q2eR.d2 = 129 # mm
   Q2eR.grad = -12.0595 # T/m
+  Q2eR.angle = 90 # deg
 
 new BeamMagnetV2 B2AeR # B2AeR beam dipole
 
   B2AeR.z1 = -9.61 # m
   B2AeR.z2 = -11.39 # m
   B2AeR.field = 0.192 # T
-  B2AeR.r1 = 97 # mm, entrance radius
-  B2AeR.r2 = 139 # mm, exit radius
+  B2AeR.d1 = 140 # mm, entrance diameter
+  B2AeR.d2 = 140 # mm, exit diameter
   B2AeR.rout = 200 # mm, vessel outer radius
 
 new BeamMagnetV2 B2BeR # B2BeR beam dipole
@@ -35,9 +37,59 @@ new BeamMagnetV2 B2BeR # B2BeR beam dipole
   B2BeR.z1 = -11.685 # m
   B2BeR.z2 = -14.865 # m
   B2BeR.field = 0.238 # T
-  B2BeR.r1 = 139 # mm
-  B2BeR.r2 = 139 # mm
+  B2BeR.d1 = 196 # mm
+  B2BeR.d2 = 196 # mm
   B2BeR.rout = 200 # mm
+
+
+new ConeAperture central_beampipe # beam pipe in front Q1eR
+
+  central_beampipe.zpos = 0 # mm
+  central_beampipe.length = 5300
+  central_beampipe.d1 = 96
+  central_beampipe.d2 = 96
+  central_beampipe.dr = 2
+
+new ConeAperture beam_B2AB # beam pipe in front B2BeR
+
+  beam_B2AB.zpos = -11390 # mm
+  beam_B2AB.z2 = -11685
+  beam_B2AB.d1 = 140
+  beam_B2AB.d2 = 196
+  beam_B2AB.dr = 2
+
+new ConeAperture beam_Q2B2 # beam pipe in front B2AeR
+
+  beam_Q2B2.zpos = -9000 # mm
+  beam_Q2B2.z2 = -9610
+  beam_Q2B2.d1 = 129
+  beam_Q2B2.d2 = 140
+  beam_Q2B2.dr = 2
+
+new ConeAperture beam_Q12 # beam pipe in front Q2eR
+
+  beam_Q12.zpos = -7100 # mm
+  beam_Q12.z2 = -7600
+  beam_Q12.d1 = 111
+  beam_Q12.d2 = 129
+  beam_Q12.dr = 2
+
+new BoxCalV2 Q3eR # marker at Q3eR location
+
+  Q3eR.zpos = -37700 # mm
+  Q3eR.xpos = -460.03 # mm
+  #Q3eR.zpos = -38000 # mm
+  #Q3eR.xpos = -465.450 # mm
+  #Q3eR.zpos = -38300 # mm
+  #Q3eR.xpos = -470.87 # mm
+  Q3eR.rot_y = 0.01808 # rad
+  #Q3eR.rot_y = 0 # rad
+  #Q3eR.xpos = 0 # mm
+  Q3eR.zsiz = 1
+  Q3eR.xsiz = 700 # mm
+  Q3eR.ysiz = 700 # mm
+  Q3eR.vis_full = 0
+
 
 
 

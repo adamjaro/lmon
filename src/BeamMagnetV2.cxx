@@ -49,9 +49,20 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4cout << "    zpos: " << zpos << G4endl;
   G4cout << "    length: " << length << G4endl;
 
-  //conical inner core
-  G4double r1 = geo->GetD(fNam, "r1") * mm; // entrance radius
-  G4double r2 = geo->GetD(fNam, "r2") * mm; // exit radius
+  //conical inner core, entrance radius (r1) and exit radius (r2)
+  G4double r1 = 1*mm, r2 = 1*mm;
+  geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
+  //radii from diameters
+  G4double d1, d2;
+  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
+    r1 = d1/2;
+  }
+  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
+    r2 = d2/2;
+  }
+  G4cout << "    r1: " << r1 << G4endl;
+  G4cout << "    r2: " << r2 << G4endl;
 
   G4String nam_inner = fNam+"_inner";
   G4Cons *shape_inner = new G4Cons(nam_inner, 0, r2, 0, r1, length/2, 0, 360*deg);

@@ -13,12 +13,14 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 5
     funclist = []
     funclist.append( make_conv_tree ) # 0
     funclist.append( phot_en_conv ) # 1
     funclist.append( conv_prob_en ) # 2
     funclist.append( clean_conv_en ) # 3
+    funclist.append( compare_conv ) # 4
+    funclist.append( compare_clean ) # 5
 
     funclist[iplot]()
 
@@ -152,29 +154,31 @@ def conv_prob_en():
     #plot range
     emin = 0
     emax = 19
-    pmin = 0.01
-    #pmax = 0.3
-    pmax = 1
+    pmin = 0.05
+    pmax = 0.1
+    #pmax = 1
 
     inp = TFile.Open("conv_b.root")
     tree = inp.Get("conv_tree")
 
     prec = 0.01
-    calc = rt.conv_calc(tree, prec, 1e-6)
-    #calc.nev = 500000
+    calc = rt.conv_calc(prec, 1e-6)
+    calc.set_tree(tree)
+    #calc.nev = 300000
 
     conv = calc.get_conv()
+    calc.release_tree()
 
-    calc.conv_in_all = True
-    calc.clean_in_sel = True
-    clean = calc.get_conv()
+    #calc.conv_in_all = True
+    #calc.clean_in_sel = True
+    #clean = calc.get_conv()
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, pmin, emax, pmax)
 
-    ut.put_yx_tit(frame, "Conversion probability", "#it{E}_{#gamma} (GeV)")
+    ut.put_yx_tit(frame, "Conversion probability", "#it{E}_{#gamma} (GeV)", 1.8)
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.01)
+    ut.set_margin_lbtr(gPad, 0.12, 0.09, 0.02, 0.01)
 
     frame.Draw()
     gPad.SetGrid()
@@ -182,10 +186,10 @@ def conv_prob_en():
     ut.set_graph(conv, rt.kBlue)
     conv.Draw("psame")
 
-    ut.set_graph(clean, rt.kRed)
-    clean.Draw("psame")
+    #ut.set_graph(clean, rt.kRed)
+    #clean.Draw("psame")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #conv_prob_en
@@ -198,19 +202,21 @@ def clean_conv_en():
     #plot range
     emin = 0
     emax = 19
-    pmin = 0
-    pmax = 1.1
+    pmin = 0.2
+    pmax = 0.3
 
-    inp = TFile.Open("conv.root")
+    inp = TFile.Open("conv_b.root")
     tree = inp.Get("conv_tree")
 
     prec = 0.01
-    calc = rt.conv_calc(tree, prec, 1e-6)
-    #calc.nev = 300000
+    calc = rt.conv_calc(prec, 1e-6)
+    calc.set_tree(tree)
+    #calc.nev = 600000
     calc.conv_in_all = True
     calc.clean_in_sel = True
 
     conv = calc.get_conv()
+    calc.release_tree()
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, pmin, emax, pmax)
@@ -225,10 +231,160 @@ def clean_conv_en():
     ut.set_graph(conv, rt.kBlue)
     conv.Draw("psame")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #clean_conv_en
+
+#_____________________________________________________________________________
+def compare_conv():
+
+    #comparison in conversion probability for different inputs
+
+    #plot range
+    emin = 0
+    emax = 19
+    pmin = 0.01
+    pmax = 0.15
+
+    prec = 0.01
+    calc = rt.conv_calc(prec, 1e-6)
+    #calc.nev = 300000
+
+    inp = TFile.Open("conv_b.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_b = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_c.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_c = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_d.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_d = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_e.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_e = calc.get_conv()
+    calc.release_tree()
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(emin, pmin, emax, pmax)
+
+    ut.put_yx_tit(frame, "Conversion probability", "#it{E}_{#gamma} (GeV)")
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.01)
+
+    frame.Draw()
+    gPad.SetGrid()
+
+    ut.set_graph(conv_b, rt.kRed)
+    conv_b.Draw("psame")
+
+    ut.set_graph(conv_c, rt.kBlue)
+    conv_c.Draw("psame")
+
+    ut.set_graph(conv_d, rt.kYellow+1)
+    conv_d.Draw("psame")
+
+    ut.set_graph(conv_e, rt.kGreen+1)
+    conv_e.Draw("psame")
+
+    leg = ut.prepare_leg(0.45, 0.7, 0.15, 0.25)
+    leg.AddEntry("", "Exit window thickness:", "")
+    leg.AddEntry(conv_b, "2.6 mm", "lp")
+    leg.AddEntry(conv_c, "2 mm", "lp")
+    leg.AddEntry(conv_d, "1.5 mm", "lp")
+    leg.AddEntry(conv_e, "1 mm", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#compare_conv
+
+#_____________________________________________________________________________
+def compare_clean():
+
+    #comparison in fraction of clean conversions for different inputs
+
+    #plot range
+    emin = 0
+    emax = 19
+    pmin = 0.1
+    pmax = 0.9
+
+    prec = 0.01
+    calc = rt.conv_calc(prec, 1e-6)
+    calc.conv_in_all = True
+    calc.clean_in_sel = True
+    #calc.nev = 300000
+
+    inp = TFile.Open("conv_b.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_b = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_c.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_c = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_d.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_d = calc.get_conv()
+    calc.release_tree()
+
+    inp = TFile.Open("conv_e.root")
+    tree = inp.Get("conv_tree")
+    calc.set_tree(tree)
+    conv_e = calc.get_conv()
+    calc.release_tree()
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(emin, pmin, emax, pmax)
+
+    ut.put_yx_tit(frame, "Fraction of clean conversions", "#it{E}_{#gamma} (GeV)")
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.09, 0.02, 0.01)
+
+    frame.Draw()
+    gPad.SetGrid()
+
+    ut.set_graph(conv_b, rt.kRed)
+    conv_b.Draw("psame")
+
+    ut.set_graph(conv_c, rt.kBlue)
+    conv_c.Draw("psame")
+
+    ut.set_graph(conv_d, rt.kYellow+1)
+    conv_d.Draw("psame")
+
+    ut.set_graph(conv_e, rt.kGreen+1)
+    conv_e.Draw("psame")
+
+    leg = ut.prepare_leg(0.45, 0.7, 0.15, 0.25)
+    leg.AddEntry("", "Exit window thickness:", "")
+    leg.AddEntry(conv_b, "2.6 mm", "lp")
+    leg.AddEntry(conv_c, "2 mm", "lp")
+    leg.AddEntry(conv_d, "1.5 mm", "lp")
+    leg.AddEntry(conv_e, "1 mm", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#compare_clean
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
