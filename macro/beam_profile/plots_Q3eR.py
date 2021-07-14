@@ -6,6 +6,7 @@ from ROOT import gPad, gROOT, gStyle, TFile
 import sys
 sys.path.append('../')
 
+from pandas import read_csv, DataFrame
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from scipy.stats import norm
@@ -18,12 +19,14 @@ from BoxCalV2Hits import BoxCalV2Hits
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 5
     funclist = []
     funclist.append( hits_xy ) # 0
     funclist.append( hits_z ) # 1
     funclist.append( fit_x ) # 2
     funclist.append( fit_y ) # 3
+    funclist.append( fit_x_csv ) # 4
+    funclist.append( fit_y_csv ) # 5
 
     funclist[iplot]()
 
@@ -151,13 +154,11 @@ def fit_x():
 
     #Q3eR location
     xpos = -460.03 # mm
-    #xpos = 0 # mm
     zpos = -37700 # mm
-    #xpos = -465.450 # mm
-    #zpos = -38000 # mm
-    #xpos = -470.87 # mm
-    #zpos = -38300 # mm
     rot_y = 0.01808 # rad
+    #xpos = 0 # mm
+    #zpos = -14865 # mm
+    #rot_y = 0 # rad
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
@@ -195,6 +196,7 @@ def fit_x():
     #Gaussian fit, bin centers and values
     centers = (0.5*(hx[1][1:]+hx[1][:-1]))
     pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), centers, hx[0])
+    #pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), centers, hx[0], p0=[-45, 1])
 
     #print(pars[0], 3*pars[1])
 
@@ -212,6 +214,10 @@ def fit_x():
     leg.add_entry(leg_txt(), "3$\sigma_x$ (mm): {0:.3f} $\pm$ {1:.3f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
     leg.draw(plt, col)
 
+    log = open("out.txt", "w")
+    log.write("    ge mx (mm):  {0:.3f} +/- {1:.3f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
+    log.write("       3sx (mm): {0:.3f} +/- {1:.3f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
@@ -225,9 +231,11 @@ def fit_y():
 
     #Q3eR location
     xpos = -460.03 # mm
-    #xpos = 0 # mm
     zpos = -37700 # mm
     rot_y = 0.01808 # rad
+    #xpos = 0 # mm
+    #zpos = -14865 # mm
+    #rot_y = 0 # rad
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
@@ -282,10 +290,115 @@ def fit_y():
     leg.add_entry(leg_txt(), "3$\sigma_y$ (mm): {0:.3f} $\pm$ {1:.3f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
     leg.draw(plt, col)
 
+    log = open("out.txt", "w")
+    log.write("    ge my (mm):  {0:.3f} +/- {1:.3f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
+    log.write("       3sy (mm): {0:.3f} +/- {1:.3f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
 #fit_y
+
+#_____________________________________________________________________________
+def fit_x_csv():
+
+    infile = "/home/jaroslav/sim/test/dd4hep_examples/cube/cube.csv"
+
+    inp = read_csv(infile)
+
+    nbins = 60
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    hx = plt.hist(inp["x"], bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    #Gaussian fit, bin centers and values
+    centers = (0.5*(hx[1][1:]+hx[1][:-1]))
+    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), centers, hx[0])
+    #pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), centers, hx[0], p0=[-45, 1])
+
+    #fit function
+    x = np.linspace(plt.xlim()[0], plt.xlim()[1], 300)
+    y = norm.pdf(x, pars[0], pars[1])
+    plt.plot(x, y, "-", label="norm", color="red")
+
+    ax.set_xlabel("$x$ (mm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_lin("red"), "Gaussian fit")
+    leg.add_entry(leg_txt(), "$\mu_x$ (mm): {0:.3f} $\pm$ {1:.3f}".format( pars[0], np.sqrt(cov[0,0]) ))
+    leg.add_entry(leg_txt(), "3$\sigma_x$ (mm): {0:.3f} $\pm$ {1:.3f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+    leg.draw(plt, col)
+
+    log = open("out.txt", "w")
+    log.write("    dd mx (mm):  {0:.3f} +/- {1:.3f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
+    log.write("       3sx (mm): {0:.3f} +/- {1:.3f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#fit_x_csv
+
+#_____________________________________________________________________________
+def fit_y_csv():
+
+    infile = "/home/jaroslav/sim/test/dd4hep_examples/cube/cube.csv"
+
+    inp = read_csv(infile)
+
+    nbins = 60
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #fitran = [-1, 1]
+    #inp = inp[ inp["y"].between(fitran[0], fitran[1], inclusive=False) ]
+
+    hy = plt.hist(inp["y"], bins=nbins, color="blue", density=True, histtype="step", lw=2)
+
+    #Gaussian fit, bin centers and values
+    centers = (0.5*(hy[1][1:]+hy[1][:-1]))
+    fit_data = DataFrame({"y": centers, "density": hy[0]})
+    #fitran = [-0.5, 0.5]
+    #fit_data = fit_data[ fit_data["y"].between(fitran[0], fitran[1], inclusive=False) ] # select the data to the range
+    pars, cov = curve_fit(lambda x, mu, sig : norm.pdf(x, loc=mu, scale=sig), fit_data["y"], fit_data["density"]) # , p0=[0,1]
+
+    #fit function
+    x = np.linspace(plt.xlim()[0], plt.xlim()[1], 300)
+    y = norm.pdf(x, pars[0], pars[1])
+    plt.plot(x, y, "-", label="norm", color="red")
+
+    ax.set_xlabel("$y$ (mm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_lin("red"), "Gaussian fit")
+    leg.add_entry(leg_txt(), "$\mu_y$ (mm): {0:.3f} $\pm$ {1:.3f}".format( pars[0], np.sqrt(cov[0,0]) ))
+    leg.add_entry(leg_txt(), "3$\sigma_y$ (mm): {0:.3f} $\pm$ {1:.3f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+    leg.draw(plt, col)
+
+    log = open("out.txt", "w")
+    log.write("    dd my (mm):  {0:.3f} +/- {1:.3f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
+    log.write("       3sy (mm): {0:.3f} +/- {1:.3f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#fit_y_csv
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

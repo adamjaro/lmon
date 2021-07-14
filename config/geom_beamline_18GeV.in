@@ -11,8 +11,8 @@ new BeamQuadrupole Q1eR # Q1eR quadrupole
   Q1eR.z2 = -7.1 # end along z, meters
   Q1eR.d1 = 96 # mm
   Q1eR.d2 = 111 # mm
-  Q1eR.grad = 13.3153 # T/m
-  Q1eR.angle = 90 # deg
+  Q1eR.grad = -13.3153 # T/m
+  #Q1eR.angle = 90 # deg
 
 new BeamQuadrupole Q2eR # Q2eR quadrupole
 
@@ -20,8 +20,8 @@ new BeamQuadrupole Q2eR # Q2eR quadrupole
   Q2eR.z2 = -9 # m
   Q2eR.d1 = 129 # mm
   Q2eR.d2 = 129 # mm
-  Q2eR.grad = -12.0595 # T/m
-  Q2eR.angle = 90 # deg
+  Q2eR.grad = 12.0595 # T/m
+  #Q2eR.angle = 90 # deg
 
 new BeamMagnetV2 B2AeR # B2AeR beam dipole
 
@@ -78,13 +78,10 @@ new BoxCalV2 Q3eR # marker at Q3eR location
 
   Q3eR.zpos = -37700 # mm
   Q3eR.xpos = -460.03 # mm
-  #Q3eR.zpos = -38000 # mm
-  #Q3eR.xpos = -465.450 # mm
-  #Q3eR.zpos = -38300 # mm
-  #Q3eR.xpos = -470.87 # mm
   Q3eR.rot_y = 0.01808 # rad
-  #Q3eR.rot_y = 0 # rad
+  #Q3eR.zpos = -14865 # mm
   #Q3eR.xpos = 0 # mm
+  #Q3eR.rot_y = 0 # rad
   Q3eR.zsiz = 1
   Q3eR.xsiz = 700 # mm
   Q3eR.ysiz = 700 # mm

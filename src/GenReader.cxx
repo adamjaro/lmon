@@ -17,6 +17,7 @@
 #include "TxReader.h"
 #include "Pythia6Reader.h"
 #include "TParticleReader.h"
+#include "HepMC3Reader.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ GenReader::GenReader() : G4VUserPrimaryGeneratorAction(), fGenType("tx"), fGen(0
   fGenAll.insert( make_pair("pythia6", new Pythia6Reader()) );
   fGenAll.insert( make_pair("tparticle", new TParticleReader()) );
   fGenAll.insert( make_pair("gun", new G4ParticleGun()) );
+  fGenAll.insert( make_pair("hepmc", new HepMC3Reader()) );
 
 }//GenReader
 
