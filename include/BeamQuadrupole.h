@@ -24,7 +24,7 @@ class BeamQuadrupole : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // compoment name
 
-
+    void PrintField(G4FieldManager *fman);
 
 
 

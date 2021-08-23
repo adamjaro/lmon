@@ -18,6 +18,16 @@
 #include "G4QuadrupoleMagField.hh"
 #include "G4FieldManager.hh"
 #include "G4RotationMatrix.hh"
+#include "G4VIntegrationDriver.hh"
+#include "G4ChordFinder.hh"
+#include "G4DormandPrinceRK78.hh"
+#include "G4DormandPrince745.hh"
+#include "G4DormandPrinceRK56.hh"
+#include "G4MagErrorStepper.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4TDormandPrince45.hh"
+#include "G4Mag_UsualEqRhs.hh"
+#include "G4IntegrationDriver.hh"
 
 //local classes
 #include "GeoParser.h"
@@ -92,7 +102,17 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
 
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
+
+  //alternative stepper
+  //fman->SetMinimumEpsilonStep(5e-2);
+  //fman->SetMaximumEpsilonStep(0.1);
+  //G4ClassicalRK4 *stepper = new G4ClassicalRK4(new G4Mag_UsualEqRhs(field));
+  //G4VIntegrationDriver *driver = new G4IntegrationDriver<G4ClassicalRK4>(5e-2*mm, stepper);
+  //G4ChordFinder *finder = new G4ChordFinder(driver);
+  //fman->SetChordFinder(finder);
+
   fman->CreateChordFinder(field);
+  PrintField(fman);
   vol_mag->SetFieldManager(fman, true);
 
   //put the inner core to the top volume
@@ -129,7 +149,47 @@ G4bool BeamQuadrupole::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
 }//ProcessHits
 
+//_____________________________________________________________________________
+void BeamQuadrupole::PrintField(G4FieldManager *fman) {
 
+  G4ChordFinder *finder = fman->GetChordFinder();
+
+  G4cout << "BeamQuadrupole:" << G4endl;
+  G4cout << "eps_min: " << fman->GetMinimumEpsilonStep()/mm << G4endl;
+  G4cout << "eps_max: " << fman->GetMaximumEpsilonStep()/mm << G4endl;
+  //G4cout << "min_chord_step: " << fman-> << G4endl;
+  G4cout << "delta_chord: " << finder->GetDeltaChord()/mm << G4endl;
+  G4cout << "delta_intersection: " << fman->GetDeltaIntersection()/mm << G4endl;
+  G4cout << "delta_one_step: " << fman->GetDeltaOneStep()/mm << G4endl;
+  //G4cout << "largest_step: " << fman-> << G4endl;
+
+  G4cout << "finder: " << typeid(*fman->GetChordFinder()).name() << G4endl;
+
+  G4VIntegrationDriver *driver = fman->GetChordFinder()->GetIntegrationDriver();
+  G4cout << "driver: " << typeid(*driver).name() << G4endl;
+  //driver->SetVerboseLevel(3);
+
+  G4MagIntegratorStepper *stepper = driver->GetStepper();
+  G4cout << "stepper: " << typeid(*stepper).name() << G4endl;
+  //G4DormandPrince745
+  //G4DormandPrinceRK78
+  //G4DormandPrinceRK56
+  //G4MagErrorStepper
+  //G4ClassicalRK4
+  //G4MagIntegratorStepper
+  //G4TDormandPrince45
+  //G4cout << "cast: " << dynamic_cast<G4TDormandPrince45*>(stepper) << G4endl;
+  G4cout << "cast: " << dynamic_cast<G4TDormandPrince45<G4Mag_UsualEqRhs>*>(stepper) << G4endl;
+
+  G4EquationOfMotion *eq = stepper->GetEquationOfMotion();
+  G4cout << "equation: " << typeid(*eq).name() << G4endl;
+
+
+
+
+
+
+}//PrintField
 
 
 

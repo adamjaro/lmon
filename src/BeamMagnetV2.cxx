@@ -5,6 +5,9 @@
 //
 //_____________________________________________________________________________
 
+//C++
+#include <typeinfo>
+
 //Geant headers
 #include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
@@ -16,6 +19,11 @@
 #include "G4VisAttributes.hh"
 #include "G4Tubs.hh"
 #include "G4SubtractionSolid.hh"
+#include "G4VIntegrationDriver.hh"
+#include "G4ChordFinder.hh"
+#include "G4ClassicalRK4.hh"
+#include "G4IntegrationDriver.hh"
+#include "G4Mag_UsualEqRhs.hh"
 
 //local headers
 #include "BeamMagnetV2.h"
@@ -76,7 +84,17 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4UniformMagField *field = new G4UniformMagField(G4ThreeVector(0, dipole_field, 0));
   G4FieldManager *fman = new G4FieldManager();
   fman->SetDetectorField(field);
-  fman->CreateChordFinder(field);
+
+  //alternative stepper
+  G4ClassicalRK4 *stepper = new G4ClassicalRK4(new G4Mag_UsualEqRhs(field));
+  G4VIntegrationDriver *driver = new G4IntegrationDriver<G4ClassicalRK4>(5e-05*mm, stepper);
+  G4ChordFinder *finder = new G4ChordFinder(driver);
+  fman->SetChordFinder(finder);
+  fman->SetMinimumEpsilonStep(5e-4);
+  fman->SetMaximumEpsilonStep(0.01);
+
+  //fman->CreateChordFinder(field);
+  PrintField(fman);
 
   vol_inner->SetFieldManager(fman, true);
 
@@ -117,6 +135,35 @@ G4bool BeamMagnetV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
 }//ProcessHits
 
+//_____________________________________________________________________________
+void BeamMagnetV2::PrintField(G4FieldManager *fman) {
+
+  G4ChordFinder *finder = fman->GetChordFinder();
+
+  G4cout << "BeamMagnetV2:" << G4endl;
+  G4cout << "eps_min: " << fman->GetMinimumEpsilonStep()/mm << G4endl;
+  G4cout << "eps_max: " << fman->GetMaximumEpsilonStep()/mm << G4endl;
+  //G4cout << "min_chord_step: " << fman-> << G4endl;
+  G4cout << "delta_chord: " << finder->GetDeltaChord()/mm << G4endl;
+  G4cout << "delta_intersection: " << fman->GetDeltaIntersection()/mm << G4endl;
+  G4cout << "delta_one_step: " << fman->GetDeltaOneStep()/mm << G4endl;
+  //G4cout << "largest_step: " << fman-> << G4endl;
+
+  G4VIntegrationDriver *driver = fman->GetChordFinder()->GetIntegrationDriver();
+  driver->SetVerboseLevel(3);
+
+  G4MagIntegratorStepper *stepper = driver->GetStepper();
+  G4cout << "stepper: " << typeid(*stepper).name() << G4endl;
+
+  G4EquationOfMotion *eq = stepper->GetEquationOfMotion();
+  G4cout << "equation: " << typeid(*eq).name() << G4endl;
+
+
+
+
+
+
+}//PrintField
 
 
 

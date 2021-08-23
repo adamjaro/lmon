@@ -26,6 +26,8 @@ class BeamMagnetV2 : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // magnet name
 
+    void PrintField(G4FieldManager *fman);
+
 };
 
 #endif
