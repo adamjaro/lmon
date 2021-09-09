@@ -1,9 +1,9 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 
-import ConfigParser
+import configparser
 
 import sys
 sys.path.append('/home/jaroslav/sim/GETaLM/models')
@@ -259,7 +259,7 @@ def plot_theta_SigTheta():
 
     #scale the parametrization to the plot
     norm = tbin * ht.Integral() / tpar.Integral(0, tmax)
-    print "norm:", norm
+    print("norm:", norm)
     gen.theta_const = norm * gen.theta_const
 
     ht.SetYTitle("Events / ({0:.3f}".format(tbin*1e3)+" mrad)")
@@ -390,7 +390,7 @@ def plot_theta():
     #polar angle of generated photons
 
     tbin = 0.01
-    tmax = 3
+    tmax = 4
 
     can = ut.box_canvas()
 
@@ -398,8 +398,9 @@ def plot_theta():
 
     tree.Draw("(TMath::Pi()-phot_theta)*1000 >> ht")
 
-    ht.SetYTitle("Events / ({0:.3f}".format(tbin)+" mrad)")
-    ht.SetXTitle("#vartheta (mrad)")
+    #ht.SetYTitle("Events / ({0:.3f}".format(tbin)+" mrad)")
+    ht.SetYTitle("Counts")
+    ht.SetXTitle("Photon #it{#theta} (mrad)")
 
     ht.SetTitleOffset(1.5, "Y")
     ht.SetTitleOffset(1.3, "X")
@@ -409,10 +410,12 @@ def plot_theta():
     gPad.SetBottomMargin(0.1)
     gPad.SetLeftMargin(0.11)
 
+    gPad.SetGrid()
+
     ht.Draw()
 
-    leg = ut.prepare_leg(0.2, 0.87, 0.18, 0.08, 0.035)
-    leg.AddEntry(None, "Angular distribution of Bethe-Heitler photons", "")
+    #leg = ut.prepare_leg(0.2, 0.87, 0.18, 0.08, 0.035)
+    #leg.AddEntry(None, "Angular distribution of Bethe-Heitler photons", "")
     #leg.Draw("same")
 
     gPad.SetLogy()
@@ -529,17 +532,20 @@ def plot_dSigDe():
 #_____________________________________________________________________________
 if __name__ == "__main__":
 
-    basedir = "/home/jaroslav/sim/lgen/data"
+    #basedir = "/home/jaroslav/sim/lgen/data"
+    basedir = "/home/jaroslav/sim/lattice/gen/"
 
-    infile = "lgen_18x275_beff2_10p1Mevt.root"
+    #infile = "lgen_18x275_beff2_10p1Mevt.root"
     #infile = "lgen_18x275_Lif_0p1GeV_5Mevt.root"
     #infile = "lgen_18x275_Au_Lif_0p1GeV_5Mevt.root"
+    #infile = "lgen_zeus_10g.root"
+    infile = "lgen_Lif_10g.root"
 
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
 
-    iplot = 10
+    iplot = 3
     funclist = []
     funclist.append( plot_dSigDe ) # 0
     funclist.append( plot_dSigDy ) # 1

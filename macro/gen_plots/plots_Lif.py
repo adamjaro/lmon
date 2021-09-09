@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 5
+    iplot = 2
     funclist = []
     funclist.append( make_theta_allE ) # 0
     funclist.append( make_sig_E ) # 1
@@ -187,30 +187,39 @@ def make_E_theta():
     #energy and angle
 
     tmin = 0
-    tmax = 2 # 5
+    tmax = 4 # 5
     tbin = 0.03
 
-    ebin = 0.3
+    ebin = 0.15
     emin = 0.5
-    emax = 18.5
+    emax = 10.5
 
-    gdir = "/home/jaroslav/sim/GETaLM_data/lumi/"
+    #gdir = "/home/jaroslav/sim/GETaLM_data/lumi/"
+    #inp = "lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root"
 
-    inp = "lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root"
+    #gdir = "/home/jaroslav/sim/lattice/gen/"
+    #inp = "lgen_Lif_10g.root"
+
+    gdir = "/home/jaroslav/sim/GETaLM/cards/"
+    inp = "bg.root"
 
     infile = TFile.Open(gdir+inp)
     tree = infile.Get("ltree")
+
+    #tree.Print()
+    #return
 
     can = ut.box_canvas()
 
     hEnT = ut.prepare_TH2D("hEnT", ebin, emin, emax, tbin, tmin, tmax)
 
     plot = "((TMath::Pi()-true_phot_theta)*1000)" + ":" + "(true_phot_E)"
+    #plot = "((TMath::Pi()-phot_theta)*1000)" + ":" + "(phot_en)"
 
     tree.Draw(plot+" >> hEnT")
 
     hEnT.SetXTitle("#it{E}_{#gamma} (GeV)")
-    hEnT.SetYTitle("#theta_{#gamma} (mrad)")
+    hEnT.SetYTitle("#it{#theta}_{#gamma} (mrad)")
 
     hEnT.SetTitleOffset(1.6, "Y")
     hEnT.SetTitleOffset(1.3, "X")
@@ -221,10 +230,13 @@ def make_E_theta():
     hEnT.SetContour(300)
 
     leg = ut.prepare_leg(0.43, 0.84, 0.24, 0.12, 0.05) # x, y, dx, dy, tsiz
-    leg.AddEntry(None, "No divergence", "")
-    leg.AddEntry(None, "#it{ep}, 18 #times 275 GeV", "")
-    leg.SetTextColor(rt.kRed)
+    #leg.AddEntry(None, "No divergence", "")
+    #leg.AddEntry("", "#it{ep}, 18 #times 275 GeV", "")
+    leg.AddEntry("", "#it{E}_{e} = 10 GeV", "")
+    #leg.SetTextColor(rt.kRed)
     leg.Draw("same")
+
+    gPad.SetGrid()
 
     gPad.SetLogz()
 
