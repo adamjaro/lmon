@@ -7,6 +7,7 @@ from pandas import DataFrame, HDFStore, read_hdf
 from pyHepMC3 import HepMC3 as hepmc
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.lines import Line2D
 
 import ROOT as rt
 from ROOT import TF1, gPad, gROOT, gStyle, TFile, gSystem
@@ -19,7 +20,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 8
+    iplot = 9
 
     func = {}
     func[0] = pressure_func
@@ -31,6 +32,8 @@ def main():
     func[6] = vtx_xz_df
     func[7] = phot_en_df
     func[8] = phot_theta_df
+    func[9] = el_en_df
+    func[10] = el_theta_df
 
     func[101] = create_df
 
@@ -99,15 +102,15 @@ def sigma_xy():
 def vtx_xz():
 
     #vertex position in xz plane
-    zmin = -5.5e3
-    zmax = 15.5e3
-    zbin = 1e2
+    zmin = -5.5
+    zmax = 15.5
+    zbin = 1e-1
 
     xmax = 15
     xbin = 0.1
 
-    gdir = "/home/jaroslav/sim/GETaLM/cards/"
-    inp = "bg.root"
+    gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
+    inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
 
     infile = TFile.Open(gdir+inp)
     tree = infile.Get("ltree")
@@ -116,7 +119,18 @@ def vtx_xz():
 
     hxz = ut.prepare_TH2D("hxz", zbin, zmin, zmax, xbin, -xmax, xmax)
 
-    tree.Draw("vtx_x:vtx_z >> hxz")
+    tree.Draw("vtx_x:(vtx_z/1e3) >> hxz")
+
+    hxz.SetXTitle("#it{z} (m)")
+    hxz.SetYTitle("#it{x} (mm)")
+
+    hxz.SetTitleOffset(1.3, "Y")
+    hxz.SetTitleOffset(1.3, "X")
+
+    hxz.GetXaxis().CenterTitle()
+    hxz.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.09, 0.1, 0.02, 0.11)
 
     hxz.SetMinimum(0.98)
     hxz.SetContour(300)
@@ -125,7 +139,7 @@ def vtx_xz():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #vtx_xz
@@ -134,15 +148,15 @@ def vtx_xz():
 def vtx_yz():
 
     #vertex position in yz plane
-    zmin = -5.5e3
-    zmax = 15.5e3
-    zbin = 1e2
+    zmin = -5.5
+    zmax = 15.5
+    zbin = 1e-1
 
     ymax = 15
     ybin = 0.1
 
-    gdir = "/home/jaroslav/sim/GETaLM/cards/"
-    inp = "bg.root"
+    gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
+    inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
 
     infile = TFile.Open(gdir+inp)
     tree = infile.Get("ltree")
@@ -151,7 +165,18 @@ def vtx_yz():
 
     hyz = ut.prepare_TH2D("hyz", zbin, zmin, zmax, ybin, -ymax, ymax)
 
-    tree.Draw("vtx_y:vtx_z >> hyz")
+    tree.Draw("vtx_y:(vtx_z/1e3) >> hyz")
+
+    hyz.SetXTitle("#it{z} (m)")
+    hyz.SetYTitle("#it{y} (mm)")
+
+    hyz.SetTitleOffset(1.3, "Y")
+    hyz.SetTitleOffset(1.3, "X")
+
+    hyz.GetXaxis().CenterTitle()
+    hyz.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.09, 0.1, 0.02, 0.11)
 
     hyz.SetMinimum(0.98)
     hyz.SetContour(300)
@@ -160,7 +185,7 @@ def vtx_yz():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #vtx_yz
@@ -285,11 +310,11 @@ def phot_en_df():
 
     inp = read_hdf("bg.h5")
 
-    nbins = 60
+    nbins = 120
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -298,7 +323,7 @@ def phot_en_df():
 
     plt.hist(inp["phot_en"], bins=nbins, color="blue", density=True, histtype="step", lw=2)
 
-    ax.set_xlabel("Photon energy (GeV)")
+    ax.set_xlabel("Photon energy $E_\gamma$ (GeV)")
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")
@@ -318,9 +343,9 @@ def phot_theta_df():
 
     nbins = 120
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -330,8 +355,14 @@ def phot_theta_df():
     plt.hist((np.pi-inp1["phot_theta"])*1e3, bins=nbins, color="red", density=True, histtype="step", lw=1, range=(0,4))
     plt.hist((np.pi-inp2["phot_theta"])*1e3, bins=nbins, color="blue", density=True, histtype="step", lw=1, range=(0,4))
 
-    ax.set_xlabel("Photon polar angle (mrad)")
+    ax.set_xlabel(r"Photon polar angle $\theta_\gamma$ (mrad)")
     ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "$E_e$ = 10 GeV")
+    leg.add_entry(leg_lin("blue"), "|$z$| < 5 m")
+    leg.add_entry(leg_lin("red"), "5 < $z$ < 12 m")
+    leg.draw(plt, col)
 
     ax.set_yscale("log")
 
@@ -339,6 +370,73 @@ def phot_theta_df():
     plt.close()
 
 #phot_theta_df
+
+#_____________________________________________________________________________
+def el_en_df():
+
+    inp = read_hdf("bg.h5")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    plt.hist(inp["el_en"], bins=nbins, color="blue", density=True, histtype="step", lw=1)
+
+    ax.set_xlabel("Electron energy $E'_e$ (GeV)")
+    ax.set_ylabel("Normalized counts")
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#el_en_df
+
+#_____________________________________________________________________________
+def el_theta_df():
+
+    inp = read_hdf("bg.h5")
+
+    #inp1 = inp.query("vtx_z>5000 and vtx_z<12000")# and phot_theta<0.004")
+    #inp2 = inp.query("vtx_z>-5000 and vtx_z<5000")# and phot_theta<0.004")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #plt.hist((np.pi-inp1["phot_theta"])*1e3, bins=nbins, color="red", density=True, histtype="step", lw=1, range=(0,4))
+    #plt.hist((np.pi-inp2["phot_theta"])*1e3, bins=nbins, color="blue", density=True, histtype="step", lw=1, range=(0,4))
+    plt.hist((np.pi-inp["el_theta"])*1e3, bins=nbins, color="blue", density=True, histtype="step", lw=1, range=(0,100))
+
+    ax.set_xlabel(r"Electron polar angle $\theta_e$ (mrad)")
+    ax.set_ylabel("Normalized counts")
+
+    #leg = legend()
+    #leg.add_entry(leg_txt(), "$E_e$ = 10 GeV")
+    #leg.add_entry(leg_lin("blue"), "|$z$| < 5 m")
+    #leg.add_entry(leg_lin("red"), "5 < $z$ < 12 m")
+    #leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#el_theta_df
 
 #_____________________________________________________________________________
 def make_gen():
@@ -361,15 +459,21 @@ def make_gen():
 def create_df():
 
     #input hepmc
-    inp = "/home/jaroslav/sim/GETaLM/cards/bg.hepmc"
+    inp = "/home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc"
     read = hepmc.ReaderAscii(inp)
 
     #output dataframe
-    col = ["vtx_x", "vtx_y", "vtx_z", "phot_en", "phot_theta", "phot_phi"]
+    col = ["vtx_x", "vtx_y", "vtx_z", "phot_en", "phot_theta", "phot_phi", "el_en", "el_theta", "el_phi"]
     val = []
+
+    nmax = 3000000
+    iev = 0
 
     #event loop
     while(True):
+
+        iev += 1
+        if iev > nmax: break
 
         mc = hepmc.GenEvent(hepmc.Units.GEV, hepmc.Units.MM)
         read.read_event(mc)
@@ -384,13 +488,20 @@ def create_df():
 
         #photon and electron particles
         phot = None
+        el = None
         for i in mc.particles():
             if i.pid() == 22:
                 phot = i
+            if i.pid() == 11:
+                el = i
 
         lin.append( phot.momentum().e() )
         lin.append( phot.momentum().theta() )
         lin.append( phot.momentum().phi() )
+
+        lin.append( el.momentum().e() )
+        lin.append( el.momentum().theta() )
+        lin.append( el.momentum().phi() )
 
         val.append( lin )
 
@@ -399,7 +510,7 @@ def create_df():
     print(df)
 
     out = HDFStore("bg.h5")
-    out["sr"] = df
+    out["bg"] = df
     out.close()
 
     read.close()
@@ -425,6 +536,34 @@ def set_grid(px, col="lime"):
     px.grid(True, color = col, linewidth = 0.5, linestyle = "--")
 
 #set_grid
+
+#_____________________________________________________________________________
+class legend:
+    def __init__(self):
+        self.items = []
+        self.data = []
+    def add_entry(self, i, d):
+        self.items.append(i)
+        self.data.append(d)
+    def draw(self, px, col=None, **kw):
+        leg = px.legend(self.items, self.data, **kw)
+        if col != None:
+            px.setp(leg.get_texts(), color=col)
+            if col != "black":
+                leg.get_frame().set_edgecolor("orange")
+        return leg
+
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
