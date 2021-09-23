@@ -42,6 +42,7 @@
 #include "GraphiteFilter.h"
 #include "TrackDet.h"
 #include "CaloBuilder.h"
+#include "BeamPipeV1.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -114,6 +115,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "CaloBuilder" ) {
     CaloBuilder calo(fTop, fGeo, fDet);
+
+  } else if( type == "BeamPipeV1" ) {
+    det = new BeamPipeV1(name, fGeo, fTop);
 
   }
 

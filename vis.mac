@@ -32,7 +32,8 @@
 #/vis/viewer/set/targetPoint 40 0 -2700 cm # low Q^2 tagger
 #/vis/viewer/set/targetPoint -0.46003 0 -37.7 meter # Q3eR magnet
 #/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
-/vis/viewer/set/targetPoint 0 0 -14.865 m # after B2BeR
+#/vis/viewer/set/targetPoint 0 0 -14.865 m # after B2BeR
+#/vis/viewer/set/targetPoint 0 0 16 m # beampipe
 
 #/vis/scene/add/text 2500 0 3000 mm 15 0 0 Solenoid field
 #/vis/scene/add/text 2900 0 -3280 mm 15 0 0 ecal
@@ -61,6 +62,7 @@
 #/vis/scene/add/axes 0 0 -14865 400 mm # B2BeR end
 #/vis/scene/add/axes -460.03 0 -37700 400 mm # Q3eR
 #/vis/scene/add/axes 0.4 0 -27 0.1 meter # low Q^2 tagger
+#/vis/scene/add/axes 0 0 16000 32 mm # beampipe
 #
 #
 # Draw smooth trajectories at end of event, showing trajectory points

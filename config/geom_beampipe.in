@@ -1,0 +1,20 @@
+
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 40000 # mm
+
+#new BeamPipeV1 beam # central beam element
+
+  beam.length = 32 # m
+  beam.r1 = 32 # mm
+  beam.dr = 3 # mm
+
+new BoxCalV2 zplane
+
+  zplane.zpos = 0
+  zplane.zsiz = 3
+  zplane.xsiz = 700 # mm
+  zplane.ysiz = 700 # mm
+

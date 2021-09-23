@@ -20,7 +20,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 9
+    iplot = 14
 
     func = {}
     func[0] = pressure_func
@@ -34,6 +34,10 @@ def main():
     func[8] = phot_theta_df
     func[9] = el_en_df
     func[10] = el_theta_df
+    func[11] = phot_proj_z0
+    func[12] = phot_proj_z_ecal
+    func[13] = el_proj_z0
+    func[14] = el_proj_z_ecal
 
     func[101] = create_df
 
@@ -437,6 +441,170 @@ def el_theta_df():
     plt.close()
 
 #el_theta_df
+
+#_____________________________________________________________________________
+def phot_proj_z0():
+
+    inp = read_hdf("bg.h5")
+
+    inp = inp.query("vtx_z>0")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #theta in rad:      (np.pi-inp["el_theta"])
+    #  tan(theta) = rxy/z
+    #radial position:   rxy = z * tan(theta)
+
+    #plot in cm
+    plt.hist( ( inp["vtx_z"]*np.tan( (np.pi-inp["phot_theta"]) ) + np.sqrt(inp["vtx_x"]**2 + inp["vtx_y"]**2) )/10, bins=nbins,\
+        color="blue", density=True, histtype="step", lw=1) # , range=(0,150)
+
+    ax.set_xlabel("$r_{xy}$ at $z$ = 0 (cm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "Photon projection on $xy$ plane, $z$ = 0")
+    leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#phot_proj_z0
+
+#_____________________________________________________________________________
+def phot_proj_z_ecal():
+
+    #photon projection at z = 3700 mm, location for the end of forward ecal
+
+    inp = read_hdf("bg.h5")
+
+    inp = inp.query("vtx_z>3700")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #theta in rad:      (np.pi-inp["el_theta"])
+    #  tan(theta) = rxy/z
+    #radial position:   rxy = z * tan(theta)
+
+    #plot in cm
+    plt.hist( ( (inp["vtx_z"]-3700)*np.tan( (np.pi-inp["phot_theta"]) ) + np.sqrt(inp["vtx_x"]**2 + inp["vtx_y"]**2) )/10, bins=nbins,\
+        color="blue", density=True, histtype="step", lw=1) # , range=(0,150)
+
+    ax.set_xlabel("$r_{xy}$ at $z$ = 3.7 m (cm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "Photon projection on $xy$ plane, $z$ = 3.7 m")
+    leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#phot_proj_z_ecal
+
+#_____________________________________________________________________________
+def el_proj_z0():
+
+    inp = read_hdf("bg.h5")
+
+    inp = inp.query("vtx_z>0")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #theta in rad:      (np.pi-inp["el_theta"])
+    #  tan(theta) = rxy/z
+    #radial position:   rxy = z * tan(theta)
+
+    #plot in cm
+    plt.hist( ( inp["vtx_z"]*np.tan( (np.pi-inp["el_theta"]) ) + np.sqrt(inp["vtx_x"]**2 + inp["vtx_y"]**2) )/10, bins=nbins,\
+        color="blue", density=True, histtype="step", lw=1, range=(0,150))
+
+    ax.set_xlabel("$r_{xy}$ at $z$ = 0 (cm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "Electron projection on $xy$ plane, $z$ = 0")
+    leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#el_proj_z0
+
+#_____________________________________________________________________________
+def el_proj_z_ecal():
+
+    #photon projection at z = 3700 mm, location for the end of forward ecal
+
+    inp = read_hdf("bg.h5")
+
+    inp = inp.query("vtx_z>3700")
+
+    nbins = 120
+
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    #theta in rad:      (np.pi-inp["el_theta"])
+    #  tan(theta) = rxy/z
+    #radial position:   rxy = z * tan(theta)
+
+    #plot in cm
+    plt.hist( ( (inp["vtx_z"]-3700)*np.tan( (np.pi-inp["el_theta"]) ) + np.sqrt(inp["vtx_x"]**2 + inp["vtx_y"]**2) )/10, bins=nbins,\
+        color="blue", density=True, histtype="step", lw=1, range=(0,150))
+
+    ax.set_xlabel("$r_{xy}$ at $z$ = 3.7 m (cm)")
+    ax.set_ylabel("Normalized counts")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "Electron projection on $xy$ plane, $z$ = 3.7 m")
+    leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#el_proj_z_ecal
 
 #_____________________________________________________________________________
 def make_gen():
