@@ -13,8 +13,8 @@ new top topv
 
 new BoxCalV2 zplane
 
-  zplane.zpos = 0
-  zplane.zsiz = 3
-  zplane.xsiz = 700 # mm
-  zplane.ysiz = 700 # mm
+  zplane.zpos = 5000 # mm
+  zplane.zsiz = 10 # mm
+  zplane.xsiz = 1000 # mm
+  zplane.ysiz = 1000 # mm
 

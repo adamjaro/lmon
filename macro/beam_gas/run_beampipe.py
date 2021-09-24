@@ -8,10 +8,12 @@ from rcalc import rcalc
 def main():
 
     #input
-    infile = "../../lmon.root"
+    #infile = "../../lmon_ecal.root"
+    infile = "../../lmon_hcal.root"
 
     #output
-    outfile = "rc_z0.root"
+    #outfile = "rc_hcal.root"
+    outfile = "rc_el_hcal.root"
 
     rate = rcalc()
     rate.open_input(infile)

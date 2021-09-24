@@ -10,11 +10,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = zpos
     func[1] = rpos
+    func[2] = en_r_z
 
     func[iplot]()
 
@@ -29,7 +30,7 @@ def zpos():
     zmax = 15.5
     zbin = 0.2
 
-    infile = TFile.Open("rc.root")
+    infile = TFile.Open("rc_ecal.root")
     tree = infile.Get("rtree")
 
     can = ut.box_canvas()
@@ -111,6 +112,69 @@ def rpos():
     can.SaveAs("01fig.pdf")
 
 #rpos
+
+#_____________________________________________________________________________
+def en_r_z():
+
+    #radial hit position and vertex position in z
+
+    #meters
+    zmin = 2
+    zmax = 16
+    zbin = 0.2
+
+    #cm
+    rmin = 3.2
+    rmax = 15
+    rbin = 0.2
+
+    #GeV
+    emin = 0.1
+    emax = 10
+    ebin = 0.1
+
+    infile = TFile.Open("rc_z0_zcut.root")
+    tree = infile.Get("rtree")
+
+    can = ut.box_canvas()
+
+    hz = ut.prepare_TH3D("hz", zbin, zmin, zmax, rbin, rmin, rmax, ebin, emin, emax)
+
+    tree.Draw("en:(rpos/1e1):(vtx_z/1e3) >> hz")
+
+    profile = hz.Project3DProfile("yx")
+
+    #print("Entries:", profile.GetEntries())
+
+    profile.SetXTitle("Vertex #it{z} position (m)")
+    profile.SetYTitle("Radius #it{r_{xy}} (cm) at #it{z} = 0")
+    profile.SetZTitle("Photon energy (GeV)")
+    profile.SetTitle("")
+
+    profile.SetTitleOffset(1.3, "X")
+    profile.SetTitleOffset(1.3, "Z")
+
+    profile.GetXaxis().CenterTitle()
+    profile.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.03, 0.15)
+
+    profile.SetContour(300)
+
+    #gPad.SetLogz()
+
+    profile.Draw("colz")
+
+    leg = ut.prepare_leg(0.2, 0.88, 0.18, 0.08, 0.035)
+    leg.AddEntry("", "Plane at #it{z} = 0", "")
+    leg.Draw("same")
+
+    gPad.SetGrid()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#en_r_z
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

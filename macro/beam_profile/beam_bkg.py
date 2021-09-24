@@ -15,7 +15,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 0
 
     func = {}
     func[0] = rate
@@ -30,6 +30,11 @@ def rate():
 
     # p = nRT
 
+    #range in z (m), None for all
+    #zmin = None
+    zmin = 5.
+    zmax = None
+
     #cross section in mb
     sigma = 150.969 # mb
 
@@ -37,7 +42,7 @@ def rate():
     beam_current = 2.5 # A
 
     #spacing in z
-    zbin = 0.2 # m
+    zbin = 0.05 # m
 
     #temperature
     T = 293.15 # K
@@ -61,15 +66,18 @@ def rate():
     pressure = interp1d(xls[1], xls[2], kind="linear")
 
     #intervals along z
-    zmin = xls[1][ xls[1].index[0] ]
-    zmax = xls[1][ xls[1].index[-1] ]
-    print("range:", zmin, zmax)
+    if zmin is None:
+        zmin = xls[1][ xls[1].index[0] ]
+    if zmax is None:
+        zmax = xls[1][ xls[1].index[-1] ]
+    print("Range:", zmin, zmax)
 
     hz = ut.prepare_TH1D("hz", zbin, zmin, zmax)
 
     #calculate the rate, ignoring last bin which might reach past the data
     xz_plot = []
     rate_plot = []
+    total_rate = 0.;
     for ibin in range(1,hz.GetNbinsX()):
 
         #surface density in m^-2
@@ -86,10 +94,13 @@ def rate():
         #rate in kHz
         rate_plot.append( R*1e-3 )
         rate_plot.append( R*1e-3 )
+        total_rate += R*1e-3
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    print("Total rate (kHz):", total_rate)
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)

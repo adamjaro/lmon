@@ -16,7 +16,7 @@ class rcalc {
 
     void open_input(std::string infile);
     void create_output(std::string outfile);
-    void event_loop();
+    void event_loop(int n=-1);
 
   private:
 
@@ -39,6 +39,7 @@ class rcalc {
 
     Double_t zpos;
     Double_t rpos;
+    Double_t en;
 
 };
 

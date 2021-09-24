@@ -40,16 +40,24 @@ rcalc::~rcalc() {
 }//~rcalc
 
 //_____________________________________________________________________________
-void rcalc::event_loop() {
+void rcalc::event_loop(int n) {
 
   //number of events
   ULong64_t nev = tree->GetEntries();
+  if( n >= 0 ) {
+    nev = n;
+  }
 
   //event loop
+  ULong64_t nall = 0;
   for(int iev=0; iev<nev; iev++) {
     tree->GetEntry(iev);
 
     //cout << vtx_z << endl;
+
+    //if( vtx_z < 5000. ) continue;
+
+    nall++;
 
     //if( hit_pdg->size() <= 0 ) continue;
 
@@ -58,12 +66,14 @@ void rcalc::event_loop() {
     //hit loop
     for(int ihit=0; ihit<hit_pdg->size(); ihit++) {
 
-      //photon hit
-      if( hit_pdg->at(ihit) != 22 ) continue;
+      //photon or electron hit
+      //if( hit_pdg->at(ihit) != 22 ) continue;
+      if( hit_pdg->at(ihit) != 11 ) continue;
       nsel++;
 
       zpos = hit_z->at(ihit);
       rpos = TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) );
+      en = hit_en->at(ihit);
 
       //cout << hit_z->at(ihit) << " " << vtx_z << endl;
       //cout << TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) ) << endl;
@@ -76,6 +86,7 @@ void rcalc::event_loop() {
 
   }//event loop
 
+  cout << "All events: " << nall << endl;
 
 }//event_loop
 
@@ -113,6 +124,7 @@ void rcalc::create_output(std::string outfile) {
 
   otree->Branch("zpos", &zpos, "zpos/D");
   otree->Branch("rpos", &rpos, "rpos/D");
+  otree->Branch("en", &en, "en/D");
 
 }//create_output
 
