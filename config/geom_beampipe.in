@@ -13,8 +13,15 @@ new top topv
 
 new BoxCalV2 zplane
 
-  zplane.zpos = 5000 # mm
+  zplane.zpos = -5100 # mm
   zplane.zsiz = 10 # mm
   zplane.xsiz = 1000 # mm
   zplane.ysiz = 1000 # mm
+
+new BoxCalV2 zplane2
+
+  zplane2.zpos = -5200 # mm
+  zplane2.zsiz = 300 # mm
+  zplane2.xsiz = 1000 # mm
+  zplane2.ysiz = 1000 # mm
 

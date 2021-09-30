@@ -26,7 +26,7 @@
 /lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
 
 #/lmon/output/name lmon.root
-/lmon/output/name lmon_hcal.root
+/lmon/output/name lmon.root
 #/lmon/output/name data/ew/ew1bx2.root
 
 

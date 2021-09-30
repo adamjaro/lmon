@@ -20,7 +20,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 14
+    iplot = 2
 
     func = {}
     func[0] = pressure_func
@@ -113,8 +113,10 @@ def vtx_xz():
     xmax = 15
     xbin = 0.1
 
-    gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
-    inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
+    #gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
+    #inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
+    gdir = "/home/jaroslav/sim/GETaLM/cards/"
+    inp = "bg.root"
 
     infile = TFile.Open(gdir+inp)
     tree = infile.Get("ltree")
@@ -143,7 +145,7 @@ def vtx_xz():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #vtx_xz
@@ -159,8 +161,10 @@ def vtx_yz():
     ymax = 15
     ybin = 0.1
 
-    gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
-    inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
+    #gdir = "/home/jaroslav/sim/GETaLM_data/beam_gas/"
+    #inp = "beam_gas_ep_10GeV_emin0p1_10Mevt.root"
+    gdir = "/home/jaroslav/sim/GETaLM/cards/"
+    inp = "bg.root"
 
     infile = TFile.Open(gdir+inp)
     tree = infile.Get("ltree")
@@ -189,7 +193,7 @@ def vtx_yz():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #vtx_yz
@@ -316,9 +320,9 @@ def phot_en_df():
 
     nbins = 120
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -347,9 +351,9 @@ def phot_theta_df():
 
     nbins = 120
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -627,7 +631,8 @@ def make_gen():
 def create_df():
 
     #input hepmc
-    inp = "/home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc"
+    #inp = "/home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc"
+    inp = "/home/jaroslav/sim/GETaLM/cards/bg.hepmc"
     read = hepmc.ReaderAscii(inp)
 
     #output dataframe

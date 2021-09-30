@@ -28,6 +28,8 @@ class HepMC3Reader : public G4VPrimaryGenerator {
 
     std::shared_ptr<HepMC3::ReaderAscii> fRead; // HepMC3 reader
 
+    unsigned long fIev; // index of current event
+
 };
 
 #endif

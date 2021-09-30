@@ -31,8 +31,8 @@ def rate():
     # p = nRT
 
     #range in z (m), None for all
-    #zmin = None
-    zmin = 5.
+    zmin = None
+    #zmin = 5.
     zmax = None
 
     #cross section in mb
@@ -42,7 +42,7 @@ def rate():
     beam_current = 2.5 # A
 
     #spacing in z
-    zbin = 0.05 # m
+    zbin = 0.2 # m
 
     #temperature
     T = 293.15 # K
@@ -98,9 +98,9 @@ def rate():
 
     print("Total rate (kHz):", total_rate)
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -110,7 +110,7 @@ def rate():
     plt.plot(xz_plot, rate_plot, "-", color="blue", lw=1)
 
     ax.set_xlabel("$z$ (m)")
-    ax.set_ylabel("Event rate in 200 cm length along $z$ (kHz)")
+    ax.set_ylabel("Event rate in 20 cm length along $z$ (kHz)")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()

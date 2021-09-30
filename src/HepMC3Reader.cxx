@@ -27,7 +27,7 @@ using namespace HepMC3;
 
 //_____________________________________________________________________________
 HepMC3Reader::HepMC3Reader() : G4VPrimaryGenerator(), fInputName(""),
-  fRead(nullptr) {
+  fRead(nullptr), fIev(0) {
 
   //command for input name
   fMsg = new G4GenericMessenger(this, "/lmon/input/hepmc/");
@@ -41,6 +41,10 @@ void HepMC3Reader::GeneratePrimaryVertex(G4Event *evt) {
 
   //open at the first call
   if(fRead == nullptr) OpenInput();
+
+  if( (++fIev)%100000 == 0 ) {
+    G4cout << "HepMC3Reader::GeneratePrimaryVertex, event number: " << fIev << G4endl;
+  }
 
   //read the event
   GenEvent mc(Units::GEV,Units::MM);

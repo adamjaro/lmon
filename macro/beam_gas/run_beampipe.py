@@ -9,13 +9,15 @@ def main():
 
     #input
     #infile = "../../lmon_ecal.root"
-    infile = "../../lmon_hcal.root"
+    #infile = "../../lmon_hcal.root"
+    infile = "../../lmon.root"
 
     #output
-    #outfile = "rc_hcal.root"
-    outfile = "rc_el_hcal.root"
+    outfile = "rc.root"
+    #outfile = "rc_el_hcal.root"
 
-    rate = rcalc()
+    rate = rcalc("zplane")
+    rate.set_rmin(30) # mm
     rate.open_input(infile)
     rate.create_output(outfile)
 
