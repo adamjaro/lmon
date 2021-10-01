@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = zpos
@@ -70,17 +70,24 @@ def rpos():
     #radial hit position and vertex position in z
 
     #meters
-    zmin = -5.5
-    zmax = 17
-    zbin = 0.2
+    #zmin = 2
+    zmin = -6
+    zmax = 16
+    zbin = 1
 
     #cm
-    rmin = 3.2
-    rmax = 14
-    rbin = 0.1
+    #rmin = 3.2
+    #rmax = 17
+    #rbin = 1
+    rmin = 3
+    rmax = 4.5
+    rbin = 1e-2
 
-    infile = TFile.Open("rc_z0.root")
-    tree = infile.Get("rtree")
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_1a.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2f.root"
+
+    infile = TFile.Open(infile)
+    tree = infile.Get("ptree")
 
     can = ut.box_canvas()
 
@@ -103,6 +110,14 @@ def rpos():
 
     hz.SetMinimum(0.98)
     hz.SetContour(300)
+
+    for ix in range(1, hz.GetNbinsX()+1):
+        for iy in range(1, hz.GetNbinsY()+1):
+
+            pass
+            #print(ix, iy, hz.GetBinContent(ix, iy))
+
+    #hz.Draw("colztext")
 
     gPad.SetLogz()
 
@@ -133,8 +148,10 @@ def en_r_z():
     emax = 10
     ebin = 0.1
 
-    infile = TFile.Open("rc_z0_zcut.root")
-    tree = infile.Get("rtree")
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_1a.root"
+
+    infile = TFile.Open(infile)
+    tree = infile.Get("ptree")
 
     can = ut.box_canvas()
 
@@ -171,7 +188,7 @@ def en_r_z():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en_r_z

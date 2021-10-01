@@ -2,6 +2,7 @@
 
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+import math as ma
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
@@ -13,10 +14,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 2
 
     func = {}
     func[0] = radial
+    func[1] = rz
+    func[2] = beampipe
 
     func[iplot]()
 
@@ -26,26 +29,29 @@ def main():
 def radial():
 
     #Hz
-    #total_rate = 685833. # full range
-    #total_rate = 594328. # z > 0
-    #total_rate = 463719. # z > 3600 mm
-    total_rate = 388011. # z > 5000 mm
+    total_rate = 685833. # full range
 
     #all simulated events
-    #nall = 10e6 # full range
-    #nall = 8671142 # z > 0
-    #nall = 6779283 # z > 3600 mm
-    nall = 5679573 # z > 5000 mm
+    nall = 100e6 # full range
+
+    #zlabel = "0"
+    #zlabel = "5 m"
+    #zlabel = "3.6 m"
+    #zlabel = "-2 m"
+    zlabel = "-3.55 m"
+
+    #input
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2a.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2b.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2c.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2d.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2e.root"
 
     #photon and electron rate
-    #xp, yp = get_rate("rc_z0_zcut.root", total_rate, nall)
-    #exp, eyp = get_rate("rc_el_z0_zcut.root", total_rate, nall)
-    #xp, yp = get_rate("rc_ecal_zcut.root", total_rate, nall)
-    #exp, eyp = get_rate("rc_el_ecal_zcut.root", total_rate, nall)
-    xp, yp = get_rate("rc_hcal_zcut.root", total_rate, nall)
-    exp, eyp = get_rate("rc_el_hcal_zcut.root", total_rate, nall)
-    #xp, yp = get_rate("rc_hcal.root", total_rate, nall)
-    #exp, eyp = get_rate("rc_el_hcal.root", total_rate, nall)
+    xp, yp, ptot = get_rate(infile, "ptree", total_rate, nall)
+    exp, eyp, etot = get_rate(infile, "etree", total_rate, nall)
+
+    print("Sum rate (kHz):", (ptot+etot)/1e3)
 
     #plot
     #plt.style.use("dark_background")
@@ -60,13 +66,11 @@ def radial():
     plt.plot(xp, yp, "-", color="blue", lw=1)
     plt.plot(exp, eyp, "-", color="red", lw=1)
 
-    ax.set_xlabel("$r_{xy}$ (cm) at $z$ = 0")
-    ax.set_ylabel("Event rate (Hz) in $\delta r$ = 1 cm")
+    ax.set_xlabel("$r_{xy}$ (cm) at $z$ = "+zlabel)
+    ax.set_ylabel("Event rate per unit area (Hz/cm$^2$)")
 
     leg = legend()
-    #leg.add_entry(leg_txt(), "Plane at $z$ = 0, radial intervals $\delta r$ = 1 cm")
-    #leg.add_entry(leg_txt(), "Plane at $z$ = 3.6 m, radial intervals $\delta r$ = 1 cm")
-    leg.add_entry(leg_txt(), "Plane at $z$ = 5 m, radial intervals $\delta r$ = 1 cm")
+    leg.add_entry(leg_txt(), "Plane at $z$ = "+zlabel)
     leg.add_entry(leg_lin("red"), "Electron rate")
     leg.add_entry(leg_lin("blue"), "Photon rate")
     leg.draw(plt, col)
@@ -79,15 +83,16 @@ def radial():
 #radial
 
 #_____________________________________________________________________________
-def get_rate(infile, total_rate, nall):
+def get_rate(infile, tnam, total_rate, nall):
 
     #cm
     rmin = 3.2
     rmax = 70
     rbin = 1
+    #rbin = 0.8
 
     infile = TFile.Open(infile)
-    tree = infile.Get("rtree")
+    tree = infile.Get(tnam)
 
     print("Tree entries:", tree.GetEntries())
 
@@ -105,23 +110,240 @@ def get_rate(infile, total_rate, nall):
     yp = []
     all_rate = 0.
     for ibin in range(1,hr.GetNbinsX()+1):
-        xp.append( hr.GetBinLowEdge(ibin) )
-        xp.append( hr.GetBinLowEdge(ibin) + hr.GetBinWidth(ibin) )
+
+        #radii and surface
+        r1 = hr.GetBinLowEdge(ibin)
+        r2 = r1 + hr.GetBinWidth(ibin)
+        surf = ma.pi*r2**2 - ma.pi*r1**2
+
+        xp.append( r1 )
+        xp.append( r2 )
 
         #rate in a given bin
         rate = rsim*hr.GetBinContent(ibin)
         #print(rate)
 
-        yp.append( rate )
-        yp.append( rate )
+        yp.append( rate/surf )
+        yp.append( rate/surf )
 
         all_rate += rate
 
     print("Integrated rate:", all_rate)
 
-    return xp, yp
+    return xp, yp, all_rate
 
 #get_rate
+
+#_____________________________________________________________________________
+def rz():
+
+    #rate in radius and vertex z-position
+
+    #Hz
+    total_rate = 685833. # full range
+
+    #all simulated events
+    nall = 100e6 # full range
+
+    #meters
+    #zmin = -1
+    #zmin = 3
+    #zmin = 2
+    #zmin = -4
+    zmin = -6
+    zmax = 16
+    zbin = 0.7
+
+    #cm
+    rmin = 0
+    rmax = 85
+    rbin = 3
+
+    #zlabel = "0"
+    #zlabel = "5 m"
+    #zlabel = "3.6 m"
+    #zlabel = "-2 m"
+    zlabel = "-3.55 m"
+    pelabel = "Photons + electrons"
+
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2a.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2b.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2c.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2d.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2e.root"
+
+    infile = TFile.Open(infile)
+    ptree = infile.Get("ptree")
+    etree = infile.Get("etree")
+
+    can = ut.box_canvas()
+
+    hz = ut.prepare_TH2D("hz", zbin, zmin, zmax, rbin, rmin, rmax)
+
+    ptree.Draw("(rpos/1e1):(vtx_z/1e3) >> hz", "rpos>32")
+    etree.Draw("(rpos/1e1):(vtx_z/1e3) >>+hz", "rpos>32")
+
+    print("Entries:", hz.GetEntries())
+
+    hz.SetXTitle("Vertex #it{z} (m)")
+    hz.SetYTitle("#it{r_{xy}} (cm) at #it{z} = "+zlabel)
+    hz.SetZTitle("Event rate per unit area (Hz/cm^{2})")
+
+    hz.SetTitleOffset(1.3, "Y")
+    hz.SetTitleOffset(1.3, "X")
+    hz.SetTitleOffset(1.5, "Z")
+
+    hz.GetXaxis().CenterTitle()
+    hz.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.02, 0.16)
+
+    #rate per simulated event
+    rsim = total_rate/nall
+
+    minr = 1e9
+    maxr = -1e9
+    totr = 0
+    for ix in range(1, hz.GetNbinsX()+1):
+        for iy in range(1, hz.GetNbinsY()+1):
+
+            #radii and surface
+            r1 = hz.GetYaxis().GetBinLowEdge(ix)
+            r2 = r1 + hz.GetYaxis().GetBinWidth(ix)
+            surf = ma.pi*r2**2 - ma.pi*r1**2
+
+            rate = rsim*hz.GetBinContent(ix, iy)
+            totr += rate
+
+            if hz.GetBinContent(ix, iy) > 0:
+                if rate/surf > maxr: maxr = rate/surf
+                if rate/surf < minr: minr = rate/surf
+
+            hz.SetBinContent(ix, iy, rate/surf)
+
+    print(minr, maxr)
+
+    print("Integrated rate (kHz): ", totr/1e3)
+
+    hz.SetMinimum(minr-0.1*minr)
+    hz.SetMaximum(maxr+0.1*maxr)
+    hz.SetContour(300)
+
+    leg = ut.prepare_leg(0.2, 0.86, 0.18, 0.1, 0.035)
+    leg.AddEntry("", "Plane at #it{z} = "+zlabel, "")
+    leg.AddEntry("", pelabel, "")
+    leg.Draw("same")
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#rz
+
+#_____________________________________________________________________________
+def beampipe():
+
+    #Hz
+    total_rate = 685833. # full range
+
+    #all simulated events
+    nall = 100e6 # full range
+
+    #input
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2f.root"
+
+    #photon and electron rate
+    xp, yp, ptot = get_rate_beampipe(infile, "ptree", total_rate, nall)
+    exp, eyp, etot = get_rate_beampipe(infile, "etree", total_rate, nall)
+
+    print("Sum rate (kHz):", (ptot+etot)/1e3)
+
+    #plot
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    plt.plot(xp, yp, "-", color="blue", lw=1)
+    plt.plot(exp, eyp, "-", color="red", lw=1)
+
+    ax.set_xlabel("$z$ (m)")
+    ax.set_ylabel("Event rate per unit area (Hz/cm$^2$)")
+
+    leg = legend()
+    leg.add_entry(leg_lin("red"), "Electron rate")
+    leg.add_entry(leg_lin("blue"), "Photon rate")
+    leg.draw(plt, col)
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#beampipe
+
+#_____________________________________________________________________________
+def get_rate_beampipe(infile, tnam, total_rate, nall):
+
+    #meters
+    zmin = -5
+    zmax = 15
+    zbin = 0.3
+
+    #beam pipe radius, cm
+    rbeam = 3.2
+
+    infile = TFile.Open(infile)
+    tree = infile.Get(tnam)
+
+    print("Tree entries:", tree.GetEntries())
+
+    hz = ut.prepare_TH1D("hz", zbin, zmin, zmax)
+
+    tree.Draw("zpos/1e3 >> hz")
+
+    print("Plot entries:", hz.GetEntries())
+
+    #rate per simulated event
+    rsim = total_rate/nall
+    print("rsim:", rsim)
+
+    xp = []
+    yp = []
+    all_rate = 0.
+    for ibin in range(1,hz.GetNbinsX()+1):
+
+        #z of the interval, meters
+        z1 = hz.GetBinLowEdge(ibin)
+        z2 = z1 + hz.GetBinWidth(ibin)
+
+        #surface element, cm^2
+        dz = (z2-z1)*1e2 # cm
+        surf = dz*2*ma.pi*rbeam
+
+        xp.append( z1 )
+        xp.append( z2 )
+
+        #rate in a given bin
+        rate = rsim*hz.GetBinContent(ibin)
+
+        yp.append( rate/surf )
+        yp.append( rate/surf )
+
+        all_rate += rate
+
+    print("Integrated rate:", all_rate)
+
+    return xp, yp, all_rate
+
+#get_rate_beampipe
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
