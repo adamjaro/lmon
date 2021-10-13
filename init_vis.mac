@@ -19,6 +19,13 @@
 #/gun/particle e-
 #/gun/direction 0 0 -1
 
+#input by general particle source (GPS)
+/lmon/input/type gps
+/gps/particle e-
+/gps/ene/type Mono
+/gps/ene/mono 18 GeV
+/gps/direction 0 0 -1
+
 
 #input from TParticle array
 #/lmon/input/type tparticle
@@ -32,8 +39,8 @@
 #/lmon/input/tx/select 22
 
 #HepMC3 input
-/lmon/input/type hepmc
-/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
+#/lmon/input/type hepmc
+#/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 
 #
 # Initialize kernel
