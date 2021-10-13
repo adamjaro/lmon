@@ -25,7 +25,7 @@
 #include "G4DormandPrinceRK56.hh"
 #include "G4MagErrorStepper.hh"
 #include "G4ClassicalRK4.hh"
-#include "G4TDormandPrince45.hh"
+//#include "G4TDormandPrince45.hh"
 #include "G4Mag_UsualEqRhs.hh"
 #include "G4IntegrationDriver.hh"
 
@@ -179,7 +179,7 @@ void BeamQuadrupole::PrintField(G4FieldManager *fman) {
   //G4MagIntegratorStepper
   //G4TDormandPrince45
   //G4cout << "cast: " << dynamic_cast<G4TDormandPrince45*>(stepper) << G4endl;
-  G4cout << "cast: " << dynamic_cast<G4TDormandPrince45<G4Mag_UsualEqRhs>*>(stepper) << G4endl;
+  //G4cout << "cast: " << dynamic_cast<G4TDormandPrince45<G4Mag_UsualEqRhs>*>(stepper) << G4endl;
 
   G4EquationOfMotion *eq = stepper->GetEquationOfMotion();
   G4cout << "equation: " << typeid(*eq).name() << G4endl;
