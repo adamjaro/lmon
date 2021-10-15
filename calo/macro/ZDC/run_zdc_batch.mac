@@ -1,0 +1,31 @@
+
+/lmon/construct/geometry geom_zdc.in
+
+/run/initialize
+
+/lmon/input/type gps
+
+/gps/verbose 2
+/gps/particle neutron
+/gps/number 1
+
+/gps/ene/type Gauss
+/gps/ene/mono  5.000 GeV
+/gps/ene/sigma 0.0 GeV
+
+/gps/pos/type Point
+/gps/pos/centre 0.0 0.0 0.0 cm
+
+/gps/ang/type iso
+/gps/ang/rot1 -1.0 0 0.0
+/gps/ang/rot2  0 1 0
+
+/gps/ang/mintheta  0.000 radian
+/gps/ang/maxtheta  0.005 radian
+
+/run/setCut 0.01 mm
+
+/lmon/output/name lmon.root
+
+/run/beamOn 12
+

@@ -34,6 +34,7 @@
 #/vis/viewer/set/targetPoint 0 0 -3480 mm # after ecal
 #/vis/viewer/set/targetPoint 0 0 -14.865 m # after B2BeR
 #/vis/viewer/set/targetPoint 0 0 16 m # beampipe
+/vis/viewer/set/targetPoint 0 0 38 m # zdc
 
 #/vis/scene/add/text 2500 0 3000 mm 15 0 0 Solenoid field
 #/vis/scene/add/text 2900 0 -3280 mm 15 0 0 ecal

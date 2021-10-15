@@ -30,17 +30,25 @@
 #include "GeoParser.h"
 
 //_____________________________________________________________________________
-WScFiZXv3::WScFiZXv3(const G4String& nam, GeoParser *, G4LogicalVolume *top) : Detector(),
+WScFiZXv3::WScFiZXv3(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Detector(),
   G4VSensitiveDetector(nam), fNam(nam), fCheckOverlaps(false) {
 
   G4cout << "  WScFiZXv3: " << fNam << G4endl;
 
+  //Birks correction
   fBirksCoefficient = 0.126*mm/MeV;
+  geo->GetOptD(nam, "Birks_coefficient", fBirksCoefficient, GeoParser::Unit(mm/MeV));
 
+  //dimensions for single tower
   G4double towerSizeXY = 25*mm;
+  geo->GetOptD(nam, "towerSizeXY", towerSizeXY, GeoParser::Unit(mm));
   G4double towerEMZ = 170*mm;
+  geo->GetOptD(nam, "towerEMZ", towerEMZ, GeoParser::Unit(mm));
+  G4double zpos = towerEMZ/2;
+  geo->GetOptD(nam, "zpos", zpos, GeoParser::Unit(mm));
 
   G4int nxy = 32;
+  geo->GetOptI(nam, "nxy", nxy);
 
   //module size for tower assembly, increased to allow for tower rotation
   G4double modxy = nxy*towerSizeXY; //  + 40*mm
@@ -52,7 +60,7 @@ WScFiZXv3::WScFiZXv3(const G4String& nam, GeoParser *, G4LogicalVolume *top) : D
   //top calorimeter volume
   G4Box *mods = new G4Box(fNam+"_mod", modxy/2, modxy/2, modz/2);
   G4LogicalVolume *modv = new G4LogicalVolume(mods, G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic"), fNam+"_mod");
-  new G4PVPlacement(0, G4ThreeVector(0, 0, modz/2), modv, fNam+"_mod", top, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), modv, fNam+"_mod", top, false, 0);
   //modv->SetVisAttributes(new G4VisAttributes(G4Color(0, 0, 1)));
   modv->SetVisAttributes( G4VisAttributes::GetInvisible() );
 

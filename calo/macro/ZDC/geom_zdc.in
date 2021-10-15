@@ -1,0 +1,23 @@
+
+new top topv
+
+  topv.xsiz = 5000 # mm
+  topv.ysiz = 5000 # mm
+  topv.zsiz = 100000 # mm
+
+new CaloBuilder calo # set to create the calorimeters
+
+new HcalA262 hcal
+
+  hcal.modxy = 800 # module transverse size, mm
+  hcal.n_em = 0
+  hcal.n_had = 35
+  hcal.abso_mat_name = G4_Pb
+  hcal.abso_z = 20 # mm
+  hcal.scin_z = 2 # mm
+  hcal.zpos = 38500 # mm
+
+new WScFiZXv3 ecal
+
+  ecal.zpos = 38000 # mm, center position in z
+
