@@ -26,7 +26,8 @@ MCEvtDat::MCEvtDat(): G4VUserEventInformation() {
   //names of generator values
   vector<string> names({
     "true_x", "true_y", "true_Q2", "true_W2",
-    "true_el_pT", "true_el_theta", "true_el_phi", "true_el_E"
+    "true_el_pT", "true_el_theta", "true_el_phi", "true_el_E",
+    "flux_photon_per_s", "power_W"
   });
 
   //set the generator values
@@ -74,6 +75,14 @@ void MCEvtDat::LoadGenVal(const MCEvtDat& d) {
   }
 
 }//LoadGenVal
+
+//_____________________________________________________________________________
+void MCEvtDat::SetVal(const std::string& nam, Double_t val) {
+
+  //set value for a given name
+  *fGenVal[nam] = val;
+
+}//SetVal
 
 //_____________________________________________________________________________
 void MCEvtDat::CreateOutput(TTree *t) {

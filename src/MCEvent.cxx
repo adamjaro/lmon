@@ -78,7 +78,7 @@ void MCEvent::ReadEvtDat(const G4Event *evt) {
   //load the input data
   fDat.LoadGenVal(*dat);
 
-  //fDat.Print("MCEvent loc     y:", "true_y");
+  //fDat.Print("MCEvent power:", "power_W");
   //G4cout << G4endl;
 
 }//ReadEvtDat

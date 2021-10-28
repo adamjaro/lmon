@@ -21,6 +21,7 @@
 
 //local classes
 #include "HepMC3Reader.h"
+#include "MCEvtDat.h"
 
 using namespace std;
 using namespace HepMC3;
@@ -49,6 +50,20 @@ void HepMC3Reader::GeneratePrimaryVertex(G4Event *evt) {
   //read the event
   GenEvent mc(Units::GEV,Units::MM);
   fRead->read_event(mc);
+
+  //event attributes
+  MCEvtDat *dat = new MCEvtDat();
+
+  shared_ptr<DoubleAttribute> flux_photon_per_s = mc.attribute<DoubleAttribute>("Flux_[photon/s]");
+  shared_ptr<DoubleAttribute> power_W = mc.attribute<DoubleAttribute>("Power_[W]");
+  if(flux_photon_per_s) {
+    dat->SetVal("flux_photon_per_s", flux_photon_per_s->value());
+  }
+  if(power_W) {
+    dat->SetVal("power_W", power_W->value());
+  }
+
+  evt->SetUserInformation(dat);
 
   //primary vertex
   const FourVector pos = mc.event_pos();

@@ -4,6 +4,9 @@
 
 //MC event data
 
+class TTree;
+#include "Rtypes.h"
+
 #include "G4VUserEventInformation.hh"
 
 //_____________________________________________________________________________
@@ -16,6 +19,8 @@ class MCEvtDat: public G4VUserEventInformation {
     void ConnectInput(TTree *t);
     void LoadGenVal(const MCEvtDat& d);
     void CreateOutput(TTree *t);
+
+    void SetVal(const std::string& nam, Double_t val);
 
     void Print() const {} // reimplemented
     void Print(std::string msg, std::string dat);
