@@ -4,6 +4,9 @@
 #include <string>
 #include <boost/tokenizer.hpp>
 
+//ROOT
+#include "TFormula.h"
+
 //Geant
 #include "G4String.hh"
 #include "G4ios.hh"
@@ -67,6 +70,10 @@ void GeoParser::LoadInput(G4String input) {
       //new detector
       AddNew(it);
 
+    } else if( cmd == "const" ) {
+      //constant in geometry
+      AddConst(it);
+
     } else if( cmd == "inc_dir" ) {
       //include directory for geometry inputs
       fIncDir = *(++it);
@@ -106,17 +113,64 @@ void GeoParser::AddNew(token_it &it) {
 }//AddNew
 
 //_____________________________________________________________________________
+void GeoParser::AddConst(token_it &it) {
+
+  //add new element
+
+  G4String name = *(++it);
+  G4String value = *(++it);
+
+  fConst.insert( make_pair(name, Evaluate(value)) );
+
+}//AddConst
+
+//_____________________________________________________________________________
 void GeoParser::AddPar(token_it &it) {
 
   //add new geometry parameter
 
-  G4String nam = *it;
+  G4String nam = *it; // detector.parameter
   it++;
-  G4String val = *(++it);
+  G4String val = *(++it); // parameter value
 
-  fPar.insert( make_pair(nam, val) );
+  fPar.insert( make_pair(nam, Evaluate(val)) );
 
 }//AddPar
+
+//_____________________________________________________________________________
+G4String GeoParser::Evaluate(G4String val) {
+
+  val = val.strip(G4String::both, '"'); // remove string quote characters
+
+  //parse for possible constants
+  tokenizer< char_separator<char> > val_sep(val, char_separator<char>("", "+-*/()"));
+  int ntok = 0;
+  stringstream ss;
+  for(token_it i = val_sep.begin(); i != val_sep.end(); i++) {
+
+    string ival = *i;
+
+    //substitute the constant if present
+    map<string, string>::iterator iconst = fConst.find(ival);
+    if(iconst != fConst.end()) {
+      ival = (*iconst).second;
+    }
+
+    ss << ival;
+    ntok++;
+  }
+
+  //arithmetic expression
+  if(ntok > 1) {
+    TFormula form("form", ss.str().c_str(), false);
+
+    ss.str("");
+    ss << form.Eval(0);
+  }
+
+  return ss.str();
+
+}//Evaluate
 
 //_____________________________________________________________________________
 G4String GeoParser::GetTopName() {

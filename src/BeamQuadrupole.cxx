@@ -40,45 +40,20 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   G4cout << "  BeamQuadrupole: " << fNam << G4endl;
 
   //magnet center along z, mm
-  G4double zpos = -1;
+  G4double zpos = 0;
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
 
   //length, mm
-  G4double length = -1;
-  geo->GetOptD(fNam, "length", length, GeoParser::Unit(mm));
+  G4double length = geo->GetD(fNam, "length")*mm;
 
-  //start and end along z, meters
-  G4double z1 = -1, z2 = -1;
-  G4bool z1def = geo->GetOptD(fNam, "z1", z1, GeoParser::Unit(m));
-  G4bool z2def = geo->GetOptD(fNam, "z2", z2, GeoParser::Unit(m));
-
-  //center along z and length from z1 and z2
-  if(z1def and z2def) {
-    zpos = z1 + (z2-z1)/2.;
-    length = std::abs(z2) - std::abs(z1);
-  }
-
-  G4cout << "    zpos: " << zpos << G4endl;
-  G4cout << "    length: " << length << G4endl;
-
-  //inner radii closer to the IP (r1) and further from the IP (r2)
-  G4double r1 = 1*mm, r2 = 1*mm;
+  //inner radii closer to the IP (r1) and further from the IP (r2), m
+  G4double r1 = 10*mm, r2 = 10*mm;
   geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
-  //radii from diameters
-  G4double d1, d2;
-  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
-    r1 = d1/2;
-  }
-  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
-    r2 = d2/2;
-  }
-  G4cout << "    r1: " << r1 << G4endl;
-  G4cout << "    r2: " << r2 << G4endl;
 
   //radial thickness, mm
-  G4double dr = 40;
-  geo->GetOptD(fNam, "dr", dr);
+  G4double dr = r2;
+  geo->GetOptD(fNam, "dr", dr, GeoParser::Unit(mm));
 
   //magnet inner core
   G4String nam_mag = fNam+"_mag";
@@ -92,8 +67,8 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   //quadrupole field inside the core
   G4double grad = geo->GetD(fNam, "grad") * tesla/meter; // field gradient, T/m
   G4QuadrupoleMagField *field = 0x0;
-  G4double angle = 0*deg; // deg, field angle
-  if( geo->GetOptD(fNam, "angle", angle, GeoParser::Unit(deg)) ) {
+  G4double angle = 0; // field angle, rad
+  if( geo->GetOptD(fNam, "angle", angle, GeoParser::Unit(rad)) ) {
     G4RotationMatrix *rot = new G4RotationMatrix(G4ThreeVector(0, 0, 1), angle); //is typedef to CLHEP::HepRotation
     field = new G4QuadrupoleMagField(grad, G4ThreeVector(0, 0, 0), rot);
   } else {
@@ -127,7 +102,7 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
 
   //vessel visibility
   G4VisAttributes *vis_vessel = new G4VisAttributes();
-  vis_vessel->SetColor(0, 0, 1); // blue
+  vis_vessel->SetColor(0, 0, 1, 0.7); // blue
   vis_vessel->SetLineWidth(2);
   vis_vessel->SetForceSolid(true);
   //vis_vessel->SetForceAuxEdgeVisible(true);

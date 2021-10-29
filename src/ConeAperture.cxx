@@ -28,38 +28,25 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   G4cout << "  ConeAperture: " << fNam << G4endl;
 
-  //front face of the cone along z, mm
+  //center position along z, mm
   G4double zpos = geo->GetD(fNam, "zpos") * mm;
 
   //front face in x, mm
-  G4double xpos = 0;
-  geo->GetOptD(fNam, "xpos", xpos);
+  //G4double xpos = 0;
+  //geo->GetOptD(fNam, "xpos", xpos);
 
-  //cone length
+  //cone length, m
   G4double length = 1*mm;
   geo->GetOptD(fNam, "length", length, GeoParser::Unit(mm));
-  //length from z2
-  G4double z2;
-  if( geo->GetOptD(fNam, "z2", z2, GeoParser::Unit(mm)) ) {
-    length = TMath::Abs(z2 - zpos);
-  }
 
-  //cone inner radii closer to the IP (r1), further from the IP (r2)
-  G4double r1 = 1*mm, r2 = 1*mm;
+  //cone inner radii closer to the IP (r1), further from the IP (r2), mm
+  G4double r1 = 10*mm, r2 = 10*mm;
   geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
-  //radii from diameters
-  G4double d1, d2;
-  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
-    r1 = d1/2;
-  }
-  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
-    r2 = d2/2;
-  }
-  G4cout << "    r1: " << r1 << G4endl;
-  G4cout << "    r2: " << r2 << G4endl;
 
-  G4double dr = geo->GetD(fNam, "dr") * mm; // cone radial thickness
+  // cone radial thickness, mm
+  G4double dr = 2*mm;
+  geo->GetOptD(fNam, "dr", dr, GeoParser::Unit(mm));
 
   //conical shape
   G4Cons *shape = new G4Cons(fNam, r2, r2+dr, r1, r1+dr, length/2, 0, 360*deg);
@@ -85,13 +72,12 @@ ConeAperture::ConeAperture(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   vol->SetVisAttributes(vis_vessel);
 
   //aperture vessel in top module
-  G4double angle = 0; // rotation in x along the y axis, rad
-  geo->GetOptD(fNam, "angle", angle);
-  G4RotationMatrix rot_y(G4ThreeVector(0, 1, 0), angle*rad); //is typedef to CLHEP::HepRotation
+  G4double angle = 0*rad; // rotation in x along the y axis, rad
+  //geo->GetOptD(fNam, "angle", angle);
+  G4RotationMatrix rot_y(G4ThreeVector(0, 1, 0), angle); //is typedef to CLHEP::HepRotation
 
   //center position
-  xpos = xpos -(length/2)*TMath::Tan(angle);
-  G4ThreeVector pos(xpos, 0, zpos-length/2.);
+  G4ThreeVector pos(0, 0, zpos);
 
   //placement with rotation and center position
   G4Transform3D transform(rot_y, pos); // is HepGeom::Transform3D

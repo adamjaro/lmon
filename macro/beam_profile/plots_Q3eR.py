@@ -14,12 +14,12 @@ from scipy.optimize import curve_fit
 import numpy as np
 
 import plot_utils as ut
-from BoxCalV2Hits import BoxCalV2Hits
+from ParticleCounterHits import ParticleCounterHits
 
 #_____________________________________________________________________________
 def main():
 
-    iplot = 5
+    iplot = 3
     funclist = []
     funclist.append( hits_xy ) # 0
     funclist.append( hits_z ) # 1
@@ -38,13 +38,10 @@ def hits_xy():
     #input
     infile = "../../lmon.root"
 
-    #Q3eR location
-    xpos = -460.03 # mm
-    #xpos = -(470.87+460.03)/2 # mm
-    #xpos = -460.03 # mm
-    zpos = -37700 # mm
-    #zpos = -38300 # mm
-    rot_y = 0.01808 # rad
+    #Q3eR front location
+    xpos = -460.027 # mm
+    zpos = -37696.067 # mm
+    theta = 0.0180766389 # rad
 
     #plot range
     #xybin = 0.3
@@ -54,7 +51,7 @@ def hits_xy():
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
-    hits = BoxCalV2Hits("Q3eR", tree)
+    hits = ParticleCounterHits("Q3eR_det", tree)
 
     nevt = -300000
 
@@ -69,7 +66,7 @@ def hits_xy():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
+            hit.GlobalToLocal(xpos, 0, zpos, theta)
             #hit.GlobalToLocal(xpos, 0, zpos)
 
             #print(hit.x, hit.y)
@@ -90,7 +87,7 @@ def hits_xy():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #hits_xy
@@ -102,24 +99,24 @@ def hits_z():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.03 # mm
-    zpos = -37700 # mm
-    rot_y = 0.01808 # rad
-    #rot_y = 0.11
+    xpos = -460.027 # mm
+    zpos = -37696.067 # mm
+    theta = 0.0180766389 # rad
 
     #plot range
-    zbin = 0.1
-    zmax = 3
+    zbin = 0.001
+    zmin = -10.1
+    zmax = -9.9
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
-    hits = BoxCalV2Hits("Q3eR", tree)
+    hits = ParticleCounterHits("Q3eR_det", tree)
 
-    nevt = 120
+    nevt = -120
 
     can = ut.box_canvas()
-    hZ = ut.prepare_TH1D("hz", zbin, -zmax, zmax)
+    hZ = ut.prepare_TH1D("hz", zbin, zmin, zmax)
 
     if nevt < 0:
         nevt = tree.GetEntries()
@@ -127,13 +124,12 @@ def hits_z():
     for ievt in range(nevt):
         tree.GetEntry(ievt)
 
-        print(hits.GetN())
+        #print(hits.GetN())
 
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
-            #hit.GlobalToLocal(xpos, 0, zpos)
+            hit.GlobalToLocal(xpos, 0, zpos, theta)
 
             hZ.Fill(hit.z)
 
@@ -153,17 +149,14 @@ def fit_x():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.03 # mm
-    zpos = -37700 # mm
-    rot_y = 0.01808 # rad
-    #xpos = 0 # mm
-    #zpos = -14865 # mm
-    #rot_y = 0 # rad
+    xpos = -460.027 # mm
+    zpos = -37696.067 # mm
+    theta = 0.0180766389 # rad
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
-    hits = BoxCalV2Hits("Q3eR", tree)
+    hits = ParticleCounterHits("Q3eR_det", tree)
 
     nevt = -12
 
@@ -176,7 +169,7 @@ def fit_x():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
+            hit.GlobalToLocal(xpos, 0, zpos, theta)
 
             xval.append(hit.x)
 
@@ -230,17 +223,14 @@ def fit_y():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.03 # mm
-    zpos = -37700 # mm
-    rot_y = 0.01808 # rad
-    #xpos = 0 # mm
-    #zpos = -14865 # mm
-    #rot_y = 0 # rad
+    xpos = -460.027 # mm
+    zpos = -37696.067 # mm
+    theta = 0.0180766389 # rad
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
-    hits = BoxCalV2Hits("Q3eR", tree)
+    hits = ParticleCounterHits("Q3eR_det", tree)
 
     nevt = -12
 
@@ -253,7 +243,7 @@ def fit_y():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, rot_y)
+            hit.GlobalToLocal(xpos, 0, zpos, theta)
 
             yval.append(hit.y)
 

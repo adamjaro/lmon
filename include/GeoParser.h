@@ -50,13 +50,17 @@ class GeoParser {
 
     void Include(token_it &it); // another geometry input
     void AddNew(token_it &it); // new detector or element
+    void AddConst(token_it &it); // new constant
     void AddPar(token_it &it); // new geometry parameter
+
+    G4String Evaluate(G4String val);
 
     template<typename par_type> par_type GetPar(G4String name, G4String par);
     template<typename par_type> bool GetOptPar(G4String name, G4String par, par_type& val);
 
     std::vector< std::pair<G4String, G4String> > fDet; // detectors and components
     std::map<G4String, G4String> fPar; // geometry parameters
+    std::map<std::string, std::string> fConst; // constants for geometry
 
     G4String fIncDir; // include directory for geometry inputs
 

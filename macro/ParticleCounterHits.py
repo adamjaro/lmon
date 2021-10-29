@@ -1,10 +1,10 @@
 
-# BoxCalV2 hits collection
+# ParticleCounter hits collection
 
 from ROOT import std, TVector3
 
 #_____________________________________________________________________________
-class BoxCalV2Hits:
+class ParticleCounterHits:
     #_____________________________________________________________________________
     def __init__(self, name, tree):
 
@@ -49,11 +49,11 @@ class BoxCalV2Hits:
             self.z = 0. # mm
 
         #_____________________________________________________________________________
-        def GlobalToLocal(self, x0, y0, z0, phi=0):
+        def GlobalToLocal(self, x0, y0, z0, theta=0):
 
             #local detector coordinates with rotation phi in x-z plane
             pos = TVector3(self.x-x0, self.y-y0, self.z-z0)
-            pos.RotateY(-phi)
+            pos.RotateY(-theta)
 
             self.x = pos.X()
             self.y = pos.Y()

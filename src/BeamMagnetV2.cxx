@@ -36,41 +36,16 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4cout << "  BeamMagnetV2: " << fNam << G4endl;
 
   //center position along z, mm
-  G4double zpos = -1;
+  G4double zpos = 0;
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
 
   //total length in z, mm
-  G4double length = -1;
-  geo->GetOptD(fNam, "length", length, GeoParser::Unit(mm));
-
-  //start and end along z, meters
-  G4double z1 = -1, z2 = -1;
-  G4bool z1def = geo->GetOptD(fNam, "z1", z1, GeoParser::Unit(m));
-  G4bool z2def = geo->GetOptD(fNam, "z2", z2, GeoParser::Unit(m));
-
-  //center along z and length from z1 and z2
-  if(z1def and z2def) {
-    zpos = z1 + (z2-z1)/2.;
-    length = std::abs(z2) - std::abs(z1);
-  }
-
-  G4cout << "    zpos: " << zpos << G4endl;
-  G4cout << "    length: " << length << G4endl;
+  G4double length = geo->GetD(fNam, "length")*mm;
 
   //conical inner core, entrance radius (r1) and exit radius (r2)
-  G4double r1 = 1*mm, r2 = 1*mm;
+  G4double r1 = 10*mm, r2 = 10*mm;
   geo->GetOptD(fNam, "r1", r1, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "r2", r2, GeoParser::Unit(mm));
-  //radii from diameters
-  G4double d1, d2;
-  if( geo->GetOptD(fNam, "d1", d1, GeoParser::Unit(mm)) ) {
-    r1 = d1/2;
-  }
-  if( geo->GetOptD(fNam, "d2", d2, GeoParser::Unit(mm)) ) {
-    r2 = d2/2;
-  }
-  G4cout << "    r1: " << r1 << G4endl;
-  G4cout << "    r2: " << r2 << G4endl;
 
   G4String nam_inner = fNam+"_inner";
   G4Cons *shape_inner = new G4Cons(nam_inner, 0, r2, 0, r1, length/2, 0, 360*deg);
@@ -102,7 +77,8 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_inner, nam_inner, top, false, 0);
 
   //cylindrical outer shape
-  G4double r3 = geo->GetD(fNam, "rout") * mm; // vessel outer radius
+  G4double r3 = r2*2;
+  geo->GetOptD(fNam, "r3", r3, GeoParser::Unit(mm)); // vessel outer radius
   G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., r3, length/2-1e-4*meter, 0., 360.*deg);
 
   //magnet vessel around the inner magnetic core
@@ -113,7 +89,7 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   //vessel visibility
   G4VisAttributes *vis_vessel = new G4VisAttributes();
-  vis_vessel->SetColor(0, 0, 1); // blue
+  vis_vessel->SetColor(0, 1, 0, 0.7); // blue
   vis_vessel->SetLineWidth(2);
   vis_vessel->SetForceSolid(true);
   //vis_vessel->SetForceAuxEdgeVisible(true);

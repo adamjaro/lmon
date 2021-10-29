@@ -43,6 +43,8 @@
 #include "TrackDet.h"
 #include "CaloBuilder.h"
 #include "BeamPipeV1.h"
+#include "BoxSegment.h"
+#include "ParticleCounter.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -119,7 +121,13 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   } else if( type == "BeamPipeV1" ) {
     det = new BeamPipeV1(name, fGeo, fTop);
 
-  }
+  } else if( type == "BoxSegment" ) {
+    new BoxSegment(name, fGeo, fTop);
+
+  } else if( type == "ParticleCounter" ) {
+    det = new ParticleCounter(name, fGeo, fTop);
+
+  } 
 
   if(!det) return;
 

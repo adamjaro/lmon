@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
   po::store(po::parse_command_line(argc, argv, opt), opt_map);
 
   //visualization macro
-  G4String vis_mac("init_vis.mac"); // default name
+  G4String vis_mac("visualize.mac"); // default name
   if(opt_map.count("vis")) {
     //name from the argument
     vis_mac = G4String( opt_map["vis"].as<string>() );

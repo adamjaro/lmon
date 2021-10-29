@@ -1,0 +1,102 @@
+
+/control/verbose 2
+/control/saveHistory
+/run/verbose 2
+
+#detectors and components
+#/lmon/construct/geometry config/geom_test.in
+/lmon/construct/geometry config/geom_beamline_18GeV.in
+
+#input
+#/lmon/input/type gun
+#/gun/energy 18 GeV
+#/gun/particle e-
+#/gun/direction 0 0 -1
+
+/lmon/input/type hepmc
+/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
+
+
+# Initialize kernel
+/run/initialize
+
+/vis/open OGL 3000x3000-0+0
+
+# Disable auto refresh and quieten vis messages whilst scene and
+# trajectories are established:
+/vis/viewer/set/autoRefresh false
+/vis/verbose errors
+#/vis/viewer/set/background 1 1 1 0.
+#/vis/viewer/set/lightsThetaPhi 120. 135. deg
+/vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
+#/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
+#
+# Draw geometry:
+/vis/drawVolume
+#
+# Specify view angle:
+#/vis/viewer/set/viewpointThetaPhi 90. 180.
+/vis/viewer/set/viewpointThetaPhi -45 -45
+#/vis/viewer/set/viewpointThetaPhi 45 45 deg
+
+/vis/viewer/set/targetPoint -0.460027 0 -37.696067 m
+
+#/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
+
+# Specify zoom value:
+/vis/viewer/zoom 2.
+
+# Draw coordinate axes:
+/vis/scene/add/axes -0.460027 0 -37.696067 0.05 m
+
+# Draw smooth trajectories at end of event, showing trajectory points
+# as markers 2 pixels wide:
+/vis/scene/add/trajectories smooth
+#/vis/scene/add/trajectories rich
+/vis/modeling/trajectories/create/drawByCharge
+/vis/modeling/trajectories/drawByCharge-0/default/setDrawStepPts true
+/vis/modeling/trajectories/drawByCharge-0/default/setStepPtsSize 1
+#/vis/modeling/trajectories/drawByCharge-0/default/setLineWidth 2
+# (if too many tracks cause core dump => /tracking/storeTrajectory 0)
+
+# To superimpose all of the events from a given run:
+/vis/scene/endOfEventAction accumulate
+#
+# Re-establish auto refreshing and verbosity:
+/vis/viewer/set/autoRefresh true
+/vis/verbose warnings
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

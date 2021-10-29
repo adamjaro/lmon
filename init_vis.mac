@@ -11,8 +11,7 @@
 #detectors and components
 #/lmon/construct/geometry config/geom_all.in
 #/lmon/construct/geometry config/geom_beamline_18GeV.in
-#/lmon/construct/geometry config/geom_beampipe.in
-/lmon/construct/geometry config/geom_calo.in
+/lmon/construct/geometry config/geom_test.in
 
 #input by particle gun
 #/lmon/input/type gun
