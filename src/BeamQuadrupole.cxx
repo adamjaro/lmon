@@ -39,8 +39,9 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
 
   G4cout << "  BeamQuadrupole: " << fNam << G4endl;
 
-  //magnet center along z, mm
-  G4double zpos = 0;
+  //magnet center along x and z, mm
+  G4double xpos = 0, zpos = 0;
+  geo->GetOptD(fNam, "xpos", xpos, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
 
   //length, mm
@@ -55,12 +56,27 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   G4double dr = r2;
   geo->GetOptD(fNam, "dr", dr, GeoParser::Unit(mm));
 
+  //magnet top volume holding the core and vessel
+  G4Cons *shape_top = new G4Cons(fNam+"_top", 0, r2+dr, 0, r1+dr, length/2, 0, 360*deg);
+  G4Material *mat_core = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  G4LogicalVolume *vol_top = new G4LogicalVolume(shape_top, mat_core, fNam+"_top");
+  vol_top->SetVisAttributes( G4VisAttributes::GetInvisible() );
+
+  //polar angle along y axis for the magnet
+  G4double theta = 0;
+  geo->GetOptD(fNam, "theta", theta, GeoParser::Unit(rad));
+  G4RotationMatrix rot_top(G4ThreeVector(0, 1, 0), theta); //CLHEP::HepRotation
+
+  //magnet top volume in global top
+  G4ThreeVector pos(xpos, 0, zpos);
+  G4Transform3D transform(rot_top, pos); //HepGeom::Transform3D
+  new G4PVPlacement(transform, vol_top, fNam+"_top", top, false, 0);
+
   //magnet inner core
   G4String nam_mag = fNam+"_mag";
   G4Cons *shape_mag = new G4Cons(nam_mag, 0, r2, 0, r1, length/2, 0, 360*deg);
 
   //core logical volume
-  G4Material *mat_core = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
   G4LogicalVolume *vol_mag = new G4LogicalVolume(shape_mag, mat_core, nam_mag);
   vol_mag->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
@@ -90,8 +106,8 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   PrintField(fman);
   vol_mag->SetFieldManager(fman, true);
 
-  //put the inner core to the top volume
-  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_mag, nam_mag, top, false, 0);
+  //put the inner core to the top magnet volume
+  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol_mag, nam_mag, vol_top, false, 0);
 
   //vessel shape
   G4Cons *shape = new G4Cons(fNam, r2, r2+dr, r1, r1+dr, length/2, 0, 360*deg);
@@ -109,7 +125,7 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   vol->SetVisAttributes(vis_vessel);
 
   //put the vessel cone to the top volume
-  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol, fNam, top, false, 0);
+  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol, fNam, vol_top, false, 0);
 
 }//ConeAperture
 

@@ -15,6 +15,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
 #include "G4Box.hh"
+#include "G4Tubs.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4VisAttributes.hh"
 #include "G4PVPlacement.hh"
@@ -35,11 +36,24 @@ ParticleCounter::ParticleCounter(const G4String& nam, GeoParser *geo, G4LogicalV
 
   G4cout << "  ParticleCounter: " << fNam << G4endl;
 
-  //full size in x, y and z, mm
-  G4double dx = geo->GetD(fNam, "dx")*mm;
-  G4double dy = geo->GetD(fNam, "dy")*mm;
+  //full size in x, y and z, mm for rectangular counter
+  G4double dx = 0, dy = 0;
+  geo->GetOptD(fNam, "dx", dx, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "dy", dy, GeoParser::Unit(mm));
   G4double dz = geo->GetD(fNam, "dz")*mm;
-  G4Box *shape = new G4Box(fNam, dx/2, dy/2, dz/2);
+
+  //inner and outer radius, mm, in case of cylindrical counter
+  G4double inner_r = 0, outer_r = 0;
+  geo->GetOptD(fNam, "inner_r", inner_r, GeoParser::Unit(mm));
+  G4bool is_tubs = geo->GetOptD(fNam, "outer_r", outer_r, GeoParser::Unit(mm));
+
+  //cylindrical or rectangular shape for the counter
+  G4CSGSolid *shape = 0x0;
+  if(is_tubs) {
+    shape = new G4Tubs(fNam, inner_r, outer_r, dz/2, 0., 360.*deg);
+  } else {
+    shape = new G4Box(fNam, dx/2, dy/2, dz/2);
+  }
 
   //logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
