@@ -4,6 +4,15 @@ new top topv
   topv.xsiz = 2000 # mm
   topv.ysiz = 2000 # mm
   topv.zsiz = 40000 # mm
+  topv.material = G4_AIR
+
+new CenBeampipeEl cen_beampipe
+
+new ParticleCounter vtx_tracker
+
+  vtx_tracker.dz = 300. # mm
+  vtx_tracker.inner_r = 33. # mm
+  vtx_tracker.outer_r = 43. # mm
 
 #new BeamPipeV1 beam # central beam element
 
@@ -11,14 +20,14 @@ new top topv
   beam.r1 = 32 # mm
   beam.dr = 3 # mm
 
-new BoxCalV2 zplane
+#new BoxCalV2 zplane
 
   zplane.zpos = -5100 # mm
   zplane.zsiz = 10 # mm
   zplane.xsiz = 1000 # mm
   zplane.ysiz = 1000 # mm
 
-new BoxCalV2 zplane2
+#new BoxCalV2 zplane2
 
   zplane2.zpos = -5200 # mm
   zplane2.zsiz = 300 # mm

@@ -79,7 +79,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
   G4Tubs *top_s = new G4Tubs(topnam+"_s", 0, topx, topz, 0., 360.*deg);
 
   //vacuum top material
-  G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  G4String top_mat_name = "G4_Galactic";
+  geo.GetOptS(topnam, "material", top_mat_name);
+  G4Material* top_m = G4NistManager::Instance()->FindOrBuildMaterial(top_mat_name);
   G4LogicalVolume *top_l = new G4LogicalVolume(top_s, top_m, topnam+"_l");
   //top_l->SetVisAttributes( G4VisAttributes::GetInvisible() );
   //G4VisAttributes *vis = new G4VisAttributes();

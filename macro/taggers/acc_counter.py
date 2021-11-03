@@ -37,6 +37,9 @@ def acc_en_s1_lmon_dd():
     inp_lmon = TFile.Open("lmon.root")
     tree_lmon = inp_lmon.Get("event")
 
+    inp_dd = TFile.Open("dd.root")
+    tree_dd = inp_dd.Get("event")
+
     emin = 0
     emax = 19
 
@@ -49,6 +52,12 @@ def acc_en_s1_lmon_dd():
     #acc_lmon.nev = int(1e5)
     gLmon = acc_lmon.get()
 
+    #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s1_IsHit")
+    acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s2_IsHit")
+    acc_dd.prec = 0.1
+    #acc_dd.bmin = 0.1
+    gDD = acc_dd.get()
+
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
 
@@ -60,6 +69,9 @@ def acc_en_s1_lmon_dd():
 
     ut.set_graph(gLmon, rt.kBlue)
     gLmon.Draw("psame")
+
+    ut.set_graph(gDD, rt.kRed)
+    gDD.Draw("psame")
 
     gPad.SetGrid()
 
@@ -79,6 +91,8 @@ def hit_en():
     emin = 0
     emax = 19
     ebin = 0.1
+    #emax = 1.1
+    #ebin = 0.01
 
     inp = TFile.Open(infile)
     tree = inp.Get("event")
@@ -87,8 +101,12 @@ def hit_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    nev = tree.Draw("hit_s1_en >> hE", "s1_IsHit==1")
-    #nev = tree.Draw("hit_s2_en >> hE", "s2_IsHit==1")
+    #nev = tree.Draw("hit_s1_en >> hE", "s1_IsHit==1")
+    nev = tree.Draw("hit_s2_en >> hE", "s2_IsHit==1")
+    #nev = tree.Draw("hit_s1_en/gen_en >> hE", "s1_IsHit==1")
+    #nev = tree.Draw("hit_s2_en/gen_en >> hE", "s2_IsHit==1")
+    #nev = tree.Draw("hit_s1_en >> hE", "(s1_IsHit==1)&&((hit_s1_en/gen_en)>0.9)")
+    #nev = tree.Draw("hit_s2_en >> hE", "(s2_IsHit==1)&&((hit_s2_en/gen_en)>0.9)")
     print(nev)
 
     gPad.SetGrid()
@@ -176,7 +194,7 @@ def load_lmon():
 #_____________________________________________________________________________
 def load_dd():
 
-    infile = "/home/jaroslav/sim/Athena/athena_particle_counter/output.root"
+    infile = "/home/jaroslav/sim/Athena/athena_particle_counter/output_10k.root"
 
     store = EventStore([infile])
 
@@ -199,6 +217,8 @@ def load_dd():
 
         #print("Next event")
 
+        gen_en.value = -1
+
         #mc loop
         for imc in store.get("mcparticles"):
 
@@ -219,14 +239,26 @@ def load_dd():
         #Tagger 1
         for ihit in store.get("ParticleCounterS1"):
             #print("hit s1:", ihit.energyDeposit())
-            if ihit.energyDeposit() > hit_s1_en.value:
-                hit_s1_en.value = ihit.energyDeposit()
+
+            if ihit.energyDeposit()/gen_en.value < 0.9:
+                continue
+
+            if ihit.energyDeposit() < hit_s1_en.value:
+                continue
+
+            hit_s1_en.value = ihit.energyDeposit()
 
         #Tagger 2
         for ihit in store.get("ParticleCounterS2"):
             #print("hit s2:", ihit.energyDeposit())
-            if ihit.energyDeposit() > hit_s2_en.value:
-                hit_s2_en.value = ihit.energyDeposit()
+
+            if ihit.energyDeposit()/gen_en.value < 0.9:
+                continue
+
+            if ihit.energyDeposit() < hit_s2_en.value:
+                continue
+
+            hit_s2_en.value = ihit.energyDeposit()
 
         #hit in event
         if hit_s1_en.value > 0: s1_IsHit.value = 1

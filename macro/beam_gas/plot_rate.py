@@ -262,9 +262,9 @@ def beampipe():
     print("Sum rate (kHz):", (ptot+etot)/1e3)
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
