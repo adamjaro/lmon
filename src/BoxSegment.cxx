@@ -26,7 +26,7 @@ using namespace std;
 BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
     Detector(), fNam(nam) {
 
-  G4cout << "  BoxSegment: " << fNam << G4endl;
+  G4cout << "BoxSegment: " << fNam << G4endl;
 
   //full size in x, y and z, mm
   G4double dx = geo->GetD(fNam, "dx")*mm;
@@ -50,6 +50,9 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   geo->GetOptD(fNam, "xpos", xpos, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "ypos", ypos, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
+
+  G4cout << "  " << fNam << ", xpos: " << xpos << G4endl;
+  G4cout << "  " << fNam << ", zpos: " << zpos << G4endl;
 
   //polar angle along the y axis
   G4double theta = 0;

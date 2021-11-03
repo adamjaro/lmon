@@ -2,9 +2,9 @@
 #local running
 
 #detectors and components
-#/lmon/construct/geometry config/geom_all.in
+/lmon/construct/geometry config/geom_all.in
 #/lmon/construct/geometry config/geom_beampipe.in
-/lmon/construct/geometry config/geom_beamline_18GeV.in
+#/lmon/construct/geometry config/geom_beamline_18GeV.in
 #/lmon/construct/geometry config/geom_test.in
 
 /run/initialize
@@ -21,11 +21,12 @@
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_1Mevt.root
 
 /lmon/input/type hepmc
-/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
+#/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/SR/hepmc/25098.hepmc
+/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_120kevt.hepmc
 
-#/lmon/output/name lmon.root
+/lmon/output/name lmon.root
 #/lmon/output/name data/ew/ew1bx2.root
 
 

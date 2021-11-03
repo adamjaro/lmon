@@ -5,12 +5,14 @@
 #include geom_beamline.in
 include geom_beamline_18GeV.in
 
+include vacuum.in
+
 #luminosity monitor
 #include geom_lumi.in
-include geom_lumi_v2.in
+#include geom_lumi_v2.in
 
 #low Q^2 tagger
-#include geom_lowQ2.in
+include geom_lowQ2.in
 
 #central detector
 #include geom_central.in
@@ -18,9 +20,9 @@ include geom_lumi_v2.in
 #common top volume
 new top topmain
 
-  topmain.xsiz = 5000 # mm
-  topmain.ysiz = 5000 # mm
-  #topmain.zsiz = 40000 # mm
-  topmain.zsiz = 100000 # mm
+  topmain.xsiz = 2000 # mm
+  topmain.ysiz = 2000 # mm
+  topmain.zsiz = 40000 # mm
+  #topmain.zsiz = 100000 # mm
 
 

@@ -45,6 +45,10 @@
 #include "BeamPipeV1.h"
 #include "BoxSegment.h"
 #include "ParticleCounter.h"
+#include "VacB2lumiWin.h"
+#include "VacDrift.h"
+#include "VacTaggerWin.h"
+#include "VacLumi.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -127,7 +131,19 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   } else if( type == "ParticleCounter" ) {
     det = new ParticleCounter(name, fGeo, fTop);
 
-  } 
+  } else if( type == "VacB2lumiWin" ) {
+    new VacB2lumiWin(name, fGeo, fTop);
+
+  } else if( type == "VacDrift" ) {
+    new VacDrift(name, fGeo, fTop);
+
+  } else if( type == "VacTaggerWin" ) {
+    new VacTaggerWin(name, fGeo, fTop);
+
+  } else if( type == "VacLumi" ) {
+    new VacLumi(name, fGeo, fTop);
+
+  }
 
   if(!det) return;
 

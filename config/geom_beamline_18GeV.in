@@ -47,9 +47,9 @@ new BeamMagnetV2 B2AeR
   B2AeR.field = 0.192 # T
 
 # B2BeR beam dipole
-const B2BeR_Start_Z -11685 # mm
-const B2BeR_End_Z -14865 # mm
-const B2BeR_InnerRadius 98 # mm
+const B2BeR_Start_Z -11685. # mm
+const B2BeR_End_Z -14865. # mm
+const B2BeR_InnerRadius 98. # mm
 
 new BeamMagnetV2 B2BeR
 
@@ -60,10 +60,14 @@ new BeamMagnetV2 B2BeR
   B2BeR.field = 0.238 # T
 
 #Q3eR
-const Q3eR_InnerRadius 50 # mm
-const Q3eR_Length 600 # mm
-const Q3eR_XPosition -465.45 # mm
-const Q3eR_CenterPosition -37996.018 # mm
+const Q3eR_InnerRadius 50. # mm
+const Q3eR_Length 600. # mm
+#const Q3eR_XPosition -465.45 # mm
+#const Q3eR_CenterPosition -37996.018 # mm
+const Q3eR_StartZ -37696.067 # mm
+const Q3eR_StartX -460.027 # mm
+const Q3eR_EndZ -38295.969 # mm
+const Q3eR_EndX -0470.873 # mm
 const Q3eR_Theta 0.0180766389 # rad
 
 new BeamQuadrupole Q3eR
@@ -71,15 +75,17 @@ new BeamQuadrupole Q3eR
   Q3eR.r1 = Q3eR_InnerRadius
   Q3eR.r2 = Q3eR_InnerRadius
   Q3eR.length = Q3eR_Length
-  Q3eR.xpos = Q3eR_XPosition
-  Q3eR.zpos = Q3eR_CenterPosition
+  #Q3eR.xpos = Q3eR_XPosition
+  #Q3eR.zpos = Q3eR_CenterPosition
+  Q3eR.xpos = (Q3eR_StartX+Q3eR_EndX)/2
+  Q3eR.zpos = (Q3eR_StartZ+Q3eR_EndZ)/2
   Q3eR.theta = Q3eR_Theta
   Q3eR.grad = 0 # T/m
   Q3eR.angle = TMath::Pi()/2 # rad
 
 #counter detector in Q3eR inner volume
 
-const Q3eR_det_DZ 10 # mm
+const Q3eR_det_DZ 10. # mm
 
 new ParticleCounter Q3eR_det
 

@@ -1,0 +1,223 @@
+
+#vacuum layout
+
+#B2BeR end
+const B2BeR_Z B2BeR_End_Z
+const B2BeR_XB -B2BeR_InnerRadius
+
+#Q3eR top and bottom at its front
+const Q3eR_ZT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
+const Q3eR_XT Q3eR_StartX+Q3eR_InnerRadius*cos(Q3eR_Theta)
+const Q3eR_ZB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
+const Q3eR_XB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
+
+#Tagger 1
+const Tag1_size_X 400. # mm
+const Tag1_size_Y 400. # mm
+const Tag1_pos_Z -24000. # mm
+const Tag1_Theta 0.0180766389 # rad
+const Tag1_Length 350. # mm
+
+const Tag1_XT B2BeR_XB-(B2BeR_Z-Tag1_pos_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+const Tag1_ZB Tag1_pos_Z+Tag1_size_X*sin(Tag1_Theta)
+const Tag1_XB Tag1_XT-Tag1_size_X*cos(Tag1_Theta)
+
+new BoxSegment Tagger1box
+
+  Tagger1box.dx = Tag1_size_X
+  Tagger1box.dy = Tag1_size_Y
+  Tagger1box.dz = Tag1_Length
+  Tagger1box.xpos = Tag1_XT-0.5*sqrt(Tag1_Length*Tag1_Length+Tag1_size_X*Tag1_size_X)*sin(atan(Tag1_size_X/Tag1_Length)+Tag1_Theta)
+  Tagger1box.zpos = Tag1_pos_Z-0.5*sqrt(Tag1_Length*Tag1_Length+Tag1_size_X*Tag1_size_X)*cos(atan(Tag1_size_X/Tag1_Length)+Tag1_Theta)
+  Tagger1box.theta = Tag1_Theta
+
+#Tagger 2
+const Tag2_size_X 300. # mm
+const Tag2_size_Y 200. # mm
+const Tag2_pos_Z -36000. # mm
+const Tag2_Theta 0.0180766389 # rad
+const Tag2_Length Tag1_Length
+
+const Tag2_XT B2BeR_XB-(B2BeR_Z-Tag2_pos_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+const Tag2_ZB Tag2_pos_Z+Tag2_size_X*sin(Tag2_Theta)
+const Tag2_XB Tag2_XT-Tag2_size_X*cos(Tag2_Theta)
+
+new BoxSegment Tagger2box
+
+  Tagger2box.dx = Tag2_size_X
+  Tagger2box.dy = Tag2_size_Y
+  Tagger2box.dz = Tag2_Length
+  Tagger2box.xpos = Tag2_XT-0.5*sqrt(Tag2_Length*Tag2_Length+Tag2_size_X*Tag2_size_X)*sin(atan(Tag2_size_X/Tag2_Length)+Tag2_Theta)
+  Tagger2box.zpos = Tag2_pos_Z-0.5*sqrt(Tag2_Length*Tag2_Length+Tag2_size_X*Tag2_size_X)*cos(atan(Tag2_size_X/Tag2_Length)+Tag2_Theta)
+  Tagger2box.theta = Tag2_Theta
+
+#Luminosity exit window
+const LumiWin_Z -18500. # mm
+const LumiWin_XY 74. # mm
+const LumiWin_DZ 290. # mm
+const ExitWin_XB -LumiWin_XY/2 # mm
+
+new BoxSegment ExitWinBox
+
+  ExitWinBox.dx = LumiWin_XY
+  ExitWinBox.dy = LumiWin_XY
+  ExitWinBox.dz = LumiWin_DZ
+  ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2
+
+#from B2 to exit window
+
+#Auxiliary point in front of drift vacuum section
+const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+
+new VacB2lumiWin vac_b2b_window
+
+  vac_b2b_window.win_xmin = ExitWin_XA
+  vac_b2b_window.ysiz = Tag1_size_Y
+  vac_b2b_window.b2b_end_xy = 2*B2BeR_InnerRadius
+
+#drift section from exit window to Q3eR
+
+new VacDrift vac_b2b_drift
+
+  vac_b2b_drift.ysiz = Tag1_size_Y
+  vac_b2b_drift.zQT = Q3eR_ZT
+  vac_b2b_drift.xQT = Q3eR_XT
+  vac_b2b_drift.zQB = Q3eR_ZB
+  vac_b2b_drift.xQB = Q3eR_XB
+  vac_b2b_drift.zW = LumiWin_Z
+  vac_b2b_drift.xW = ExitWin_XB
+  vac_b2b_drift.xA = ExitWin_XA
+
+#vacuum sections in front of taggers
+
+new VacTaggerWin vac_tag1_win
+
+  vac_tag1_win.ysiz = Tag1_size_Y
+  vac_tag1_win.zB = B2BeR_Z
+  vac_tag1_win.xB = B2BeR_XB
+  vac_tag1_win.zT = Tag1_pos_Z
+  vac_tag1_win.xT = Tag1_XT
+  vac_tag1_win.zTB = Tag1_ZB
+  vac_tag1_win.xTB = Tag1_XB
+
+new VacTaggerWin vac_tag2_win
+
+  vac_tag2_win.ysiz = Tag2_size_Y
+  vac_tag2_win.zB = Tag1_pos_Z-Tag1_Length
+  vac_tag2_win.xB = B2BeR_XB-(B2BeR_Z-(Tag1_pos_Z-Tag1_Length))*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+  vac_tag2_win.zT = Tag2_pos_Z
+  vac_tag2_win.xT = Tag2_XT
+  vac_tag2_win.zTB = Tag2_ZB 
+  vac_tag2_win.xTB = Tag2_XB
+
+#Luminosity spectrometers up and down
+const LumiSpec_Z -36400. # mm
+const LumiSpec_XY 200. # mm
+const LumiSpec_DZ 350. # mm
+const LumiSpec_cen_Y 142. # mm
+
+#up spectrometer
+new BoxSegment LumiSUbox
+
+  LumiSUbox.dx = LumiSpec_XY
+  LumiSUbox.dy = LumiSpec_XY
+  LumiSUbox.dz = LumiSpec_DZ
+  LumiSUbox.ypos = LumiSpec_cen_Y
+  LumiSUbox.zpos = LumiSpec_Z-LumiSpec_DZ/2
+
+#down spectrometer
+new BoxSegment LumiSDbox
+
+  LumiSDbox.dx = LumiSpec_XY
+  LumiSDbox.dy = LumiSpec_XY
+  LumiSDbox.dz = LumiSpec_DZ
+  LumiSDbox.ypos = -LumiSpec_cen_Y
+  LumiSDbox.zpos = LumiSpec_Z-LumiSpec_DZ/2
+
+
+#Luminosity direct photon detector
+const LumiD_Z -37000. # mm
+const LumiD_XY 200. # mm
+const LumiD_DZ 350. # mm
+
+new BoxSegment LumiDbox
+
+  LumiDbox.dx = LumiD_XY
+  LumiDbox.dy = LumiD_XY
+  LumiDbox.dz = LumiD_DZ
+  LumiDbox.zpos = LumiD_Z-LumiD_DZ/2
+
+#spectrometer magnet
+const LumiMag_cen_Z -28000. # mm
+const LumiMag_R 100. # mm
+const LumiMag_DZ 600. # mm
+
+new BeamMagnetV2 LumiMag
+
+  LumiMag.zpos = LumiMag_cen_Z
+  LumiMag.r1 = LumiMag_R
+  LumiMag.r2 = LumiMag_R
+  LumiMag.r3 = 1.5*LumiMag_R
+  LumiMag.length = LumiMag_DZ
+  LumiMag.field = 0 # T
+
+#vacuum section between luminosity spectrometers
+
+new BoxSegment vac_lumi_spec_mid
+
+  vac_lumi_spec_mid.dx = LumiSpec_XY
+  vac_lumi_spec_mid.dy = 2*LumiSpec_cen_Y-LumiSpec_XY
+  vac_lumi_spec_mid.dz = LumiSpec_DZ
+  vac_lumi_spec_mid.zpos = LumiSpec_Z-LumiSpec_DZ/2
+
+#vacuum section from exit window to spectrometer magnet
+new VacLumi vac_lumi_win_mag
+
+  vac_lumi_win_mag.z0 = LumiWin_Z-LumiWin_DZ
+  vac_lumi_win_mag.z1 = LumiMag_cen_Z+LumiMag_DZ/2
+  vac_lumi_win_mag.dX0 = LumiWin_XY/2
+  vac_lumi_win_mag.dY0 = LumiWin_XY/2
+  vac_lumi_win_mag.dX1 = LumiMag_R
+  vac_lumi_win_mag.dY1 = LumiMag_R
+
+#vacuum section from spectrometer magnet to spectrometer detectors
+new VacLumi vac_lumi_mag_spec
+
+  vac_lumi_mag_spec.z0 = LumiMag_cen_Z-LumiMag_DZ/2
+  vac_lumi_mag_spec.z1 = LumiSpec_Z
+  vac_lumi_mag_spec.dX0 = LumiMag_R
+  vac_lumi_mag_spec.dY0 = LumiMag_R
+  vac_lumi_mag_spec.dX1 = LumiSpec_XY/2
+  vac_lumi_mag_spec.dY1 = LumiSpec_cen_Y+LumiSpec_XY/2
+
+#vacuum section from spectrometers to direct photon detector
+new VacLumi vac_lumi_spec_phot
+
+  vac_lumi_spec_phot.z0 = LumiSpec_Z-LumiSpec_DZ
+  vac_lumi_spec_phot.z1 = LumiD_Z
+  vac_lumi_spec_phot.dX0 = LumiSpec_XY/2
+  vac_lumi_spec_phot.dY0 = LumiSpec_cen_Y-LumiSpec_XY/2
+  vac_lumi_spec_phot.dX1 = LumiD_XY/2
+  vac_lumi_spec_phot.dY1 = LumiD_XY/2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
