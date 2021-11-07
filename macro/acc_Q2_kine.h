@@ -34,9 +34,9 @@ class acc_Q2_kine {
     prec(1e-2), delt(1e-6), nev(0), bmin(-1), modif(-1) {
 
     //input tree
-    tree->SetBranchStatus("*", 0);
-    tree->SetBranchStatus(nam.c_str(), 1);
-    tree->SetBranchStatus(sel.c_str(), 1);
+    //tree->SetBranchStatus("*", 0);
+    //tree->SetBranchStatus(nam.c_str(), 1);
+    //tree->SetBranchStatus(sel.c_str(), 1);
 
     tree->SetBranchAddress(nam.c_str(), &val);
     tree->SetBranchAddress(sel.c_str(), &val_sel);

@@ -38,31 +38,42 @@ ExitWindowV1::ExitWindowV1(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   G4cout << "ExitWindowV1: " << fNam << G4endl;
 
   //transverse and longitudinal size
-  G4double dxy = geo->GetD(nam, "dxy")*mm;
+  G4double dx = geo->GetD(nam, "dx")*mm;
+  G4double dy = geo->GetD(nam, "dy")*mm;
   G4double dz = geo->GetD(nam, "dz")*mm;
 
   //center position along z
-  G4double zpos = geo->GetD(nam, "zpos")*m;
+  G4double zpos = 0;
+  geo->GetOptD(nam, "zpos", zpos, GeoParser::Unit(mm));
 
   //tilt angle along y, given from z axis towards x axis
-  G4double tilt = geo->GetD(nam, "tilt")*mrad;
-  tilt -= CLHEP::pi/2;
+  G4double tilt = geo->GetD(nam, "tilt")*rad;
+  ///tilt -= CLHEP::pi/2;
 
   //box shape, Al material
-  G4Box *shape = new G4Box(nam+"_shape", dxy/2, dxy/2, dz/2);
+  G4Box *shape = new G4Box(nam+"_shape", dx/2., dy/2., dz/2.);
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Al");
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, nam);
 
   G4VisAttributes *vis = new G4VisAttributes();
   vis->SetColor(0, 1, 0, 0.5);
   vis->SetForceSolid(true);
+  //vis->SetColor(0, 1, 0);
+  //vis->SetForceWireframe();
   vol->SetVisAttributes(vis);
 
-  //put the exit window to the top
+  //mother volume for exit window
+  G4LogicalVolume *mvol = top;
+  G4String mother_nam;
+  if( geo->GetOptS(fNam, "place_into", mother_nam) ) {
+    mvol = GetMotherVolume(mother_nam, top);
+  }
+
+  //put the exit window to its mother volume
   G4RotationMatrix rot(G4ThreeVector(0, 1, 0), tilt); //is typedef to CLHEP::HepRotation
   G4ThreeVector pos(0, 0, zpos);
   G4Transform3D transform(rot, pos); // is HepGeom::Transform3D
-  new G4PVPlacement(transform, vol, vol->GetName(), top, false, 0);
+  new G4PVPlacement(transform, vol, vol->GetName(), mvol, false, 0);
 
   ClearEvent();
 
@@ -153,7 +164,21 @@ void ExitWindowV1::ClearEvent() {
 
 }//ClearEvent
 
+//_____________________________________________________________________________
+G4LogicalVolume* ExitWindowV1::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
 
+  for(size_t i=0; i<top->GetNoDaughters(); i++) {
+
+    G4LogicalVolume *dv = top->GetDaughter(i)->GetLogicalVolume();
+
+    if( dv->GetName() == mother_nam ) {
+      return dv;
+    }
+  }
+
+  return 0x0;
+
+}//GetMotherVolume
 
 
 

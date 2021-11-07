@@ -34,7 +34,7 @@ new BoxSegment Tagger1box
 #Tagger 2
 const Tag2_size_X 300. # mm
 const Tag2_size_Y 200. # mm
-const Tag2_pos_Z -36000. # mm
+const Tag2_pos_Z -37000. # mm
 const Tag2_Theta 0.0180766389 # rad
 const Tag2_Length Tag1_Length
 
@@ -148,18 +148,18 @@ new BoxSegment LumiDbox
   LumiDbox.zpos = LumiD_Z-LumiD_DZ/2
 
 #spectrometer magnet
-const LumiMag_cen_Z -28000. # mm
+const LumiMag_cen_Z -28200. # mm
 const LumiMag_R 100. # mm
 const LumiMag_DZ 600. # mm
 
-new BeamMagnetV2 LumiMag
+#new BeamMagnetV2 LumiMag
 
-  LumiMag.zpos = LumiMag_cen_Z
-  LumiMag.r1 = LumiMag_R
-  LumiMag.r2 = LumiMag_R
-  LumiMag.r3 = 1.5*LumiMag_R
-  LumiMag.length = LumiMag_DZ
-  LumiMag.field = 0 # T
+  #LumiMag.zpos = LumiMag_cen_Z
+  #LumiMag.r1 = LumiMag_R
+  #LumiMag.r2 = LumiMag_R
+  #LumiMag.r3 = 1.5*LumiMag_R
+  #LumiMag.length = LumiMag_DZ
+  #LumiMag.field = 0 # T
 
 #vacuum section between luminosity spectrometers
 

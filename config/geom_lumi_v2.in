@@ -9,12 +9,16 @@ new top topv
   topv.zsiz = 40000 # mm
 
 #photon exit window version 1
+const ExitWindow_Tilt 0.25 # rad, tilt angle along y
+const ExitWindow_DX 2.6 # mm, thickness
+
 new ExitWindowV1 ew
 
-  ew.zpos = -18.644 # meter
-  ew.dxy = 400 # mm, surface size
-  ew.dz = 2.6 # mm, thickness
-  ew.tilt = 250 # mrad
+  ew.dx = ExitWindow_DX
+  ew.dy = LumiWin_XY
+  ew.dz = sqrt(LumiWin_XY*LumiWin_XY+LumiWin_DZ*LumiWin_DZ)-(1.1*ExitWindow_DX/tan(ExitWindow_Tilt))
+  ew.tilt = ExitWindow_Tilt
+  ew.place_into = ExitWinBox
 
 #photon exit window version 2
 #new ExitWindowV2 ew
@@ -26,19 +30,51 @@ new ExitWindowV1 ew
 #collimator
 #new CollimatorV2 collim
 
-  collim.zpos = -22500 # mm
-  collim.siz = 300 # mm, outer size
+  #collim.zpos = -22500 # mm
+  #collim.siz = 300 # mm, outer size
 
 #dipole spectrometer magnet
-#new Magnet lumi_dipole
+new Magnet lumi_dipole
 
-  lumi_dipole.zpos = -23500 # mm
+  lumi_dipole.zpos = LumiMag_cen_Z
+  lumi_dipole.dz = LumiMag_DZ
+  lumi_dipole.inner_r = LumiMag_R
+
+#counters at detectors
+const LumiCounter_DZ 10. # mm
+
+#direct photon detector
+new ParticleCounter phot
+
+  phot.dx = LumiD_XY
+  phot.dy = LumiD_XY
+  phot.dz = LumiCounter_DZ
+  phot.zpos = (LumiD_DZ/2)-LumiCounter_DZ/2
+  phot.place_into = LumiDbox
+
+#up spectrometer
+new ParticleCounter up
+
+  up.dx = LumiSpec_XY
+  up.dy = LumiSpec_XY
+  up.dz = LumiCounter_DZ
+  up.zpos = (LumiSpec_DZ/2)-LumiCounter_DZ/2
+  up.place_into = LumiSUbox
+
+#down spectrometer
+new ParticleCounter down
+
+  down.dx = LumiSpec_XY
+  down.dy = LumiSpec_XY
+  down.dz = LumiCounter_DZ
+  down.zpos = (LumiSpec_DZ/2)-LumiCounter_DZ/2
+  down.place_into = LumiSDbox
 
 #filter in front of photon detector
 #new GraphiteFilter filter
 
-  filter.zpos = -32500 # mm
-  filter.zsiz = 772.8 # mm
+  #filter.zpos = -32500 # mm
+  #filter.zsiz = 772.8 # mm
 
 #luminosity detectors
 
@@ -46,22 +82,22 @@ new ExitWindowV1 ew
 #new BoxCalV2 phot
 #new CompCal phot
 
-  phot.zpos = -33274 # mm, after filter
-  phot.ypos = 0
+  #phot.zpos = -33274 # mm, after filter
+  #phot.ypos = 0
 
 #up spectrometer calorimeter
 #new BoxCalV2 up
 #new CompCal up
 
-  up.zpos = -32000 # mm
-  up.ypos = 42 # mm
+  #up.zpos = -32000 # mm
+  #up.ypos = 42 # mm
 
 #down spectrometer calorimeter
 #new BoxCalV2 down
 #new CompCal down
 
-  down.zpos = -32000 # mm
-  down.ypos = -42 # mm
+  #down.zpos = -32000 # mm
+  #down.ypos = -42 # mm
 
 
 

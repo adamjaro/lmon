@@ -27,6 +27,8 @@ class ExitWindowV1 : public Detector, public G4VSensitiveDetector {
 
   private:
 
+    G4LogicalVolume* GetMotherVolume(G4String mother_nam, G4LogicalVolume *top);
+
     G4String fNam; // detector name
 
     //hits array

@@ -45,18 +45,21 @@ def acc_en_s1_lmon_dd():
 
     amax = 1
 
-    #acc_lmon = rt.acc_Q2_kine(tree_lmon, "gen_en", "s1_IsHit")
-    acc_lmon = rt.acc_Q2_kine(tree_lmon, "gen_en", "s2_IsHit")
-    acc_lmon.prec = 0.1
+    acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "gen_en", "s1_IsHit")
+    acc_lmon_s1.prec = 0.1
     #acc_lmon.bmin = 0.1
     #acc_lmon.nev = int(1e5)
-    gLmon = acc_lmon.get()
+    gLmonS1 = acc_lmon_s1.get()
+
+    acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "gen_en", "s2_IsHit")
+    acc_lmon_s2.prec = 0.1
+    gLmonS2 = acc_lmon_s2.get()
 
     #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s1_IsHit")
-    acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s2_IsHit")
-    acc_dd.prec = 0.1
+    #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s2_IsHit")
+    #acc_dd.prec = 0.1
     #acc_dd.bmin = 0.1
-    gDD = acc_dd.get()
+    #gDD = acc_dd.get()
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
@@ -67,11 +70,14 @@ def acc_en_s1_lmon_dd():
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
 
-    ut.set_graph(gLmon, rt.kBlue)
-    gLmon.Draw("psame")
+    ut.set_graph(gLmonS1, rt.kBlue)
+    gLmonS1.Draw("psame")
 
-    ut.set_graph(gDD, rt.kRed)
-    gDD.Draw("psame")
+    ut.set_graph(gLmonS2, rt.kRed)
+    gLmonS2.Draw("psame")
+
+    #ut.set_graph(gDD, rt.kRed)
+    #gDD.Draw("psame")
 
     gPad.SetGrid()
 
