@@ -1,7 +1,9 @@
 
 # ParticleCounter hits collection
 
-from ROOT import std, TVector3
+from ctypes import c_double, c_bool, c_int
+
+from ROOT import std, TVector3, TTree
 
 #_____________________________________________________________________________
 class ParticleCounterHits:
@@ -22,7 +24,13 @@ class ParticleCounterHits:
         tree.SetBranchAddress(name+"_HitZ", self.hz)
 
         #interface to the hit
-        self.hit = self.Hit()
+        self.hit = self.Hit(self)
+
+        #counter position for transformation to local coordinates
+        self.xpos = 0.
+        self.ypos = 0.
+        self.zpos = 0.
+        self.theta = 0.
 
     #_____________________________________________________________________________
     def GetHit(self, ihit):
@@ -41,31 +49,69 @@ class ParticleCounterHits:
     class Hit:
         #implementation for the hit interface
         #_____________________________________________________________________________
-        def __init__(self):
+        def __init__(self, hits):
             self.pdg = 0 # PDG
             self.en = 0. # GeV
             self.x = 0. # mm
             self.y = 0. # mm
             self.z = 0. # mm
 
-        #_____________________________________________________________________________
-        def GlobalToLocal(self, x0, y0, z0, theta=0):
+            self.hits = hits
 
-            #local detector coordinates with rotation phi in x-z plane
-            pos = TVector3(self.x-x0, self.y-y0, self.z-z0)
-            pos.RotateY(-theta)
+        #_____________________________________________________________________________
+        def GlobalToLocal(self):
+
+            #local detector coordinates with rotation theta in x-z plane
+            pos = TVector3(self.x-self.hits.xpos, self.y-self.hits.ypos, self.z-self.hits.zpos)
+            pos.RotateY(-self.hits.theta)
 
             self.x = pos.X()
             self.y = pos.Y()
             self.z = pos.Z()
 
+        #_____________________________________________________________________________
+        def LocalY(self):
+
+            #local coordinates for the hit with translation only in y
+
+            self.y = self.y - self.hits.ypos
+
     #_____________________________________________________________________________
     def GetN(self):
 
-        #number of hits in event, all vectors are of same size
+        #number of hits in event, all vectors are of the same size
 
         return self.pdg.size()
 
+    #_____________________________________________________________________________
+    def CreateOutput(self, nam):
+
+        #create tree output associated with the hits
+
+        self.otree = TTree(nam, nam)
+        self.out_en = c_double(0)
+        self.out_x = c_double(0)
+        self.out_y = c_double(0)
+        self.out_z = c_double(0)
+        self.out_pdg = c_int(0)
+        self.otree.Branch("en", self.out_en, "en/D")
+        self.otree.Branch("x", self.out_x, "x/D")
+        self.otree.Branch("y", self.out_y, "y/D")
+        self.otree.Branch("z", self.out_z, "z/D")
+        self.otree.Branch("pdg", self.out_pdg, "pdg/I")
+
+    #_____________________________________________________________________________
+    def FillOutput(self):
+
+        #fill the output tree for the current hit
+
+        self.out_en.value = self.hit.en
+        self.out_x.value = self.hit.x
+        self.out_y.value = self.hit.y
+        self.out_z.value = self.hit.z
+        self.out_pdg.value = self.hit.pdg
+
+        self.otree.Fill()
 
     #direct access:
     #_____________________________________________________________________________
