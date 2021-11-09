@@ -1,10 +1,11 @@
 #!/usr/bin/python3
 
 from ctypes import c_double, c_bool, c_int
+import numpy as np
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
-from ROOT import TGraph, TMath, TTree
+from ROOT import TGraph, TMath, TTree, TDatabasePDG
 from ROOT import std
 
 #from EventStore import EventStore
@@ -71,18 +72,51 @@ def acc_spec():
 #_____________________________________________________________________________
 def up_rate():
 
+    #detector = "up"
+    detector = "down"
+    #detector = "phot"
+
     #plot range
-    xybin = 10
-    xylen = 200
+    xybin = 5.
+    xylen = 110.
 
     inp_lmon = TFile.Open("lmon.root")
-    #tree = inp_lmon.Get("up")
-    tree = inp_lmon.Get("down")
+    #number of interactions from event tree
+    ni = inp_lmon.Get("event").GetEntries()
+    #hits tree
+    tree = inp_lmon.Get(detector)
 
     can = ut.box_canvas()
     hXY = ut.prepare_TH2D("hXY", xybin, -xylen, xylen, xybin, -xylen, xylen)
-
     tree.Draw("y:x >> hXY")
+
+    #scale to hits per unit area per second
+    scale = get_scale(ni) # sec^-1
+    #print("scale:", scale)
+
+    #bin area in mm^2
+    bin_area = xybin**2
+    #print("area:", bin_area)
+
+    scale_area = scale/bin_area # mm^-2 sec^-1
+    print("scale_area:", scale_area)
+
+    nhits_all = 0.
+
+    for ix in range(1, hXY.GetNbinsX()+1):
+        for iy in range(1, hXY.GetNbinsY()+1):
+
+            nh = hXY.GetBinContent(ix, iy)
+            nhits_all += nh
+
+            hXY.SetBinContent(ix, iy, nh*scale_area)
+
+    #hits per interaction
+    print("Hits per interaction:", nhits_all/ni)
+
+    #integrated rate
+    rate_all = nhits_all*scale
+    print("Integrated rate (MHz):", 1e-6*rate_all)
 
     hXY.SetMinimum(0.98)
     hXY.SetContour(300)
@@ -115,7 +149,7 @@ def load_lmon():
     tree = inp.Get("DetectorTree")
 
     #number of events, negative for all
-    nev = 100000
+    nev = -100000
 
     #input generated particles
     pdg = std.vector(int)()
@@ -129,6 +163,9 @@ def load_lmon():
     down_hits = ParticleCounterHits("down", tree)
     down_hits.ypos = -142. # mm
 
+    #photon detector hits
+    phot_hits = ParticleCounterHits("phot", tree)
+
     #outputs
     out = TFile("lmon.root", "recreate")
     otree = TTree("event", "event")
@@ -136,13 +173,16 @@ def load_lmon():
     up_en = c_double(0)
     down_en = c_double(0)
     is_spect = c_bool(0)
+    phot_en = c_double(0)
     otree.Branch("gen_en", gen_en, "gen_en/D")
     otree.Branch("up_en", up_en, "up_en/D")
     otree.Branch("down_en", down_en, "down_en/D")
     otree.Branch("is_spect", is_spect, "is_spect/O")
+    otree.Branch("phot_en", phot_en, "phot_en/D")
 
     up_hits.CreateOutput("up")
     down_hits.CreateOutput("down")
+    phot_hits.CreateOutput("phot")
 
     #event loop
     if nev<0: nev = tree.GetEntries()
@@ -153,6 +193,7 @@ def load_lmon():
         up_en.value = 0.
         down_en.value = 0.
         is_spect.value = 0
+        phot_en.value = 0.
 
         #generated photon energy
         for imc in range(pdg.size()):
@@ -179,6 +220,13 @@ def load_lmon():
         if up_en.value > emin and down_en.value > emin:
             is_spect.value = 1
 
+        #photon hits
+        for i in range(phot_hits.GetN()):
+            hit = phot_hits.GetHit(i)
+
+            phot_en.value += hit.en
+            phot_hits.FillOutput()
+
         otree.Fill()
 
     #event loop
@@ -186,11 +234,56 @@ def load_lmon():
     otree.Write()
     up_hits.otree.Write()
     down_hits.otree.Write()
+    phot_hits.otree.Write()
     out.Close()
 
     print("load_lmon done")
 
 #load_lmon
+
+#_____________________________________________________________________________
+def get_scale(Ni):
+
+    #scale for event rate in Hz per one simulated interaction
+    #Ni is number of simulated interactions
+
+    #interaction cross section, mb
+    sigma_tot = 171.29
+
+    #instantaneous luminosity, cm^-2 sec^-1
+    lumi_cmsec = 1.54e33
+
+    #number of bunches
+    nbunch = 290
+
+    #electron beam energy, GeV
+    Ee = 18. # GeV
+
+    #collider circumference, speed of light, electron mass
+    circ = 3834. # m
+    cspeed = 299792458. # m sec^-1
+    me = TDatabasePDG.Instance().GetParticle(11).Mass() # GeV
+
+    #beam velocity (units of c)
+    beta = np.sqrt(Ee**2-me**2)/Ee
+    print("Beta:", beta)
+    print("Orbit period (micro sec):", 1e6*circ/(beta*cspeed))
+
+    #bunch spacing, sec
+    Tb = circ/(beta*cspeed*nbunch)
+    print("Bunch spacing (micro sec):", 1e6*Tb)
+    print("Bunch frequency (MHz):", 1e-6/Tb)
+
+    #luminosity per bunch crossing, mb^-1
+    Lb = lumi_cmsec*1e-27*Tb
+    print("Luminosity per bunch crossing, mb^-1:", Lb)
+    print("Mean number of interactions per bunch crossing:", sigma_tot*Lb)
+    print("Probability for at least one interaction in bunch crossing:", (1.-np.e**(-sigma_tot*Lb)))
+
+    #rate per one simulated interaction, Hz
+    return (1./Ni)*sigma_tot*1e-27*lumi_cmsec
+
+#get_scale
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
