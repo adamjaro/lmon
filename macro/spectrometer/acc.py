@@ -5,7 +5,7 @@ import numpy as np
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
-from ROOT import TGraph, TMath, TTree, TDatabasePDG
+from ROOT import TGraph, TMath, TTree, TDatabasePDG, TF1
 from ROOT import std
 
 #from EventStore import EventStore
@@ -19,11 +19,12 @@ from ParticleCounterHits import ParticleCounterHits
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 2
 
     func = {}
     func[0] = acc_spec
     func[1] = up_rate
+    func[2] = en_bun
 
     func[101] = load_lmon
     #func[102] = load_dd
@@ -53,7 +54,7 @@ def acc_spec():
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
 
-    ut.put_yx_tit(frame, "Acceptance", "Photon energy #it{E} (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Spectrometer acceptance", "Photon energy #it{E} (GeV)", 1.6, 1.3)
 
     frame.Draw()
 
@@ -73,8 +74,8 @@ def acc_spec():
 def up_rate():
 
     #detector = "up"
-    detector = "down"
-    #detector = "phot"
+    #detector = "down"
+    detector = "phot"
 
     #plot range
     xybin = 5.
@@ -91,15 +92,17 @@ def up_rate():
     tree.Draw("y:x >> hXY")
 
     #scale to hits per unit area per second
-    scale = get_scale(ni) # sec^-1
-    #print("scale:", scale)
+    scale = get_scale(ni)
+    print("scale:", scale)
+    lam = scale["lambda"]
+    tb = scale["Tb"]
 
     #bin area in mm^2
     bin_area = xybin**2
-    #print("area:", bin_area)
+    print("area:", bin_area)
 
-    scale_area = scale/bin_area # mm^-2 sec^-1
-    print("scale_area:", scale_area)
+    #scale_area = scale/bin_area # mm^-2 sec^-1
+    #print("scale_area:", scale_area)
 
     nhits_all = 0.
 
@@ -109,13 +112,20 @@ def up_rate():
             nh = hXY.GetBinContent(ix, iy)
             nhits_all += nh
 
-            hXY.SetBinContent(ix, iy, nh*scale_area)
+            #hits in bunch crossing
+            nhb = (nh/ni)*lam
+
+            #rate per area, mm^-2 sec^-1
+            rA = (1.-np.e**(-nhb))*(1./tb)*(1./bin_area)
+            #print(rA)
+
+            hXY.SetBinContent(ix, iy, rA)
 
     #hits per interaction
     print("Hits per interaction:", nhits_all/ni)
 
     #integrated rate
-    rate_all = nhits_all*scale
+    rate_all = (1.-np.e**(-(nhits_all/ni)*lam))*(1./tb)
     print("Integrated rate (MHz):", 1e-6*rate_all)
 
     hXY.SetMinimum(0.98)
@@ -125,7 +135,10 @@ def up_rate():
     xtit = "#it{x} (mm)"
     ut.put_yx_tit(hXY, ytit, xtit, 1.4, 1.4)
 
-    ut.set_margin_lbtr(gPad, 0.1, 0.11, 0.03, 0.12)
+    hXY.SetZTitle("Event rate (mm^{-2} s^{-1})")
+    hXY.SetTitleOffset(1.4, "Z")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.11, 0.03, 0.15)
 
     hXY.Draw()
 
@@ -133,10 +146,47 @@ def up_rate():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #up_rate
+
+#_____________________________________________________________________________
+def en_bun():
+
+    #energy in bunch crossing
+
+    #detector = "bun_up_en"
+    #detector = "bun_down_en"
+    detector = "bun_phot_en"
+
+    #plot range
+    ebin = 0.5
+    #emax = 35.
+    emax = 150.
+
+    inp_lmon = TFile.Open("lmon.root")
+    tree = inp_lmon.Get("bunch")
+
+    can = ut.box_canvas()
+    hE = ut.prepare_TH1D("hE", ebin, 0, emax)
+
+    tree.Draw(detector+" >> hE")
+
+    ut.set_H1D_col(hE, rt.kBlue)
+
+    ut.put_yx_tit(hE, "Counts", "Incident energy in bunch crossing (GeV)", 1.5, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.02, 0.03)
+
+    gPad.SetGrid()
+
+    gPad.SetLogy()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#en_bun
 
 #_____________________________________________________________________________
 def load_lmon():
@@ -144,7 +194,8 @@ def load_lmon():
     emin = 1.
 
     #input
-    inp = TFile.Open("../../lmon.root")
+    #inp = TFile.Open("../../lmon.root")
+    inp = TFile.Open("../../lmon_ys1.root")
 
     tree = inp.Get("DetectorTree")
 
@@ -168,6 +219,8 @@ def load_lmon():
 
     #outputs
     out = TFile("lmon.root", "recreate")
+
+    #interaction tree
     otree = TTree("event", "event")
     gen_en = c_double(0)
     up_en = c_double(0)
@@ -180,11 +233,35 @@ def load_lmon():
     otree.Branch("is_spect", is_spect, "is_spect/O")
     otree.Branch("phot_en", phot_en, "phot_en/D")
 
+    #hit trees
     up_hits.CreateOutput("up")
     down_hits.CreateOutput("down")
     phot_hits.CreateOutput("phot")
 
-    #event loop
+    #bunch crossing tree
+    btree = TTree("bunch", "bunch")
+    bun_ni = c_int(0)
+    bun_up_en = c_double(0)
+    bun_down_en = c_double(0)
+    bun_phot_en = c_double(0)
+    btree.Branch("bun_ni", bun_ni, "bun_ni/I")
+    btree.Branch("bun_up_en", bun_up_en, "bun_up_en/D")
+    btree.Branch("bun_down_en", bun_down_en, "bun_down_en/D")
+    btree.Branch("bun_phot_en", bun_phot_en, "bun_phot_en/D")
+
+    #Poisson distribution for bunch crossings
+    lam = get_scale(1)["lambda"]
+    print("Lambda:", lam)
+    fPois = TF1("Pois", "TMath::Power([0], Int_t(TMath::Floor(x)) )*TMath::Exp(-[0])/TMath::Factorial( Int_t(TMath::Floor(x)) )", 0, 12.*lam)
+    fPois.SetParameter(0, lam)
+
+    #print("Pois:", fPois.GetRandom())
+
+    #number of interactions in bunch crossing
+    nI = int(TMath.Floor(fPois.GetRandom()))
+    bun_ni.value = nI
+
+    #interaction loop
     if nev<0: nev = tree.GetEntries()
     for ievt in range(nev):
         tree.GetEntry(ievt)
@@ -229,12 +306,31 @@ def load_lmon():
 
         otree.Fill()
 
-    #event loop
+        #bunch crossing
+        if nI == 0:
+            btree.Fill()
+
+            nI = int(TMath.Floor(fPois.GetRandom()))
+            bun_ni.value = nI
+
+            bun_up_en.value = 0.
+            bun_down_en.value = 0.
+            bun_phot_en.value = 0.
+
+        else:
+            nI -= 1
+
+            bun_up_en.value += up_en.value
+            bun_down_en.value += down_en.value
+            bun_phot_en.value += phot_en.value
+
+    #interaction loop
 
     otree.Write()
     up_hits.otree.Write()
     down_hits.otree.Write()
     phot_hits.otree.Write()
+    btree.Write()
     out.Close()
 
     print("load_lmon done")
@@ -280,8 +376,14 @@ def get_scale(Ni):
     print("Mean number of interactions per bunch crossing:", sigma_tot*Lb)
     print("Probability for at least one interaction in bunch crossing:", (1.-np.e**(-sigma_tot*Lb)))
 
+    scale = {}
+    scale["lambda"] = sigma_tot*Lb
+    scale["Tb"] = Tb # sec
+
     #rate per one simulated interaction, Hz
-    return (1./Ni)*sigma_tot*1e-27*lumi_cmsec
+    #return (1./Ni)*sigma_tot*1e-27*lumi_cmsec
+
+    return scale
 
 #get_scale
 

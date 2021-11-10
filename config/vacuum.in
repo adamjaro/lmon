@@ -115,6 +115,7 @@ const LumiSpec_Z -36400. # mm
 const LumiSpec_XY 200. # mm
 const LumiSpec_DZ 350. # mm
 const LumiSpec_cen_Y 142. # mm
+#const LumiSpec_cen_Y LumiSpec_XY
 
 #up spectrometer
 new BoxSegment LumiSUbox
