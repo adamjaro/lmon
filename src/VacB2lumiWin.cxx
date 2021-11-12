@@ -37,13 +37,13 @@ VacB2lumiWin::VacB2lumiWin(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   //full size in y at the front of exit window volume
   G4double win_ysiz = geo->GetD(fNam, "ysiz")*mm;
 
-  G4double win_z = -18500*mm; // z of front of exit window volume
-  G4double win_xmax = 100*mm; // given by angular apperture to exit window
+  G4double win_z = geo->GetD(fNam, "win_z")*mm; // z of front of exit window volume
+  G4double win_xmax = geo->GetD(fNam, "win_xmax")*mm; // given by angular apperture to exit window
 
   //end of B2BeR magnet
   //full size in x and y at the end of B2eR, equal to inner diameter
-  G4double b2b_end_xy = geo->GetD(fNam, "b2b_end_xy")*mm; 
-  G4double b2b_end_z = -14865*mm; // z position of B2BeR end
+  G4double b2b_end_xy = geo->GetD(fNam, "b2b_end_xy")*mm;
+  G4double b2b_end_z = geo->GetD(fNam, "b2b_end_z")*mm; // z position of B2BeR end
 
   //derived quantities
   G4double zsiz = TMath::Abs(win_z - b2b_end_z); //vacuum element full size in z

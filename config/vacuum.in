@@ -72,8 +72,11 @@ const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_Z
 new VacB2lumiWin vac_b2b_window
 
   vac_b2b_window.win_xmin = ExitWin_XA
+  vac_b2b_window.win_xmax = LumiWin_XY/2.
+  vac_b2b_window.win_z = LumiWin_Z
   vac_b2b_window.ysiz = Tag1_size_Y
   vac_b2b_window.b2b_end_xy = 2*B2BeR_InnerRadius
+  vac_b2b_window.b2b_end_z = B2BeR_Z
 
 #drift section from exit window to Q3eR
 

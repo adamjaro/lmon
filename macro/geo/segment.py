@@ -2,7 +2,7 @@
 from ctypes import c_double
 
 import ROOT as rt
-from ROOT import TVector2, TGraph
+from ROOT import TVector2, TGraph, TLatex
 
 #_____________________________________________________________________________
 class segment:
@@ -23,8 +23,11 @@ class segment:
         self.theta = theta.value
 
         self.fill_style = 1000
-        self.line_col = rt.kBlue
-        self.fill_col = rt.kGreen-2
+        self.line_col = rt.kRed
+        self.fill_col = rt.kCyan+1
+        self.line_width = 1
+
+        self.label = ""
 
     #_____________________________________________________________________________
     def draw(self):
@@ -37,7 +40,7 @@ class segment:
         hcen = self.zpos
         vcen = self.xpos
 
-        print(hsiz, vsiz, hcen, vcen)
+        #print(hsiz, vsiz, hcen, vcen)
 
         #edge points around closed contour
         points = []
@@ -55,7 +58,7 @@ class segment:
         #export points to the graph
         self.gbox = TGraph(len(points))
         self.gbox.SetLineColor(self.line_col)
-        self.gbox.SetLineWidth(2)
+        self.gbox.SetLineWidth(self.line_width)
         self.gbox.SetFillStyle(self.fill_style)
         self.gbox.SetFillColor(self.fill_col)
 
@@ -64,6 +67,25 @@ class segment:
 
         self.gbox.Draw("lfsame")
 
+        #label
+        if self.label == "": return
+
+        #label below the segment
+        if vcen < -1.:
+            align = 32
+            vlab = (vcen-vsiz)*1.1
+
+        #label above the segment
+        else:
+            align = 12
+            vlab = (vcen+vsiz)*1.1
+
+        self.glabel = TLatex(hcen, vlab, self.label)
+        self.glabel.SetTextSize(0.03)
+        #self.glabel.SetTextSize(0.02)
+        self.glabel.SetTextAngle(90)
+        self.glabel.SetTextAlign(align)
+        self.glabel.Draw("same")
 
 
 

@@ -631,7 +631,8 @@ def invert_col(pad, bgcol=rt.kBlack):
             axes[i].SetTitleColor(fgcol)
       #TGraph
       if obj.InheritsFrom(TGraph.Class()) == True:
-            obj.SetFillColor(bgcol)
+            if obj.GetFillColor() == rt.kWhite:
+                obj.SetFillColor(bgcol)
             ax = obj.GetXaxis()
             ay = obj.GetYaxis()
             ax.SetAxisColor(fgcol)
