@@ -55,14 +55,14 @@ new BoxSegment Tagger2box
 const LumiWin_Z -18500. # mm
 const LumiWin_XY 74. # mm
 const LumiWin_DZ 290. # mm
-const ExitWin_XB -LumiWin_XY/2 # mm
+const ExitWin_XB -LumiWin_XY/2. # mm
 
 new BoxSegment ExitWinBox
 
   ExitWinBox.dx = LumiWin_XY
   ExitWinBox.dy = LumiWin_XY
   ExitWinBox.dz = LumiWin_DZ
-  ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2
+  ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2.
 
 #from B2 to exit window
 
@@ -75,7 +75,7 @@ new VacB2lumiWin vac_b2b_window
   vac_b2b_window.win_xmax = LumiWin_XY/2.
   vac_b2b_window.win_z = LumiWin_Z
   vac_b2b_window.ysiz = Tag1_size_Y
-  vac_b2b_window.b2b_end_xy = 2*B2BeR_InnerRadius
+  vac_b2b_window.b2b_end_xy = 2.*B2BeR_InnerRadius
   vac_b2b_window.b2b_end_z = B2BeR_Z
 
 #drift section from exit window to Q3eR
@@ -113,12 +113,28 @@ new VacTaggerWin vac_tag2_win
   vac_tag2_win.zTB = Tag2_ZB 
   vac_tag2_win.xTB = Tag2_XB
 
+#spectrometer magnet
+const LumiMag_cen_Z -28200. # mm
+const LumiMag_R 100. # mm
+const LumiMag_DZ 600. # mm
+
 #Luminosity spectrometers up and down
 const LumiSpec_Z -36400. # mm
 const LumiSpec_XY 200. # mm
 const LumiSpec_DZ 350. # mm
-const LumiSpec_cen_Y 142. # mm
-#const LumiSpec_cen_Y LumiSpec_XY
+const LumiSpec_YS 42. # mm
+
+const LumiSpec_ZS (LumiMag_cen_Z-LumiMag_DZ/2.)-LumiSpec_Z
+const LumiSpec_alpha asin(LumiSpec_XY/(2.*sqrt(LumiSpec_ZS*LumiSpec_ZS+LumiSpec_YS*LumiSpec_YS)))+atan(LumiSpec_YS/LumiSpec_ZS)
+#const LumiSpec_alpha 0.
+const LumiSpec_ZC LumiSpec_Z-0.5*sqrt(LumiSpec_DZ*LumiSpec_DZ+LumiSpec_XY*LumiSpec_XY)*sin(atan(LumiSpec_DZ/LumiSpec_XY)-LumiSpec_alpha)
+const LumiSpec_YC LumiSpec_YS+0.5*sqrt(LumiSpec_DZ*LumiSpec_DZ+LumiSpec_XY*LumiSpec_XY)*cos(atan(LumiSpec_DZ/LumiSpec_XY)-LumiSpec_alpha)
+
+const LumiSpec_ZT LumiSpec_Z+LumiSpec_XY*sin(LumiSpec_alpha)
+const LumiSpec_YT LumiSpec_YS+LumiSpec_XY*cos(LumiSpec_alpha)
+
+const LumiSpec_ZF LumiSpec_Z-LumiSpec_DZ*cos(LumiSpec_alpha)
+const LumiSpec_YF LumiSpec_YS+LumiSpec_DZ*sin(LumiSpec_alpha)
 
 #up spectrometer
 new BoxSegment LumiSUbox
@@ -126,8 +142,10 @@ new BoxSegment LumiSUbox
   LumiSUbox.dx = LumiSpec_XY
   LumiSUbox.dy = LumiSpec_XY
   LumiSUbox.dz = LumiSpec_DZ
-  LumiSUbox.ypos = LumiSpec_cen_Y
-  LumiSUbox.zpos = LumiSpec_Z-LumiSpec_DZ/2
+  LumiSUbox.zpos = LumiSpec_ZC
+  LumiSUbox.ypos = LumiSpec_YC
+  LumiSUbox.rotate_x = 1
+  LumiSUbox.theta = LumiSpec_alpha # positive angle for up spectrometer, x points downwards in yz plane
 
 #down spectrometer
 new BoxSegment LumiSDbox
@@ -135,9 +153,10 @@ new BoxSegment LumiSDbox
   LumiSDbox.dx = LumiSpec_XY
   LumiSDbox.dy = LumiSpec_XY
   LumiSDbox.dz = LumiSpec_DZ
-  LumiSDbox.ypos = -LumiSpec_cen_Y
-  LumiSDbox.zpos = LumiSpec_Z-LumiSpec_DZ/2
-
+  LumiSDbox.zpos = LumiSpec_ZC
+  LumiSDbox.ypos = -LumiSpec_YC
+  LumiSDbox.rotate_x = 1
+  LumiSDbox.theta = -LumiSpec_alpha # negative angle for down spectrometer, x points downwards in yz plane
 
 #Luminosity direct photon detector
 const LumiD_Z -37000. # mm
@@ -149,62 +168,57 @@ new BoxSegment LumiDbox
   LumiDbox.dx = LumiD_XY
   LumiDbox.dy = LumiD_XY
   LumiDbox.dz = LumiD_DZ
-  LumiDbox.zpos = LumiD_Z-LumiD_DZ/2
+  LumiDbox.zpos = LumiD_Z-LumiD_DZ/2.
 
-#spectrometer magnet
-const LumiMag_cen_Z -28200. # mm
-const LumiMag_R 100. # mm
-const LumiMag_DZ 600. # mm
+#vacuum section in front of luminosity spectrometers
+new VacLumi vac_lumi_spec_front
 
-#new BeamMagnetV2 LumiMag
-
-  #LumiMag.zpos = LumiMag_cen_Z
-  #LumiMag.r1 = LumiMag_R
-  #LumiMag.r2 = LumiMag_R
-  #LumiMag.r3 = 1.5*LumiMag_R
-  #LumiMag.length = LumiMag_DZ
-  #LumiMag.field = 0 # T
+  vac_lumi_spec_front.z0 = LumiSpec_ZT
+  vac_lumi_spec_front.z1 = LumiSpec_Z
+  vac_lumi_spec_front.dX0 = LumiSpec_XY/2.
+  vac_lumi_spec_front.dY0 = LumiSpec_YT
+  vac_lumi_spec_front.dX1 = LumiSpec_XY/2.
+  vac_lumi_spec_front.dY1 = LumiSpec_YS
 
 #vacuum section between luminosity spectrometers
+new VacLumi vac_lumi_spec_mid
 
-new BoxSegment vac_lumi_spec_mid
-
-  vac_lumi_spec_mid.dx = LumiSpec_XY
-  vac_lumi_spec_mid.dy = 2*LumiSpec_cen_Y-LumiSpec_XY
-  vac_lumi_spec_mid.dz = LumiSpec_DZ
-  vac_lumi_spec_mid.zpos = LumiSpec_Z-LumiSpec_DZ/2
+  vac_lumi_spec_mid.z0 = LumiSpec_Z
+  vac_lumi_spec_mid.z1 = LumiSpec_ZF
+  vac_lumi_spec_mid.dX0 = LumiSpec_XY/2.
+  vac_lumi_spec_mid.dY0 = LumiSpec_YS
+  vac_lumi_spec_mid.dX1 = LumiSpec_XY/2.
+  vac_lumi_spec_mid.dY1 = LumiSpec_YF
 
 #vacuum section from exit window to spectrometer magnet
 new VacLumi vac_lumi_win_mag
 
   vac_lumi_win_mag.z0 = LumiWin_Z-LumiWin_DZ
-  vac_lumi_win_mag.z1 = LumiMag_cen_Z+LumiMag_DZ/2
-  vac_lumi_win_mag.dX0 = LumiWin_XY/2
-  vac_lumi_win_mag.dY0 = LumiWin_XY/2
+  vac_lumi_win_mag.z1 = LumiMag_cen_Z+LumiMag_DZ/2.
+  vac_lumi_win_mag.dX0 = LumiWin_XY/2.
+  vac_lumi_win_mag.dY0 = LumiWin_XY/2.
   vac_lumi_win_mag.dX1 = LumiMag_R
   vac_lumi_win_mag.dY1 = LumiMag_R
 
 #vacuum section from spectrometer magnet to spectrometer detectors
 new VacLumi vac_lumi_mag_spec
 
-  vac_lumi_mag_spec.z0 = LumiMag_cen_Z-LumiMag_DZ/2
-  vac_lumi_mag_spec.z1 = LumiSpec_Z
+  vac_lumi_mag_spec.z0 = LumiMag_cen_Z-LumiMag_DZ/2.
+  vac_lumi_mag_spec.z1 = LumiSpec_ZT
   vac_lumi_mag_spec.dX0 = LumiMag_R
   vac_lumi_mag_spec.dY0 = LumiMag_R
-  vac_lumi_mag_spec.dX1 = LumiSpec_XY/2
-  vac_lumi_mag_spec.dY1 = LumiSpec_cen_Y+LumiSpec_XY/2
+  vac_lumi_mag_spec.dX1 = LumiSpec_XY/2.
+  vac_lumi_mag_spec.dY1 = LumiSpec_YT
 
 #vacuum section from spectrometers to direct photon detector
 new VacLumi vac_lumi_spec_phot
 
-  vac_lumi_spec_phot.z0 = LumiSpec_Z-LumiSpec_DZ
+  vac_lumi_spec_phot.z0 = LumiSpec_ZF
   vac_lumi_spec_phot.z1 = LumiD_Z
-  vac_lumi_spec_phot.dX0 = LumiSpec_XY/2
-  vac_lumi_spec_phot.dY0 = LumiSpec_cen_Y-LumiSpec_XY/2
-  vac_lumi_spec_phot.dX1 = LumiD_XY/2
-  vac_lumi_spec_phot.dY1 = LumiD_XY/2
-
-
+  vac_lumi_spec_phot.dX0 = LumiSpec_XY/2.
+  vac_lumi_spec_phot.dY0 = LumiSpec_YF
+  vac_lumi_spec_phot.dX1 = LumiD_XY/2.
+  vac_lumi_spec_phot.dY1 = LumiD_XY/2.
 
 
 

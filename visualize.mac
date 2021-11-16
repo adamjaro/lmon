@@ -4,8 +4,8 @@
 /run/verbose 2
 
 #detectors and components
-#/lmon/construct/geometry config/geom_all.in
-/lmon/construct/geometry config/geom_beam-gas.in
+/lmon/construct/geometry config/geom_all.in
+#/lmon/construct/geometry config/geom_beam-gas.in
 
 #input
 /lmon/input/type gun
@@ -43,7 +43,8 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-#/vis/viewer/set/targetPoint 0 0 -14.865 m
+/vis/viewer/set/targetPoint 0 0.084 -36.4 m
+#/vis/viewer/set/targetPoint 0 0 -24 m
 
 #/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
 
@@ -51,7 +52,7 @@
 /vis/viewer/zoom 2.
 
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 -18645 74. mm
+#/vis/scene/add/axes 0 -100 -36400 200. mm
 
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:

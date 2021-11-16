@@ -52,12 +52,23 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
 
   G4cout << "  " << fNam << ", xpos: " << xpos << G4endl;
+  G4cout << "  " << fNam << ", ypos: " << ypos << G4endl;
   G4cout << "  " << fNam << ", zpos: " << zpos << G4endl;
 
   //polar angle along the y axis
   G4double theta = 0;
   geo->GetOptD(fNam, "theta", theta, GeoParser::Unit(rad));
-  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), theta); //CLHEP::HepRotation
+
+  //select the rotation axis
+  G4ThreeVector rot_axis(0, 1, 0); // y
+  G4bool rotate_x = false;
+  geo->GetOptB(fNam, "rotate_x", rotate_x);
+  if(rotate_x) {
+    rot_axis = G4ThreeVector(1, 0, 0); // x
+  }
+
+  G4RotationMatrix rot(rot_axis, theta); //CLHEP::HepRotation
+  G4cout << "  " << fNam << ", theta: " << theta << G4endl;
 
   //placement in top
   G4ThreeVector pos(xpos, ypos, zpos);
