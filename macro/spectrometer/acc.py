@@ -19,12 +19,13 @@ from ParticleCounterHits import ParticleCounterHits
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = acc_spec
     func[1] = up_rate
     func[2] = en_bun
+    func[3] = hit_z
 
     func[101] = load_lmon
     #func[102] = load_dd
@@ -189,13 +190,51 @@ def en_bun():
 #en_bun
 
 #_____________________________________________________________________________
+def hit_z():
+
+    #hit z position
+
+    #detector = "up"
+    #detector = "down"
+    detector = "phot"
+
+    #plot range
+    zbin = 1e-3
+    zmin = -0.1
+    zmax = 0.1
+
+    inp_lmon = TFile.Open("lmon.root")
+    tree = inp_lmon.Get(detector)
+
+    can = ut.box_canvas()
+    hZ = ut.prepare_TH1D("hZ", zbin, zmin, zmax)
+
+    tree.Draw("z >> hZ")
+    print("Entries:", hZ.GetEntries())
+
+    ut.set_H1D_col(hZ, rt.kBlue)
+
+    ut.put_yx_tit(hZ, "Counts", "Hit #it{z} (mm)", 1.5, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.02, 0.03)
+
+    gPad.SetGrid()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#hit_z
+
+#_____________________________________________________________________________
 def load_lmon():
 
     emin = 1.
 
     #input
-    #inp = TFile.Open("../../lmon.root")
-    inp = TFile.Open("../../lmon_ys1.root")
+    inp = TFile.Open("../../lmon.root")
+    #inp = TFile.Open("../../lmon_ys1.root")
 
     tree = inp.Get("DetectorTree")
 
@@ -237,6 +276,7 @@ def load_lmon():
     up_hits.CreateOutput("up")
     down_hits.CreateOutput("down")
     phot_hits.CreateOutput("phot")
+    phot_hits.zpos = -37000. # mm
 
     #bunch crossing tree
     btree = TTree("bunch", "bunch")
@@ -300,6 +340,7 @@ def load_lmon():
         #photon hits
         for i in range(phot_hits.GetN()):
             hit = phot_hits.GetHit(i)
+            hit.GlobalToLocal()
 
             phot_en.value += hit.en
             phot_hits.FillOutput()

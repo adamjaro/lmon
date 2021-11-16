@@ -3,7 +3,7 @@ new top topv
 
   topv.xsiz = 2000 # mm
   topv.ysiz = 2000 # mm
-  topv.zsiz = 40000 # mm
+  topv.zsiz = 16000 # mm
   topv.material = G4_AIR
 
 new CenBeampipeEl cen_beampipe

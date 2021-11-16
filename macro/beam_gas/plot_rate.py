@@ -253,7 +253,8 @@ def beampipe():
     nall = 100e6 # full range
 
     #input
-    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2f.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2f.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2g.root"
 
     #photon and electron rate
     xp, yp, ptot = get_rate_beampipe(infile, "ptree", total_rate, nall)
@@ -293,9 +294,12 @@ def beampipe():
 def get_rate_beampipe(infile, tnam, total_rate, nall):
 
     #meters
-    zmin = -5
-    zmax = 15
-    zbin = 0.3
+    #zmin = -5
+    #zmax = 15
+    #zbin = 0.3
+    zmin = -0.2
+    zmax = 0.2
+    zbin = 1e-2
 
     #beam pipe radius, cm
     rbeam = 3.2

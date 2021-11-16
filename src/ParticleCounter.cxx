@@ -122,7 +122,7 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
   }
 
   //hit position
-  const G4ThreeVector hp = step->GetPostStepPoint()->GetPosition();
+  const G4ThreeVector hp = step->GetPreStepPoint()->GetPosition();
 
   //add the hit
   fHitPdg.push_back( track->GetDynamicParticle()->GetPDGcode() );
