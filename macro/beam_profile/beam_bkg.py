@@ -36,13 +36,15 @@ def rate():
     zmax = None
 
     #cross section in mb
-    sigma = 150.969 # mb
+    #sigma = 150.969 # mb
+    sigma = 537.583 # mb, E_gamma > 100 keV
 
     #beam current in Amps
     beam_current = 2.5 # A
 
     #spacing in z
     zbin = 0.2 # m
+    #zbin = 0.05 # m
 
     #temperature
     T = 293.15 # K

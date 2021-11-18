@@ -122,7 +122,8 @@ const LumiMag_DZ 600. # mm
 const LumiSpec_Z -36400. # mm
 const LumiSpec_XY 200. # mm
 const LumiSpec_DZ 350. # mm
-const LumiSpec_YS 42. # mm
+#const LumiSpec_YS 42. # mm
+const LumiSpec_YS 60. # mm
 
 const LumiSpec_ZS (LumiMag_cen_Z-LumiMag_DZ/2.)-LumiSpec_Z
 const LumiSpec_alpha asin(LumiSpec_XY/(2.*sqrt(LumiSpec_ZS*LumiSpec_ZS+LumiSpec_YS*LumiSpec_YS)))+atan(LumiSpec_YS/LumiSpec_ZS)
@@ -160,7 +161,8 @@ new BoxSegment LumiSDbox
 
 #Luminosity direct photon detector
 const LumiD_Z -37000. # mm
-const LumiD_XY 200. # mm
+#const LumiD_XY 200. # mm
+const LumiD_XY 160. # mm
 const LumiD_DZ 350. # mm
 
 new BoxSegment LumiDbox

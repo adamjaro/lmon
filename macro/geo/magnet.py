@@ -39,6 +39,8 @@ class magnet(segment):
 
         self.label = ""
 
+        #draw as projection in x or y
+        self.y_project = False
 
 
 

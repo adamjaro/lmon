@@ -15,11 +15,12 @@ sys.path.append('../')
 import plot_utils as ut
 
 from ParticleCounterHits import ParticleCounterHits
+from spec_acc import spec_acc
 
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 0
 
     func = {}
     func[0] = acc_spec
@@ -63,6 +64,20 @@ def acc_spec():
 
     ut.set_graph(gLmon, rt.kBlue)
     gLmon.Draw("psame")
+
+    #integrate the acceptance to scale the parametrization
+    en = c_double(0)
+    av = c_double(0)
+    iacc = 0.
+    for i in range(gLmon.GetN()):
+        gLmon.GetPoint(i, en, av)
+        iacc += av.value*(gLmon.GetErrorXhigh(i)+gLmon.GetErrorXlow(i))
+
+    print("iacc:", iacc)
+
+    acc = spec_acc(9700, 0.26, 42, 242)
+    acc.scale = iacc/acc.acc_func.Integral(2, 21)
+    acc.acc_func.Draw("same")
 
     gPad.SetGrid()
 

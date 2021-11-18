@@ -14,8 +14,11 @@ class segment:
         self.dz = geo.GetD(nam, "dz") # mm
 
         xpos = c_double(0)
+        ypos = c_double(0)
         geo.GetOptD(nam, "xpos", xpos) # mm
+        geo.GetOptD(nam, "ypos", ypos) # mm
         self.xpos = xpos.value
+        self.ypos = ypos.value
         self.zpos = geo.GetD(nam, "zpos") # mm
 
         theta = c_double(0)
@@ -29,16 +32,25 @@ class segment:
 
         self.label = ""
 
+        #draw as projection in x or y
+        self.y_project = False
+
     #_____________________________________________________________________________
     def draw(self):
 
         #horizontal and vertical 1/2 size
         hsiz = self.dz/2.
-        vsiz = self.dx/2.
+        if not self.y_project:
+            vsiz = self.dx/2. # vertical is x
+        else:
+            vsiz = self.dy/2. # vertical is y
 
         #horizontal and vertical center
         hcen = self.zpos
-        vcen = self.xpos
+        if not self.y_project:
+            vcen = self.xpos # vertical is x
+        else:
+            vcen = self.ypos # vertical is y
 
         #print(hsiz, vsiz, hcen, vcen)
 

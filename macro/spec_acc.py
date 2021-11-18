@@ -47,35 +47,39 @@ class spec_acc:
 
         #acceptance parametrization
         self.scale = 1. # scale for conversion probability and possible energy threshold
+        self.acc_calc = self.acc_eq(self)
         self.acc_func = TF1("acc_func", self.acc_calc, self.func_min, self.func_max)
         self.acc_func.SetNpx(300)
 
     #_____________________________________________________________________________
-    def acc_calc(self, par):
+    class acc_eq:
+        def __init__(self, gen):
+            self.gen = gen
+        def __call__(self, x, par):
 
-        #acceptance function
-        Eg = par[0]
+            #acceptance function
+            Eg = x[0]
 
-        lower1 = self.eq_12_up_max.Eval(Eg)
-        lower2 = self.eq_12_down_max.Eval(Eg)
+            lower1 = self.gen.eq_12_up_max.Eval(Eg)
+            lower2 = self.gen.eq_12_down_max.Eval(Eg)
 
-        #lower and upper limit for the acceptance
-        if lower1 > lower2:
-            lower = lower1
-        else:
-            lower = lower2
+            #lower and upper limit for the acceptance
+            if lower1 > lower2:
+                lower = lower1
+            else:
+                lower = lower2
 
-        upper1 = self.eq_12_down_min.Eval(Eg)
-        upper2 = self.eq_12_up_min.Eval(Eg)
+            upper1 = self.gen.eq_12_down_min.Eval(Eg)
+            upper2 = self.gen.eq_12_up_min.Eval(Eg)
 
-        if upper1 < upper2:
-            upper = upper1
-        else:
-            upper = upper2
+            if upper1 < upper2:
+                upper = upper1
+            else:
+                upper = upper2
 
-        if upper < lower: return 0
+            if upper < lower: return 0
 
-        return (upper - lower)*self.scale
+            return (upper - lower)*self.gen.scale
 
 
 

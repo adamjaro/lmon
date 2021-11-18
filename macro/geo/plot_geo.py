@@ -120,9 +120,10 @@ def main():
     ew.fill_col = rt.kGreen+1
     ew.draw()
 
-    #up spectrometer
+    #up spectrometer for both spectrometers
     up = segment("LumiSUbox", geo)
-    up.label = "Spectrometer"
+    up.theta = 0
+    up.label = "Spectrometers"
     up.draw()
 
     #Luminosity direct photon detector
@@ -138,7 +139,7 @@ def main():
 
     gPad.SetGrid()
 
-    ut.invert_col(gPad)
+    #ut.invert_col(gPad)
     c1.SaveAs("01fig.pdf")
 
 #main

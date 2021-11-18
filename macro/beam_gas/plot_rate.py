@@ -14,12 +14,13 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = radial
     func[1] = rz
     func[2] = beampipe
+    func[3] = hit_en
 
     func[iplot]()
 
@@ -29,10 +30,11 @@ def main():
 def radial():
 
     #Hz
-    total_rate = 685833. # full range
+    #total_rate = 685833. # full range
+    total_rate = 2442171. # full range
 
     #all simulated events
-    nall = 100e6 # full range
+    nall = 10e6
 
     #zlabel = "0"
     #zlabel = "5 m"
@@ -41,32 +43,33 @@ def radial():
     zlabel = "-3.55 m"
 
     #input
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2a.root"
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2b.root"
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2c.root"
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2d.root"
-    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2e.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2e.root"
+    infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx.root"
 
     #photon and electron rate
-    xp, yp, ptot = get_rate(infile, "ptree", total_rate, nall)
-    exp, eyp, etot = get_rate(infile, "etree", total_rate, nall)
+    #xp, yp, ptot = get_rate(infile, "ptree", total_rate, nall)
+    #exp, eyp, etot = get_rate(infile, "etree", total_rate, nall)
+    dxp, dyp, dtot = get_rate(infile, "htree", total_rate, nall)
 
-    print("Sum rate (kHz):", (ptot+etot)/1e3)
+    #print("Sum rate (kHz):", (ptot+etot)/1e3)
+    print("Sum rate (kHz):", (dtot)/1e3)
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(xp, yp, "-", color="blue", lw=1)
-    plt.plot(exp, eyp, "-", color="red", lw=1)
+    #plt.plot(xp, yp, "-", color="blue", lw=1)
+    #plt.plot(exp, eyp, "-", color="red", lw=1)
+    plt.plot(dxp, dyp, "-", color="blue", lw=1)
 
-    ax.set_xlabel("$r_{xy}$ (cm) at $z$ = "+zlabel)
+    #ax.set_xlabel("$r_{xy}$ (cm) at $z$ = "+zlabel)
+    ax.set_xlabel("Radius $r$ (cm)")
     ax.set_ylabel("Event rate per unit area (Hz/cm$^2$)")
 
     leg = legend()
@@ -247,40 +250,51 @@ def rz():
 def beampipe():
 
     #Hz
-    total_rate = 685833. # full range
+    #total_rate = 685833. # full range
+    total_rate = 2442171. # full range
 
     #all simulated events
     nall = 100e6 # full range
 
     #input
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2f.root"
-    infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2g.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2g.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3a/rc_v2.root"
 
     #photon and electron rate
-    xp, yp, ptot = get_rate_beampipe(infile, "ptree", total_rate, nall)
+    #xp, yp, ptot = get_rate_beampipe(infile, "ptree", total_rate, nall)
     exp, eyp, etot = get_rate_beampipe(infile, "etree", total_rate, nall)
 
-    print("Sum rate (kHz):", (ptot+etot)/1e3)
+    #dd4hep rate
+    infile_dd = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx.root"
+    nall_dd = 1e7
+    #dxp, dyp, dtot = get_rate_beampipe(infile_dd, "htree", total_rate, nall_dd)
+
+    #print("Sum rate (kHz):", (ptot+etot)/1e3)
+    print("Geant rate (kHz):", etot/1e3)
+    #print("DD4hep rate (kHz):", dtot/1e3)
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(xp, yp, "-", color="blue", lw=1)
-    plt.plot(exp, eyp, "-", color="red", lw=1)
+    #plt.plot(xp, yp, "-", color="blue", lw=1)
+    plt.plot(exp, eyp, "-", color="blue", lw=1)
+    #plt.plot(dxp, dyp, "-", color="red", lw=1)
 
     ax.set_xlabel("$z$ (m)")
     ax.set_ylabel("Event rate per unit area (Hz/cm$^2$)")
 
     leg = legend()
-    leg.add_entry(leg_lin("red"), "Electron rate")
-    leg.add_entry(leg_lin("blue"), "Photon rate")
+    #leg.add_entry(leg_lin("red"), "Electron rate")
+    #leg.add_entry(leg_lin("blue"), "Photon rate")
+    #leg.add_entry(leg_lin("red"), "DD4hep observed rate")
+    leg.add_entry(leg_lin("blue"), "Geant4 incident rate")
     leg.draw(plt, col)
 
     ax.set_yscale("log")
@@ -299,10 +313,11 @@ def get_rate_beampipe(infile, tnam, total_rate, nall):
     #zbin = 0.3
     zmin = -0.2
     zmax = 0.2
-    zbin = 1e-2
+    zbin = 2e-2
 
     #beam pipe radius, cm
-    rbeam = 3.2
+    #rbeam = 3.2
+    rbeam = 3.3
 
     infile = TFile.Open(infile)
     tree = infile.Get(tnam)
@@ -312,6 +327,7 @@ def get_rate_beampipe(infile, tnam, total_rate, nall):
     hz = ut.prepare_TH1D("hz", zbin, zmin, zmax)
 
     tree.Draw("zpos/1e3 >> hz")
+    tree.Draw("zpos/1e3 >> hz", "(zpos<150)") # &&(rpos<35)
 
     print("Plot entries:", hz.GetEntries())
 
@@ -348,6 +364,48 @@ def get_rate_beampipe(infile, tnam, total_rate, nall):
     return xp, yp, all_rate
 
 #get_rate_beampipe
+
+#_____________________________________________________________________________
+def hit_en():
+
+    #hit energy
+
+    infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx_v2.root"
+
+    emin = 0
+    emax = 10000
+    ebin = 10
+
+    inp = TFile.Open(infile)
+    #htree = inp.Get("htree")
+    etree = inp.Get("event")
+
+    can = ut.box_canvas()
+
+    hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+
+    etree.Draw("phot_en*1e6 >> hE", "nhits>0")
+    #htree.Draw("en*1e6 >> hE")
+    #htree.Draw("en*1e3 >> hE")
+
+    #xtit = "Hit energy (GeV)"
+    #xtit = "Hit energy (MeV)"
+    xtit = "Hit energy (keV)"
+    ytit = "Counts"
+    ut.put_yx_tit(hE, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.01, 0.03)
+
+    ut.set_H1D_col(hE, rt.kBlue)
+
+    gPad.SetGrid()
+
+    gPad.SetLogy()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#hit_en
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):
