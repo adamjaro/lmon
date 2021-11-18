@@ -56,6 +56,8 @@ class rcalc {
 
     Int_t nhits;
     Double_t phot_en;
+    Double_t el_en;
+    Bool_t is_hit;
 
 };
 

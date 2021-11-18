@@ -16,7 +16,7 @@ using namespace std;
 //_____________________________________________________________________________
 rcalc::rcalc(std::string nam): det_name(nam), vtx_z(0), hit_pdg(0), hit_en(0),
     hit_x(0), hit_y(0), hit_z(0), rmin(-1), zpos(0), rpos(0), en(0), pdg(0),
-    nhits(0), phot_en(0), gen_pdg(0), gen_en(0) {
+    nhits(0), phot_en(0), el_en(0), is_hit(0), gen_pdg(0), gen_en(0) {
 
   inp = 0x0;
   outp = 0x0;
@@ -55,7 +55,20 @@ void rcalc::event_loop(int n) {
   for(int iev=0; iev<nev; iev++) {
     tree->GetEntry(iev);
 
+    //generated particles
+    for(int imc=0; imc<gen_pdg->size(); imc++) {
+
+      if( gen_pdg->at(imc) == 22 ) {
+        phot_en = gen_en->at(imc);
+      }
+
+      if( gen_pdg->at(imc) == 11 ) {
+        el_en = gen_en->at(imc);
+      }
+    }
+
     nhits = 0;
+    is_hit = kFALSE;
 
     //hit loop
     for(int ihit=0; ihit<hit_pdg->size(); ihit++) {
@@ -79,16 +92,7 @@ void rcalc::event_loop(int n) {
     }//hit loop
 
     //event with hits
-    if(nhits <= 0) continue;
-
-    //generated particles
-    for(int imc=0; imc<gen_pdg->size(); imc++) {
-      if( gen_pdg->at(imc) != 22 ) continue;
-
-      phot_en = gen_en->at(imc);
-    }
-
-    //cout << nhits << " " << phot_en << endl;
+    if(nhits > 0) is_hit = kTRUE;
 
     etree->Fill();
 
@@ -137,6 +141,8 @@ void rcalc::create_output(std::string outfile) {
   etree->Branch("vtx_z", &vtx_z, "vtx_z/D");
   etree->Branch("nhits", &nhits, "nhits/I");
   etree->Branch("phot_en", &phot_en, "phot_en/D");
+  etree->Branch("el_en", &el_en, "el_en/D");
+  etree->Branch("is_hit", &is_hit, "is_hit/O");
 
 }//create_output
 

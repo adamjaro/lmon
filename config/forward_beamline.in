@@ -12,7 +12,7 @@ new BeamQuadrupole Q0eF
   Q0eF.r1 = Q0eF_InnerRadius
   Q0eF.r2 = Q0eF_InnerRadius
   Q0eF.length = Q0eF_StartZ-Q0eF_EndZ
-  Q0eF.grad = 13.0961 # T/m
+  Q0eF.grad = 13.0961 # T/m, 18 GeV
   #Q0eF.grad = 0
   Q0eF.angle = TMath::Pi()/2 # rad
 
@@ -37,7 +37,7 @@ new BeamQuadrupole Q1eF
   Q1eF.r1 = Q1eF_InnerRadius
   Q1eF.r2 = Q1eF_InnerRadius
   Q1eF.length = Q1eF_StartZ-Q1eF_EndZ
-  Q1eF.grad = -6.0639 # T/m
+  Q1eF.grad = -6.0639 # T/m, 18 GeV
   #Q1eF.grad = 0
   Q1eF.angle = TMath::Pi()/2 # rad
 

@@ -371,11 +371,15 @@ def hit_en():
     #hit energy
 
     #infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx_v2.root"
+    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3b/rc.root"
     infile = "/home/jaroslav/sim/lmon/macro/beam_gas/rc.root"
 
-    emin = 0
-    emax = 10000
-    ebin = 10
+    #emin = 0
+    #emax = 10000
+    #ebin = 10
+    emin = -5
+    emax = 2
+    ebin = 0.1
 
     inp = TFile.Open(infile)
     #htree = inp.Get("htree")
@@ -385,8 +389,8 @@ def hit_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    etree.Draw("phot_en*1e3 >> hE", "nhits>0")
-    #htree.Draw("en*1e6 >> hE")
+    #etree.Draw("phot_en*1e6 >> hE", "nhits>0")
+    etree.Draw("TMath::Log10(phot_en) >> hE")
     #htree.Draw("en*1e3 >> hE")
 
     #xtit = "Hit energy (GeV)"
