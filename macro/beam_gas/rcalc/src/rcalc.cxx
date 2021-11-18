@@ -15,7 +15,8 @@ using namespace std;
 
 //_____________________________________________________________________________
 rcalc::rcalc(std::string nam): det_name(nam), vtx_z(0), hit_pdg(0), hit_en(0),
-    hit_x(0), hit_y(0), hit_z(0), rmin(-1) {
+    hit_x(0), hit_y(0), hit_z(0), rmin(-1), zpos(0), rpos(0), en(0), pdg(0),
+    nhits(0), phot_en(0), gen_pdg(0), gen_en(0) {
 
   inp = 0x0;
   outp = 0x0;
@@ -30,7 +31,7 @@ rcalc::~rcalc() {
   cout << "~rcalc" << endl;
 
   if(outp) {
-    ptree->Write();
+    htree->Write();
     etree->Write();
     outp->Close();
   }
@@ -51,25 +52,15 @@ void rcalc::event_loop(int n) {
   }
 
   //event loop
-  ULong64_t nall = 0;
-  ULong64_t nhit_all = 0;
   for(int iev=0; iev<nev; iev++) {
     tree->GetEntry(iev);
 
-    //cout << vtx_z << endl;
-
-    //if( vtx_z < 5000. ) continue;
-
-    nall++;
-
-    //if( hit_pdg->size() <= 0 ) continue;
-
-    int nphot = 0;
-    int nel = 0;
+    nhits = 0;
 
     //hit loop
     for(int ihit=0; ihit<hit_pdg->size(); ihit++) {
-      nhit_all++;
+
+      nhits++;
 
       //hit radial position
       Double_t radius = TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) );
@@ -77,36 +68,35 @@ void rcalc::event_loop(int n) {
       //minimal hit radius if set
       if( rmin > 0. and radius < rmin ) continue;
 
-      //photon or electron hit
-      if( hit_pdg->at(ihit) == 22 ) {
-        nphot++;
+      //hit output
+      zpos = hit_z->at(ihit);
+      rpos = radius;
+      en = hit_en->at(ihit);
+      pdg = hit_pdg->at(ihit);
 
-        phot_zpos = hit_z->at(ihit);
-        phot_rpos = TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) );
-        phot_en = hit_en->at(ihit);
-      }
-      if( hit_pdg->at(ihit) == 11 ) {
-        nel++;
-
-        el_zpos = hit_z->at(ihit);
-        el_rpos = TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) );
-        el_en = hit_en->at(ihit);
-      }
-
-      //cout << hit_z->at(ihit) << " " << vtx_z << endl;
-      //cout << TMath::Sqrt( hit_x->at(ihit)*hit_x->at(ihit) + hit_y->at(ihit)*hit_y->at(ihit) ) << endl;
+      htree->Fill();
 
     }//hit loop
 
-    if( nphot > 0 ) ptree->Fill();
-    if( nel > 0 ) etree->Fill();
+    //event with hits
+    if(nhits <= 0) continue;
+
+    //generated particles
+    for(int imc=0; imc<gen_pdg->size(); imc++) {
+      if( gen_pdg->at(imc) != 22 ) continue;
+
+      phot_en = gen_en->at(imc);
+    }
+
+    //cout << nhits << " " << phot_en << endl;
+
+    etree->Fill();
 
   }//event loop
 
-  cout << "All events:    " << nall << endl;
-  cout << "All hits:      " << nhit_all << endl;
-  cout << "Photon hits:   " << ptree->GetEntries() << endl;
-  cout << "Electron hits: " << etree->GetEntries() << endl;
+  cout << "All events:       " << nev << endl;
+  cout << "All hits:         " << htree->GetEntries() << endl;
+  cout << "Events with hits: " << etree->GetEntries() << endl;
 
 }//event_loop
 
@@ -124,7 +114,8 @@ void rcalc::open_input(string infile) {
   tree->SetBranchAddress((det_name+"_HitY").c_str(), &hit_y);
   tree->SetBranchAddress((det_name+"_HitZ").c_str(), &hit_z);
 
-  //cout << hit_pdg << endl;
+  tree->SetBranchAddress("gen_pdg", &gen_pdg);
+  tree->SetBranchAddress("gen_en", &gen_en);
 
 }//open_input
 
@@ -132,19 +123,20 @@ void rcalc::open_input(string infile) {
 void rcalc::create_output(std::string outfile) {
 
   outp = TFile::Open(outfile.c_str(), "recreate");
-  ptree = new TTree("ptree", "ptree");
-  etree = new TTree("etree", "etree");
 
-  ptree->Branch("vtx_z", &vtx_z, "vtx_z/D");
+  //hit tree
+  htree = new TTree("htree", "htree");
+  htree->Branch("vtx_z", &vtx_z, "vtx_z/D");
+  htree->Branch("zpos", &zpos, "zpos/D");
+  htree->Branch("rpos", &rpos, "rpos/D");
+  htree->Branch("en", &en, "en/D");
+  htree->Branch("pdg", &pdg, "pdg/I");
+
+  //event tree
+  etree = new TTree("event", "event");
   etree->Branch("vtx_z", &vtx_z, "vtx_z/D");
-
-  ptree->Branch("zpos", &phot_zpos, "zpos/D");
-  ptree->Branch("rpos", &phot_rpos, "rpos/D");
-  ptree->Branch("en", &phot_en, "en/D");
-
-  etree->Branch("zpos", &el_zpos, "zpos/D");
-  etree->Branch("rpos", &el_rpos, "rpos/D");
-  etree->Branch("en", &el_en, "en/D");
+  etree->Branch("nhits", &nhits, "nhits/I");
+  etree->Branch("phot_en", &phot_en, "phot_en/D");
 
 }//create_output
 

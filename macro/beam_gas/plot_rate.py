@@ -370,7 +370,8 @@ def hit_en():
 
     #hit energy
 
-    infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx_v2.root"
+    #infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx_v2.root"
+    infile = "/home/jaroslav/sim/lmon/macro/beam_gas/rc.root"
 
     emin = 0
     emax = 10000
@@ -384,7 +385,7 @@ def hit_en():
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
 
-    etree.Draw("phot_en*1e6 >> hE", "nhits>0")
+    etree.Draw("phot_en*1e3 >> hE", "nhits>0")
     #htree.Draw("en*1e6 >> hE")
     #htree.Draw("en*1e3 >> hE")
 

@@ -1,6 +1,9 @@
 
 #all components
 
+#central beampipe
+include central_beampipe.in
+
 #beamline
 #include geom_beamline.in
 include geom_beamline_18GeV.in

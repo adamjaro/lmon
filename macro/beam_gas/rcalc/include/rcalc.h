@@ -40,18 +40,22 @@ class rcalc {
     std::vector<Float_t> *hit_y; // hit position in y, mm
     std::vector<Float_t> *hit_z; // hit position in z, mm
 
-    //output trees
+    //generated particles
+    std::vector<Int_t> *gen_pdg; // generated pdg
+    std::vector<Float_t> *gen_en; // generated energy, GeV
+
+    //output hit tree
     TFile *outp;
-    TTree *ptree;
-    TTree *etree;
+    TTree *htree; // hit tree
+    TTree *etree; // event tree
 
-    Double_t phot_zpos;
-    Double_t phot_rpos;
+    Double_t zpos;
+    Double_t rpos;
+    Double_t en;
+    Int_t pdg;
+
+    Int_t nhits;
     Double_t phot_en;
-
-    Double_t el_zpos;
-    Double_t el_rpos;
-    Double_t el_en;
 
 };
 

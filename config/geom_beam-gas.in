@@ -6,7 +6,9 @@ new top topv
   topv.zsiz = 16000 # mm
   topv.material = G4_AIR
 
-new CenBeampipeEl cen_beampipe
+include central_beampipe.in
+
+include forward_beamline.in
 
 new ParticleCounter vtx_tracker
 

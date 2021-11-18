@@ -24,6 +24,8 @@ class BeamQuadrupole : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // compoment name
 
+    G4bool fRemoveTracks; // stop and remove tracks incident on magnet vessel if set to true
+
     void PrintField(G4FieldManager *fman);
 
 

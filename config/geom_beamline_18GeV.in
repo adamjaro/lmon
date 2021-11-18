@@ -97,7 +97,7 @@ new ParticleCounter Q3eR_det
 
 #beamline elements:
 
-new ConeAperture central_beampipe # beam pipe in front Q1eR
+#new ConeAperture central_beampipe # beam pipe in front Q1eR
 
   central_beampipe.zpos = Q1eR_Start_Z/2
   central_beampipe.length = -Q1eR_Start_Z

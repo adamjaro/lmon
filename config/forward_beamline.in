@@ -1,0 +1,76 @@
+
+#Q1eF and Q0eF magnets
+
+#Q0eF quadrupole magnet
+const Q0eF_StartZ 7000. # mm
+const Q0eF_EndZ 5800. # mm
+const Q0eF_InnerRadius cen_pos_r1-cen_pos_wall_dr
+
+new BeamQuadrupole Q0eF
+
+  Q0eF.zpos = (Q0eF_StartZ+Q0eF_EndZ)/2.
+  Q0eF.r1 = Q0eF_InnerRadius
+  Q0eF.r2 = Q0eF_InnerRadius
+  Q0eF.length = Q0eF_StartZ-Q0eF_EndZ
+  Q0eF.grad = 13.0961 # T/m
+  #Q0eF.grad = 0
+  Q0eF.angle = TMath::Pi()/2 # rad
+
+#beam from central section at positive z to Q0eF
+new ConeBeam cen_beam_Q0
+
+  cen_beam_Q0.rmin0 = cen_pos_r1-cen_pos_wall_dr
+  cen_beam_Q0.rmax0 = cen_pos_r1
+  cen_beam_Q0.rmin1 = Q0eF_InnerRadius
+  cen_beam_Q0.rmax1 = Q0eF_InnerRadius+cen_pos_wall_dr
+  cen_beam_Q0.dz = Q0eF_EndZ-cen_pos_zmax
+  cen_beam_Q0.zpos = (Q0eF_EndZ+cen_pos_zmax)/2.
+
+#Q1eF quadrupole magnet
+const Q1eF_StartZ 12370. # mm
+const Q1eF_EndZ 10760. # mm
+const Q1eF_InnerRadius cen_pos_r1-cen_pos_wall_dr
+
+new BeamQuadrupole Q1eF
+
+  Q1eF.zpos = (Q1eF_StartZ+Q1eF_EndZ)/2.
+  Q1eF.r1 = Q1eF_InnerRadius
+  Q1eF.r2 = Q1eF_InnerRadius
+  Q1eF.length = Q1eF_StartZ-Q1eF_EndZ
+  Q1eF.grad = -6.0639 # T/m
+  #Q1eF.grad = 0
+  Q1eF.angle = TMath::Pi()/2 # rad
+
+#beam between Q0eF and Q1eF magnets
+new ConeBeam cen_beam_Q01
+
+  cen_beam_Q01.rmin0 = Q0eF_InnerRadius
+  cen_beam_Q01.rmax0 = Q0eF_InnerRadius+cen_pos_wall_dr
+  cen_beam_Q01.rmin1 = Q1eF_InnerRadius
+  cen_beam_Q01.rmax1 = Q1eF_InnerRadius+cen_pos_wall_dr
+  cen_beam_Q01.dz = Q1eF_EndZ-Q0eF_StartZ
+  cen_beam_Q01.zpos = (Q1eF_EndZ+Q0eF_StartZ)/2.
+
+#beam section at forward region to +15 meters
+const cen_pos_fwd_zmax 15000. # mm
+
+new ConeBeam cen_beam_fwd
+
+  cen_beam_fwd.rmin0 = Q1eF_InnerRadius
+  cen_beam_fwd.rmax0 = Q1eF_InnerRadius+cen_pos_wall_dr
+  cen_beam_fwd.rmin1 = Q1eF_InnerRadius
+  cen_beam_fwd.rmax1 = Q1eF_InnerRadius+cen_pos_wall_dr
+  cen_beam_fwd.dz = cen_pos_fwd_zmax-Q1eF_StartZ
+  cen_beam_fwd.zpos = (cen_pos_fwd_zmax+Q1eF_StartZ)/2.
+
+
+
+
+
+
+
+
+
+
+
+

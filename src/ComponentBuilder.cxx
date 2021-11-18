@@ -49,7 +49,7 @@
 #include "VacDrift.h"
 #include "VacTaggerWin.h"
 #include "VacLumi.h"
-#include "CenBeampipeEl.h"
+#include "ConeBeam.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -144,8 +144,8 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   } else if( type == "VacLumi" ) {
     new VacLumi(name, fGeo, fTop);
 
-  } else if( type == "CenBeampipeEl" ) {
-    new CenBeampipeEl(name, fGeo, fTop);
+  } else if( type == "ConeBeam" ) {
+    new ConeBeam(name, fGeo, fTop);
 
   }
 

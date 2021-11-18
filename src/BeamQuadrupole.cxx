@@ -35,9 +35,9 @@
 
 //_____________________________________________________________________________
 BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *top):
-    Detector(), G4VSensitiveDetector(nam), fNam(nam) {
+    Detector(), G4VSensitiveDetector(nam), fNam(nam), fRemoveTracks(0) {
 
-  G4cout << "  BeamQuadrupole: " << fNam << G4endl;
+  G4cout << "BeamQuadrupole: " << fNam << G4endl;
 
   //magnet center along x and z, mm
   G4double xpos = 0, zpos = 0;
@@ -103,7 +103,7 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   //fman->SetChordFinder(finder);
 
   fman->CreateChordFinder(field);
-  PrintField(fman);
+  //PrintField(fman);
   vol_mag->SetFieldManager(fman, true);
 
   //put the inner core to the top magnet volume
@@ -124,6 +124,10 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   //vis_vessel->SetForceAuxEdgeVisible(true);
   vol->SetVisAttributes(vis_vessel);
 
+  //stop and remove tracks incident on magnet vessel if set to true
+  geo->GetOptB(fNam, "remove_tracks", fRemoveTracks);
+  G4cout << "  " << fNam << ", remove_tracks: " << fRemoveTracks << G4endl;
+
   //put the vessel cone to the top volume
   new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol, fNam, vol_top, false, 0);
 
@@ -132,9 +136,11 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
 //_____________________________________________________________________________
 G4bool BeamQuadrupole::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //remove the track entering the cone aperture vessel
-  G4Track *track = step->GetTrack();
-  track->SetTrackStatus(fKillTrackAndSecondaries);
+  if(fRemoveTracks) {
+    //remove the track entering the cone aperture vessel
+    G4Track *track = step->GetTrack();
+    track->SetTrackStatus(fKillTrackAndSecondaries);
+  }
 
   return true;
 
