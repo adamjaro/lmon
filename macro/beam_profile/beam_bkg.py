@@ -37,14 +37,15 @@ def rate():
 
     #cross section in mb
     #sigma = 150.969 # mb
-    sigma = 537.583 # mb, E_gamma > 100 keV
+    #sigma = 537.508 # mb, E_gamma > 100 keV
+    sigma = 699.393 # mb, E_gamma > 10 keV
 
     #beam current in Amps
     beam_current = 2.5 # A
 
     #spacing in z
-    zbin = 0.2 # m
-    #zbin = 0.05 # m
+    #zbin = 0.2 # m
+    zbin = 0.05 # m
 
     #temperature
     T = 293.15 # K
@@ -99,6 +100,7 @@ def rate():
         total_rate += R*1e-3
 
     print("Total rate (kHz):", total_rate)
+    print("Total rate (Hz):", total_rate*1e3)
 
     #plt.style.use("dark_background")
     #col = "lime"

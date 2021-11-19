@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = radial
@@ -250,27 +250,27 @@ def rz():
 def beampipe():
 
     #Hz
-    #total_rate = 685833. # full range
-    total_rate = 2442171. # full range
+    total_rate = 2441830.6 # full range, Eg > 100 keV
+    total_rate2 = 3177253.7 # Eg > 10 keV
 
     #all simulated events
-    nall = 100e6 # full range
+    nall = 10e6 # full range
 
     #input
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/rc_2g.root"
-    infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3a/rc_v2.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3d/rc.root"
+    infile2 = "/home/jaroslav/sim/lmon/data/beam-gas/bg3e/rc.root"
 
-    #photon and electron rate
-    #xp, yp, ptot = get_rate_beampipe(infile, "ptree", total_rate, nall)
-    exp, eyp, etot = get_rate_beampipe(infile, "etree", total_rate, nall)
+    #lmon rate
+    xp, yp, ltot = get_rate_beampipe(infile, "htree", total_rate, nall)
+    xp2, yp2, ltot2 = get_rate_beampipe(infile2, "htree", total_rate2, nall)
 
     #dd4hep rate
-    infile_dd = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx.root"
-    nall_dd = 1e7
+    #infile_dd = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx.root"
+    #nall_dd = 1e7
     #dxp, dyp, dtot = get_rate_beampipe(infile_dd, "htree", total_rate, nall_dd)
 
-    #print("Sum rate (kHz):", (ptot+etot)/1e3)
-    print("Geant rate (kHz):", etot/1e3)
+    print("Lmon rate (kHz):", ltot/1e3)
+    print("Lmon rate2 (kHz):", ltot2/1e3)
     #print("DD4hep rate (kHz):", dtot/1e3)
 
     #plot
@@ -283,18 +283,18 @@ def beampipe():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    #plt.plot(xp, yp, "-", color="blue", lw=1)
-    plt.plot(exp, eyp, "-", color="blue", lw=1)
+    plt.plot(xp, yp, "-", color="blue", lw=1)
+    plt.plot(xp2, yp2, "-", color="red", lw=1)
     #plt.plot(dxp, dyp, "-", color="red", lw=1)
 
-    ax.set_xlabel("$z$ (m)")
+    ax.set_xlabel("$z$ (mm)")
     ax.set_ylabel("Event rate per unit area (Hz/cm$^2$)")
 
     leg = legend()
-    #leg.add_entry(leg_lin("red"), "Electron rate")
-    #leg.add_entry(leg_lin("blue"), "Photon rate")
+    leg.add_entry(leg_lin("red"), "$E_\gamma$ > 10 keV")
+    leg.add_entry(leg_lin("blue"), "$E_\gamma$ > 100 keV")
     #leg.add_entry(leg_lin("red"), "DD4hep observed rate")
-    leg.add_entry(leg_lin("blue"), "Geant4 incident rate")
+    #leg.add_entry(leg_lin("blue"), "Geant4 incident rate")
     leg.draw(plt, col)
 
     ax.set_yscale("log")
@@ -307,17 +307,15 @@ def beampipe():
 #_____________________________________________________________________________
 def get_rate_beampipe(infile, tnam, total_rate, nall):
 
-    #meters
-    #zmin = -5
-    #zmax = 15
-    #zbin = 0.3
-    zmin = -0.2
-    zmax = 0.2
-    zbin = 2e-2
+    #cylindrical rate along z
 
-    #beam pipe radius, cm
-    #rbeam = 3.2
-    rbeam = 3.3
+    #mm
+    zmin = -200.
+    zmax = 200.
+    zbin = 20.
+
+    #cylindrical radius, mm
+    rbeam = 33.
 
     infile = TFile.Open(infile)
     tree = infile.Get(tnam)
@@ -326,8 +324,7 @@ def get_rate_beampipe(infile, tnam, total_rate, nall):
 
     hz = ut.prepare_TH1D("hz", zbin, zmin, zmax)
 
-    tree.Draw("zpos/1e3 >> hz")
-    tree.Draw("zpos/1e3 >> hz", "(zpos<150)") # &&(rpos<35)
+    tree.Draw("zpos >> hz", "(zpos<150.)") # &&(rpos<35)
 
     print("Plot entries:", hz.GetEntries())
 
@@ -345,8 +342,8 @@ def get_rate_beampipe(infile, tnam, total_rate, nall):
         z2 = z1 + hz.GetBinWidth(ibin)
 
         #surface element, cm^2
-        dz = (z2-z1)*1e2 # cm
-        surf = dz*2*ma.pi*rbeam
+        dz = (z2-z1)*0.1 # cm
+        surf = dz*2*ma.pi*rbeam*0.1 # cm^2
 
         xp.append( z1 )
         xp.append( z2 )
@@ -370,45 +367,55 @@ def hit_en():
 
     #hit energy
 
-    #infile = "/home/jaroslav/sim/Athena/data/beam-gas/bg2c/rc_vtx_v2.root"
-    #infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3b/rc.root"
-    infile = "/home/jaroslav/sim/lmon/macro/beam_gas/rc.root"
+    infile = "/home/jaroslav/sim/lmon/data/beam-gas/bg3d/rc.root"
 
-    #emin = 0
-    #emax = 10000
-    #ebin = 10
-    emin = -5
-    emax = 2
+    emin = -9
+    emax = 9
     ebin = 0.1
 
     inp = TFile.Open(infile)
-    #htree = inp.Get("htree")
-    etree = inp.Get("event")
+    htree = inp.Get("htree")
 
-    can = ut.box_canvas()
+    #can = ut.box_canvas()
 
     hE = ut.prepare_TH1D("hE", ebin, emin, emax)
+    htree.Draw("TMath::Log10(en*1e6) >> hE", "zpos<150.")
+    xp, yp = ut.h1_to_arrays(hE)
 
-    #etree.Draw("phot_en*1e6 >> hE", "nhits>0")
-    etree.Draw("TMath::Log10(phot_en) >> hE")
-    #htree.Draw("en*1e3 >> hE")
+    infile2 = "/home/jaroslav/sim/lmon/data/beam-gas/bg3e/rc.root"
+    inp2 = TFile.Open(infile2)
+    htree2 = inp2.Get("htree")
+    hE2 = ut.prepare_TH1D("hE2", ebin, emin, emax)
+    htree2.Draw("TMath::Log10(en*1e6) >> hE2", "zpos<150.")
+    xp2, yp2 = ut.h1_to_arrays(hE2)
 
-    #xtit = "Hit energy (GeV)"
-    #xtit = "Hit energy (MeV)"
-    xtit = "Hit energy (keV)"
-    ytit = "Counts"
-    ut.put_yx_tit(hE, ytit, xtit, 1.6, 1.3)
+    #plot
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
-    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.01, 0.03)
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
 
-    ut.set_H1D_col(hE, rt.kBlue)
+    plt.plot(xp, yp, "-", color="blue", lw=1)
+    plt.plot(xp2, yp2, "-", color="red", lw=1)
 
-    gPad.SetGrid()
+    ax.set_xlabel("Incident hit energy (keV)")
+    ax.set_ylabel("Counts")
 
-    gPad.SetLogy()
+    leg = legend()
+    leg.add_entry(leg_lin("red"), "$E_\gamma$ > 10 keV")
+    leg.add_entry(leg_lin("blue"), "$E_\gamma$ > 100 keV")
+    leg.draw(plt, col)
 
-    ut.invert_col(rt.gPad)
-    can.SaveAs("01fig.pdf")
+    ax.set_yscale("log")
+
+    plt.xticks(ax.get_xticks()[1:-1], ["$10^{"+"{0:.0f}".format(i)+"}$" for i in ax.get_xticks()[1:-1]])
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
 
 #hit_en
 

@@ -16,12 +16,6 @@ new ParticleCounter vtx_tracker
   vtx_tracker.inner_r = 33. # mm
   vtx_tracker.outer_r = 43. # mm
 
-#new BeamPipeV1 beam # central beam element
-
-  beam.length = 32 # m
-  beam.r1 = 32 # mm
-  beam.dr = 3 # mm
-
 #new BoxCalV2 zplane
 
   zplane.zpos = -5100 # mm
@@ -35,4 +29,11 @@ new ParticleCounter vtx_tracker
   zplane2.zsiz = 300 # mm
   zplane2.xsiz = 1000 # mm
   zplane2.ysiz = 1000 # mm
+
+#common top volume
+new top topmain
+
+  topmain.xsiz = 2000 # mm
+  topmain.ysiz = 2000 # mm
+  topmain.zsiz = 16000 # mm
 

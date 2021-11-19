@@ -1,4 +1,6 @@
 
+from ctypes import c_double
+
 import ROOT as rt
 from ROOT import TMath, TH1D, TCanvas, TLegend, TLine, TIter, TH1, TH2D, TH2, TF2, TGraph
 from ROOT import RooHist, TLatex, gROOT, TIter, TGraphErrors, TGaxis, TF1, TFrame, TH3D
@@ -164,6 +166,47 @@ def h1_to_graph_nz(hx, delt=0.001):
         i += 1
 
     return tx
+
+#_____________________________________________________________________________
+def h1_to_arrays(hx):
+
+    xp = []
+    yp = []
+    for ibin in range(1, hx.GetNbinsX()+1):
+
+        if( hx.GetBinContent(ibin) < 1e-12 ): continue
+
+        x0 = hx.GetBinLowEdge(ibin)
+        x1 = x0 + hx.GetBinWidth(ibin)
+
+        xp.append( x0 )
+        xp.append( x1 )
+
+        yp.append( hx.GetBinContent(ibin) )
+        yp.append( hx.GetBinContent(ibin) )
+
+    return xp, yp
+
+#_____________________________________________________________________________
+def graph_to_arrays(gx):
+
+    xp = []
+    yp = []
+
+    xv = c_double(0)
+    yv = c_double(0)
+
+    for i in range(gx.GetN()):
+
+        gx.GetPoint(i, xv, yv)
+
+        xp.append( xv.value - gx.GetErrorXlow(i) )
+        xp.append( xv.value + gx.GetErrorXhigh(i) )
+
+        yp.append( yv.value )
+        yp.append( yv.value )
+
+    return xp, yp
 
 #_____________________________________________________________________________
 def prepare_TH2D(name, xbin, xmin, xmax, ybin, ymin, ymax):
