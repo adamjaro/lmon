@@ -170,11 +170,19 @@ def h1_to_graph_nz(hx, delt=0.001):
 #_____________________________________________________________________________
 def h1_to_arrays(hx):
 
+    ifirst = -1
+    ilast = -1
+    for ibin in range(1, hx.GetNbinsX()+1):
+        if( hx.GetBinContent(ibin) < 1e-12 ): continue
+
+        if ifirst < 0: ifirst = ibin
+        ilast = ibin
+
     xp = []
     yp = []
-    for ibin in range(1, hx.GetNbinsX()+1):
-
-        if( hx.GetBinContent(ibin) < 1e-12 ): continue
+    #for ibin in range(1, hx.GetNbinsX()+1):
+        #if( hx.GetBinContent(ibin) < 1e-12 ): continue
+    for ibin in range(ifirst, ilast+1):
 
         x0 = hx.GetBinLowEdge(ibin)
         x1 = x0 + hx.GetBinWidth(ibin)
@@ -184,6 +192,12 @@ def h1_to_arrays(hx):
 
         yp.append( hx.GetBinContent(ibin) )
         yp.append( hx.GetBinContent(ibin) )
+
+    xp = [xp[0]] + xp
+    yp = [0] + yp
+
+    xp.append(xp[-1])
+    yp.append(0)
 
     return xp, yp
 

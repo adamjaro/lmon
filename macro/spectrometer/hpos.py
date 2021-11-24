@@ -14,14 +14,35 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
+    iplot = 1
+
+    func = {}
+    func[0] = zpos
+    func[1] = radial
+
+    func[iplot]()
+
+#main
+
+#_____________________________________________________________________________
+def zpos():
+
     in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
     in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
-    #in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"
-    in3 = "/home/jaroslav/sim/lmon/data/luminosity/lm1c/hits.root"
 
-    en1 = get_en(in1)
-    en2 = get_en(in2)
-    #en3 = get_en(in3, 0.6)
+    zbin = 0.1
+    zmin = -2000
+    zmax = 2000
+
+    #det = "phot"
+    #det = "up"
+    det = "down"
+
+    #val = "z"
+    val = "z+37175"
+
+    z1 = make_h1(in1, det, val, zbin, zmin, zmax)
+    z2 = make_h1(in2, det, val, zbin, zmin, zmax)
 
     #plot
     plt.style.use("dark_background")
@@ -33,42 +54,74 @@ def main():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(en1[0], en1[1], "-", color="red", lw=1)
-    plt.plot(en2[0], en2[1], "-", color="gold", lw=1)
-    #plt.plot(en3[0], en3[1], "-", color="blue", lw=1)
+    plt.plot(z1[0], z1[1], "-", color="red", lw=1)
+    plt.plot(z2[0], z2[1], "-", color="gold", lw=1)
 
-    ax.set_xlabel("Incident energy in bunch crossing (GeV)")
+    ax.set_xlabel("$z$ (mm)")
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")
 
-    leg = legend()
-    leg.add_entry(leg_txt(), "CAL$_\mathrm{up}$ + CAL$_\mathrm{down}$")
-    leg.add_entry(leg_txt(), "CAL$_\mathrm{up}$ > 1 && CAL$_\mathrm{down}$ > 1 GeV")
-    leg.add_entry(leg_lin("red"), "18x275 GeV")
-    leg.add_entry(leg_lin("gold"), "10x100 GeV")
-    leg.add_entry(leg_lin("blue"), "5x41 GeV")
-    leg.draw(plt, col)
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#zpos
+
+#_____________________________________________________________________________
+def radial():
+
+    in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+
+    rbin = 1
+    rmin = 0
+    rmax = 200
+
+    det = "phot"
+    #det = "up"
+    #det = "down"
+
+    val = "TMath::Sqrt(x*x+y*y)"
+
+    r1 = make_h1(in1, det, val, rbin, rmin, rmax)
+    r2 = make_h1(in2, det, val, rbin, rmin, rmax)
+
+    #plot
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    plt.plot(r1[0], r1[1], "-", color="red", lw=1)
+    plt.plot(r2[0], r2[1], "-", color="gold", lw=1)
+
+    ax.set_xlabel("$z$ (mm)")
+    ax.set_ylabel("Normalized counts")
+
+    #ax.set_yscale("log")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
 
-#main
+#radial
 
 #_____________________________________________________________________________
-def get_en(infile, ebin=0.5):
+def make_h1(infile, tnam, val, xbin, xmin, xmax):
 
-    emax = 100.
+    inp = TFile.Open(infile)
+    tree = inp.Get(tnam)
 
-    inp_lmon = TFile.Open(infile)
-    tree = inp_lmon.Get("bunch")
+    #tree.Print()
 
-    hE = ut.prepare_TH1D("hE", ebin, 0, emax)
-    #tree.Draw("bun_up_en+bun_down_en >> hE", "(bun_up_en>1)&&(bun_down_en>1)", "", 1000)
-    tree.Draw("bun_up_en+bun_down_en >> hE", "(bun_up_en>1)&&(bun_down_en>1)")
-    ut.norm_to_integral(hE, 1.)
+    hx = ut.prepare_TH1D("hx", xbin, xmin, xmax)
+    tree.Draw(val+" >> hx")
+    #ut.norm_to_integral(hx, 1.)
 
-    return ut.h1_to_arrays(hE)
+    return ut.h1_to_arrays(hx)
 
 #get_en
 
@@ -128,5 +181,4 @@ if __name__ == "__main__":
     gStyle.SetFrameLineWidth(2)
 
     main()
-
 

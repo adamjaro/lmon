@@ -30,6 +30,8 @@ class ParticleCounter: public Detector, public G4VSensitiveDetector {
 
     G4String fNam; //detector name
 
+    G4bool fRemoveTracks; // stop and remove tracks incident on the counter
+
     //hits array
     std::vector<Int_t> fHitPdg; // particle pdg
     std::vector<Float_t> fHitEn; // hit energy, GeV

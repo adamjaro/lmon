@@ -32,9 +32,9 @@ using namespace std;
 
 //_____________________________________________________________________________
 ParticleCounter::ParticleCounter(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
-    Detector(), G4VSensitiveDetector(nam), fNam(nam) {
+    Detector(), G4VSensitiveDetector(nam), fNam(nam), fRemoveTracks(0) {
 
-  G4cout << "  ParticleCounter: " << fNam << G4endl;
+  G4cout << "ParticleCounter: " << fNam << G4endl;
 
   //full size in x, y and z, mm for rectangular counter
   G4double dx = 0, dy = 0;
@@ -83,6 +83,10 @@ ParticleCounter::ParticleCounter(const G4String& nam, GeoParser *geo, G4LogicalV
   G4ThreeVector pos(xpos, ypos, zpos);
   G4Transform3D transform(rot, pos); //HepGeom::Transform3D
 
+  //stop and remove tracks incident on the counter if set to true
+  geo->GetOptB(fNam, "remove_tracks", fRemoveTracks);
+  G4cout << "  " << fNam << ", remove_tracks: " << fRemoveTracks << G4endl;
+
   new G4PVPlacement(transform, vol, fNam, mvol, false, 0);
 
 }//ParticleCounter
@@ -106,19 +110,21 @@ G4LogicalVolume* ParticleCounter::GetMotherVolume(G4String mother_nam, G4Logical
 //_____________________________________________________________________________
 G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //remove the track
-  G4Track *track = step->GetTrack();
-  //track->SetTrackStatus(fKillTrackAndSecondaries);
-
   //energy in current step
+  G4Track *track = step->GetTrack();
   G4double en_step = track->GetTotalEnergy();
 
-  //add possible secondaries to the energy
-  const vector<const G4Track*> *sec = step->GetSecondaryInCurrentStep();
-  vector<const G4Track*>::const_iterator isec = sec->begin();
-  while(isec != sec->end()) {
-    en_step += (*isec)->GetTotalEnergy();
-    isec++;
+  //remove the track if requested
+  if(fRemoveTracks) {
+    track->SetTrackStatus(fKillTrackAndSecondaries);
+
+    //add possible secondaries to the energy
+    const vector<const G4Track*> *sec = step->GetSecondaryInCurrentStep();
+    vector<const G4Track*>::const_iterator isec = sec->begin();
+    while(isec != sec->end()) {
+      en_step += (*isec)->GetTotalEnergy();
+      isec++;
+    }
   }
 
   //hit position

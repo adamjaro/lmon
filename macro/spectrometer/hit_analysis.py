@@ -23,8 +23,8 @@ def main():
 
     emin = 1.
 
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/lmon.root"
-    #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/lmon.root"
+    #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
 
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/lmon.root"
     #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"
@@ -190,19 +190,19 @@ def get_scale(Ni):
     #Ni is number of simulated interactions
 
     #interaction cross section, mb
-    #sigma_tot = 171.29 # 18x275
+    sigma_tot = 171.29 # 18x275
     #sigma_tot = 123.83 # 10x100
-    sigma_tot = 79.18 # 5x41
+    #sigma_tot = 79.18 # 5x41
 
     #instantaneous luminosity, cm^-2 sec^-1
-    #lumi_cmsec = 1.54e33 # 18x275
+    lumi_cmsec = 1.54e33 # 18x275
     #lumi_cmsec = 4.48e33 # 10x100
-    lumi_cmsec = 0.44e33 # 5x41
+    #lumi_cmsec = 0.44e33 # 5x41
 
     #number of bunches
-    #nbunch = 290 # 18x275
+    nbunch = 290 # 18x275
     #nbunch = 1160 # 10x100
-    nbunch = 1160 # 5x41
+    #nbunch = 1160 # 5x41
 
     #electron beam energy, GeV
     #Ee = 18. # GeV
