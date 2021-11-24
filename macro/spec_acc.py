@@ -20,7 +20,8 @@ class spec_acc:
         self.y_max = ymax
 
         #range for functions
-        self.func_min = 2
+        #self.func_min = 2
+        self.func_min = 1
         self.func_max = 21
 
         #up acceptance

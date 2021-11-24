@@ -4,6 +4,14 @@ new top topv
   topv.xsiz = 5000 # mm
   topv.ysiz = 5000 # mm
   topv.zsiz = 40000 # mm
+  topv.material = G4_W
+
+new ParticleCounter cnt
+
+  cnt.dx = 120. # mm
+  cnt.dy = 120. # mm
+  cnt.dz = 10. # mm
+  cnt.zpos = -20. # mm
 
 
 
@@ -28,12 +36,6 @@ new top topv
 
 #const LumiWinCounter_DZ 20 # mm
 
-#new ParticleCounter ExitWinCounter
 
-#  ExitWinCounter.dx = LumiWin_XY
-#  ExitWinCounter.dy = LumiWin_XY
-#  ExitWinCounter.dz = LumiWinCounter_DZ
-#  ExitWinCounter.zpos = (LumiWin_DZ/2)-LumiWinCounter_DZ/2
-#  ExitWinCounter.place_into = "ExitWinBox"
 
 

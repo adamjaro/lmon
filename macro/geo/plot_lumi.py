@@ -115,7 +115,7 @@ def main():
 
     gPad.SetGrid()
 
-    #ut.invert_col(gPad)
+    ut.invert_col(gPad)
     c1.SaveAs("01fig.pdf")
 
 #main

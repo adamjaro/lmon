@@ -131,6 +131,9 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
   fHitY.push_back( hp.y()/mm );
   fHitZ.push_back( hp.z()/mm );
 
+  //G4cout << track->GetTrackID() << " " << track->GetDynamicParticle()->GetPDGcode() << " " << track->GetTotalEnergy()/GeV;
+  //G4cout << " " << hp.x() << " " << hp.y() << " " << hp.z() << G4endl;
+
   return true;
 
 }//ProcessHits

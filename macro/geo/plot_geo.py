@@ -86,7 +86,7 @@ def main():
     vac_win.add_point("vac_lumi_win_mag", "z0", "dX0")
     vac_win.add_point("vac_lumi_win_mag", "z0", "dX0", -1.)
     #vac_win.add_point("", "", "")
-    vac_win.draw()
+    #vac_win.draw()
 
     #vacuum from spectrometer magnet to spectrometer detectors
     vac_mag = vacuum(geo)
@@ -94,7 +94,7 @@ def main():
     vac_mag.add_point("vac_lumi_mag_spec", "z1", "dX1")
     vac_mag.add_point("vac_lumi_mag_spec", "z0", "dX0")
     vac_mag.add_point("vac_lumi_mag_spec", "z0", "dX0", -1.)
-    vac_mag.draw()
+    #vac_mag.draw()
 
     #vacuum section from spectrometers to direct photon detector
     vac_phot = vacuum(geo)
@@ -102,7 +102,7 @@ def main():
     vac_phot.add_point("vac_lumi_spec_phot", "z1", "dX1")
     vac_phot.add_point("vac_lumi_spec_phot", "z0", "dX0")
     vac_phot.add_point("vac_lumi_spec_phot", "z0", "dX0", -1.)
-    vac_phot.draw()
+    #vac_phot.draw()
 
     #Tagger1
     tag1 = segment("Tagger1box", geo)
@@ -134,7 +134,7 @@ def main():
     leg = ut.prepare_leg(0.8, 0.21, 0.25, 0.15, 0.03)#, 0.027) # x, y, dx, dy, tsiz
     leg.AddEntry(tag1.gbox, "Detector", "f")
     leg.AddEntry(b2b.gbox, "Magnet", "f")
-    leg.AddEntry(vac_phot.gbox, "Vacuum", "f")
+    leg.AddEntry(bvac.gbox, "Vacuum", "f")
     leg.Draw("same")
 
     gPad.SetGrid()
