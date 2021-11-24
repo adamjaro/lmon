@@ -108,7 +108,7 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //remove the track
   G4Track *track = step->GetTrack();
-  track->SetTrackStatus(fKillTrackAndSecondaries);
+  //track->SetTrackStatus(fKillTrackAndSecondaries);
 
   //energy in current step
   G4double en_step = track->GetTotalEnergy();
