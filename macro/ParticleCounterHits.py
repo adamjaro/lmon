@@ -144,6 +144,16 @@ class ParticleCounterHits:
 
         self.otree.Fill()
 
+    #_____________________________________________________________________________
+    def LoopInLocal(self):
+
+        #loop over all hits in local coordinates and fill the output
+
+        for i in range(self.GetN()):
+            hit = self.GetHit(i)
+            hit.GlobalToLocal()
+            self.FillOutput()
+
     #direct access:
     #_____________________________________________________________________________
     def GetPdg(self, ihit):

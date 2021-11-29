@@ -69,6 +69,7 @@ new BoxSegment ExitWinBox
 #Auxiliary point in front of drift vacuum section
 const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
 
+#vacuum section from B2BeR to the front of exit window
 new VacB2lumiWin vac_b2b_window
 
   vac_b2b_window.win_xmin = ExitWin_XA

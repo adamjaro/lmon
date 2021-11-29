@@ -12,6 +12,7 @@ new ParticleCounter lowQ2s1
   lowQ2s1.dz = Tag_1_DZ
   lowQ2s1.zpos = (Tag1_Length/2)-Tag_1_DZ/2
   lowQ2s1.place_into = Tagger1box
+  lowQ2s1.remove_tracks = 1
 
 #Tagger 2
 
@@ -24,7 +25,7 @@ new ParticleCounter lowQ2s2
   lowQ2s2.dz = Tag_2_DZ
   lowQ2s2.zpos = (Tag2_Length/2)-Tag_2_DZ/2
   lowQ2s2.place_into = Tagger2box
-
+  lowQ2s2.remove_tracks = 1
 
 #top volume
 #new top topv

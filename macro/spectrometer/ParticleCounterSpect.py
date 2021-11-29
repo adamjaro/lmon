@@ -74,6 +74,14 @@ class ParticleCounterSpect:
         phot_hits = ParticleCounterHits("phot", self.tree)
         phot_hits.local_from_geo(self.geo, "LumiDbox")
 
+        #flow counters hits
+        ew_front_hits = ParticleCounterHits("cnt_ew_front", self.tree)
+        ew_rear_hits = ParticleCounterHits("cnt_ew_rear", self.tree)
+        mag_front_hits = ParticleCounterHits("cnt_mag_front", self.tree)
+        mag_rear_hits = ParticleCounterHits("cnt_mag_rear", self.tree)
+        ew_front_hits.local_from_geo(self.geo, "ExitWinBox")
+        ew_rear_hits.local_from_geo(self.geo, "ExitWinBox")
+
         #outputs
         out = TFile(self.outfile, "recreate")
 
@@ -94,6 +102,12 @@ class ParticleCounterSpect:
         up_hits.CreateOutput("up")
         down_hits.CreateOutput("down")
         phot_hits.CreateOutput("phot")
+
+        #hit trees for flow counters
+        ew_front_hits.CreateOutput("ew_front")
+        ew_rear_hits.CreateOutput("ew_rear")
+        mag_front_hits.CreateOutput("mag_front")
+        mag_rear_hits.CreateOutput("mag_rear")
 
         #bunch crossing tree
         btree = TTree("bunch", "bunch")
@@ -139,7 +153,11 @@ class ParticleCounterSpect:
             for imc in range(pdg.size()):
                 if pdg.at(imc) == 22: gen_en.value = en.at(imc)
 
-            #print(gen_en.value)
+            #flow counters hits
+            ew_front_hits.LoopInLocal()
+            ew_rear_hits.LoopInLocal()
+            mag_front_hits.LoopInLocal()
+            mag_rear_hits.LoopInLocal()
 
             #spectrometer hits
             for i in range(up_hits.GetN()):
@@ -194,6 +212,10 @@ class ParticleCounterSpect:
         up_hits.otree.Write()
         down_hits.otree.Write()
         phot_hits.otree.Write()
+        ew_front_hits.otree.Write()
+        ew_rear_hits.otree.Write()
+        mag_front_hits.otree.Write()
+        mag_rear_hits.otree.Write()
         btree.Write()
         self.print_stat(out)
         out.Close()
@@ -233,6 +255,7 @@ class ParticleCounterSpect:
     def print_stat(self, out):
 
         trees = ["event", "bunch", "phot", "up", "down"]
+        trees += ["ew_front", "ew_rear", "mag_front", "mag_rear"]
 
         print("    Counts in hit trees:")
         for i in trees:

@@ -20,13 +20,6 @@ new ExitWindowV1 ew
   ew.tilt = ExitWindow_Tilt
   ew.place_into = ExitWinBox
 
-#photon exit window version 2
-#new ExitWindowV2 ew
-
-#  ew.zpos = -16250 # mm
-#  ew.xpos = 60 # mm
-#  ew.radius = 130 # mm, inner radius
-
 #collimator
 #new CollimatorV2 collim
 
@@ -50,8 +43,9 @@ new ParticleCounter phot
   phot.dx = LumiD_XY
   phot.dy = LumiD_XY
   phot.dz = LumiCounter_DZ
-  phot.zpos = (LumiD_DZ/2)-LumiCounter_DZ/2
+  phot.zpos = (LumiD_DZ/2.)-LumiCounter_DZ/2.
   phot.place_into = LumiDbox
+  phot.remove_tracks = 1
 
 #up spectrometer
 new ParticleCounter up
@@ -59,8 +53,9 @@ new ParticleCounter up
   up.dx = LumiSpec_XY
   up.dy = LumiSpec_XY
   up.dz = LumiCounter_DZ
-  up.zpos = (LumiSpec_DZ/2)-LumiCounter_DZ/2
+  up.zpos = (LumiSpec_DZ/2.)-LumiCounter_DZ/2.
   up.place_into = LumiSUbox
+  up.remove_tracks = 1
 
 #down spectrometer
 new ParticleCounter down
@@ -68,8 +63,43 @@ new ParticleCounter down
   down.dx = LumiSpec_XY
   down.dy = LumiSpec_XY
   down.dz = LumiCounter_DZ
-  down.zpos = (LumiSpec_DZ/2)-LumiCounter_DZ/2
+  down.zpos = (LumiSpec_DZ/2.)-LumiCounter_DZ/2.
   down.place_into = LumiSDbox
+  down.remove_tracks = 1
+
+#flow counter in front of exit window
+new ParticleCounter cnt_ew_front
+
+  cnt_ew_front.dx = LumiWin_XY
+  cnt_ew_front.dy = LumiWin_XY
+  cnt_ew_front.dz = LumiCounter_DZ
+  cnt_ew_front.zpos = LumiCounter_DZ/2.-(B2BeR_Z-LumiWin_Z)/2.
+  cnt_ew_front.place_into = vac_b2b_window
+
+#flow counter in the rear of exit window
+new ParticleCounter cnt_ew_rear
+
+  cnt_ew_rear.dx = LumiWin_XY
+  cnt_ew_rear.dy = LumiWin_XY
+  cnt_ew_rear.dz = LumiCounter_DZ
+  cnt_ew_rear.zpos = (LumiWin_Z-LumiWin_DZ-LumiMag_cen_Z-LumiMag_DZ/2.)/2.-LumiCounter_DZ/2
+  cnt_ew_rear.place_into = vac_lumi_win_mag
+
+#flow counter in front of spectrometer magnet
+new ParticleCounter cnt_mag_front
+
+  cnt_mag_front.outer_r = LumiMag_R
+  cnt_mag_front.dz = LumiCounter_DZ
+  cnt_mag_front.zpos = LumiCounter_DZ/2.-(LumiWin_Z-LumiWin_DZ-LumiMag_cen_Z-LumiMag_DZ/2.)/2.
+  cnt_mag_front.place_into = vac_lumi_win_mag
+
+#flow counter in rear of spectrometer magnet
+new ParticleCounter cnt_mag_rear
+
+  cnt_mag_rear.outer_r = LumiMag_R
+  cnt_mag_rear.dz = LumiCounter_DZ
+  cnt_mag_rear.zpos = (LumiMag_cen_Z-(LumiMag_DZ/2.)-LumiSpec_ZT)/2.-LumiCounter_DZ/2.
+  cnt_mag_rear.place_into = vac_lumi_mag_spec
 
 #filter in front of photon detector
 #new GraphiteFilter filter

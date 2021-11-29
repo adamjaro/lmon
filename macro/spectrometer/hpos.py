@@ -38,7 +38,9 @@ def zpos():
 
     #det = "phot"
     #det = "up"
-    det = "down"
+    #det = "down"
+    #det = "ew_front"
+    det = "ew_rear"
 
     val = "z"
     #val = "z+37175"
@@ -78,9 +80,13 @@ def xypos():
     inp = "hits_spect.root"
     #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
 
-    det = "phot"
+    #det = "phot"
     #det = "up"
-    #det = "down"
+    det = "down"
+    #det = "ew_front"
+    #det = "ew_rear"
+    #det = "mag_front"
+    #det = "mag_rear"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
