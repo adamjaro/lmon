@@ -23,8 +23,8 @@ def main():
 
     emin = 1.
 
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/lmon.root"
-    #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax2/lmon.root"
+    #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax2/hits.root"
 
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/lmon.root"
     #outfile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"

@@ -18,6 +18,7 @@ new BeamQuadrupole Q1eR
   Q1eR.length = Q1eR_Start_Z-Q1eR_End_Z
   Q1eR.grad = 13.3153 # T/m
   Q1eR.angle = TMath::Pi()/2 # rad
+  Q1eR.remove_tracks = 1
 
 # Q2eR quadrupole
 const Q2eR_Start_Z -7600 # mm
@@ -32,6 +33,7 @@ new BeamQuadrupole Q2eR
   Q2eR.length = Q2eR_Start_Z-Q2eR_End_Z
   Q2eR.grad = -12.0595 # T/m
   Q2eR.angle = TMath::Pi()/2 # rad
+  Q2eR.remove_tracks = 1
 
 # B2AeR beam dipole
 const B2AeR_Start_Z -9610 # mm
@@ -82,6 +84,7 @@ new BeamQuadrupole Q3eR
   Q3eR.theta = Q3eR_Theta
   Q3eR.grad = 0 # T/m
   Q3eR.angle = TMath::Pi()/2 # rad
+  Q3eR.remove_tracks = 1
 
 #counter detector in Q3eR inner volume
 
@@ -97,7 +100,7 @@ new ParticleCounter Q3eR_det
 
 #beamline elements:
 
-#new ConeAperture central_beampipe # beam pipe in front Q1eR
+new ConeAperture central_beampipe # beam pipe in front Q1eR
 
   central_beampipe.zpos = Q1eR_Start_Z/2
   central_beampipe.length = -Q1eR_Start_Z

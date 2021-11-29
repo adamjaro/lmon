@@ -30,7 +30,37 @@ class ParticleCounterHits:
         self.xpos = 0.
         self.ypos = 0.
         self.zpos = 0.
-        self.theta = 0.
+        self.theta_y = 0.
+        self.theta_x = 0.
+
+    #_____________________________________________________________________________
+    def local_from_geo(self, geo, nam):
+
+        if geo is None:
+            return
+
+        xpos = c_double(0)
+        ypos = c_double(0)
+        zpos = c_double(0)
+
+        geo.GetOptD(nam, "xpos", xpos) # mm
+        geo.GetOptD(nam, "ypos", ypos) # mm
+        geo.GetOptD(nam, "zpos", zpos) # mm
+
+        self.xpos = xpos.value
+        self.ypos = ypos.value
+        self.zpos = zpos.value
+
+        theta = c_double(0)
+        geo.GetOptD(nam, "theta", theta) # rad
+
+        rotate_x = c_bool(0)
+        geo.GetOptB(nam, "rotate_x", rotate_x)
+
+        if rotate_x.value == 1:
+            self.theta_x = theta.value
+        else:
+            self.theta_y = theta.value
 
     #_____________________________________________________________________________
     def GetHit(self, ihit):
@@ -63,7 +93,8 @@ class ParticleCounterHits:
 
             #local detector coordinates with rotation theta in x-z plane
             pos = TVector3(self.x-self.hits.xpos, self.y-self.hits.ypos, self.z-self.hits.zpos)
-            pos.RotateY(-self.hits.theta)
+            pos.RotateY(-self.hits.theta_y)
+            pos.RotateX(-self.hits.theta_x)
 
             self.x = pos.X()
             self.y = pos.Y()

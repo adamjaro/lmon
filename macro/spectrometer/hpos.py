@@ -18,7 +18,8 @@ def main():
 
     func = {}
     func[0] = zpos
-    func[1] = radial
+    func[1] = xypos
+    func[4] = radial
 
     func[iplot]()
 
@@ -27,8 +28,9 @@ def main():
 #_____________________________________________________________________________
 def zpos():
 
-    in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
-    in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    in1 = "hits_spect.root"
+    #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    #in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
 
     zbin = 0.1
     zmin = -2000
@@ -38,11 +40,11 @@ def zpos():
     #det = "up"
     det = "down"
 
-    #val = "z"
-    val = "z+37175"
+    val = "z"
+    #val = "z+37175"
 
     z1 = make_h1(in1, det, val, zbin, zmin, zmax)
-    z2 = make_h1(in2, det, val, zbin, zmin, zmax)
+    #z2 = make_h1(in2, det, val, zbin, zmin, zmax)
 
     #plot
     plt.style.use("dark_background")
@@ -55,7 +57,7 @@ def zpos():
     set_grid(plt, col)
 
     plt.plot(z1[0], z1[1], "-", color="red", lw=1)
-    plt.plot(z2[0], z2[1], "-", color="gold", lw=1)
+    #plt.plot(z2[0], z2[1], "-", color="gold", lw=1)
 
     ax.set_xlabel("$z$ (mm)")
     ax.set_ylabel("Normalized counts")
@@ -66,6 +68,51 @@ def zpos():
     plt.close()
 
 #zpos
+
+#_____________________________________________________________________________
+def xypos():
+
+    xybin = 1
+    xymax = 120
+
+    inp = "hits_spect.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+
+    det = "phot"
+    #det = "up"
+    #det = "down"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get(det)
+
+    can = ut.box_canvas()
+
+    hxy = ut.prepare_TH2D("hxy", xybin, -xymax, xymax, xybin, -xymax, xymax)
+
+    tree.Draw("y:x >> hxy")
+
+    hxy.SetXTitle("#it{x} (mm)")
+    hxy.SetYTitle("#it{y} (mm)")
+
+    hxy.SetTitleOffset(1.3, "Y")
+    hxy.SetTitleOffset(1.3, "X")
+
+    hxy.GetXaxis().CenterTitle()
+    hxy.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.09, 0.1, 0.02, 0.11)
+
+    hxy.SetMinimum(0.98)
+    hxy.SetContour(300)
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#xypos
 
 #_____________________________________________________________________________
 def radial():

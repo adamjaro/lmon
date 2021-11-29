@@ -2,7 +2,7 @@
 #all components
 
 #central beampipe
-include central_beampipe.in
+#include central_beampipe.in
 
 #beamline
 #include geom_beamline.in

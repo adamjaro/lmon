@@ -14,8 +14,9 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
-    in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax2/hits.root"
     #in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"
     in3 = "/home/jaroslav/sim/lmon/data/luminosity/lm1c/hits.root"
 
@@ -29,6 +30,7 @@ def main():
     #col = "black"
 
     fig = plt.figure()
+    #fig.set_size_inches(5, 5)
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)

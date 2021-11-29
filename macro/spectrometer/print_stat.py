@@ -6,7 +6,7 @@ from ROOT import gROOT, TFile
 def main():
 
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax2/hits.root"
 
     trees = ["event", "bunch", "phot", "up", "down"]
 
