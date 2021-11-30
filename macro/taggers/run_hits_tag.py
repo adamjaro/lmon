@@ -14,24 +14,12 @@ def main():
     geant_inst = "/home/jaroslav/sim/geant/geant4.10.07.p01/install/include/Geant4"
 
     add_path(lmon_top, geant_inst)
-    from ParticleCounterSpect import ParticleCounterSpect
-    hits = ParticleCounterSpect()
+    from ParticleCounterTag import ParticleCounterTag
+    hits = ParticleCounterTag()
 
     #inputs
     indir = "/home/jaroslav/sim/lmon"
     inlist = glob(indir+"/lmon.root")
-
-    # 18x275 GeV
-    #hits.sigma_tot = 171.29 # mb
-    #hits.lumi_cmsec = 1.54e33 # cm^-2 sec^-1
-    #hits.nbunch = 290
-    #hits.Ee = 18. # GeV
-
-    # 5x41 GeV
-    hits.sigma_tot = 79.18 # mb
-    hits.lumi_cmsec = 0.44e33 # cm^-2 sec^-1
-    hits.nbunch = 1160
-    hits.Ee = 5. # GeV
 
     #geometry
     hits.geo = rt.GeoParser("../../config/geom_all.in")
@@ -53,7 +41,7 @@ def main():
 def add_path(lmon_top, geant_inst):
 
     sys.path.append(lmon_top+"/macro")
-    sys.path.append(lmon_top+"/macro/spectrometer")
+    sys.path.append(lmon_top+"/macro/taggers")
 
     gSystem.AddIncludePath(" -I"+lmon_top+"/include")
     gSystem.AddIncludePath(" -I"+geant_inst)
@@ -67,9 +55,6 @@ if __name__ == "__main__":
     gROOT.SetBatch()
 
     main()
-
-
-
 
 
 

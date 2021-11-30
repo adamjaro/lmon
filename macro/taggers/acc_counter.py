@@ -7,7 +7,7 @@ from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 from ROOT import TGraph, TMath, TTree
 from ROOT import std
 
-from EventStore import EventStore
+#from EventStore import EventStore
 
 import sys
 sys.path.append('../')
@@ -34,11 +34,11 @@ def acc_en_s1_lmon_dd():
 
     #acceptance in energy for Tagger 1 by lmon and dd4hep
 
-    inp_lmon = TFile.Open("lmon.root")
+    inp_lmon = TFile.Open("hits_tag.root")
     tree_lmon = inp_lmon.Get("event")
 
-    inp_dd = TFile.Open("dd.root")
-    tree_dd = inp_dd.Get("event")
+    #inp_dd = TFile.Open("dd.root")
+    #tree_dd = inp_dd.Get("event")
 
     emin = 0
     emax = 19

@@ -224,7 +224,7 @@ class ParticleCounterSpect:
 
         print("Hit analysis done")
 
-    #event_loopt
+    #event_loop
 
     #_____________________________________________________________________________
     def get_scale(self):
@@ -263,7 +263,6 @@ class ParticleCounterSpect:
         for i in trees:
 
             print("    {0:7s}".format(i), out.Get(i).GetEntries())
-
 
     #print_stat
 

@@ -19,36 +19,25 @@ def main():
     func = {}
     func[0] = zpos
     func[1] = xypos
-    func[4] = radial
 
     func[iplot]()
-
-#main
 
 #_____________________________________________________________________________
 def zpos():
 
-    in1 = "hits_spect.root"
+    in1 = "hits_tag.root"
     #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
-    #in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
 
     zbin = 0.1
     zmin = -2000
     zmax = 2000
 
-    #det = "phot"
-    #det = "up"
-    #det = "down"
-    #det = "ew_front"
-    #det = "ew_rear"
-    #det = "mag_front"
-    det = "mag_rear"
+    #det = "s1"
+    det = "s2"
 
     val = "z"
-    #val = "z+37175"
 
     z1 = make_h1(in1, det, val, zbin, zmin, zmax)
-    #z2 = make_h1(in2, det, val, zbin, zmin, zmax)
 
     #plot
     plt.style.use("dark_background")
@@ -79,17 +68,11 @@ def xypos():
     xybin = 1
     xymax = 120
 
-    #inp = "hits_spect.root"
-    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2a/hits_spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    inp = "hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
 
-    #det = "phot"
-    det = "up"
-    #det = "down"
-    #det = "ew_front"
-    #det = "ew_rear"
-    #det = "mag_front"
-    #det = "mag_rear"
+    det = "s1"
+    #det = "s2"
 
     sel = ""
     #sel += "(pdg!=22)"
@@ -126,47 +109,10 @@ def xypos():
 
 #xypos
 
-#_____________________________________________________________________________
-def radial():
 
-    in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
-    in2 = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
 
-    rbin = 1
-    rmin = 0
-    rmax = 200
 
-    det = "phot"
-    #det = "up"
-    #det = "down"
 
-    val = "TMath::Sqrt(x*x+y*y)"
-
-    r1 = make_h1(in1, det, val, rbin, rmin, rmax)
-    r2 = make_h1(in2, det, val, rbin, rmin, rmax)
-
-    #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
-
-    fig = plt.figure()
-    ax = fig.add_subplot(1, 1, 1)
-    set_axes_color(ax, col)
-    set_grid(plt, col)
-
-    plt.plot(r1[0], r1[1], "-", color="red", lw=1)
-    plt.plot(r2[0], r2[1], "-", color="gold", lw=1)
-
-    ax.set_xlabel("$z$ (mm)")
-    ax.set_ylabel("Normalized counts")
-
-    #ax.set_yscale("log")
-
-    fig.savefig("01fig.pdf", bbox_inches = "tight")
-    plt.close()
-
-#radial
 
 #_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax):
@@ -240,4 +186,5 @@ if __name__ == "__main__":
     gStyle.SetFrameLineWidth(2)
 
     main()
+
 

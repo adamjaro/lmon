@@ -33,10 +33,10 @@ def main():
 #_____________________________________________________________________________
 def acc_spec():
 
-    #infile = "lmon.root"
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    #infile = "hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1c/hits.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1c/hits.root"
 
     emin = 0
     emax = 19
@@ -47,7 +47,8 @@ def acc_spec():
     tree_lmon = inp_lmon.Get("event")
 
     acc_lmon = rt.acc_Q2_kine(tree_lmon, "gen_en", "is_spect")
-    acc_lmon.prec = 0.08
+    acc_lmon.prec = 0.04
+    #acc_lmon.prec = 0.08
     acc_lmon.delt = 1e-2
     #acc_lmon.bmin = 0.1
     #acc_lmon.nev = int(1e5)
@@ -77,11 +78,10 @@ def acc_spec():
 
     geo = rt.GeoParser("../../config/geom_all.in")
     length = geo.GetD("lumi_dipole", "zpos") - geo.GetD("vac_lumi_spec_mid", "z0")
-    #field = 0.37 # T
+    field = 0.37 # T
     #field = 0.2 # T
-    field = 0.1 # T
+    #field = 0.1 # T
 
-    #acc = spec_acc(9700, 0.26, 42, 242)
     acc = spec_acc(length, field, geo.GetD("vac_lumi_spec_mid", "dY0"), geo.GetD("vac_lumi_mag_spec", "dY1"))
     acc.scale = iacc/acc.acc_func.Integral(1, 21)
     acc.acc_func.Draw("same")
