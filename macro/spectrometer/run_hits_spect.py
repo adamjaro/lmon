@@ -19,7 +19,6 @@ def main():
 
     #inputs
     indir = "/home/jaroslav/sim/lmon"
-    #indir = "/home/jaroslav/sim/lmon/data/luminosity/lm1a"
     inlist = glob(indir+"/lmon.root")
 
     # 18 GeV

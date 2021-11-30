@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = zpos
@@ -40,7 +40,9 @@ def zpos():
     #det = "up"
     #det = "down"
     #det = "ew_front"
-    det = "ew_rear"
+    #det = "ew_rear"
+    #det = "mag_front"
+    det = "mag_rear"
 
     val = "z"
     #val = "z+37175"
@@ -78,7 +80,7 @@ def xypos():
     xymax = 120
 
     inp = "hits_spect.root"
-    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm1ax1/hits.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2a/hits_spect.root"
 
     #det = "phot"
     #det = "up"

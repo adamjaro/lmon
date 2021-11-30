@@ -89,7 +89,7 @@ void ComponentBuilder::AddDetector(unsigned int i) {
     new Collimator(name, fGeo, fTop);
 
   } else if( type == "Magnet" ) {
-    new Magnet(name, fGeo, fTop);
+    det = new Magnet(name, fGeo, fTop);
 
   } else if( type == "BoxCal" ) {
     det = new BoxCal(name, fGeo, fTop);

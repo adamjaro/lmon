@@ -32,7 +32,9 @@ new Magnet lumi_dipole
   lumi_dipole.zpos = LumiMag_cen_Z
   lumi_dipole.dz = LumiMag_DZ
   lumi_dipole.inner_r = LumiMag_R
+  lumi_dipole.outer_r = 160. # mm
   lumi_dipole.field = 0.37 # T, 18 GeV
+  lumi_dipole.remove_tracks = 1
 
 #counters at detectors
 const LumiCounter_DZ 10. # mm

@@ -81,6 +81,8 @@ class ParticleCounterSpect:
         mag_rear_hits = ParticleCounterHits("cnt_mag_rear", self.tree)
         ew_front_hits.local_from_geo(self.geo, "ExitWinBox")
         ew_rear_hits.local_from_geo(self.geo, "ExitWinBox")
+        mag_front_hits.local_from_geo(self.geo, "lumi_dipole")
+        mag_rear_hits.local_from_geo(self.geo, "lumi_dipole")
 
         #outputs
         out = TFile(self.outfile, "recreate")
