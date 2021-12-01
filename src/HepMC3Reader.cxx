@@ -7,6 +7,7 @@
 
 //C++
 #include <vector>
+#include <map>
 
 //HepMC3
 #include "HepMC3/ReaderAscii.h"
@@ -34,6 +35,18 @@ HepMC3Reader::HepMC3Reader() : G4VPrimaryGenerator(), fInputName(""),
   fMsg = new G4GenericMessenger(this, "/lmon/input/hepmc/");
   fMsg->DeclareProperty("name", fInputName);
 
+  //event attributes, name in hepmc (first) and name in event output (second)
+  fHepmcAttrib.insert(make_pair("truex", "true_x"));
+  fHepmcAttrib.insert(make_pair("truey", "true_y"));
+  fHepmcAttrib.insert(make_pair("trueQ2", "true_Q2"));
+  fHepmcAttrib.insert(make_pair("trueW2", "true_W2"));
+  fHepmcAttrib.insert(make_pair("true_el_pT", "true_el_pT"));
+  fHepmcAttrib.insert(make_pair("true_el_theta", "true_el_theta"));
+  fHepmcAttrib.insert(make_pair("true_el_phi", "true_el_phi"));
+  fHepmcAttrib.insert(make_pair("true_el_E", "true_el_E"));
+  fHepmcAttrib.insert(make_pair("true_el_Q2", "true_el_Q2"));
+  fHepmcAttrib.insert(make_pair("Flux_[photon/s]", "flux_photon_per_s"));
+  fHepmcAttrib.insert(make_pair("Power_[W]", "power_W"));
 
 }//HepMC3Reader
 
@@ -54,13 +67,15 @@ void HepMC3Reader::GeneratePrimaryVertex(G4Event *evt) {
   //event attributes
   MCEvtDat *dat = new MCEvtDat();
 
-  shared_ptr<DoubleAttribute> flux_photon_per_s = mc.attribute<DoubleAttribute>("Flux_[photon/s]");
-  shared_ptr<DoubleAttribute> power_W = mc.attribute<DoubleAttribute>("Power_[W]");
-  if(flux_photon_per_s) {
-    dat->SetVal("flux_photon_per_s", flux_photon_per_s->value());
-  }
-  if(power_W) {
-    dat->SetVal("power_W", power_W->value());
+  //loop over hepmc attributes
+  map<string, string>::const_iterator iatt = fHepmcAttrib.cbegin();
+  for(; iatt != fHepmcAttrib.cend(); iatt++) {
+
+    shared_ptr<DoubleAttribute> attrib = mc.attribute<DoubleAttribute>( (*iatt).first );
+
+    if(attrib) {
+      dat->SetVal((*iatt).second, attrib->value());
+    }
   }
 
   evt->SetUserInformation(dat);

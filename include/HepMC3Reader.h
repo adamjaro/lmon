@@ -30,6 +30,8 @@ class HepMC3Reader : public G4VPrimaryGenerator {
 
     unsigned long fIev; // index of current event
 
+    std::map<std::string, std::string> fHepmcAttrib; // event attributes
+
 };
 
 #endif

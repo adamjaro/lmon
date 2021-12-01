@@ -12,9 +12,12 @@ const Q3eR_ZB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
 const Q3eR_XB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
 
 #Tagger 1
-const Tag1_size_X 400. # mm
-const Tag1_size_Y 400. # mm
-const Tag1_pos_Z -24000. # mm
+#const Tag1_size_X 400. # mm
+#const Tag1_size_Y 400. # mm
+#const Tag1_pos_Z -24000. # mm
+const Tag1_size_X 200. # mm
+const Tag1_size_Y 200. # mm
+const Tag1_pos_Z -20000. # mm
 const Tag1_Theta 0.0180766389 # rad
 const Tag1_Length 350. # mm
 
@@ -32,7 +35,8 @@ new BoxSegment Tagger1box
   Tagger1box.theta = Tag1_Theta
 
 #Tagger 2
-const Tag2_size_X 300. # mm
+#const Tag2_size_X 300. # mm
+const Tag2_size_X 200. # mm
 const Tag2_size_Y 200. # mm
 const Tag2_pos_Z -37000. # mm
 const Tag2_Theta 0.0180766389 # rad

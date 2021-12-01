@@ -44,7 +44,7 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-/vis/viewer/set/targetPoint 0 0 -28.2 m
+/vis/viewer/set/targetPoint 0 0 -20 m
 
 #/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
 
