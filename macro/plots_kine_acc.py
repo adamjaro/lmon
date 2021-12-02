@@ -11,11 +11,11 @@ def main():
 
     #tagger acceptance in electron kinematics
 
-    #inp_qr = "../data/qr/lmon_qr_18x275_Qe_beff2_5Mevt.root"
-    inp_qr = "../data/qr/lmon_qr_18x275_Qf_beff2_5Mevt.root"
+    #inp_qr = "../data/qr/lmon_qr_18x275_Qf_beff2_5Mevt.root"
+    inp_qr = "taggers/hits_tag.root"
     inp_py = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 7
+    iplot = 18
     funclist = []
     funclist.append( acc_pT_s1 ) # 0
     funclist.append( acc_pT_s2 ) # 1
@@ -995,17 +995,19 @@ def acc_en_theta(qrpy=0, tag=0, out=False):
         lab_data = "Pythia6"
 
     if tag == 0:
-        sel = "lowQ2s1_IsHit==1"
+        #sel = "lowQ2s1_IsHit==1"
+        sel = "s1_IsHit==1"
         lab_sel = "Tagger 1"
     else:
-        sel = "lowQ2s2_IsHit==1"
+        #sel = "lowQ2s2_IsHit==1"
+        sel = "s2_IsHit==1"
         lab_sel = "Tagger 2"
 
     #name for output
     tnam = ["accTagger1_E_theta", "accTagger2_E_theta"]
     dnam = ["_QR", "_Pythia6"]
     nametit = tnam[tag] + dnam[qrpy]
-    print nametit
+    print(nametit)
 
     can = ut.box_canvas()
     if out == True:
@@ -1045,8 +1047,8 @@ def acc_en_theta(qrpy=0, tag=0, out=False):
         return
 
     leg = ut.prepare_leg(0.12, 0.2, 0.24, 0.12, 0.04) # x, y, dx, dy, tsiz
-    leg.AddEntry(None, lab_sel, "")
-    leg.AddEntry(None, lab_data, "")
+    leg.AddEntry("", lab_sel, "")
+    leg.AddEntry("", lab_data, "")
     leg.Draw("same")
 
     ut.invert_col(rt.gPad)
@@ -1491,10 +1493,10 @@ def gprint(g):
         fmt += "{0:8.5f}".format(g.GetErrorX(ip))
         fmt += "{0:8.5f}{1:8.5f}".format(g.GetErrorXlow(ip), g.GetErrorXhigh(ip))
         fmt += "{0:8.5f}".format(yp)
-        print fmt
+        print(fmt)
         gtot += yp*(g.GetErrorXlow(ip) + g.GetErrorXhigh(ip))
 
-    print "gtot:", gtot
+    print("gtot:", gtot)
 
 #_____________________________________________________________________________
 def get_tree(infile):
@@ -1502,7 +1504,8 @@ def get_tree(infile):
     #get tree from input file
 
     inp = TFile.Open(infile)
-    return inp.Get("DetectorTree"), inp
+    #return inp.Get("DetectorTree"), inp
+    return inp.Get("event"), inp
 
 #get_tree
 

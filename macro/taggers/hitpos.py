@@ -71,8 +71,8 @@ def xypos():
     inp = "hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_tag.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
     #sel += "(pdg!=22)"

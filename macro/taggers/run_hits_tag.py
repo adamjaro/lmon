@@ -18,7 +18,8 @@ def main():
     hits = ParticleCounterTag()
 
     #inputs
-    indir = "/home/jaroslav/sim/lmon"
+    #indir = "/home/jaroslav/sim/lmon"
+    indir = "/home/jaroslav/sim/lmon/data/taggers/tag1a/0000"
     inlist = glob(indir+"/lmon.root")
 
     #geometry

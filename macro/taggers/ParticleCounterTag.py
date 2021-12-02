@@ -43,6 +43,26 @@ class ParticleCounterTag:
         self.tree.SetBranchAddress("gen_pdg", pdg)
         self.tree.SetBranchAddress("gen_en", en)
 
+        #input true kinematics
+        true_x = c_double(0)
+        true_y = c_double(0)
+        true_Q2 = c_double(0)
+        true_W2 = c_double(0)
+        true_el_pT = c_double(0)
+        true_el_theta = c_double(0)
+        true_el_phi = c_double(0)
+        true_el_E = c_double(0)
+        true_el_Q2 = c_double(0)
+        self.tree.SetBranchAddress("true_x", true_x)
+        self.tree.SetBranchAddress("true_y", true_y)
+        self.tree.SetBranchAddress("true_Q2", true_Q2)
+        self.tree.SetBranchAddress("true_W2", true_W2)
+        self.tree.SetBranchAddress("true_el_pT", true_el_pT)
+        self.tree.SetBranchAddress("true_el_theta", true_el_theta)
+        self.tree.SetBranchAddress("true_el_phi", true_el_phi)
+        self.tree.SetBranchAddress("true_el_E", true_el_E)
+        self.tree.SetBranchAddress("true_el_Q2", true_el_Q2)
+
         #tagger hits
         tag1_hits = ParticleCounterHits("lowQ2s1", self.tree)
         tag2_hits = ParticleCounterHits("lowQ2s2", self.tree)
@@ -61,6 +81,16 @@ class ParticleCounterTag:
         otree.Branch("gen_en", gen_en, "gen_en/D")
         otree.Branch("s1_IsHit", s1_IsHit, "s1_IsHit/O")
         otree.Branch("s2_IsHit", s2_IsHit, "s2_IsHit/O")
+
+        otree.Branch("true_x", true_x, "true_x/D")
+        otree.Branch("true_y", true_y, "true_y/D")
+        otree.Branch("true_Q2", true_Q2, "true_Q2/D")
+        otree.Branch("true_W2", true_W2, "true_W2/D")
+        otree.Branch("true_el_pT", true_el_pT, "true_el_pT/D")
+        otree.Branch("true_el_theta", true_el_theta, "true_el_theta/D")
+        otree.Branch("true_el_phi", true_el_phi, "true_el_phi/D")
+        otree.Branch("true_el_E", true_el_E, "true_el_E/D")
+        otree.Branch("true_el_Q2", true_el_Q2, "true_el_Q2/D")
 
         #hit trees
         tag1_hits.CreateOutput("s1")

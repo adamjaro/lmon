@@ -16,11 +16,14 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 3
 
     func = {}
-    func[0] = hit_en
-    func[1] = acc_en_s1_lmon_dd
+    func[0] = acc_en_s12
+    func[1] = acc_lQ2_s12
+    func[2] = acc_theta_s12
+    func[3] = acc_eta_s12
+    func[4] = hit_en
 
     func[101] = load_lmon
     func[102] = load_dd
@@ -30,7 +33,7 @@ def main():
 #main
 
 #_____________________________________________________________________________
-def acc_en_s1_lmon_dd():
+def acc_en_s12():
 
     #acceptance in energy for Tagger 1 by lmon and dd4hep
 
@@ -45,13 +48,13 @@ def acc_en_s1_lmon_dd():
 
     amax = 1
 
-    acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "gen_en", "s1_IsHit")
+    acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s1_IsHit")
     acc_lmon_s1.prec = 0.1
     #acc_lmon.bmin = 0.1
     #acc_lmon.nev = int(1e5)
     gLmonS1 = acc_lmon_s1.get()
 
-    acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "gen_en", "s2_IsHit")
+    acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s2_IsHit")
     acc_lmon_s2.prec = 0.1
     gLmonS2 = acc_lmon_s2.get()
 
@@ -84,7 +87,170 @@ def acc_en_s1_lmon_dd():
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
-#acc_en_s1_lmon_dd
+#acc_en_s12
+
+#_____________________________________________________________________________
+def acc_lQ2_s12():
+
+    #acceptance in log_10(Q^2) for tagger 1 and tagger 2
+
+    inp = TFile.Open("hits_tag.root")
+    tree = inp.Get("event")
+
+    lQ2min = -10
+    lQ2max = 0
+
+    amax = 0.3
+
+    as1 = rt.acc_Q2_kine(tree, "true_Q2", "s1_IsHit")
+    as1.modif = 1 # log_10(Q^2) from Q2
+    as1.prec = 0.1
+    as1.bmin = 0.1
+    #as1.nev = int(1e5)
+    gs1 = as1.get()
+
+    as2 = rt.acc_Q2_kine(tree, "true_Q2", "s2_IsHit")
+    as2.modif = 1 # log_10(Q^2) from Q2
+    as2.prec = 0.1
+    as2.bmin = 0.1
+    #as2.nev = int(1e5)
+    gs2 = as2.get()
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(lQ2min, 0, lQ2max, amax)
+    ut.put_yx_tit(frame, "Acceptance", "Virtuality log_{10}(#it{Q}^{2}) (GeV)", 1.6, 1.3)
+
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    ut.set_graph(gs1, rt.kBlue)
+    gs1.Draw("psame")
+
+    ut.set_graph(gs2, rt.kRed)
+    gs2.Draw("psame")
+
+    gPad.SetGrid()
+
+    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
+    #leg.AddEntry(None, "Tagger 1", "")
+    #leg.AddEntry(glQ2Py, "Pythia6", "l")
+    #leg.AddEntry(glQ2Qr, "QR", "l")
+    #leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_lQ2_s12
+
+#_____________________________________________________________________________
+def acc_theta_s12():
+
+    #acceptance in electron polar angle for tagger 1 and tagger 2
+
+    inp = TFile.Open("hits_tag.root")
+    tree = inp.Get("event")
+
+    tmin = TMath.Pi() - 2.1e-2
+    tmax = TMath.Pi() + 0.5e-2
+
+    amax = 0.3
+
+    as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
+    as1.prec = 0.1
+    as1.bmin = 2e-4
+    #as1.nev = int(1e5)
+    gs1 = as1.get()
+
+    as2 = rt.acc_Q2_kine(tree, "true_el_theta", "s2_IsHit")
+    as2.prec = 0.1
+    as2.bmin = 2e-4
+    #as2.nev = int(1e5)
+    gs2 = as2.get()
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(tmin, 0, tmax, amax)
+    ut.put_yx_tit(frame, "Acceptance", "Electron polar angle #theta (rad)", 1.6, 1.3)
+
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    ut.set_graph(gs1, rt.kBlue)
+    gs1.Draw("psame")
+
+    ut.set_graph(gs2, rt.kRed)
+    gs2.Draw("psame")
+
+    gPad.SetGrid()
+
+    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
+    #leg.AddEntry(None, "Tagger 1", "")
+    #leg.AddEntry(glQ2Py, "Pythia6", "l")
+    #leg.AddEntry(glQ2Qr, "QR", "l")
+    #leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_theta_s12
+
+#_____________________________________________________________________________
+def acc_eta_s12():
+
+    #acceptance in electron pseudorapidity for tagger 1 and tagger 2
+
+    inp = TFile.Open("hits_tag.root")
+    tree = inp.Get("event")
+
+    emin = -17
+    emax = -3
+
+    amax = 0.3
+
+    as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
+    as1.modif = 0 # eta from theta
+    as1.prec = 0.1
+    as1.bmin = 2e-4
+    #as1.nev = int(1e5)
+    gs1 = as1.get()
+
+    as2 = rt.acc_Q2_kine(tree, "true_el_theta", "s2_IsHit")
+    as2.modif = 0 # eta from theta
+    as2.prec = 0.1
+    as2.bmin = 2e-4
+    #as2.nev = int(1e5)
+    gs2 = as2.get()
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(emin, 0, emax, amax)
+    ut.put_yx_tit(frame, "Acceptance", "Electron pseudorapidity #eta", 1.6, 1.3)
+
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    ut.set_graph(gs1, rt.kBlue)
+    gs1.Draw("psame")
+
+    ut.set_graph(gs2, rt.kRed)
+    gs2.Draw("psame")
+
+    gPad.SetGrid()
+
+    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
+    #leg.AddEntry(None, "Tagger 1", "")
+    #leg.AddEntry(glQ2Py, "Pythia6", "l")
+    #leg.AddEntry(glQ2Qr, "QR", "l")
+    #leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_eta_s12
 
 #_____________________________________________________________________________
 def hit_en():
