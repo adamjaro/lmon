@@ -12,7 +12,8 @@ def main():
     #tagger acceptance in electron kinematics
 
     #inp_qr = "../data/qr/lmon_qr_18x275_Qf_beff2_5Mevt.root"
-    inp_qr = "taggers/hits_tag.root"
+    #inp_qr = "taggers/hits_tag.root"
+    inp_qr = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     inp_py = "../data/py/lmon_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
     iplot = 18
@@ -973,7 +974,7 @@ def evt_W():
 #evt_W
 
 #_____________________________________________________________________________
-def acc_en_theta(qrpy=0, tag=0, out=False):
+def acc_en_theta(qrpy=0, tag=1, out=False):
 
     #Tagger acceptance in energy and theta
 

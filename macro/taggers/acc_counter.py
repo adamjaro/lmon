@@ -16,14 +16,17 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 6
 
     func = {}
     func[0] = acc_en_s12
     func[1] = acc_lQ2_s12
     func[2] = acc_theta_s12
     func[3] = acc_eta_s12
-    func[4] = hit_en
+    func[4] = acc_en_theta
+    func[5] = acc_en_eta
+    func[6] = acc_ly_lx
+    func[7] = hit_en
 
     func[101] = load_lmon
     func[102] = load_dd
@@ -37,25 +40,29 @@ def acc_en_s12():
 
     #acceptance in energy for Tagger 1 by lmon and dd4hep
 
-    inp_lmon = TFile.Open("hits_tag.root")
-    tree_lmon = inp_lmon.Get("event")
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    infile = TFile.Open(inp)
+    tree_lmon = infile.Get("event")
 
     #inp_dd = TFile.Open("dd.root")
     #tree_dd = inp_dd.Get("event")
 
-    emin = 0
+    emin = 2
     emax = 19
 
-    amax = 1
+    amax = 0.6
 
     acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s1_IsHit")
-    acc_lmon_s1.prec = 0.1
-    #acc_lmon.bmin = 0.1
-    #acc_lmon.nev = int(1e5)
+    acc_lmon_s1.prec = 0.05
+    acc_lmon_s1.bmin = 0.1
+    #acc_lmon_s1.nev = int(1e5)
     gLmonS1 = acc_lmon_s1.get()
 
     acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s2_IsHit")
-    acc_lmon_s2.prec = 0.1
+    acc_lmon_s2.prec = 0.05
+    acc_lmon_s2.bmin = 0.1
+    #acc_lmon_s2.nev = int(1e5)
     gLmonS2 = acc_lmon_s2.get()
 
     #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s1_IsHit")
@@ -67,16 +74,16 @@ def acc_en_s12():
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
 
-    ut.put_yx_tit(frame, "Acceptance", "Electron energy #it{E} (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Electron energy #it{E} (GeV)", 1.6, 1.3)
 
     frame.Draw()
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
 
-    ut.set_graph(gLmonS1, rt.kBlue)
+    ut.set_graph(gLmonS1, rt.kRed)
     gLmonS1.Draw("psame")
 
-    ut.set_graph(gLmonS2, rt.kRed)
+    ut.set_graph(gLmonS2, rt.kBlue)
     gLmonS2.Draw("psame")
 
     #ut.set_graph(gDD, rt.kRed)
@@ -84,7 +91,12 @@ def acc_en_s12():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.15, 0.82, 0.24, 0.12, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(gLmonS1, "Tagger 1", "lp")
+    leg.AddEntry(gLmonS2, "Tagger 2", "lp")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_en_s12
@@ -94,24 +106,26 @@ def acc_lQ2_s12():
 
     #acceptance in log_10(Q^2) for tagger 1 and tagger 2
 
-    inp = TFile.Open("hits_tag.root")
-    tree = inp.Get("event")
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
-    lQ2min = -10
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    lQ2min = -9
     lQ2max = 0
 
-    amax = 0.3
+    amax = 0.21
 
     as1 = rt.acc_Q2_kine(tree, "true_Q2", "s1_IsHit")
     as1.modif = 1 # log_10(Q^2) from Q2
-    as1.prec = 0.1
+    as1.prec = 0.05
     as1.bmin = 0.1
     #as1.nev = int(1e5)
     gs1 = as1.get()
 
     as2 = rt.acc_Q2_kine(tree, "true_Q2", "s2_IsHit")
     as2.modif = 1 # log_10(Q^2) from Q2
-    as2.prec = 0.1
+    as2.prec = 0.05
     as2.bmin = 0.1
     #as2.nev = int(1e5)
     gs2 = as2.get()
@@ -119,27 +133,26 @@ def acc_lQ2_s12():
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(lQ2min, 0, lQ2max, amax)
-    ut.put_yx_tit(frame, "Acceptance", "Virtuality log_{10}(#it{Q}^{2}) (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Virtuality log_{10}(#it{Q}^{2}) (GeV)", 1.6, 1.3)
 
     frame.Draw()
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
 
-    ut.set_graph(gs1, rt.kBlue)
+    ut.set_graph(gs1, rt.kRed)
     gs1.Draw("psame")
 
-    ut.set_graph(gs2, rt.kRed)
+    ut.set_graph(gs2, rt.kBlue)
     gs2.Draw("psame")
 
     gPad.SetGrid()
 
-    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
-    #leg.AddEntry(None, "Tagger 1", "")
-    #leg.AddEntry(glQ2Py, "Pythia6", "l")
-    #leg.AddEntry(glQ2Qr, "QR", "l")
-    #leg.Draw("same")
+    leg = ut.prepare_leg(0.15, 0.82, 0.24, 0.12, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(gs1, "Tagger 1", "lp")
+    leg.AddEntry(gs2, "Tagger 2", "lp")
+    leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_s12
@@ -149,13 +162,15 @@ def acc_theta_s12():
 
     #acceptance in electron polar angle for tagger 1 and tagger 2
 
-    inp = TFile.Open("hits_tag.root")
-    tree = inp.Get("event")
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
-    tmin = TMath.Pi() - 2.1e-2
-    tmax = TMath.Pi() + 0.5e-2
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
 
-    amax = 0.3
+    tmin = TMath.Pi() - 1.1e-2
+    tmax = TMath.Pi() + 1e-3
+
+    amax = 0.25
 
     as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
     as1.prec = 0.1
@@ -172,27 +187,26 @@ def acc_theta_s12():
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(tmin, 0, tmax, amax)
-    ut.put_yx_tit(frame, "Acceptance", "Electron polar angle #theta (rad)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Electron polar angle #it{#theta} (rad)", 1.6, 1.3)
 
     frame.Draw()
 
     ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
 
-    ut.set_graph(gs1, rt.kBlue)
+    ut.set_graph(gs1, rt.kRed)
     gs1.Draw("psame")
 
-    ut.set_graph(gs2, rt.kRed)
+    ut.set_graph(gs2, rt.kBlue)
     gs2.Draw("psame")
 
     gPad.SetGrid()
 
-    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
-    #leg.AddEntry(None, "Tagger 1", "")
-    #leg.AddEntry(glQ2Py, "Pythia6", "l")
-    #leg.AddEntry(glQ2Qr, "QR", "l")
-    #leg.Draw("same")
+    leg = ut.prepare_leg(0.15, 0.82, 0.24, 0.12, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(gs1, "Tagger 1", "lp")
+    leg.AddEntry(gs2, "Tagger 2", "lp")
+    leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_theta_s12
@@ -202,8 +216,10 @@ def acc_eta_s12():
 
     #acceptance in electron pseudorapidity for tagger 1 and tagger 2
 
-    inp = TFile.Open("hits_tag.root")
-    tree = inp.Get("event")
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
 
     emin = -17
     emax = -3
@@ -212,15 +228,15 @@ def acc_eta_s12():
 
     as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
     as1.modif = 0 # eta from theta
-    as1.prec = 0.1
-    as1.bmin = 2e-4
+    as1.prec = 0.01
+    as1.bmin = 0.1
     #as1.nev = int(1e5)
     gs1 = as1.get()
 
     as2 = rt.acc_Q2_kine(tree, "true_el_theta", "s2_IsHit")
     as2.modif = 0 # eta from theta
-    as2.prec = 0.1
-    as2.bmin = 2e-4
+    as2.prec = 0.01
+    as2.bmin = 0.1
     #as2.nev = int(1e5)
     gs2 = as2.get()
 
@@ -251,6 +267,213 @@ def acc_eta_s12():
     can.SaveAs("01fig.pdf")
 
 #acc_eta_s12
+
+#_____________________________________________________________________________
+def acc_en_theta():
+
+    #2D acceptance in energy and polar angle theta
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #bins in theta
+    tbin = 2e-4
+    tmin = TMath.Pi() - 1.1e-2
+    tmax = TMath.Pi() + 1e-3
+
+    #bins in energy
+    ebin = 0.3
+    emin = 0
+    emax = 20
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", tbin, tmin, tmax, ebin, emin, emax)
+    hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", tbin, tmin, tmax, ebin, emin, emax)
+
+    form = "true_el_E:true_el_theta"
+    tree.Draw(form+" >> hEnThetaTag", sel)
+    tree.Draw(form+" >> hEnThetaAll")
+
+    hEnThetaTag.Divide(hEnThetaAll)
+
+    ytit = "Electron energy #it{E} (GeV)"
+    xtit = "Electron polar angle #theta (rad)"
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.4, 1.3)
+
+    hEnThetaTag.SetTitleOffset(1.5, "Z")
+    hEnThetaTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hEnThetaTag.SetMinimum(0)
+    hEnThetaTag.SetMaximum(1)
+    hEnThetaTag.SetContour(300)
+
+    hEnThetaTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_en_theta
+
+#_____________________________________________________________________________
+def acc_ly_lx():
+
+    #2D acceptance in Bjorken-x and inelasticity y
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    #bins in log_10(y)
+    ybin = 0.04
+    ymin = -4
+    ymax = 0
+
+    #bins in log_10(x)
+    xbin = 0.1
+    xmin = -12
+    xmax = -1
+
+    can = ut.box_canvas()
+
+    hYXTag = ut.prepare_TH2D("hYXTag", xbin, xmin, xmax, ybin, ymin, ymax)
+    hYXAll = ut.prepare_TH2D("hYXAll", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    form = "TMath::Log10(true_y):TMath::Log10(true_x)" # y:x
+    tree.Draw(form+" >> hYXTag", sel)
+    tree.Draw(form+" >> hYXAll")
+
+    hYXTag.Divide(hYXAll)
+
+    ytit = "Virtuality #it{y} as log_{10}(#it{y})"
+    xtit = "Bjorken-#it{x} as log_{10}(#it{x})"
+    ut.put_yx_tit(hYXTag, ytit, xtit, 1.4, 1.3)
+
+    hYXTag.SetTitleOffset(1.5, "Z")
+    hYXTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hYXTag.SetMinimum(0)
+    hYXTag.SetMaximum(1)
+    hYXTag.SetContour(300)
+
+    hYXTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.59, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_ly_lx
+
+#_____________________________________________________________________________
+def acc_en_eta():
+
+    #2D acceptance in energy and pseudorapidity
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #bins in eta
+    etabin = 0.1
+    etamin = -12.9
+    etamax = -4.5
+
+    #bins in energy
+    ebin = 0.3
+    emin = 0
+    emax = 20
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    can = ut.box_canvas()
+
+    hEnThetaTag = ut.prepare_TH2D("hEnThetaTag", etabin, etamin, etamax, ebin, emin, emax)
+    hEnThetaAll = ut.prepare_TH2D("hEnThetaAll", etabin, etamin, etamax, ebin, emin, emax)
+
+    form = "true_el_E:(-TMath::Log(TMath::Tan(true_el_theta/2.)))"
+    tree.Draw(form+" >> hEnThetaTag", sel)
+    tree.Draw(form+" >> hEnThetaAll")
+
+    hEnThetaTag.Divide(hEnThetaAll)
+
+    ytit = "Electron energy #it{E} (GeV)"
+    xtit = "Electron pseudorapidity #eta"
+    ut.put_yx_tit(hEnThetaTag, ytit, xtit, 1.4, 1.3)
+
+    hEnThetaTag.SetTitleOffset(1.5, "Z")
+    hEnThetaTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hEnThetaTag.SetMinimum(0)
+    hEnThetaTag.SetMaximum(1)
+    hEnThetaTag.SetContour(300)
+
+    hEnThetaTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_en_eta
 
 #_____________________________________________________________________________
 def hit_en():

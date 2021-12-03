@@ -41,27 +41,27 @@ def acc_spec():
     emin = 0
     emax = 19
 
-    amax = 0.06
+    amax = 0.05
 
     inp_lmon = TFile.Open(infile)
     tree_lmon = inp_lmon.Get("event")
 
     acc_lmon = rt.acc_Q2_kine(tree_lmon, "gen_en", "is_spect")
     acc_lmon.prec = 0.04
-    #acc_lmon.prec = 0.08
+    #acc_lmon.prec = 0.1
     acc_lmon.delt = 1e-2
-    #acc_lmon.bmin = 0.1
+    acc_lmon.bmin = 0.1
     #acc_lmon.nev = int(1e5)
     gLmon = acc_lmon.get()
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
 
-    ut.put_yx_tit(frame, "Spectrometer acceptance", "Photon energy #it{E} (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Spectrometer acceptance", "Photon energy #it{E}_{#gamma} (GeV)", 1.9, 1.3)
 
     frame.Draw()
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.02)
 
     ut.set_graph(gLmon, rt.kBlue)
     gLmon.Draw("psame")
@@ -78,6 +78,7 @@ def acc_spec():
 
     geo = rt.GeoParser("../../config/geom_all.in")
     length = geo.GetD("lumi_dipole", "zpos") - geo.GetD("vac_lumi_spec_mid", "z0")
+    print("Length (mm):", length)
     field = 0.37 # T
     #field = 0.2 # T
     #field = 0.1 # T
@@ -88,7 +89,12 @@ def acc_spec():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.15, 0.82, 0.24, 0.12, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(gLmon, "Geant4", "lp")
+    leg.AddEntry(acc.acc_func, "Geometry model", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_spec
