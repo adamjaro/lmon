@@ -81,11 +81,13 @@ def xypos():
 
     #inp = "hits_spect.root"
     #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2a/hits_spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
 
     #det = "phot"
-    det = "up"
-    #det = "down"
+    #det = "up"
+    det = "down"
     #det = "ew_front"
     #det = "ew_rear"
     #det = "mag_front"

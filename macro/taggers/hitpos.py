@@ -8,7 +8,7 @@ import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 
 import sys
-sys.path.append('../')
+sys.path.append("../")
 import plot_utils as ut
 
 #_____________________________________________________________________________
@@ -26,15 +26,15 @@ def main():
 def zpos():
 
     #in1 = "hits_tag.root"
-    #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm1a/hits.root"
+    #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits.root"
     in1 = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
     zbin = 0.1
     zmin = -2000
     zmax = 2000
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     val = "z"
 

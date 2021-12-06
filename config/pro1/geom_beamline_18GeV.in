@@ -1,0 +1,165 @@
+
+new top topv
+
+  topv.xsiz = 2000 # mm
+  topv.ysiz = 2000 # mm
+  topv.zsiz = 40000 # mm
+
+# Q1eR quadrupole
+const Q1eR_Start_Z -5300 # mm
+const Q1eR_End_Z -7100 # mm
+const Q1eR_InnerRadius 55.5 # mm
+
+new BeamQuadrupole Q1eR
+
+  Q1eR.zpos = (Q1eR_Start_Z+Q1eR_End_Z)/2
+  Q1eR.r1 = Q1eR_InnerRadius
+  Q1eR.r2 = Q1eR_InnerRadius
+  Q1eR.length = Q1eR_Start_Z-Q1eR_End_Z
+  Q1eR.grad = 13.3153 # T/m
+  Q1eR.angle = TMath::Pi()/2 # rad
+  Q1eR.remove_tracks = 1
+
+# Q2eR quadrupole
+const Q2eR_Start_Z -7600 # mm
+const Q2eR_End_Z -9000 # mm
+const Q2eR_InnerRadius 64.5 # mm
+
+new BeamQuadrupole Q2eR
+
+  Q2eR.zpos = (Q2eR_Start_Z+Q2eR_End_Z)/2
+  Q2eR.r1 = Q2eR_InnerRadius
+  Q2eR.r2 = Q2eR_InnerRadius
+  Q2eR.length = Q2eR_Start_Z-Q2eR_End_Z
+  Q2eR.grad = -12.0595 # T/m
+  Q2eR.angle = TMath::Pi()/2 # rad
+  Q2eR.remove_tracks = 1
+
+# B2AeR beam dipole
+const B2AeR_Start_Z -9610 # mm
+const B2AeR_End_Z -11390 # mm
+const B2AeR_InnerRadius 70 # mm
+
+new BeamMagnetV2 B2AeR
+
+  B2AeR.zpos = (B2AeR_Start_Z+B2AeR_End_Z)/2
+  B2AeR.r1 = B2AeR_InnerRadius
+  B2AeR.r2 = B2AeR_InnerRadius
+  B2AeR.length = B2AeR_Start_Z-B2AeR_End_Z
+  B2AeR.field = 0.192 # T
+
+# B2BeR beam dipole
+const B2BeR_Start_Z -11685. # mm
+const B2BeR_End_Z -14865. # mm
+const B2BeR_InnerRadius 98. # mm
+
+new BeamMagnetV2 B2BeR
+
+  B2BeR.zpos = (B2BeR_Start_Z+B2BeR_End_Z)/2
+  B2BeR.r1 = B2BeR_InnerRadius
+  B2BeR.r2 = B2BeR_InnerRadius
+  B2BeR.length = B2BeR_Start_Z-B2BeR_End_Z
+  B2BeR.field = 0.238 # T
+
+#Q3eR
+const Q3eR_InnerRadius 50. # mm
+const Q3eR_Length 600. # mm
+#const Q3eR_XPosition -465.45 # mm
+#const Q3eR_CenterPosition -37996.018 # mm
+const Q3eR_StartZ -37696.067 # mm
+const Q3eR_StartX -460.027 # mm
+const Q3eR_EndZ -38295.969 # mm
+const Q3eR_EndX -0470.873 # mm
+const Q3eR_Theta 0.0180766389 # rad
+
+new BeamQuadrupole Q3eR
+
+  Q3eR.r1 = Q3eR_InnerRadius
+  Q3eR.r2 = Q3eR_InnerRadius
+  Q3eR.length = Q3eR_Length
+  #Q3eR.xpos = Q3eR_XPosition
+  #Q3eR.zpos = Q3eR_CenterPosition
+  Q3eR.xpos = (Q3eR_StartX+Q3eR_EndX)/2
+  Q3eR.zpos = (Q3eR_StartZ+Q3eR_EndZ)/2
+  Q3eR.theta = Q3eR_Theta
+  Q3eR.grad = 0 # T/m
+  Q3eR.angle = TMath::Pi()/2 # rad
+  Q3eR.remove_tracks = 1
+
+#counter detector in Q3eR inner volume
+
+const Q3eR_det_DZ 10. # mm
+
+new ParticleCounter Q3eR_det
+
+  Q3eR_det.outer_r = Q3eR_InnerRadius
+  Q3eR_det.dz = Q3eR_det_DZ
+  Q3eR_det.zpos = (Q3eR_Length/2)-Q3eR_det_DZ/2
+  Q3eR_det.place_into = Q3eR_top # main volume for the magnet
+
+
+#beamline elements:
+
+new ConeAperture central_beampipe # beam pipe in front Q1eR
+
+  central_beampipe.zpos = Q1eR_Start_Z/2
+  central_beampipe.length = -Q1eR_Start_Z
+  central_beampipe.r1 = Q1eR_InnerRadius
+  central_beampipe.r2 = Q1eR_InnerRadius
+
+new ConeAperture beam_Q12 # beam pipe in front Q2eR
+
+  beam_Q12.zpos = (Q2eR_Start_Z+Q1eR_End_Z)/2
+  beam_Q12.length = Q1eR_End_Z-Q2eR_Start_Z
+  beam_Q12.r1 = Q1eR_InnerRadius
+  beam_Q12.r2 = Q2eR_InnerRadius
+
+new ConeAperture beam_Q2B2 # beam pipe in front B2AeR
+
+  beam_Q2B2.zpos = (B2AeR_Start_Z+Q2eR_End_Z)/2
+  beam_Q2B2.length = Q2eR_End_Z-B2AeR_Start_Z
+  beam_Q2B2.r1 = Q2eR_InnerRadius
+  beam_Q2B2.r2 = B2AeR_InnerRadius
+
+new ConeAperture beam_B2AB # beam pipe in front B2BeR
+
+  beam_B2AB.zpos = (B2BeR_Start_Z+B2AeR_End_Z)/2
+  beam_B2AB.length = B2AeR_End_Z-B2BeR_Start_Z
+  beam_B2AB.r1 = B2AeR_InnerRadius
+  beam_B2AB.r2 = B2BeR_InnerRadius
+
+
+# marker at Q3eR location
+
+#new BoxSegment Q3eR
+
+  #Q3eR.dx = 2*Q3eR_InnerRadius
+  #Q3eR.dy = 2*Q3eR_InnerRadius
+  #Q3eR.dz = Q3eR_Length
+  #Q3eR.xpos = Q3eR_XPosition
+  #Q3eR.zpos = Q3eR_CenterPosition
+  #Q3eR.theta = Q3eR_Theta
+
+#const Q3eR_det_DZ 10 # mm
+
+#new ParticleCounter Q3eR_det
+
+  #Q3eR_det.dx = 2*Q3eR_InnerRadius
+  #Q3eR_det.dy = 2*Q3eR_InnerRadius
+  #Q3eR_det.dz = Q3eR_det_DZ
+  #Q3eR_det.zpos = (Q3eR_Length/2)-Q3eR_det_DZ/2
+  #Q3eR_det.place_into = Q3eR
+
+
+
+
+
+
+
+
+
+
+
+
+
+

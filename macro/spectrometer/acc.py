@@ -12,13 +12,13 @@ import sys
 sys.path.append('../')
 import plot_utils as ut
 
-from ParticleCounterHits import ParticleCounterHits
+from ParticleCounterSpect import ParticleCounterSpect
 from spec_acc import spec_acc
 
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = acc_spec
@@ -34,9 +34,9 @@ def main():
 def acc_spec():
 
     #infile = "hits_spect.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1b/hits.root"
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1c/hits.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
 
     emin = 0
     emax = 19
@@ -79,9 +79,9 @@ def acc_spec():
     geo = rt.GeoParser("../../config/geom_all.in")
     length = geo.GetD("lumi_dipole", "zpos") - geo.GetD("vac_lumi_spec_mid", "z0")
     print("Length (mm):", length)
-    field = 0.37 # T
+    #field = 0.37 # T
     #field = 0.2 # T
-    #field = 0.1 # T
+    field = 0.1 # T
 
     acc = spec_acc(length, field, geo.GetD("vac_lumi_spec_mid", "dY0"), geo.GetD("vac_lumi_mag_spec", "dY1"))
     acc.scale = iacc/acc.acc_func.Integral(1, 21)
@@ -94,7 +94,7 @@ def acc_spec():
     leg.AddEntry(acc.acc_func, "Geometry model", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_spec
@@ -102,15 +102,17 @@ def acc_spec():
 #_____________________________________________________________________________
 def up_rate():
 
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+
     #detector = "up"
-    #detector = "down"
-    detector = "phot"
+    detector = "down"
+    #detector = "phot"
 
     #plot range
-    xybin = 5.
+    xybin = 2.
     xylen = 110.
 
-    inp_lmon = TFile.Open("lmon.root")
+    inp_lmon = TFile.Open(infile)
     #number of interactions from event tree
     ni = inp_lmon.Get("event").GetEntries()
     #hits tree
@@ -121,7 +123,15 @@ def up_rate():
     tree.Draw("y:x >> hXY")
 
     #scale to hits per unit area per second
-    scale = get_scale(ni)
+    counter_hits = ParticleCounterSpect()
+
+    # 18x275 GeV
+    counter_hits.sigma_tot = 171.29 # mb
+    counter_hits.lumi_cmsec = 1.54e33 # cm^-2 sec^-1
+    counter_hits.nbunch = 290
+    counter_hits.Ee = 18. # GeV
+
+    scale = counter_hits.get_scale()
     print("scale:", scale)
     lam = scale["lambda"]
     tb = scale["Tb"]
@@ -157,7 +167,7 @@ def up_rate():
     rate_all = (1.-np.e**(-(nhits_all/ni)*lam))*(1./tb)
     print("Integrated rate (MHz):", 1e-6*rate_all)
 
-    hXY.SetMinimum(0.98)
+    #hXY.SetMinimum(0.98)
     hXY.SetContour(300)
 
     ytit = "#it{y} (mm)"
@@ -175,7 +185,7 @@ def up_rate():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #up_rate
