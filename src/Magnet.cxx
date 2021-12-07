@@ -46,7 +46,13 @@ Magnet::Magnet(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
   //inner magnetic core
   G4String core_nam = fNam+"_core";
   G4Tubs *core_shape = new G4Tubs(core_nam, 0., inner_r, dz/2., 0., 360.*deg);
-  G4LogicalVolume *core_vol = new G4LogicalVolume(core_shape, vac_mat, core_nam);
+
+  //inner volume
+  G4String inner_material = "G4_Galactic";
+  geo->GetOptS(fNam, "inner_material", inner_material);
+  G4cout << "  " << fNam << ", inner_material: " << inner_material << G4endl;
+  G4Material *inner_mat = G4NistManager::Instance()->FindOrBuildMaterial(inner_material);
+  G4LogicalVolume *core_vol = new G4LogicalVolume(core_shape, inner_mat, core_nam);
   core_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
   //magnetic field

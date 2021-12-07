@@ -70,8 +70,8 @@ def xypos():
     xymax = 110
 
     #inp = "hits_tag.root"
-    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
     #det = "s1"
     det = "s2"

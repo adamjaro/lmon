@@ -36,6 +36,7 @@ new Magnet lumi_dipole
   lumi_dipole.field = 0.37 # T, 18 GeV
   #lumi_dipole.field = 0.1 # T, 5 GeV
   lumi_dipole.remove_tracks = 1
+  #lumi_dipole.inner_material = G4_AIR
 
 #counters at detectors
 const LumiCounter_DZ 10. # mm

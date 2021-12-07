@@ -186,6 +186,7 @@ new VacLumi vac_lumi_spec_front
   vac_lumi_spec_front.dY0 = LumiSpec_YT
   vac_lumi_spec_front.dX1 = LumiSpec_XY/2.
   vac_lumi_spec_front.dY1 = LumiSpec_YS
+  #vac_lumi_spec_front.inner_material = G4_AIR
 
 #vacuum section between luminosity spectrometers
 new VacLumi vac_lumi_spec_mid
@@ -196,6 +197,7 @@ new VacLumi vac_lumi_spec_mid
   vac_lumi_spec_mid.dY0 = LumiSpec_YS
   vac_lumi_spec_mid.dX1 = LumiSpec_XY/2.
   vac_lumi_spec_mid.dY1 = LumiSpec_YF
+  #vac_lumi_spec_mid.inner_material = G4_AIR
 
 #vacuum section from exit window to spectrometer magnet
 new VacLumi vac_lumi_win_mag
@@ -206,6 +208,7 @@ new VacLumi vac_lumi_win_mag
   vac_lumi_win_mag.dY0 = LumiWin_XY/2.
   vac_lumi_win_mag.dX1 = LumiMag_R
   vac_lumi_win_mag.dY1 = LumiMag_R
+  #vac_lumi_win_mag.inner_material = G4_AIR
 
 #vacuum section from spectrometer magnet to spectrometer detectors
 new VacLumi vac_lumi_mag_spec
@@ -216,6 +219,7 @@ new VacLumi vac_lumi_mag_spec
   vac_lumi_mag_spec.dY0 = LumiMag_R
   vac_lumi_mag_spec.dX1 = LumiSpec_XY/2.
   vac_lumi_mag_spec.dY1 = LumiSpec_YT
+  #vac_lumi_mag_spec.inner_material = G4_AIR
 
 #vacuum section from spectrometers to direct photon detector
 new VacLumi vac_lumi_spec_phot
@@ -226,6 +230,7 @@ new VacLumi vac_lumi_spec_phot
   vac_lumi_spec_phot.dY0 = LumiSpec_YF
   vac_lumi_spec_phot.dX1 = LumiD_XY/2.
   vac_lumi_spec_phot.dY1 = LumiD_XY/2.
+  #vac_lumi_spec_phot.inner_material = G4_AIR
 
 
 

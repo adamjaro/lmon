@@ -14,7 +14,8 @@ from ParticleCounterSpect import ParticleCounterSpect
 #_____________________________________________________________________________
 def main():
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
     det = "s1"
     #det = "s2"
@@ -37,7 +38,8 @@ def main():
     counter_hits = ParticleCounterSpect()
 
     # 18x275 GeV
-    counter_hits.sigma_tot = 0.05326 # mb, quasi-real
+    #counter_hits.sigma_tot = 0.05326 # mb, quasi-real
+    counter_hits.sigma_tot = 171.29 # mb, bremsstrahlung
     counter_hits.lumi_cmsec = 1.54e33 # cm^-2 sec^-1
     counter_hits.nbunch = 290
     counter_hits.Ee = 18. # GeV

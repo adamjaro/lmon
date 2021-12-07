@@ -18,7 +18,7 @@ from spec_acc import spec_acc
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = acc_spec
@@ -35,8 +35,9 @@ def acc_spec():
 
     #infile = "hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
 
     emin = 0
     emax = 19
@@ -79,9 +80,9 @@ def acc_spec():
     geo = rt.GeoParser("../../config/geom_all.in")
     length = geo.GetD("lumi_dipole", "zpos") - geo.GetD("vac_lumi_spec_mid", "z0")
     print("Length (mm):", length)
-    #field = 0.37 # T
+    field = 0.37 # T
     #field = 0.2 # T
-    field = 0.1 # T
+    #field = 0.1 # T
 
     acc = spec_acc(length, field, geo.GetD("vac_lumi_spec_mid", "dY0"), geo.GetD("vac_lumi_mag_spec", "dY1"))
     acc.scale = iacc/acc.acc_func.Integral(1, 21)

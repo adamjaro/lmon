@@ -69,7 +69,10 @@ VacLumi::VacLumi(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
   G4GenericTrap *shape = new G4GenericTrap(fNam, zsiz/2, ver);
 
   //logical volume
-  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  G4String inner_material = "G4_Galactic";
+  geo->GetOptS(fNam, "inner_material", inner_material);
+  G4cout << "  " << fNam << ", inner_material: " << inner_material << G4endl;
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial(inner_material);
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //visibility
