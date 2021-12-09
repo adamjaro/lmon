@@ -45,7 +45,7 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   vis->SetForceWireframe();
   vol->SetVisAttributes(vis);
 
-  //center position, m
+  //center position, mm
   G4double xpos=0*mm, ypos=0*mm, zpos=0*mm;
   geo->GetOptD(fNam, "xpos", xpos, GeoParser::Unit(mm));
   geo->GetOptD(fNam, "ypos", ypos, GeoParser::Unit(mm));

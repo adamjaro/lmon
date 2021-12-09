@@ -1,17 +1,19 @@
 
+
 new top topv
 
-  topv.xsiz = 5000 # mm
-  topv.ysiz = 5000 # mm
-  topv.zsiz = 40000 # mm
-  topv.material = G4_W
+  topv.xsiz = 4000 # mm
+  topv.ysiz = 4000 # mm
+  topv.zsiz = 4000 # mm
 
-new ParticleCounter cnt
+new TrackDet l1
 
-  cnt.dx = 120. # mm
-  cnt.dy = 120. # mm
-  cnt.dz = 10. # mm
-  cnt.zpos = -20. # mm
+  l1.dx = 20 # mm
+  l1.dy = 20 # mm
+  l1.dz = 30 # mm
+  #l1.zpos = 10 # mm
+  #l1.vis_full = 0
+
 
 
 

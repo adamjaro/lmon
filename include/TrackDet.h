@@ -30,15 +30,16 @@ class TrackDet : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // detector name
 
-    Bool_t fIsHit; // hit in event
-    Double_t fEnAll; // sum of energy of all particles in event, GeV
+    G4VisAttributes *ColorDecoder(GeoParser *geo);
 
     //hits array
     std::vector<Int_t> fHitPdg; // particle pdg
-    std::vector<Float_t> fHitEn; // hit energy, GeV
+    std::vector<Float_t> fHitEtrack; // track energy in hit, GeV
+    std::vector<Float_t> fHitEdep; // deposited energy in hit, GeV
     std::vector<Float_t> fHitX; // hit position in x, mm
     std::vector<Float_t> fHitY; // hit position in y, mm
     std::vector<Float_t> fHitZ; // hit position in z, mm
+    std::vector<Float_t> fHitStepL; // step length in hit, mm
 
 };
 

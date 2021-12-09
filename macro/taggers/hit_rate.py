@@ -14,7 +14,8 @@ from ParticleCounterSpect import ParticleCounterSpect
 #_____________________________________________________________________________
 def main():
 
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
     det = "s1"
@@ -82,7 +83,7 @@ def main():
 
     #print("min_rate:", min_rate)
 
-    hXY.SetMinimum(min_rate*0.5)
+    hXY.SetMinimum(min_rate)
     hXY.SetContour(300)
 
     ytit = "#it{y} (mm)"

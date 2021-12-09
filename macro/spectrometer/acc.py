@@ -18,7 +18,7 @@ from spec_acc import spec_acc
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = acc_spec
@@ -34,15 +34,15 @@ def main():
 def acc_spec():
 
     #infile = "hits_spect.root"
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
 
     emin = 0
     emax = 19
 
-    amax = 0.05
+    amax = 0.07
 
     inp_lmon = TFile.Open(infile)
     tree_lmon = inp_lmon.Get("event")
@@ -103,7 +103,8 @@ def acc_spec():
 #_____________________________________________________________________________
 def up_rate():
 
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits_spect.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_spect.root"
 
     #detector = "up"
     detector = "down"
@@ -145,6 +146,7 @@ def up_rate():
     #print("scale_area:", scale_area)
 
     nhits_all = 0.
+    min_rate = 9e9 # minimum for the plot
 
     for ix in range(1, hXY.GetNbinsX()+1):
         for iy in range(1, hXY.GetNbinsY()+1):
@@ -159,6 +161,9 @@ def up_rate():
             rA = (1.-np.e**(-nhb))*(1./tb)*(1./bin_area)
             #print(rA)
 
+            if rA < min_rate and nh > 0:
+                min_rate = rA
+
             hXY.SetBinContent(ix, iy, rA)
 
     #hits per interaction
@@ -168,7 +173,7 @@ def up_rate():
     rate_all = (1.-np.e**(-(nhits_all/ni)*lam))*(1./tb)
     print("Integrated rate (MHz):", 1e-6*rate_all)
 
-    #hXY.SetMinimum(0.98)
+    hXY.SetMinimum(min_rate)
     hXY.SetContour(300)
 
     ytit = "#it{y} (mm)"

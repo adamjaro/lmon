@@ -19,6 +19,7 @@
 #include "Pythia6Reader.h"
 #include "TParticleReader.h"
 #include "HepMC3Reader.h"
+#include "HEPEvtInterface.h"
 
 using namespace std;
 
@@ -36,6 +37,7 @@ GenReader::GenReader() : G4VUserPrimaryGeneratorAction(), fGenType("tx"), fGen(0
   fGenAll.insert( make_pair("gun", new G4ParticleGun()) );
   fGenAll.insert( make_pair("hepmc", new HepMC3Reader()) );
   fGenAll.insert( make_pair("gps", new G4GeneralParticleSource()) );
+  fGenAll.insert( make_pair("hepevt", new HEPEvtInterface()) );
 
 }//GenReader
 
