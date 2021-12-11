@@ -50,10 +50,42 @@
 #include "VacTaggerWin.h"
 #include "VacLumi.h"
 #include "ConeBeam.h"
+#include "BeamDrift.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
   fTop(top), fGeo(geo), fDet(det) {
+
+  //beam components
+  fComp.insert( make_pair("BeamDrift", &ComponentBuilder::MakeDet< BeamDrift >) );
+  fComp.insert( make_pair("ConeBeam", &ComponentBuilder::MakeDet< ConeBeam >) );
+  //fComp.insert( make_pair("Collimator", &ComponentBuilder::MakeDet< Collimator >) );
+  //fComp.insert( make_pair("GraphiteFilter", &ComponentBuilder::MakeDet< GraphiteFilter >) );
+
+  //vacuum segments
+  fComp.insert( make_pair("VacDrift", &ComponentBuilder::MakeDet< VacDrift >) );
+  fComp.insert( make_pair("VacTaggerWin", &ComponentBuilder::MakeDet< VacTaggerWin >) );
+  fComp.insert( make_pair("VacB2lumiWin", &ComponentBuilder::MakeDet< VacB2lumiWin >) );
+  fComp.insert( make_pair("BoxSegment", &ComponentBuilder::MakeDet< BoxSegment >) );
+  fComp.insert( make_pair("VacLumi", &ComponentBuilder::MakeDet< VacLumi >) );
+  //fComp.insert( make_pair("", &ComponentBuilder::MakeDet<  >) );
+
+  //detectors or active segments
+  fDets.insert( make_pair("ParticleCounter", &ComponentBuilder::MakeDet< ParticleCounter >) );
+  fDets.insert( make_pair("ExitWindowV1", &ComponentBuilder::MakeDet< ExitWindowV1 >) );
+  fDets.insert( make_pair("ExitWindowV2", &ComponentBuilder::MakeDet< ExitWindowV2 >) );
+  fDets.insert( make_pair("BeamMagnetV2", &ComponentBuilder::MakeDet< BeamMagnetV2 >) );
+  fDets.insert( make_pair("BeamQuadrupole", &ComponentBuilder::MakeDet< BeamQuadrupole >) );
+  fDets.insert( make_pair("Magnet", &ComponentBuilder::MakeDet< Magnet >) );
+  fDets.insert( make_pair("BeamPipeV1", &ComponentBuilder::MakeDet< BeamPipeV1 >) );
+  fDets.insert( make_pair("ConeAperture", &ComponentBuilder::MakeDet< ConeAperture >) );
+  fDets.insert( make_pair("CollimatorV2", &ComponentBuilder::MakeDet< CollimatorV2 >) );
+  fDets.insert( make_pair("BoxCal", &ComponentBuilder::MakeDet< BoxCal >) );
+  fDets.insert( make_pair("BoxCalV2", &ComponentBuilder::MakeDet< BoxCalV2 >) );
+  fDets.insert( make_pair("CompCal", &ComponentBuilder::MakeDet< CompCal >) );
+  fDets.insert( make_pair("CaloBPC", &ComponentBuilder::MakeDet< CaloBPC >) );
+  fDets.insert( make_pair("TrackDet", &ComponentBuilder::MakeDet< TrackDet >) );
+  //fDets.insert( make_pair("", &ComponentBuilder::MakeDet<  >) );
 
   for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i);
 
@@ -73,80 +105,35 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   //construct detector or component of type 'type'
   Detector *det = 0x0;
 
-  if( type == "BoxCalV2" ) {
-    det = new BoxCalV2(name, fGeo, fTop);
-
-  } else if( type == "BeamMagnetV2" ) {
-    det = new BeamMagnetV2(name, fGeo, fTop);
-
-  } else if( type == "ExitWindowV1" ) {
-    det = new ExitWindowV1(name, fGeo, fTop);
-
-  } else if( type == "ExitWindowV2" ) {
-    det = new ExitWindowV2(name, fGeo, fTop);
-
-  } else if( type == "Collimator" ) {
-    new Collimator(name, fGeo, fTop);
-
-  } else if( type == "Magnet" ) {
-    det = new Magnet(name, fGeo, fTop);
-
-  } else if( type == "BoxCal" ) {
-    det = new BoxCal(name, fGeo, fTop);
-
-  } else if( type == "CompCal" ) {
-    det = new CompCal(name, fGeo, fTop);
-
-  } else if( type == "ConeAperture" ) {
-    det = new ConeAperture(name, fGeo, fTop);
-
-  } else if( type == "CollimatorV2" ) {
-    det = new CollimatorV2(name, fGeo, fTop);
-
-  } else if( type == "CaloBPC" ) {
-    det = new CaloBPC(name, fGeo, fTop);
-
-  } else if( type == "BeamQuadrupole" ) {
-    det = new BeamQuadrupole(name, fGeo, fTop);
+  if( type == "CaloBuilder" ) {
+    CaloBuilder calo(fTop, fGeo, fDet);
 
   } else if( type == "CentralDetector" ) {
     #ifdef BUILD_CENTRAL
       CentralBuilder central(fTop, fGeo, fDet);
     #endif
 
+  } else if( type == "Collimator" ) {
+    new Collimator(name, fGeo, fTop);
+
   } else if( type == "GraphiteFilter" ) {
     new GraphiteFilter(name, fGeo, fTop);
 
-  } else if( type == "TrackDet" ) {
-    det = new TrackDet(name, fGeo, fTop);
+  }
 
-  } else if( type == "CaloBuilder" ) {
-    CaloBuilder calo(fTop, fGeo, fDet);
+  //detector or component from factory
+  std::map<G4String, MakeDetPtr>::iterator idet;
 
-  } else if( type == "BeamPipeV1" ) {
-    det = new BeamPipeV1(name, fGeo, fTop);
+  //component
+  idet = fComp.find(type);
+  if( idet != fComp.end() ) {
+    (this->*(*idet).second)(name, fGeo, fTop);
+  }
 
-  } else if( type == "BoxSegment" ) {
-    new BoxSegment(name, fGeo, fTop);
-
-  } else if( type == "ParticleCounter" ) {
-    det = new ParticleCounter(name, fGeo, fTop);
-
-  } else if( type == "VacB2lumiWin" ) {
-    new VacB2lumiWin(name, fGeo, fTop);
-
-  } else if( type == "VacDrift" ) {
-    new VacDrift(name, fGeo, fTop);
-
-  } else if( type == "VacTaggerWin" ) {
-    new VacTaggerWin(name, fGeo, fTop);
-
-  } else if( type == "VacLumi" ) {
-    new VacLumi(name, fGeo, fTop);
-
-  } else if( type == "ConeBeam" ) {
-    new ConeBeam(name, fGeo, fTop);
-
+  //detector
+  idet = fDets.find(type);
+  if( idet != fDets.end() ) {
+    det = (this->*(*idet).second)(name, fGeo, fTop);
   }
 
   if(!det) return;

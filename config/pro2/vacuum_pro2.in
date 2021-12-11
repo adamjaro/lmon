@@ -1,0 +1,59 @@
+
+const Q3eR_InnerRadius 50. # mm
+const Q3eR_Length 600. # mm
+const Q3eR_StartZ -37696.067 # mm
+const Q3eR_StartX -460.027 # mm
+const Q3eR_EndZ -38295.969 # mm
+const Q3eR_EndX -0470.873 # mm
+const Q3eR_Theta 0.0180766389 # rad
+
+const B2BeR_Start_Z -11685. # mm
+const B2BeR_End_Z -14865. # mm
+const B2BeR_InnerRadius 98. # mm
+
+const B2BeR_Z B2BeR_End_Z
+const B2BeR_XB -B2BeR_InnerRadius
+
+const Q3eR_ZT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
+const Q3eR_XT Q3eR_StartX+Q3eR_InnerRadius*cos(Q3eR_Theta)
+const Q3eR_ZB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
+const Q3eR_XB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
+
+const Tag1_size_Y 200. # mm
+const LumiWin_Z -18500. # mm
+const LumiWin_XY 74. # mm
+const ExitWin_XB -LumiWin_XY/2. # mm
+const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+
+#drift section from exit window to Q3eR
+
+new BeamDrift vac_b2b_drift
+
+  vac_b2b_drift.ysiz = Tag1_size_Y
+  vac_b2b_drift.zQT = Q3eR_ZT
+  vac_b2b_drift.xQT = Q3eR_XT
+  vac_b2b_drift.zQB = Q3eR_ZB
+  vac_b2b_drift.xQB = Q3eR_XB
+  vac_b2b_drift.zW = LumiWin_Z
+  vac_b2b_drift.xW = ExitWin_XB
+  vac_b2b_drift.xA = ExitWin_XA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

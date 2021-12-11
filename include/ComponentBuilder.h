@@ -4,6 +4,8 @@
 
 // constructs detectors and components
 
+#include <map>
+
 class ComponentBuilder {
 
   public:
@@ -19,6 +21,15 @@ class ComponentBuilder {
     GeoParser *fGeo; // geometry parser
 
     std::vector<Detector*> *fDet; //all detectors
+
+    //factory function for detectors and components
+    template<class det> Detector* MakeDet(G4String nam, GeoParser *geo, G4LogicalVolume *vol) {
+      return new det(nam, geo, vol);
+    }
+    typedef Detector* (ComponentBuilder::*MakeDetPtr)(G4String, GeoParser*, G4LogicalVolume*);
+
+    std::map<G4String, MakeDetPtr> fComp; // component definitions
+    std::map<G4String, MakeDetPtr> fDets; // detector definitions
 
 };
 
