@@ -13,7 +13,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 5
+    iplot = 3
     funclist = []
     funclist.append( make_conv_tree ) # 0
     funclist.append( phot_en_conv ) # 1
@@ -118,7 +118,7 @@ def phot_en_conv():
     emax = 19
     ebin = 0.1
 
-    inp = TFile.Open("conv.root")
+    inp = TFile.Open("ew.root")
     tree = inp.Get("conv_tree")
 
     can = ut.box_canvas()
@@ -158,7 +158,7 @@ def conv_prob_en():
     pmax = 0.1
     #pmax = 1
 
-    inp = TFile.Open("conv_b.root")
+    inp = TFile.Open("ew.root")
     tree = inp.Get("conv_tree")
 
     prec = 0.01
@@ -189,7 +189,7 @@ def conv_prob_en():
     #ut.set_graph(clean, rt.kRed)
     #clean.Draw("psame")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #conv_prob_en
@@ -205,7 +205,7 @@ def clean_conv_en():
     pmin = 0.2
     pmax = 0.3
 
-    inp = TFile.Open("conv_b.root")
+    inp = TFile.Open("ew.root")
     tree = inp.Get("conv_tree")
 
     prec = 0.01

@@ -93,7 +93,7 @@ def xy_proj():
     xymax = 50
     xybin = 0.5
 
-    inp = TFile.Open("prim_bx2.root")
+    inp = TFile.Open("ew.root")
     tree = inp.Get("prim_tree")
 
     can = ut.box_canvas()
@@ -148,7 +148,7 @@ def xy_proj():
 
     gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #xy_proj
@@ -159,10 +159,10 @@ def z_proj():
     #z projection for primary photons
 
     #plot range, upper and lower, mm
-    zmax = 200
+    zmax = 300
     zbin = 0.5
 
-    inp = TFile.Open("prim_bx2.root")
+    inp = TFile.Open("ew.root")
     tree = inp.Get("prim_tree")
 
     can = ut.box_canvas()
@@ -210,7 +210,7 @@ def z_proj():
 
     gPad.SetLogy()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #z_proj

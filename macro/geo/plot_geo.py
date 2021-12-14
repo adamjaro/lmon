@@ -38,7 +38,7 @@ def main():
     gPad.SetBottomMargin(0.09)
 
     #geometry
-    geo = rt.GeoParser("../../config/geom_all.in")
+    geo = rt.GeoParser("../../config/pro1/geom_all.in")
 
     #spectrometer magnet
     mag = magnet("lumi_dipole", geo)

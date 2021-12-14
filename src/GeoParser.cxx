@@ -37,6 +37,8 @@ void GeoParser::LoadInput(G4String input) {
 
   //load geometry input
 
+  G4cout << "GeoParser::LoadInput, " << input << G4endl;
+
   ifstream in(input);
 
   if(in.fail()) {
