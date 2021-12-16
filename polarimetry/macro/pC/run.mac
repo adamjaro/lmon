@@ -1,0 +1,23 @@
+
+#geometry
+/lmon/construct/geometry geo_pC_basic.in
+
+/run/initialize
+
+#input
+/lmon/input/type hepevt
+/lmon/input/hepevt/name /home/jaroslav/sim/g4lab/pC/pythia_input.hepevt
+#/lmon/input/hepevt/vLevel 2
+
+#/lmon/input/type gun
+#/gun/energy 10 GeV
+#/gun/particle e-
+#/gun/position 0 0 0 mm
+#/gun/direction 0 0 1
+
+#output
+/lmon/output/name pC.root
+
+/run/beamOn 1000000
+
+

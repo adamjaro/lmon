@@ -36,6 +36,8 @@ class HEPEvtInterface : public G4VPrimaryGenerator {
 
     std::vector<G4HEPEvtParticle*> fHPlist; // input particles
 
+    int fIev; // event number for progress printout
+
 };
 
 #endif

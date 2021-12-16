@@ -1,0 +1,132 @@
+
+# pC polarimeter, basic layout
+
+# enable the polarimetry
+new PolBuilder pol
+
+#carbon ribbon
+new PolCTarget target
+
+  target.dx = 0.01 # mm
+  target.dy = 25. # mm
+  target.dz = 25.*1e-6 # mm
+
+#layer shape
+const size_x 0.25 # mm
+const size_y 10. # mm
+const size_z 24. # mm
+
+#center positions for the first set of layers
+const cen1_x 185. # mm, minus sign is added for the respective layers
+const cen1_y 10. # mm
+const cen1_z 12. # mm
+
+#first set of layers
+
+#center all positive
+new PolTrackLay lay10
+
+  lay10.dx = size_x # full size in x, y, z
+  lay10.dy = size_y
+  lay10.dz = size_z
+  lay10.xpos = cen1_x # center position in x, y, z
+  lay10.ypos = cen1_y
+  lay10.zpos = cen1_z
+
+#center at negative x
+new PolTrackLay lay11
+
+  lay11.dx = size_x
+  lay11.dy = size_y
+  lay11.dz = size_z
+  lay11.xpos = -cen1_x
+  lay11.ypos = cen1_y
+  lay11.zpos = cen1_z
+
+#center at negative y
+new PolTrackLay lay12
+
+  lay12.dx = size_x
+  lay12.dy = size_y
+  lay12.dz = size_z
+  lay12.xpos = cen1_x
+  lay12.ypos = -cen1_y
+  lay12.zpos = cen1_z
+
+#center at negative x and y
+new PolTrackLay lay13
+
+  lay13.dx = size_x
+  lay13.dy = size_y
+  lay13.dz = size_z
+  lay13.xpos = -cen1_x
+  lay13.ypos = -cen1_y
+  lay13.zpos = cen1_z
+
+#second set of layers
+
+const cen2_x 195. # mm
+
+#2nd set, center all positive
+new PolTrackLay lay20
+
+  lay20.dx = size_x
+  lay20.dy = size_y
+  lay20.dz = size_z
+  lay20.xpos = cen2_x
+  lay20.ypos = cen1_y
+  lay20.zpos = cen1_z
+  lay20.vis = 1:0:0:0.6 # r:g:b:alpha
+
+#2nd set, center at negative x
+new PolTrackLay lay21
+
+  lay21.dx = size_x
+  lay21.dy = size_y
+  lay21.dz = size_z
+  lay21.xpos = -cen2_x
+  lay21.ypos = cen1_y
+  lay21.zpos = cen1_z
+  lay21.vis = 1:0:0:0.6
+
+#2nd set, center at negative y
+new PolTrackLay lay22
+
+  lay22.dx = size_x
+  lay22.dy = size_y
+  lay22.dz = size_z
+  lay22.xpos = cen2_x
+  lay22.ypos = -cen1_y
+  lay22.zpos = cen1_z
+  lay22.vis = 1:0:0:0.6
+
+#2nd set, center at negative x and y
+new PolTrackLay lay23
+
+  lay23.dx = size_x
+  lay23.dy = size_y
+  lay23.dz = size_z
+  lay23.xpos = -cen2_x
+  lay23.ypos = -cen1_y
+  lay23.zpos = cen1_z
+  lay23.vis = 1:0:0:0.6
+
+
+
+
+
+
+
+
+
+
+
+
+#top volume
+new top topv
+
+  topv.xsiz = 4000 # mm
+  topv.ysiz = 4000 # mm
+  topv.zsiz = 4000 # mm
+
+

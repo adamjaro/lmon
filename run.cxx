@@ -105,9 +105,6 @@ int main(int argc, char* argv[]) {
   } else {
     //interactive
     UImanager->ApplyCommand(command+vis_mac);
-    if (ui->IsGUI()) {
-      UImanager->ApplyCommand("/control/execute gui.mac");
-    }
     ui->SessionStart();
     delete ui;
   }

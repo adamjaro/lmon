@@ -20,7 +20,7 @@
 using namespace std;
 
 //_____________________________________________________________________________
-HEPEvtInterface::HEPEvtInterface() : G4VPrimaryGenerator(), fInputName(""), vLevel(0) {
+HEPEvtInterface::HEPEvtInterface() : G4VPrimaryGenerator(), fInputName(""), vLevel(0), fIev(0) {
 
   //command for name of input file
   fMsg = new G4GenericMessenger(this, "/lmon/input/hepevt/");
@@ -34,6 +34,12 @@ void HEPEvtInterface::GeneratePrimaryVertex(G4Event *evt) {
 
   //open input at the first call
   if(!fIn.is_open()) OpenInput();
+
+  //increment event count for progress printout
+  fIev++;
+  if( fIev%100000 == 0 ) {
+    G4cout << "HEPEvtInterface::GeneratePrimaries, event number: " << fIev << G4endl;
+  }
 
   //number of entries
   G4int NHEP = 0;

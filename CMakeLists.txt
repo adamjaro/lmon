@@ -54,6 +54,9 @@ endif()
 #calorimeter set
 add_subdirectory(calo)
 
+#polarimetry
+add_subdirectory(polarimetry)
+
 #base shared library
 #add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})

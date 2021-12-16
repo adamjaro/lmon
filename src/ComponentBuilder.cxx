@@ -51,6 +51,7 @@
 #include "VacLumi.h"
 #include "ConeBeam.h"
 #include "BeamDrift.h"
+#include "PolBuilder.h"
 
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -118,6 +119,9 @@ void ComponentBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "GraphiteFilter" ) {
     new GraphiteFilter(name, fGeo, fTop);
+
+  } else if( type == "PolBuilder" ) {
+    PolBuilder pol(fTop, fGeo, fDet);
 
   }
 
