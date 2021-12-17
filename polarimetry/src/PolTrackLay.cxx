@@ -101,6 +101,7 @@ G4bool PolTrackLay::ProcessHits(G4Step *step, G4TouchableHistory*) {
   fHitY.push_back( hp.y()/mm ); // position y
   fHitZ.push_back( hp.z()/mm ); // position z
   fHitStepL.push_back( step->GetStepLength()/mm ); // step length
+  fHitTime.push_back( step->GetPreStepPoint()->GetGlobalTime()/ns ); // time, ns
 
   return true;
 
@@ -120,6 +121,7 @@ void PolTrackLay::CreateOutput(TTree *tree) {
   u.AddBranch("_HitY", &fHitY); // y, mm
   u.AddBranch("_HitZ", &fHitZ); // z, mm
   u.AddBranch("_HitStepL", &fHitStepL); // step length, mm
+  u.AddBranch("_HitTime", &fHitTime); // hit time, ns
 
 }//CreateOutput
 
@@ -133,6 +135,7 @@ void PolTrackLay::ClearEvent() {
   fHitY.clear();
   fHitZ.clear();
   fHitStepL.clear();
+  fHitTime.clear();
 
 }//ClearEvent
 

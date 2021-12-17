@@ -40,6 +40,7 @@ class PolTrackLay : public Detector, public G4VSensitiveDetector {
     std::vector<Float_t> fHitY; // hit position in y, mm
     std::vector<Float_t> fHitZ; // hit position in z, mm
     std::vector<Float_t> fHitStepL; // step length in hit, mm
+    std::vector<Float_t> fHitTime; // hit time, ns
 
 };
 
