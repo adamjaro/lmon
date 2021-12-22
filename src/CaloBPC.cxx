@@ -2,7 +2,7 @@
 //_____________________________________________________________________________
 //
 // tungsten/scintillator sampling calorimeter following
-// the ZEUS Beam Pipe Calorimeter (BPC)
+// the ZEUS Beam Pipe Calorimeter (BPC), Nucl.Instrum.Meth.A 565 (2006) 572-588
 //
 //_____________________________________________________________________________
 
@@ -33,14 +33,14 @@ using namespace std;
 CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Detector(),
   G4VSensitiveDetector(nam), fNam(nam) {
 
-  G4cout << "  CaloBPC: " << fNam << G4endl;
+  G4cout << "CaloBPC: " << fNam << G4endl;
 
   //module location in top
-  G4double mod_zpos = geo->GetD(fNam, "zpos")*mm; // position of the front face along z, mm
+  G4double mod_zpos = geo->GetD(fNam, "zpos")*mm; // center position in z, mm
   G4double mod_xpos = 0; // center position in x, mm
-  geo->GetOptD(fNam, "xpos", mod_xpos);
+  geo->GetOptD(fNam, "xpos", mod_xpos, GeoParser::Unit(mm));
   G4double mod_rot_y = 0; // module rotation in x-z plane by rotation along y, rad
-  geo->GetOptD(fNam, "rot_y", mod_rot_y);
+  geo->GetOptD(fNam, "rot_y", mod_rot_y, GeoParser::Unit(rad));
 
   //module internal dimensions
   G4double modxy = 138*mm; // module transverse size
@@ -56,6 +56,7 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
 
   //geometry for module holding the absorbers and scintillators
   G4double modz = nlay*(abso_z + scin_z); // module length along z
+  G4cout << "  " << fNam << ", modz (mm):" << modz << G4endl;
   G4String modnam = fNam+"_mod"; //module name
 
   //box shape for the module
@@ -73,8 +74,8 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   modv->SetVisAttributes(modvis);
 
   //put the module to the top
-  G4RotationMatrix modrot(G4ThreeVector(0, 1, 0), mod_rot_y*rad); //is typedef to CLHEP::HepRotation
-  G4ThreeVector modpos(mod_xpos*mm, 0, mod_zpos-modz/2);
+  G4RotationMatrix modrot(G4ThreeVector(0, 1, 0), mod_rot_y); //is typedef to CLHEP::HepRotation
+  G4ThreeVector modpos(mod_xpos, 0, mod_zpos);
   G4Transform3D modtrans(modrot, modpos); // is HepGeom::Transform3D
 
   new G4PVPlacement(modtrans, modv, modnam, top, false, 0);
@@ -129,8 +130,8 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   //scintillator strips
   G4Box *scin_shape = new G4Box(fNam, scin_x/2, modxy/2, scin_z/2);
 
-  //predefined scintillator material as a placeholder for SCSN-38
-  G4Material *scin_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+  //polystyrene for SCSN-38
+  G4Material *scin_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_POLYSTYRENE");
 
   //scintillator logical volume
   G4LogicalVolume *scin_vol = new G4LogicalVolume(scin_shape, scin_mat, fNam);
@@ -154,8 +155,7 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
 G4bool CaloBPC::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //consider only steps with energy deposit
-  G4double edep_in_step = step->GetTotalEnergyDeposit();
-  if( edep_in_step < 1e-9 ) return true;
+  G4double edep_in_step = step->GetTotalEnergyDeposit()/GeV;
 
   //strip location
   const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();

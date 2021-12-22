@@ -27,7 +27,8 @@ def zpos():
 
     #in1 = "hits_tag.root"
     #in1 = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax1/hits.root"
-    in1 = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #in1 = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    in1 = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     zbin = 0.1
     zmin = -2000
@@ -70,11 +71,12 @@ def xypos():
     xymax = 110
 
     #inp = "hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     sel = ""
     #sel += "(pdg!=22)"

@@ -42,7 +42,7 @@ class CaloBPC : public Detector, public G4VSensitiveDetector {
     //output on scintillator signals
     std::vector<Int_t> fIstrip; // output strip index
     std::vector<Int_t> fIlay; // output layer index
-    std::vector<Float_t> fEdep; // output deposited energy
+    std::vector<Float_t> fEdep; // output deposited energy, GeV
 
 };
 

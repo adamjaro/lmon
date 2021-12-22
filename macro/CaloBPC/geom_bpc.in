@@ -1,0 +1,11 @@
+
+new top topv
+
+  topv.xsiz = 500 # mm
+  topv.ysiz = 500 # mm
+  topv.zsiz = 500 # mm
+
+new CaloBPC bpc
+
+  bpc.zpos = -90. # mm
+

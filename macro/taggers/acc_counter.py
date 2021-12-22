@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 6
+    iplot = 2
 
     func = {}
     func[0] = acc_en_s12
@@ -40,7 +40,8 @@ def acc_en_s12():
 
     #acceptance in energy for Tagger 1 by lmon and dd4hep
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree_lmon = infile.Get("event")
@@ -51,7 +52,8 @@ def acc_en_s12():
     emin = 2
     emax = 19
 
-    amax = 0.6
+    #amax = 0.6
+    amax = 0.9
 
     acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s1_IsHit")
     acc_lmon_s1.prec = 0.05
@@ -96,7 +98,7 @@ def acc_en_s12():
     leg.AddEntry(gLmonS2, "Tagger 2", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_en_s12
@@ -106,7 +108,8 @@ def acc_lQ2_s12():
 
     #acceptance in log_10(Q^2) for tagger 1 and tagger 2
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -114,7 +117,8 @@ def acc_lQ2_s12():
     lQ2min = -9
     lQ2max = 0
 
-    amax = 0.21
+    #amax = 0.21
+    amax = 0.4
 
     as1 = rt.acc_Q2_kine(tree, "true_Q2", "s1_IsHit")
     as1.modif = 1 # log_10(Q^2) from Q2
@@ -152,7 +156,7 @@ def acc_lQ2_s12():
     leg.AddEntry(gs2, "Tagger 2", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_s12
@@ -162,7 +166,8 @@ def acc_theta_s12():
 
     #acceptance in electron polar angle for tagger 1 and tagger 2
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -170,7 +175,8 @@ def acc_theta_s12():
     tmin = TMath.Pi() - 1.1e-2
     tmax = TMath.Pi() + 1e-3
 
-    amax = 0.25
+    #amax = 0.25
+    amax = 0.4
 
     as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
     as1.prec = 0.1
@@ -206,7 +212,7 @@ def acc_theta_s12():
     leg.AddEntry(gs2, "Tagger 2", "lp")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_theta_s12
