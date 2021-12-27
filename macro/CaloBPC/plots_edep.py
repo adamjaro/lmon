@@ -103,8 +103,10 @@ def plot_res():
     #plot the fit function
     x = np.linspace(en[0], en[-1], 300)
     y = resf3(x, pars[0], pars[1], pars[2])
+    yZEUS = resf3(x, 0.13, 0.17, 0.02) # Nuclear Instruments and Methods in Physics Research A 565 (2006) 572–588
 
-    plt.plot(x, y, "-", label="resf", color="blue")
+    plt.plot(x, y, "-", label="resf", color="red")
+    plt.plot(x, yZEUS, "--", label="resf", color="red")
 
     #fit parameters for legend
     fit_param = r""
@@ -117,8 +119,9 @@ def plot_res():
     leg = legend()
     leg.add_entry(leg_txt(), "BPC")
     leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT, 10.7.p01")
-    leg.add_entry(leg_lin("blue"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a^2}{E} \oplus \frac{b}{\sqrt{E}} \oplus\ c$")
+    leg.add_entry(leg_lin("red"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a^2}{E} \oplus \frac{b}{\sqrt{E}} \oplus\ c$")
     leg.add_entry(leg_txt(), fit_param)
+    leg.add_entry(leg_lin("red", "--"), "NIMA 565 (2006) 572–588")
     leg.draw(plt, col)
 
     plt.savefig("01fig.pdf", bbox_inches = "tight")
