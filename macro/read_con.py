@@ -1,14 +1,14 @@
 
 #read parameters from config parser
 
-from ConfigParser import RawConfigParser
+from configparser import RawConfigParser
 
 #_____________________________________________________________________________
 class read_con:
     #_____________________________________________________________________________
     def __init__(self, config):
 
-        self.con = RawConfigParser()
+        self.con = RawConfigParser(inline_comment_prefixes=(";","#"))
         self.con.read(config)
 
     #_____________________________________________________________________________

@@ -2,8 +2,9 @@
 #reconstruction matrix Rijk
 
 from sys import stdout
+from glob import glob
 
-from ROOT import TFile, TH1D
+from ROOT import TFile, TH1D, TChain
 
 import sys
 sys.path.append('../')
@@ -34,14 +35,16 @@ class rmat:
         cf = read_con(config)
 
         #load the input
-        inp = TFile.Open(cf.str("inp_Rijk"), "read")
-        tree = inp.Get("DetectorTree")
+        inlist = glob(cf.str("inp_Rijk"))
+        tree = TChain("DetectorTree")
+        for i in inlist:
+            tree.Add(i)
 
         #open the output
         out = TFile(cf.str("out_Rijk"), "recreate")
 
         #energy intervals in 'i'
-        print "Intervals in 'i'"
+        print("Intervals in 'i'")
         hEi = TH1D("hEi", "hEi", cf.int("nen"), cf("emin"), cf("emax"))
         tree.Draw("true_el_E >> hEi")
 
@@ -50,8 +53,8 @@ class rmat:
 
         #angles at positions in 'j' and 'k'
         tjks = {}
-        for i in xrange(1, hEi.GetNbinsX()+1):
-            #print i, hEi.GetBinLowEdge(i), hEi.GetBinLowEdge(i)+hEi.GetBinWidth(i)
+        for i in range(1, hEi.GetNbinsX()+1):
+            #print(i, hEi.GetBinLowEdge(i), hEi.GetBinLowEdge(i)+hEi.GetBinWidth(i))
 
             tjks[i] = tjk(i, cf)
 
@@ -60,19 +63,19 @@ class rmat:
         if nev < 0: nev = tree.GetEntries()
 
         #event loop
-        print "Event loop"
-        iprint = nev/12
+        iprint = int(nev/12)
         evt = TagV2Evt(tree, cf)
-        for iev in xrange(nev):
+        print("Event loop")
+        for iev in range(nev):
 
             if iev%iprint == 0:
-                print 100*iev/nev, "%"
+                print("{0:.1f} %".format(100.*iev/nev))
                 stdout.flush()
 
             #read the event
             if not evt.read(iev): continue
 
-            #print evt.hit_x, evt.hit_y, evt.true_el_E, evt.true_mlt
+            #print(evt.hit_x, evt.hit_y, evt.true_el_E, evt.true_mlt)
 
             #energy index 'i' in Rijk
             i = hEi.FindBin(evt.true_el_E)
@@ -85,9 +88,9 @@ class rmat:
             tjks[i].fill(evt.hit_x, evt.hit_y, evt.true_mlt)
 
         #projections for mean mlt at each 'j' and 'k'
-        print "Projections at 'j' and 'k'"
+        print("Projections at 'j' and 'k'")
         stdout.flush()
-        for i in tjks.iterkeys():
+        for i in tjks:
             tjks[i].make_proj()
 
         #print underflow and overflow
@@ -96,12 +99,12 @@ class rmat:
         #write the individual parts of Rijk
         hEi.Write()
         hEiTag.Write()
-        for i in tjks.iterkeys():
+        for i in tjks:
             tjks[i].write()
 
         out.Close()
 
-        print "All done"
+        print("All done")
 
     #_____________________________________________________________________________
     def init_load(self, infile):
@@ -116,7 +119,7 @@ class rmat:
 
         #angles at positions in 'j' and 'k'
         self.tjks = {}
-        for i in xrange(1, self.hEi.GetNbinsX()+1):
+        for i in range(1, self.hEi.GetNbinsX()+1):
             #print i, hEi.GetBinLowEdge(i), hEi.GetBinLowEdge(i)+hEi.GetBinWidth(i)
 
             self.tjks[i] = tjk(i, inp=self.inp)
@@ -130,10 +133,10 @@ class rmat:
 
         #print underflow and overflow
 
-        print "Underflow and overflow:"
-        print "  E:", hEi.GetEntries(), hEi.GetBinContent(0), hEi.GetBinContent(hEi.GetNbinsX()+1)
+        print("Underflow and overflow:")
+        print("  E:", hEi.GetEntries(), hEi.GetBinContent(0), hEi.GetBinContent(hEi.GetNbinsX()+1))
 
-        for i in tjks.iterkeys():
+        for i in tjks:
             tjks[i].print_uo()
 
 

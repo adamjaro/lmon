@@ -75,8 +75,8 @@ def xypos():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
     #sel += "(pdg!=22)"

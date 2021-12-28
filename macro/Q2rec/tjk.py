@@ -65,13 +65,13 @@ class tjk:
 
         #projection for mean mlt at each 'j' and 'k'
 
-        for j in xrange(1, self.hXYTjk.GetNbinsX()+1):
-            for k in xrange(1, self.hXYTjk.GetNbinsY()+1):
+        for j in range(1, self.hXYTjk.GetNbinsX()+1):
+            for k in range(1, self.hXYTjk.GetNbinsY()+1):
 
                 pnam = "projXYT_"+str(j)+"_"+str(k)
                 hproj = self.hXYTjk.ProjectionZ(pnam, j, j, k, k)
 
-                #print "  ", j, k, hproj.GetMean()
+                #print("  ", j, k, hproj.GetMean())
 
                 self.hTjk.SetBinContent(j, k, hproj.GetMean())
                 self.hTjk.SetBinError(j, k, hproj.GetMeanError())
@@ -95,9 +95,9 @@ class tjk:
 
         #underflow and overflow
 
-        print "  X_"+self.namT+":", self.hX.GetEntries(), self.hX.GetBinContent(0), self.hX.GetBinContent(self.hX.GetNbinsX()+1)
-        print "  Y_"+self.namT+":", self.hY.GetEntries(), self.hY.GetBinContent(0), self.hY.GetBinContent(self.hY.GetNbinsX()+1)
-        print "  T_"+self.namT+":", self.hT.GetEntries(), self.hT.GetBinContent(0), self.hT.GetBinContent(self.hT.GetNbinsX()+1)
+        print("  X_"+self.namT+":", self.hX.GetEntries(), self.hX.GetBinContent(0), self.hX.GetBinContent(self.hX.GetNbinsX()+1))
+        print("  Y_"+self.namT+":", self.hY.GetEntries(), self.hY.GetBinContent(0), self.hY.GetBinContent(self.hY.GetNbinsX()+1))
+        print("  T_"+self.namT+":", self.hT.GetEntries(), self.hT.GetBinContent(0), self.hT.GetBinContent(self.hT.GetNbinsX()+1))
 
     #_____________________________________________________________________________
     def write(self):

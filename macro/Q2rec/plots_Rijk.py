@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from ROOT import gROOT, gStyle, TFile, gPad, TH1D, TPad, TCanvas
 from ROOT import TLatex
@@ -13,7 +13,7 @@ import plot_utils as ut
 def main():
 
     #infile = "rmat_s1.root"
-    #infile = "rmat_s2.root"
+    infile = "rmat_s2.root"
     #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_xy5_100Mevt.root"
@@ -21,7 +21,7 @@ def main():
     #infile = "../../data/uni/rmat_s1_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
     #infile = "../../data/uni/rmat_s2_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
     #infile = "../../data/uni/rmat_s1_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_200Mevt.root"
-    infile = "../../data/uni/rmat_s2_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_200Mevt.root"
+    #infile = "../../data/uni/rmat_s2_uni_el_e2p1_18p2_mlt1p7_5p3_beff2_200Mevt.root"
 
     #Rijk reconstruction matrix
     mat = rmat(infile=infile)
@@ -45,10 +45,10 @@ def plot_mlt(mat):
     #nx = 2
     #ny = 2
 
-    theta_min = 1.8
+    theta_min = 1.6
     #theta_max = 4.9
     #theta_max = 5.2
-    theta_max = 4.3
+    theta_max = 7
 
     #theta_min = 2+1e-3
     #theta_max = 4.5-1e-3
@@ -67,7 +67,7 @@ def plot_mlt(mat):
     xtit = "Horizontal #it{x} (mm)"
     xofs = 1.2
 
-    ztit = "Mean polar angle as  -log_{10}(#theta_{e})"
+    ztit = "Mean polar angle as  -log_{10}(#it{#theta}_{e})"
     zofs = 1.1
 
     ijmap = {}
@@ -75,12 +75,12 @@ def plot_mlt(mat):
     dx = 1./nx
     dy = 1./ny
     pads = []
-    for i in xrange(ny):
-        for j in xrange(nx):
+    for i in range(ny):
+        for j in range(nx):
 
             ijmap[ii] = (i, j)
 
-            print ii, i, j
+            print(ii, i, j)
 
             pnam = "pad_"+str(ii)
             pads.append(TPad(pnam, pnam, j*dx, 1-(i+1)*dy, (j+1)*dx, 1-i*dy))
@@ -88,7 +88,7 @@ def plot_mlt(mat):
 
             ii += 1
 
-    for i in xrange(1,nx*ny+1):
+    for i in range(1,nx*ny+1):
 
         pads[i-1].cd()
 

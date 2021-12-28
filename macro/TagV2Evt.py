@@ -1,10 +1,12 @@
 
-#event in tagger with BoxCalV2Hits
+#event in tagger with ParticleCounterHits
+
+from ctypes import c_double
 
 import ROOT as rt
-from ROOT import gROOT, TMath, AddressOf
+from ROOT import gROOT, TMath
 
-from BoxCalV2Hits import BoxCalV2Hits
+from ParticleCounterHits import ParticleCounterHits
 
 #_____________________________________________________________________________
 class TagV2Evt:
@@ -25,24 +27,21 @@ class TagV2Evt:
         self.true_lq = 0. # log_10(true_Q2)
 
         #configuration on tagger geometry
-        self.xpos = cf("xpos")
-        self.zpos = cf("zpos")
-        self.rot_y = cf("rot_y")
-        self.zmin = cf("zmin")
+        geo = rt.GeoParser(cf.str("geom"))
 
         #connect the input tree
         self.tree = tree
         name = cf.str("name")
         #tagger hits
-        self.hits = BoxCalV2Hits(name, tree)
+        self.hits = ParticleCounterHits(name, tree)
+        self.hits.local_from_geo(geo, cf.str("geom_shape"))
         #event quantities
-        gROOT.ProcessLine("struct EntryTagV2 {Double_t v;};")
-        self.inp_el_theta = rt.EntryTagV2()
-        self.inp_el_E = rt.EntryTagV2()
-        self.inp_Q2 = rt.EntryTagV2()
-        self.tree.SetBranchAddress("true_el_theta", AddressOf(self.inp_el_theta, "v"))
-        self.tree.SetBranchAddress("true_el_E", AddressOf(self.inp_el_E, "v"))
-        self.tree.SetBranchAddress("true_Q2", AddressOf(self.inp_Q2, "v"))
+        self.inp_el_theta = c_double(0)
+        self.inp_el_E = c_double(0)
+        self.inp_Q2 = c_double(0)
+        self.tree.SetBranchAddress("true_el_theta", self.inp_el_theta)
+        self.tree.SetBranchAddress("true_el_E", self.inp_el_E)
+        self.tree.SetBranchAddress("true_Q2", self.inp_Q2)
 
     #__init__
 
@@ -55,12 +54,10 @@ class TagV2Evt:
 
         #hits loop
         nhsel = 0
-        for ihit in xrange(self.hits.GetN()):
+        for ihit in range(self.hits.GetN()):
 
             hit = self.hits.GetHit(ihit)
-            hit.GlobalToLocal(self.xpos, 0, self.zpos, self.rot_y)
-
-            if hit.z < self.zmin: continue
+            hit.GlobalToLocal()
 
             nhsel += 1
 
@@ -73,12 +70,12 @@ class TagV2Evt:
         self.hit_E = hit.en
 
         #event quantities
-        self.true_el_theta = self.inp_el_theta.v
-        self.true_el_E = self.inp_el_E.v
-        self.true_Q2 = self.inp_Q2.v
+        self.true_el_theta = self.inp_el_theta.value
+        self.true_el_E = self.inp_el_E.value
+        self.true_Q2 = self.inp_Q2.value
         #derived quantities
-        self.true_mlt = -TMath.Log10(TMath.Pi()-self.inp_el_theta.v)
-        self.true_lq = TMath.Log10(self.inp_Q2.v)
+        self.true_mlt = -TMath.Log10(TMath.Pi()-self.inp_el_theta.value)
+        self.true_lq = TMath.Log10(self.inp_Q2.value)
 
         return True
 

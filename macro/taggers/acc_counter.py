@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 0
 
     func = {}
     func[0] = acc_en_s12
@@ -26,7 +26,8 @@ def main():
     func[4] = acc_en_theta
     func[5] = acc_en_eta
     func[6] = acc_ly_lx
-    func[7] = hit_en
+    func[7] = acc_pitheta_s12
+    func[8] = hit_en
 
     func[101] = load_lmon
     func[102] = load_dd
@@ -40,8 +41,8 @@ def acc_en_s12():
 
     #acceptance in energy for Tagger 1 by lmon and dd4hep
 
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree_lmon = infile.Get("event")
@@ -166,8 +167,8 @@ def acc_theta_s12():
 
     #acceptance in electron polar angle for tagger 1 and tagger 2
 
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -480,6 +481,65 @@ def acc_en_eta():
     can.SaveAs("01fig.pdf")
 
 #acc_en_eta
+
+#_____________________________________________________________________________
+def acc_pitheta_s12():
+
+    #acceptance in electron polar angle as  pi - theta  in mrad for tagger 1 and tagger 2
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    #mrad
+    tmin = 0
+    tmax = 12
+
+    amax = 0.3
+
+    as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
+    as1.modif = 2 # pi - theta, mrad
+    as1.prec = 0.05
+    as1.bmin = 0.2
+    #as1.nev = int(1e5)
+    gs1 = as1.get()
+
+    as2 = rt.acc_Q2_kine(tree, "true_el_theta", "s2_IsHit")
+    as2.modif = 2 # pi - theta, mrad
+    as2.prec = 0.05
+    as2.bmin = 0.2
+    #as2.nev = int(1e5)
+    gs2 = as2.get()
+
+    can = ut.box_canvas()
+
+    frame = gPad.DrawFrame(tmin, 0, tmax, amax)
+    ut.put_yx_tit(frame, "Acceptance", "Electron #pi - #it{#theta} (mrad)", 1.6, 1.3)
+
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+
+    ut.set_graph(gs1, rt.kBlue)
+    gs1.Draw("psame")
+
+    ut.set_graph(gs2, rt.kRed)
+    gs2.Draw("psame")
+
+    gPad.SetGrid()
+
+    #leg = ut.prepare_leg(0.15, 0.78, 0.24, 0.16, 0.035) # x, y, dx, dy, tsiz
+    #leg.AddEntry(None, "Tagger 1", "")
+    #leg.AddEntry(glQ2Py, "Pythia6", "l")
+    #leg.AddEntry(glQ2Qr, "QR", "l")
+    #leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_pitheta_s12
 
 #_____________________________________________________________________________
 def hit_en():

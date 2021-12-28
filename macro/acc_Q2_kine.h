@@ -44,6 +44,7 @@ class acc_Q2_kine {
     //modifiers to input value
     mods[0] = &acc_Q2_kine::theta_to_eta;
     mods[1] = &acc_Q2_kine::log10_Q2;
+    mods[2] = &acc_Q2_kine::pitheta;
 
   }//acc_Q2_kine
 
@@ -252,7 +253,16 @@ private:
 
   }//log10_Q2
 
-  Double_t (acc_Q2_kine::*mods[2])(Double_t); // modifiers to input value
+  //_____________________________________________________________________________
+  Double_t pitheta(Double_t theta) {
+
+    //pi - theta  in mrad
+
+    return (TMath::Pi()-theta)*1e3;
+
+  }//pitheta
+
+  Double_t (acc_Q2_kine::*mods[3])(Double_t); // modifiers to input value
 
   TTree *tree; // input tree
   Double_t val; // kinematics variable
