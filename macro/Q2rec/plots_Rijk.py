@@ -13,7 +13,9 @@ import plot_utils as ut
 def main():
 
     #infile = "rmat_s1.root"
-    infile = "rmat_s2.root"
+    #infile = "rmat_s2.root"
+    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag2a/rmat_s1.root"
+    infile = "/home/jaroslav/sim/lmon/data/taggers/tag2a/rmat_s2.root"
     #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s2_qr_18x275_Qf_beff2_100Mevt.root"
     #infile = "../../data/qr/rmat_s1_qr_18x275_Qf_beff2_xy5_100Mevt.root"
@@ -46,9 +48,9 @@ def plot_mlt(mat):
     #ny = 2
 
     theta_min = 1.6
-    #theta_max = 4.9
+    theta_max = 4.
     #theta_max = 5.2
-    theta_max = 7
+    #theta_max = 7
 
     #theta_min = 2+1e-3
     #theta_max = 4.5-1e-3

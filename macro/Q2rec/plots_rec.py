@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem, TPad, TCanvas
@@ -11,14 +11,14 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    #infile = "qrec_s1.root"
+    infile = "qrec_s1.root"
     #infile = "qrec_s1_xy5.root"
     #infile = "qrec_s2.root"
     #infile = "qrec_s2_xy5.root"
     #infile = "../../data/qr/qrec_uni_s1_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/qr/qrec_uni_s2_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/py/qrec_uni_s1_py_ep_18x275_Q2all_beff2_5Mevt.root"
-    infile = "../../data/py/qrec_uni_s2_py_ep_18x275_Q2all_beff2_5Mevt.root"
+    #infile = "../../data/py/qrec_uni_s2_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
     iplot = 1
     funclist = []
