@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
     funclist = []
     funclist.append( plot_signal ) # 0
     funclist.append( plot_res ) # 1
@@ -34,9 +34,9 @@ def plot_signal():
 
     nbins = 60
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -53,9 +53,22 @@ def plot_signal():
         plt.hist(edep, bins=nbins, color="blue", density=True, histtype="step", lw=1.5)
 
         #Gaussian fit to the signal
-        plt.plot(x, y, "k-", color="red", lw=1)
+        plt.plot(x, y, "-", color="red", lw=1)
+
+        #label for a given energy
+        xpos =  x[ np.where( y==y.max() ) ][0]
+        ypos = y[ np.where( y==y.max() ) ][0]
+        plt.text(xpos, ypos, " $E_e$ = "+"{0:d} GeV".format(en[i]), color=col)
 
     set_grid(plt, col)
+
+    ax.set_xlim([0, 0.3])
+
+    leg = legend()
+    leg.add_entry(leg_txt(), "BPC")
+    leg.add_entry(leg_lin("blue"), "FTFP_BERT, 10.7.p01")
+    leg.add_entry(leg_lin("red"), "Gaussian fit")
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
 
@@ -80,9 +93,9 @@ def plot_res():
 
     #print(pars[0], pars[1], pars[2])
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     #print(fig.get_size_inches())

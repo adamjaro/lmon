@@ -27,12 +27,15 @@ def mlt():
     # mlt = -log_10(pi-true_el_theta)
 
     #input
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
 
     #condition
     cond = ""
-    cond += "(s1_IsHit==1)||(s2_IsHit==1)"
+    #cond += "(s1_IsHit==1)"
+    cond += "(s2_IsHit==1)&&(true_el_E>0)&&(true_el_E<18)"
+    #cond += "(s1_IsHit==1)||(s2_IsHit==1)"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")

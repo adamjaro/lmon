@@ -11,10 +11,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    infile = "qrec_s1.root"
-    #infile = "qrec_s1_xy5.root"
+    #infile = "qrec_s1.root"
     #infile = "qrec_s2.root"
-    #infile = "qrec_s2_xy5.root"
+    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1a/Q2rec_s1.root"
+    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1a/Q2rec_s2.root"
+    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/Q2rec_s1.root"
+    infile = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/Q2rec_s2.root"
     #infile = "../../data/qr/qrec_uni_s1_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/qr/qrec_uni_s2_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/py/qrec_uni_s1_py_ep_18x275_Q2all_beff2_5Mevt.root"
@@ -167,20 +169,21 @@ def lQ2_rec_gen():
     #reconstructed and generated log_10(Q^2)
 
     lqbin = 0.1
-    lqmin = -9
-    lqmax = 0
+    gen_min = -8
+    rec_min = -6
+    lqmax = -1
 
-    hLQ2 = ut.prepare_TH2D("hLQ2", lqbin, lqmin, lqmax, lqbin, lqmin, lqmax)
+    hLQ2 = ut.prepare_TH2D("hLQ2", lqbin, gen_min, lqmax, lqbin, rec_min, lqmax)
 
     tree.Draw("rec_lq:true_lq >> hLQ2")
 
     can = ut.box_canvas()
 
-    ytit = "Reconstructed log_{10}(Q^{2}) / "+"{0:.2f}".format(lqbin)
-    xtit = "Generated log_{10}(Q^{2}) / "+"{0:.2f}".format(lqbin)
-    ut.put_yx_tit(hLQ2, ytit, xtit, 1.4, 1.3)
+    ytit = "Reconstructed electron log_{10}(Q^{2})"
+    xtit = "Generated true log_{10}(Q^{2})"
+    ut.put_yx_tit(hLQ2, ytit, xtit, 1.9, 1.3)
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.11)
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
 
     hLQ2.Draw()
 
@@ -191,7 +194,12 @@ def lQ2_rec_gen():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
+    #leg.AddEntry("", "Tagger 1", "")
+    leg.AddEntry("", "Tagger 2", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2_rec_gen

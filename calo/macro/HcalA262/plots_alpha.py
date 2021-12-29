@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 from pandas import read_csv, DataFrame, read_hdf
 import matplotlib.pyplot as plt
@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 2
     funclist = []
     funclist.append( fit_alpha ) # 0
     funclist.append( run_eh ) # 1
@@ -92,7 +92,7 @@ def plot_signal():
     inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
 
     alpha = run_alpha(inp, en)
-    print alpha
+    print(alpha)
 
     #alpha = [1.1827655310621243, 1.1907815631262526, 1.1987975951903809, 1.2028056112224448, 1.2268537074148296, 1.2248496993987976, 1.2529058116232465]
     #alpha = [1.1827655310621243, 1.2529058116232465]
@@ -195,7 +195,7 @@ def run_eh_abso():
         mean_h, sigma_h = gfit(inp_h[0]+str(abso_z[i])+inp_h[1], alpha[i])
         #mean_e, sigma_e = gfit(inp_e[0]+str(en[i])+inp_e[1], 1.)
         eh.append(mean_e/mean_h)
-    print eh
+    print(eh)
 
     #eh = [1.0858526391044294, 1.1351275132375536, 1.1086482937497302, 1.1194831057553014, 1.115021115675016, 1.1200781329488123, 1.1209093682220816, 1.1289521198274362, 1.141533410214289]
 
@@ -206,7 +206,7 @@ def run_eh_abso():
     ax.set_ylim([0.5, 1.3])
 
     plt.rc("text", usetex = True)
-    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
     #ax.set_xlabel("abso")
     ax.set_xlabel("Rd")
     ax.set_ylabel("e/h")
@@ -250,7 +250,7 @@ def plot_alpha_en():
     #col = "black"
 
     alpha = run_alpha(inp, en)
-    print alpha
+    print(alpha)
 
     fig = plt.figure()
     ax = fig.add_subplot(1, 1, 1)
@@ -281,25 +281,27 @@ def run_res():
 
     #GeV
     #en = [6, 8, 12, 16, 25, 32, 64]
-    en = [3, 5, 7, 10, 20, 30, 50, 75]
+    #en = [3, 5, 7, 10, 20, 30, 50, 75]
+    en = [3, 5, 7, 10, 20]
     #en = [3, 5]
 
     #inp = ["/home/jaroslav/sim/hcal/data/hcal3c4x1/HCal_en", ".h5"]
-    inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
+    #inp = ["/home/jaroslav/sim/hcal/data/hcal3e/HCal_en", ".h5"]
+    inp = ["/home/jaroslav/sim/hcal/data/hcal3e1/HCal_en", ".h5"]
 
     #plt.style.use("dark_background")
     #col = "lime"
     col = "black"
 
-    alpha = run_alpha(inp, en)
-    print alpha
+    #alpha = run_alpha(inp, en)
+    #print(alpha)
 
     #resolution as sigma/mean
-    res = [ms[1]/ms[0] for ms in [gfit_notail(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
+    #res = [ms[1]/ms[0] for ms in [gfit_notail(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
     #res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], alpha[i]) for i in range(len(en))]]
-    #res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], 1) for i in range(len(en))]]
+    res = [ms[1]/ms[0] for ms in [gfit(inp[0]+str(en[i])+inp[1], 0) for i in range(len(en))]]
 
-    print res
+    print(res)
 
     #res = [0.18536713994367082, 0.15090768986862743, 0.12602019940767245, 0.11164185039212438, 0.09165626367846519, 0.08308090453575402, 0.07590065737234164, 0.07221679796791246]
 
@@ -307,6 +309,7 @@ def run_res():
     pars, cov = curve_fit(resf2, en, res)
 
     fig = plt.figure()
+    fig.set_size_inches(5, 5)
     ax = fig.add_subplot(1, 1, 1)
 
     set_axes_color(ax, col)
@@ -320,13 +323,13 @@ def run_res():
     x = np.linspace(en[0], en[-1], 300)
     y = resf2(x, pars[0], pars[1])
 
-    plt.plot(x, y, "k-", label="resf", color="blue")
+    plt.plot(x, y, "-", label="resf", color="red")
 
-    ax.set_xscale("log")
-    plt.xticks(en, [str(i) for i in en])
+    #ax.set_xscale("log")
+    #plt.xticks(en, [str(i) for i in en])
 
     plt.rc("text", usetex = True)
-    plt.rc('text.latex', preamble='\usepackage{amsmath}')
+    plt.rc('text.latex', preamble=r'\usepackage{amsmath}')
     ax.set_xlabel("Incident energy $E$ (GeV)")
     ax.set_ylabel(r"Resolution $\sigma/\langle E\rangle$")
 
@@ -338,11 +341,12 @@ def run_res():
     fit_param += r"\end{align*}"
 
     leg = legend()
-    leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
+    #leg.add_entry(leg_txt(), "W/ScFi + Fe/Sc (6$\lambda_I$)")
+    leg.add_entry(leg_txt(), "W/ScFi (18 $X_0$)")
     #leg.add_entry(leg_txt(), "W/ScFi (17cm, 10$^\circ$/1$^\circ$)")
     #leg.add_entry(leg_txt(), "+ Fe/Sc (20/3 mm)")
     leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT\_HP, 10.7.p01")
-    leg.add_entry(leg_lin("blue"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$")
+    leg.add_entry(leg_lin("red"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$")
     leg.add_entry(leg_txt(), fit_param)
     leg.draw(plt, col)
 
@@ -368,9 +372,9 @@ def run_eh():
     inp_e = ["/home/jaroslav/sim/hcal/data/hcal3e1/HCal_en", ".h5"]
     #inp_e = ["/home/jaroslav/sim/hcal/data/hcal3c1/HCal_en", ".h5"]
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     alpha = run_alpha(inp_h, en)
 
@@ -379,7 +383,7 @@ def run_eh():
         mean_h, sigma_h = gfit_notail(inp_h[0]+str(en[i])+inp_h[1], alpha[i])
         mean_e, sigma_e = gfit(inp_e[0]+str(en[i])+inp_e[1], 1.)
         eh.append(mean_e/mean_h)
-    print eh
+    print(eh)
 
     #eh = [1.1843121055569938, 1.1712184048681817, 1.1510946757405278, 1.1299514803026915, 1.115021115675016, 1.1142540693206178, 1.0940572767145802, 1.0858602110652527]
 
@@ -477,7 +481,7 @@ def fit_alpha(infile=None, use_notail=True):
 
     #minimal alpha
     alpha_min = x[ np.where( y==y.min() ) ][0]
-    print "alpha_min:", alpha_min
+    print("alpha_min:", alpha_min)
 
     leg = legend()
     leg.add_entry(leg_txt(), (infile.split("/"))[-1])
@@ -556,7 +560,7 @@ def gfit(infile=None, alpha=None, put_hx=False):
     x = np.linspace(plt.xlim()[0], plt.xlim()[1], 300)
     y = norm.pdf(x, pars[0], pars[1])
 
-    plt.plot(x, y, "k-", label="norm", color="red")
+    plt.plot(x, y, "-", label="norm", color="red")
 
     ax.set_xlabel("Calorimeter signal (GeV)")
     ax.set_ylabel("Counts / {0:.3f} GeV".format((plt.xlim()[1]-plt.xlim()[0])/nbins))
@@ -592,8 +596,8 @@ def gfit_notail(infile=None, alpha=None, put_hx=False):
     #open the input
     inp = read_hdf(infile)
 
-    print infile
-    print "All simulated entries:", len(inp)
+    print(infile)
+    print("All simulated entries:", len(inp))
 
     #remove the tail
     #tailmax = 1e-12
@@ -603,7 +607,7 @@ def gfit_notail(infile=None, alpha=None, put_hx=False):
     tailmax = 0.001
     inp = inp.query("((hcal_edep_layer48+hcal_edep_layer49+hcal_edep_layer50)/(ecal_edep+hcal_edep_HAD))<"+str(tailmax))
 
-    print "After tail removal:   ", len(inp)
+    print("After tail removal:   ", len(inp))
 
     sum_edep = inp["ecal_edep"] + alpha*inp["hcal_edep_HAD"]
 
@@ -661,7 +665,7 @@ class legend:
         leg = px.legend(self.items, self.data, **kw)
         if col is not None:
             px.setp(leg.get_texts(), color=col)
-            if col is not "black":
+            if col != "black":
                 leg.get_frame().set_edgecolor("orange")
         return leg
 

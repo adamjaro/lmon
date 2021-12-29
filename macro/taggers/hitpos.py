@@ -73,7 +73,8 @@ def xypos():
     #inp = "hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
 
     #det = "s1"
     det = "s2"

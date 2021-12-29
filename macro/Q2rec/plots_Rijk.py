@@ -47,8 +47,8 @@ def plot_mlt(mat):
     #nx = 2
     #ny = 2
 
-    theta_min = 1.6
-    theta_max = 4.
+    theta_min = 1.9
+    theta_max = 3.5
     #theta_max = 5.2
     #theta_max = 7
 
@@ -69,7 +69,7 @@ def plot_mlt(mat):
     xtit = "Horizontal #it{x} (mm)"
     xofs = 1.2
 
-    ztit = "Mean polar angle as  -log_{10}(#it{#theta}_{e})"
+    ztit = "Mean polar angle as  -log_{10}(#pi-#it{#theta}_{e})"
     zofs = 1.1
 
     ijmap = {}
@@ -163,10 +163,10 @@ def plot_mlt(mat):
         etit = "#it{i}: "+str(i)+",  "+eminf+" < #it{E}_{e} < "+emaxf+" GeV"
         etit = "#color[2]{"+etit+"}"
         #desc.DrawLatex(380, 80, etit)
-        desc.DrawLatex(-180, 150, etit)
-        #desc.DrawLatex(-140, 80, etit)
+        #desc.DrawLatex(-180, 150, etit)
+        desc.DrawLatex(-100, 85, etit)
 
-        ut.invert_col(gPad)
+        #ut.invert_col(gPad)
 
 
     can.SaveAs("01fig.pdf")
