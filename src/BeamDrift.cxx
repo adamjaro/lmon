@@ -35,30 +35,32 @@ BeamDrift::BeamDrift(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   // full size in y, mm
   G4double ysiz = geo->GetD(fNam, "ysiz")*mm;
 
-  //at Q3eR
-  G4double zQT = geo->GetD(fNam, "zQT")*mm;
-  G4double xQT = geo->GetD(fNam, "xQT")*mm;
-  G4double zQB = geo->GetD(fNam, "zQB")*mm;
-  G4double xQB = geo->GetD(fNam, "xQB")*mm;
+  //at at lower z
+  G4double z0T = geo->GetD(fNam, "z0T")*mm;
+  G4double x0T = geo->GetD(fNam, "x0T")*mm;
+  G4double z0B = geo->GetD(fNam, "z0B")*mm;
+  G4double x0B = geo->GetD(fNam, "x0B")*mm;
 
-  //at exit window
-  G4double zW = geo->GetD(fNam, "zW")*mm;
-  G4double xW = geo->GetD(fNam, "xW")*mm;
-  G4double xA = geo->GetD(fNam, "xA")*mm;
+  //at larger z
+  G4double z1T = geo->GetD(fNam, "z1T")*mm;
+  G4double x1T = geo->GetD(fNam, "x1T")*mm;
+  G4double z1B = geo->GetD(fNam, "z1B")*mm;
+  G4double x1B = geo->GetD(fNam, "x1B")*mm;
 
+  //G4GenericTrap or TGeoArb8
   //generic trapezoid native coordinates: 4 xy points plane at -dz, 4 xy points plane at +dz, both clockwise
   //rotation by +pi/2 about x from generic trapezoid coordinates to detector frame: y -> z,  z -> y
 
   //vertices for the trapezoid
   vector<G4TwoVector> ver(8);
 
-  ver[0].set(xQB, zQB);
+  ver[0].set(x0B, z0B); // point #1
 
-  ver[1].set(xQT, zQT);
+  ver[1].set(x1B, z1B); // point #2
 
-  ver[2].set(xW, zW);
+  ver[2].set(x1T, z1T); // point #3
 
-  ver[3].set(xA, zW);
+  ver[3].set(x0T, z0T); // point #4
 
   //plane at lower y
   for(int i=4; i<8; i++) {
@@ -80,6 +82,7 @@ BeamDrift::BeamDrift(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   //placement in top
   G4RotationMatrix rot(G4ThreeVector(1, 0, 0), TMath::Pi()/2); //CLHEP::HepRotation
+  //G4RotationMatrix rot(G4ThreeVector(1, 0, 0), 0); //CLHEP::HepRotation
 
   //placement in top
   G4ThreeVector pos(0, 0, 0);

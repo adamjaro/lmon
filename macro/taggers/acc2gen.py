@@ -11,7 +11,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = lQ2
@@ -62,11 +62,21 @@ def lQ2():
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(lQ2min, 0, lQ2max, tag[2])
-    ut.put_yx_tit(frame, "Tagger acceptance", "Virtuality log_{10}(#it{Q}^{2}) (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Virtuality #it{Q}^{2} (GeV^{2})", 1.6, 1.5)
 
     frame.Draw()
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.03, 0.02)
+
+    #labels in power of 10
+    ax = frame.GetXaxis()
+    labels = range(lQ2min, lQ2max+1, 1)
+    for i in range(len(labels)):
+        if labels[i] == 0:
+            ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "1")
+            continue
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ax.SetLabelOffset(0.015)
 
     ut.set_graph(g1, rt.kRed)
     g1.Draw("psame")
@@ -124,7 +134,7 @@ def pitheta():
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(xmin, 0, xmax, tag[2])
-    ut.put_yx_tit(frame, "Tagger acceptance", "Electron polar angle #pi - #it{#theta}_{e} (mrad)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Electron polar angle #it{#pi}-#it{#theta} (mrad)", 1.6, 1.3)
 
     frame.Draw()
 
@@ -157,8 +167,8 @@ def energy():
     i1 = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     i2 = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
-    #tag = ["s1_IsHit", "Tagger 1"]
-    tag = ["s2_IsHit", "Tagger 2"]
+    #tag = ["s1_IsHit", "Tagger 1", 2]
+    tag = ["s2_IsHit", "Tagger 2", 11]
 
     in1 = TFile.Open(i1)
     t1 = in1.Get("event")
@@ -166,8 +176,7 @@ def energy():
     t2 = in2.Get("event")
 
     #mrad
-    #xmin = 2
-    xmin = 11
+    xmin = tag[2]
     xmax = 19
 
     amax = 0.9
@@ -187,7 +196,7 @@ def energy():
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(xmin, 0, xmax, amax)
-    ut.put_yx_tit(frame, "Acceptance", "Electron energy #it{E} (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Electron energy #it{E} (GeV)", 1.6, 1.3)
 
     frame.Draw()
 

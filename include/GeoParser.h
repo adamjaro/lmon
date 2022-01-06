@@ -42,6 +42,9 @@ class GeoParser {
     G4bool GetOptB(G4String name, G4String par, G4bool& val);
     G4bool GetOptS(G4String name, G4String par, G4String& val);
 
+    //constants for development
+    G4String GetConst(std::string nam);
+
   private:
 
     typedef boost::tokenizer< boost::char_separator<char> >::iterator token_it;

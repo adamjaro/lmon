@@ -13,19 +13,20 @@ def main():
 
     #infile = "qrec_s1.root"
     #infile = "qrec_s2.root"
-    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1a/Q2rec_s1.root"
+    infile = "/home/jaroslav/sim/lmon/data/taggers/tag1a/Q2rec_s1.root"
     #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1a/Q2rec_s2.root"
     #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/Q2rec_s1.root"
-    infile = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/Q2rec_s2.root"
+    #infile = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/Q2rec_s2.root"
     #infile = "../../data/qr/qrec_uni_s1_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/qr/qrec_uni_s2_qr_18x275_Qf_beff2_5Mevt.root"
     #infile = "../../data/py/qrec_uni_s1_py_ep_18x275_Q2all_beff2_5Mevt.root"
     #infile = "../../data/py/qrec_uni_s2_py_ep_18x275_Q2all_beff2_5Mevt.root"
 
-    iplot = 1
+    iplot = 2
     funclist = []
     funclist.append( log10_Q2_rto ) # 0
     funclist.append( lQ2_rec_gen ) # 1
+    funclist.append( lQ2_rec_gen_p10 ) # 2
 
     inp = TFile.Open(infile)
     global tree
@@ -195,14 +196,62 @@ def lQ2_rec_gen():
     gPad.SetLogz()
 
     leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
-    #leg.AddEntry("", "Tagger 1", "")
-    leg.AddEntry("", "Tagger 2", "")
+    leg.AddEntry("", "Tagger 1", "")
+    #leg.AddEntry("", "Tagger 2", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2_rec_gen
+
+#_____________________________________________________________________________
+def lQ2_rec_gen_p10():
+
+    #reconstructed and generated Q^2 with labels in powers of 10
+
+    lqbin = 0.1
+    gen_min = -8
+    rec_min = -6
+    lqmax = -1
+
+    can = ut.box_canvas()
+    hLQ2 = ut.prepare_TH2D("hLQ2", lqbin, gen_min, lqmax, lqbin, rec_min, lqmax)
+
+    tree.Draw("rec_lq:true_lq >> hLQ2")
+
+    ytit = "Reconstructed electron log_{10}(Q^{2})"
+    xtit = "Generated true log_{10}(Q^{2})"
+    ut.put_yx_tit(hLQ2, ytit, xtit, 1.9, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
+
+    #labels in power of 10 along y
+    ay = hLQ2.GetYaxis()
+    laby = range(rec_min, lqmax+1, 1)
+    #for i in range(len(laby)):
+        #ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(laby[i])+"}")
+    #ay.SetLabelOffset(0.012)
+
+
+    hLQ2.Draw()
+
+    hLQ2.SetMinimum(0.98)
+    hLQ2.SetContour(300)
+
+    gPad.SetGrid()
+
+    gPad.SetLogz()
+
+    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "Tagger 1", "")
+    #leg.AddEntry("", "Tagger 2", "")
+    leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#lQ2_rec_gen_p10
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

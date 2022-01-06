@@ -53,12 +53,16 @@
 #include "BeamDrift.h"
 #include "PolBuilder.h"
 
+//macros
+#define ADD_DETECTOR(det) (fDets.insert( make_pair(#det, &ComponentBuilder::MakeDet<det>) ))
+#define ADD_COMPONENT(comp) (fComp.insert( make_pair(#comp, &ComponentBuilder::MakeDet<comp>) ))
+
 //_____________________________________________________________________________
 ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
   fTop(top), fGeo(geo), fDet(det) {
 
   //beam components
-  fComp.insert( make_pair("BeamDrift", &ComponentBuilder::MakeDet< BeamDrift >) );
+  ADD_COMPONENT( BeamDrift );
   fComp.insert( make_pair("ConeBeam", &ComponentBuilder::MakeDet< ConeBeam >) );
   //fComp.insert( make_pair("Collimator", &ComponentBuilder::MakeDet< Collimator >) );
   //fComp.insert( make_pair("GraphiteFilter", &ComponentBuilder::MakeDet< GraphiteFilter >) );

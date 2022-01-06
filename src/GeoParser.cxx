@@ -301,8 +301,19 @@ G4bool GeoParser::GetOptS(G4String name, G4String par, G4String& val) {
 
 }//GetOptI
 
+//_____________________________________________________________________________
+G4String GeoParser::GetConst(std::string nam) {
 
+  //retrieve the value of the constant for geometry development
 
+  map<string, string>::iterator iconst = fConst.find(nam);
+  if(iconst == fConst.end()) {
+    return "";
+  }
+
+  return (*iconst).second;
+
+}//GetConst
 
 
 

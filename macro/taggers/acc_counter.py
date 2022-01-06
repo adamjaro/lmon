@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 10
 
     func = {}
     func[0] = acc_en_s12
@@ -28,7 +28,10 @@ def main():
     func[6] = acc_ly_lx
     func[7] = acc_pitheta_s12
     func[8] = acc_mlt_theta_s12
-    func[9] = hit_en
+    func[9] = acc_en_pitheta
+    func[10] = acc_lQ2_en
+    func[11] = acc_lQ2_pitheta
+    func[12] = hit_en
 
     func[101] = load_lmon
     func[102] = load_dd
@@ -111,8 +114,8 @@ def acc_lQ2_s12():
 
     #acceptance in log_10(Q^2) for tagger 1 and tagger 2
 
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -127,24 +130,34 @@ def acc_lQ2_s12():
     as1.modif = 1 # log_10(Q^2) from Q2
     as1.prec = 0.05
     as1.bmin = 0.1
-    #as1.nev = int(1e5)
+    as1.nev = int(1e5)
     gs1 = as1.get()
 
     as2 = rt.acc_Q2_kine(tree, "true_Q2", "s2_IsHit")
     as2.modif = 1 # log_10(Q^2) from Q2
     as2.prec = 0.05
     as2.bmin = 0.1
-    #as2.nev = int(1e5)
+    as2.nev = int(1e5)
     gs2 = as2.get()
 
     can = ut.box_canvas()
 
     frame = gPad.DrawFrame(lQ2min, 0, lQ2max, amax)
-    ut.put_yx_tit(frame, "Tagger acceptance", "Virtuality log_{10}(#it{Q}^{2}) (GeV)", 1.6, 1.3)
+    ut.put_yx_tit(frame, "Tagger acceptance", "Virtuality #it{Q}^{2} (GeV^{2})", 1.6, 1.5)
 
     frame.Draw()
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.03, 0.02)
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.03, 0.02)
+
+    #labels in power of 10
+    ax = frame.GetXaxis()
+    labels = range(lQ2min, lQ2max+1, 1)
+    for i in range(len(labels)):
+        if labels[i] == 0:
+            ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "1")
+            continue
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ax.SetLabelOffset(0.015)
 
     ut.set_graph(gs1, rt.kRed)
     gs1.Draw("psame")
@@ -603,6 +616,231 @@ def acc_mlt_theta_s12():
     can.SaveAs("01fig.pdf")
 
 #acc_mlt_theta_s12
+
+#_____________________________________________________________________________
+def acc_en_pitheta():
+
+    #2D acceptance in energy and pi - theta in mrad
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #bins in theta, mrad
+    xbin = 0.2
+    xmin = 0
+    xmax = 12
+
+    #bins in energy, GeV
+    ybin = 0.3
+    ymin = 1
+    ymax = 20
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    can = ut.box_canvas()
+
+    hTag = ut.prepare_TH2D("hTag", xbin, xmin, xmax, ybin, ymin, ymax)
+    hAll = ut.prepare_TH2D("hAll", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    form = "true_el_E:(TMath::Pi()-true_el_theta)*1e3" # mrad
+    tree.Draw(form+" >> hTag", sel)
+    tree.Draw(form+" >> hAll")
+
+    hTag.Divide(hAll)
+
+    ytit = "Electron energy #it{E} (GeV)"
+    xtit = "Electron polar angle #it{#pi}-#it{#theta} (mrad)"
+    ut.put_yx_tit(hTag, ytit, xtit, 1.4, 1.3)
+
+    hTag.SetTitleOffset(1.4, "Z")
+    hTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hTag.SetMinimum(0)
+    hTag.SetMaximum(1)
+    hTag.SetContour(300)
+
+    hTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_en_pitheta
+
+#_____________________________________________________________________________
+def acc_lQ2_en():
+
+    #2D acceptance in log_10(Q^2) and energy
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #bins in energy, GeV
+    xbin = 0.3
+    xmin = 1
+    xmax = 20
+
+    #bins in log_10(Q^2), GeV^2
+    ybin = 0.1
+    ymin = -9
+    ymax = 0
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    can = ut.box_canvas()
+
+    hTag = ut.prepare_TH2D("hTag", xbin, xmin, xmax, ybin, ymin, ymax)
+    hAll = ut.prepare_TH2D("hAll", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    form = "(TMath::Log10(true_Q2)):true_el_E"
+    tree.Draw(form+" >> hTag", sel)
+    tree.Draw(form+" >> hAll")
+
+    hTag.Divide(hAll)
+
+    ytit = "Virtuality #it{Q}^{2} (GeV^{2})"
+    xtit = "Scattered electron energy #it{E'} (GeV)"
+    ut.put_yx_tit(hTag, ytit, xtit, 1.7, 1.3)
+
+    hTag.SetTitleOffset(1.4, "Z")
+    hTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.015, 0.15)
+
+    #labels in power of 10
+    ay = hTag.GetYaxis()
+    labels = range(ymin, ymax+1, 1)
+    for i in range(len(labels)):
+        if labels[i] == 0:
+            ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "1")
+            continue
+        ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ay.SetLabelOffset(0.012)
+
+    gPad.SetGrid()
+
+    hTag.SetMinimum(0)
+    hTag.SetMaximum(1)
+    hTag.SetContour(300)
+
+    hTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_lQ2_en
+
+#_____________________________________________________________________________
+def acc_lQ2_pitheta():
+
+    #2D acceptance in log_10(Q^2) and pi - theta in mrad
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+
+    #bins in theta, mrad
+    xbin = 0.3
+    xmin = 0
+    xmax = 12
+
+    #bins in log_10(Q^2), GeV^2
+    ybin = 0.2
+    ymin = -9
+    ymax = 0
+
+    #tagger 1 or 2
+    tag = 1
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    if tag == 0:
+        sel = "s1_IsHit==1"
+        lab_sel = "Tagger 1"
+    else:
+        sel = "s2_IsHit==1"
+        lab_sel = "Tagger 2"
+
+    can = ut.box_canvas()
+
+    hTag = ut.prepare_TH2D("hTag", xbin, xmin, xmax, ybin, ymin, ymax)
+    hAll = ut.prepare_TH2D("hAll", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    form = "(TMath::Log10(true_Q2)):(TMath::Pi()-true_el_theta)*1e3"
+    tree.Draw(form+" >> hTag", sel)
+    tree.Draw(form+" >> hAll")
+
+    hTag.Divide(hAll)
+
+    ytit = "Virtuality #it{Q}^{2} (GeV^{2})"
+    xtit = "Electron polar angle #it{#pi}-#it{#theta} (mrad)"
+    ut.put_yx_tit(hTag, ytit, xtit, 1.7, 1.3)
+
+    hTag.SetTitleOffset(1.4, "Z")
+    hTag.SetZTitle("Tagger acceptance")
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.1, 0.015, 0.15)
+
+    #labels in power of 10
+    ay = hTag.GetYaxis()
+    labels = range(ymin, ymax+1, 1)
+    for i in range(len(labels)):
+        if labels[i] == 0:
+            ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "1")
+            continue
+        ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ay.SetLabelOffset(0.012)
+
+    #gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    hTag.SetMinimum(0)
+    hTag.SetMaximum(1)
+    hTag.SetContour(300)
+
+    hTag.Draw("colz")
+
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.06, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#bf{"+lab_sel+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#acc_lQ2_pitheta
 
 #_____________________________________________________________________________
 def hit_en():

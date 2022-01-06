@@ -48,6 +48,9 @@ def make_ew_trees(inlist, outfile):
     tree.SetBranchAddress("gen_pdg", inp_pdg)
     tree.SetBranchAddress("gen_en", inp_en)
 
+    #number of events with primary photon
+    nprim = 0
+
     #event loop
     nev = tree.GetEntries()
     for ievt in range(nev):
@@ -99,6 +102,10 @@ def make_ew_trees(inlist, outfile):
 
         #hit loop
 
+        #increment the photon count
+        if was_prim is True:
+            nprim += 1
+
         #evaluate clean conversion
         clean.v = False
         if conv.v and asec == 2: clean.v = True
@@ -106,6 +113,9 @@ def make_ew_trees(inlist, outfile):
         conv_tree.Fill()
 
     #event loop
+
+    print("All events:     ", nev)
+    print("Primary photons:", nprim)
 
     otree.Write()
     conv_tree.Write()

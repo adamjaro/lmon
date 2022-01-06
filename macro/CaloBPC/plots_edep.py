@@ -14,7 +14,7 @@ from math import ceil, log10
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
     funclist = []
     funclist.append( plot_signal ) # 0
     funclist.append( plot_res ) # 1
@@ -89,13 +89,14 @@ def plot_res():
     #print(res)
 
     #fit the resolution
-    pars, cov = curve_fit(resf3, en, res)
+    #pars, cov = curve_fit(resf3, en, res)
+    pars, cov = curve_fit(resf2, en, res)
 
     #print(pars[0], pars[1], pars[2])
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     #print(fig.get_size_inches())
@@ -115,7 +116,8 @@ def plot_res():
 
     #plot the fit function
     x = np.linspace(en[0], en[-1], 300)
-    y = resf3(x, pars[0], pars[1], pars[2])
+    #y = resf3(x, pars[0], pars[1], pars[2])
+    y = resf2(x, pars[0], pars[1])
     yZEUS = resf3(x, 0.13, 0.17, 0.02) # Nuclear Instruments and Methods in Physics Research A 565 (2006) 572–588
 
     plt.plot(x, y, "-", label="resf", color="red")
@@ -126,13 +128,14 @@ def plot_res():
     fit_param += r"\begin{align*}"
     fit_param += r"a &= {0:.4f} \pm {1:.4f}\\".format(pars[0], np.sqrt(cov[0,0]))
     fit_param += r"b &= {0:.4f} \pm {1:.4f}\\".format(pars[1], np.sqrt(cov[1,1]))
-    fit_param += r"c &= {0:.4f} \pm {1:.4f}".format(pars[2], np.sqrt(cov[2,2]))
+    #fit_param += r"c &= {0:.4f} \pm {1:.4f}".format(pars[2], np.sqrt(cov[2,2]))
     fit_param += r"\end{align*}"
 
     leg = legend()
     leg.add_entry(leg_txt(), "BPC")
     leg.add_entry(leg_dot(fig, "blue"), "FTFP\_BERT, 10.7.p01")
-    leg.add_entry(leg_lin("red"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a^2}{E} \oplus \frac{b}{\sqrt{E}} \oplus\ c$")
+    #leg.add_entry(leg_lin("red"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a^2}{E} \oplus \frac{b}{\sqrt{E}} \oplus\ c$")
+    leg.add_entry(leg_lin("red"), r"$\frac{\sigma(E)}{\langle E\rangle} = \frac{a}{\sqrt{E}} \oplus\ b$")
     leg.add_entry(leg_txt(), fit_param)
     leg.add_entry(leg_lin("red", "--"), "NIMA 565 (2006) 572–588")
     leg.draw(plt, col)

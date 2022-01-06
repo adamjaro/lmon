@@ -11,32 +11,88 @@ const B2BeR_Start_Z -11685. # mm
 const B2BeR_End_Z -14865. # mm
 const B2BeR_InnerRadius 98. # mm
 
+const LumiWin_Z -18500. # mm
+const LumiWin_XY 74. # mm
+
+#wall thickness at tagger section
+const vac_delta 2. # mm
+
 const B2BeR_Z B2BeR_End_Z
 const B2BeR_XB -B2BeR_InnerRadius
 
-const Q3eR_ZT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
-const Q3eR_XT Q3eR_StartX+Q3eR_InnerRadius*cos(Q3eR_Theta)
-const Q3eR_ZB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
-const Q3eR_XB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
+const vac_zQT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
+const vac_xQT Q3eR_StartX+Q3eR_InnerRadius*cos(Q3eR_Theta)
+const vac_zQB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
+const vac_xQB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
 
-const Tag1_size_Y 200. # mm
-const LumiWin_Z -18500. # mm
-const LumiWin_XY 74. # mm
-const ExitWin_XB -LumiWin_XY/2. # mm
-const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
+const vac_zW LumiWin_Z
+const vac_xW -LumiWin_XY/2.
+
+#slope angle at top side
+const vac_phiT atan((vac_xW-vac_xQT)/(vac_zW-vac_zQT))-asin(vac_delta/sqrt((vac_xW-vac_xQT)*(vac_xW-vac_xQT)+(vac_zW-vac_zQT)*(vac_zW-vac_zQT)))
+
+#inner point for exit window
+const vac_xWI vac_xW-vac_delta/sin((TMath::Pi()/2.)-vac_phiT)
+
+#angle at the front of Q3eR
+const vac_phiQ atan((vac_zQB-vac_zQT)/(vac_xQT-vac_xQB))
+
+#const Tag1_size_Y 200. # mm
+
+#const ExitWin_XB -LumiWin_XY/2. # mm
+#const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
 
 #drift section from exit window to Q3eR
 
-new BeamDrift vac_b2b_drift
+#new BeamDrift vac_b2b_drift
 
-  vac_b2b_drift.ysiz = Tag1_size_Y
-  vac_b2b_drift.zQT = Q3eR_ZT
-  vac_b2b_drift.xQT = Q3eR_XT
-  vac_b2b_drift.zQB = Q3eR_ZB
-  vac_b2b_drift.xQB = Q3eR_XB
-  vac_b2b_drift.zW = LumiWin_Z
-  vac_b2b_drift.xW = ExitWin_XB
-  vac_b2b_drift.xA = ExitWin_XA
+  #vac_b2b_drift.ysiz = Tag1_size_Y
+  #vac_b2b_drift.zQT = Q3eR_ZT
+  #vac_b2b_drift.xQT = Q3eR_XT
+  #vac_b2b_drift.zQB = Q3eR_ZB
+  #vac_b2b_drift.xQB = Q3eR_XB
+  #vac_b2b_drift.zW = LumiWin_Z
+  #vac_b2b_drift.xW = ExitWin_XB
+  #vac_b2b_drift.xA = ExitWin_XA
+
+new BeamDrift vac
+
+  vac.z0B = -20
+  vac.x0B = -5
+
+  vac.z0T = -20
+  vac.x0T = 20
+
+  vac.z1B = 20
+  vac.x1B = -20
+
+  vac.z1T = 20
+  vac.x1T = 20
+
+  vac.ysiz = 10
+
+  #vac.x0B = -5
+  #vac.z0B = -20
+  #vac.x0T = -20
+  #vac.z0T = 20
+
+  #vac.x1B = 20
+  #vac.z1B = 20
+  #vac.x1T = 20
+  #vac.z1T = -20
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
