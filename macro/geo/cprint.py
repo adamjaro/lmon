@@ -9,7 +9,13 @@ def main():
     #geometry
     geo = rt.GeoParser("../../config/pro2/vacuum_pro2.in")
 
-    print(geo.GetConst("vac_phiQ"))
+    #constants to print
+    #con = ["vac_phiT", "vac_phiB", "vac_xB", "vac_xBO", "vac_rQB"]
+    #con = ["vac_zQB", "vac_xQB", "vac_zB", "vac_xB"]
+    con = ["vac_tag2_xBO", "vac_tag1_end_xBO", "vac_tag1_xWA"]
+
+    for i in con:
+        print(i+":", geo.GetConst(i))
 
 #main
 

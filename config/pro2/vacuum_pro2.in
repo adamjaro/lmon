@@ -7,35 +7,316 @@ const Q3eR_EndZ -38295.969 # mm
 const Q3eR_EndX -0470.873 # mm
 const Q3eR_Theta 0.0180766389 # rad
 
+new BeamQuadrupole Q3eR
+
+  Q3eR.r1 = Q3eR_InnerRadius
+  Q3eR.r2 = Q3eR_InnerRadius
+  Q3eR.length = Q3eR_Length
+  Q3eR.xpos = (Q3eR_StartX+Q3eR_EndX)/2
+  Q3eR.zpos = (Q3eR_StartZ+Q3eR_EndZ)/2
+  Q3eR.theta = Q3eR_Theta
+  Q3eR.grad = 0 # T/m
+  Q3eR.angle = TMath::Pi()/2 # rad
+  Q3eR.remove_tracks = 1
+  Q3eR.vis = 0:0:1:0.7
+
+# B2AeR beam dipole
+const B2AeR_Start_Z -9610 # mm
+const B2AeR_End_Z -11390 # mm
+const B2AeR_InnerRadius 70 # mm
+
+new BeamMagnetV2 B2AeR
+
+  B2AeR.zpos = (B2AeR_Start_Z+B2AeR_End_Z)/2
+  B2AeR.r1 = B2AeR_InnerRadius
+  B2AeR.r2 = B2AeR_InnerRadius
+  B2AeR.length = B2AeR_Start_Z-B2AeR_End_Z
+  B2AeR.field = 0.192 # T
+
 const B2BeR_Start_Z -11685. # mm
 const B2BeR_End_Z -14865. # mm
 const B2BeR_InnerRadius 98. # mm
 
+new BeamMagnetV2 B2BeR
+
+  B2BeR.zpos = (B2BeR_Start_Z+B2BeR_End_Z)/2
+  B2BeR.r1 = B2BeR_InnerRadius
+  B2BeR.r2 = B2BeR_InnerRadius
+  B2BeR.length = B2BeR_Start_Z-B2BeR_End_Z
+  B2BeR.field = 0.238 # T
+  B2BeR.vis = 0:1:0:0.7
+
+#Luminosity exit window
 const LumiWin_Z -18500. # mm
 const LumiWin_XY 74. # mm
+const LumiWin_DZ 290. # mm
+
+new BoxSegment ExitWinBox
+
+  ExitWinBox.dx = LumiWin_XY
+  ExitWinBox.dy = LumiWin_XY
+  ExitWinBox.dz = LumiWin_DZ
+  ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2.
 
 #wall thickness at tagger section
-const vac_delta 2. # mm
+const vac_delta 10. # mm
 
 const B2BeR_Z B2BeR_End_Z
 const B2BeR_XB -B2BeR_InnerRadius
 
+#inner points at Q3eR
 const vac_zQT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
 const vac_xQT Q3eR_StartX+Q3eR_InnerRadius*cos(Q3eR_Theta)
 const vac_zQB Q3eR_StartZ+Q3eR_InnerRadius*sin(Q3eR_Theta)
 const vac_xQB Q3eR_StartX-Q3eR_InnerRadius*cos(Q3eR_Theta)
 
+#outer point at exit window
 const vac_zW LumiWin_Z
 const vac_xW -LumiWin_XY/2.
 
 #slope angle at top side
-const vac_phiT atan((vac_xW-vac_xQT)/(vac_zW-vac_zQT))-asin(vac_delta/sqrt((vac_xW-vac_xQT)*(vac_xW-vac_xQT)+(vac_zW-vac_zQT)*(vac_zW-vac_zQT)))
+const vac_phiTpp asin(vac_delta/sqrt((vac_xW-vac_xQT)*(vac_xW-vac_xQT)+(vac_zW-vac_zQT)*(vac_zW-vac_zQT)))
+const vac_phiT atan((vac_xW-vac_xQT)/(vac_zW-vac_zQT))-vac_phiTpp
 
 #inner point for exit window
 const vac_xWI vac_xW-vac_delta/sin((TMath::Pi()/2.)-vac_phiT)
 
 #angle at the front of Q3eR
 const vac_phiQ atan((vac_zQB-vac_zQT)/(vac_xQT-vac_xQB))
+
+const vac_rQT (vac_xW-vac_xQB-(vac_zW-vac_zQB)*tan(vac_phiT))/(cos(vac_phiQ)+tan(vac_phiT)*sin(vac_phiQ))
+
+#outer point at Q3eR top
+const vac_zQTO vac_zQB-vac_rQT*sin(vac_phiQ)
+const vac_xQTO vac_xQB+vac_rQT*cos(vac_phiQ)
+
+#inner point at B2
+const vac_zB B2BeR_Z
+const vac_xB B2BeR_XB
+
+#slope angle at lower side
+const vac_phiB atan((vac_xB-vac_xQB)/(vac_zB-vac_zQB))
+
+#lower outer point at B2
+const vac_xBO vac_xB-vac_delta/sin((TMath::Pi()/2.)-vac_phiB)
+
+const vac_rQB (vac_xQB-vac_xBO+(vac_zB-vac_zQB)*tan(vac_phiB))/(cos(vac_phiQ)+sin(vac_phiQ)*tan(vac_phiB))
+
+#lower outer point at Q3eR
+const vac_zQBO vac_zQB+vac_rQB*sin(vac_phiQ)
+const vac_xQBO vac_xQB-vac_rQB*cos(vac_phiQ)
+
+#Tagger 1
+const Tag1_size_X 200. # mm
+const Tag1_size_Y 200. # mm
+const Tag1_pos_Z -20000. # mm
+const Tag1_Length 350. # mm
+
+const vac_tag1_xBI vac_xB-(vac_zB-Tag1_pos_Z)*tan(vac_phiB)
+const vac_tag1_xBO vac_xBO-(vac_zB-Tag1_pos_Z)*tan(vac_phiB)
+const vac_tag1_xTO vac_xW-(vac_zW-Tag1_pos_Z)*tan(vac_phiT)
+const vac_tag1_xTI vac_xWI-(vac_zW-Tag1_pos_Z)*tan(vac_phiT)
+const vac_tag1_xWA vac_xBO-(vac_zB-vac_zW)*tan(vac_phiB)
+
+const vac_tag1_end_xBI vac_xB-(vac_zB-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiB)
+const vac_tag1_end_xBO vac_xBO-(vac_zB-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiB)
+const vac_tag1_end_xTO vac_xW-(vac_zW-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiT)
+const vac_tag1_end_xTI vac_xWI-(vac_zW-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiT)
+
+#const Tag1_Theta 0.0181 # rad
+const Tag1_Theta 0.05 # rad
+
+const Tag1_ZBI Tag1_pos_Z+Tag1_size_X*sin(Tag1_Theta)
+const Tag1_XBI vac_tag1_xBO-Tag1_size_X*cos(Tag1_Theta)
+const Tag1_ZBO Tag1_pos_Z+(Tag1_size_X+vac_delta)*sin(Tag1_Theta)
+const Tag1_XBO vac_tag1_xBO-(Tag1_size_X+vac_delta)*cos(Tag1_Theta)
+
+new BoxSegment Tagger1box
+
+  Tagger1box.dx = Tag1_size_X
+  Tagger1box.dy = Tag1_size_Y
+  Tagger1box.dz = Tag1_Length
+  Tagger1box.xpos = vac_tag1_xBO-0.5*sqrt(Tag1_Length*Tag1_Length+Tag1_size_X*Tag1_size_X)*sin(atan(Tag1_size_X/Tag1_Length)+Tag1_Theta)
+  Tagger1box.zpos = Tag1_pos_Z-0.5*sqrt(Tag1_Length*Tag1_Length+Tag1_size_X*Tag1_size_X)*cos(atan(Tag1_size_X/Tag1_Length)+Tag1_Theta)
+  Tagger1box.theta = Tag1_Theta
+
+#Tagger 2
+const Tag2_size_X 200. # mm
+const Tag2_size_Y 200. # mm
+const Tag2_pos_Z -37000. # mm
+const Tag2_Theta Tag1_Theta
+const Tag2_Length Tag1_Length
+
+const vac_tag2_xBI vac_xB-(vac_zB-Tag2_pos_Z)*tan(vac_phiB)
+const vac_tag2_xBO vac_xBO-(vac_zB-Tag2_pos_Z)*tan(vac_phiB)
+const vac_tag2_xTO vac_xW-(vac_zW-Tag2_pos_Z)*tan(vac_phiT)
+const vac_tag2_xTI vac_xWI-(vac_zW-Tag2_pos_Z)*tan(vac_phiT)
+
+const Tag2_ZBI Tag2_pos_Z+Tag2_size_X*sin(Tag2_Theta)
+const Tag2_XBI vac_tag2_xBO-Tag2_size_X*cos(Tag2_Theta)
+const Tag2_ZBO Tag2_pos_Z+(Tag2_size_X+vac_delta)*sin(Tag2_Theta)
+const Tag2_XBO vac_tag2_xBO-(Tag2_size_X+vac_delta)*cos(Tag2_Theta)
+
+new BoxSegment Tagger2box
+
+  Tagger2box.dx = Tag2_size_X
+  Tagger2box.dy = Tag2_size_Y
+  Tagger2box.dz = Tag2_Length
+  Tagger2box.xpos = vac_tag2_xBO-0.5*sqrt(Tag2_Length*Tag2_Length+Tag2_size_X*Tag2_size_X)*sin(atan(Tag2_size_X/Tag2_Length)+Tag2_Theta)
+  Tagger2box.zpos = Tag2_pos_Z-0.5*sqrt(Tag2_Length*Tag2_Length+Tag2_size_X*Tag2_size_X)*cos(atan(Tag2_size_X/Tag2_Length)+Tag2_Theta)
+  Tagger2box.theta = Tag2_Theta
+
+#drift section after B2
+new BeamDrift vac_B2
+
+  vac_B2.ysiz = Tag1_size_Y
+  vac_B2.delta = vac_delta
+
+  vac_B2.x0BO = vac_tag1_xWA
+  vac_B2.z0TO = vac_zW
+  vac_B2.x0TO = vac_delta+LumiWin_XY/2.
+  vac_B2.x0BI = vac_tag1_xWA
+  vac_B2.x0TI = LumiWin_XY/2.
+
+  vac_B2.x1BO = vac_xBO
+  vac_B2.z1TO = vac_zB
+  vac_B2.x1TO = -vac_xB+vac_delta
+  vac_B2.x1BI = vac_xBO
+  vac_B2.x1TI = -vac_xB
+
+  vac_B2.vis = 1:0:0:2
+
+#drift section in front of tagger 1
+new BeamDrift vac_tag1
+
+  vac_tag1.ysiz = Tag1_size_Y
+  vac_tag1.delta = vac_delta
+
+  vac_tag1.x0BO = vac_tag1_xBO
+  vac_tag1.z0TO = Tag1_pos_Z
+  vac_tag1.x0TO = vac_tag1_xTO
+  vac_tag1.x0BI = vac_tag1_xBO
+  vac_tag1.x0TI = vac_tag1_xTI
+
+  vac_tag1.x1BO = vac_tag1_xWA
+  vac_tag1.z1TO = vac_zW
+  vac_tag1.x1TO = vac_xW
+  vac_tag1.x1BI = vac_tag1_xWA
+  vac_tag1.x1TI = vac_xWI
+
+  vac_tag1.vis = 0:1:0:2
+
+#vacuum in front of tagger 1
+new BeamDrift vac_win_tag1
+
+  vac_win_tag1.ysiz = Tag1_size_Y
+  vac_win_tag1.delta = vac_delta
+
+  vac_win_tag1.z0BO = Tag1_ZBO
+  vac_win_tag1.x0BO = Tag1_XBO
+  vac_win_tag1.z0TO = Tag1_pos_Z
+  vac_win_tag1.x0TO = vac_tag1_xBO
+  vac_win_tag1.z0BI = Tag1_ZBI
+  vac_win_tag1.x0BI = Tag1_XBI
+  vac_win_tag1.x0TI = vac_tag1_xBO
+
+  vac_win_tag1.x1BO = vac_xBO-vac_delta
+  vac_win_tag1.z1TO = vac_zB
+  vac_win_tag1.x1TO = vac_xBO
+  vac_win_tag1.x1BI = vac_xBO
+  vac_win_tag1.x1TI = vac_xBO
+
+  vac_win_tag1.vis = 1:0:1:2
+
+
+#drift section besides tagger 1
+new BeamDrift vac_side_tag1
+
+  vac_side_tag1.ysiz = Tag1_size_Y
+  vac_side_tag1.delta = vac_delta
+
+  vac_side_tag1.x0BO = vac_tag1_end_xBO
+  vac_side_tag1.z0TO = Tag1_pos_Z-Tag1_Length
+  vac_side_tag1.x0TO = vac_tag1_end_xTO
+  vac_side_tag1.x0BI = vac_tag1_end_xBI
+  vac_side_tag1.x0TI = vac_tag1_end_xTI
+
+  vac_side_tag1.x1BO = vac_tag1_xBO
+  vac_side_tag1.z1TO = Tag1_pos_Z
+  vac_side_tag1.x1TO = vac_tag1_xTO
+  vac_side_tag1.x1BI = vac_tag1_xBI
+  vac_side_tag1.x1TI = vac_tag1_xTI
+
+  vac_side_tag1.vis = 1:1:0:2
+
+#vacuum in front of tagger 2
+new BeamDrift vac_win_tag2
+
+  vac_win_tag2.ysiz = Tag2_size_Y
+  vac_win_tag2.delta = vac_delta
+
+  vac_win_tag2.z0BO = Tag2_ZBO
+  vac_win_tag2.x0BO = Tag2_XBO
+  vac_win_tag2.z0TO = Tag2_pos_Z
+  vac_win_tag2.x0TO = vac_tag2_xBO
+  vac_win_tag2.z0BI = Tag2_ZBI
+  vac_win_tag2.x0BI = Tag2_XBI
+  vac_win_tag2.x0TI = vac_tag2_xBO
+
+  vac_win_tag2.x1BO = vac_tag1_end_xBO-vac_delta
+  vac_win_tag2.z1TO = Tag1_pos_Z-Tag1_Length
+  vac_win_tag2.x1TO = vac_tag1_end_xBO
+  vac_win_tag2.x1BI = vac_tag1_end_xBO
+  vac_win_tag2.x1TI = vac_tag1_end_xBO
+
+  vac_win_tag2.vis = 1:0:1:2
+
+#drift section in front of tagger 2
+new BeamDrift vac_tag2
+
+  vac_tag2.ysiz = Tag1_size_Y
+  vac_tag2.delta = vac_delta
+
+  vac_tag2.x0BO = vac_tag2_xBO
+  vac_tag2.z0TO = Tag2_pos_Z
+  vac_tag2.x0TO = vac_tag2_xTO
+  vac_tag2.x0BI = vac_tag2_xBO
+  vac_tag2.x0TI = vac_tag2_xTI
+
+  vac_tag2.x1BO = vac_tag1_end_xBO
+  vac_tag2.z1TO = Tag1_pos_Z-Tag1_Length
+  vac_tag2.x1TO = vac_tag1_end_xTO
+  vac_tag2.x1BI = vac_tag1_end_xBO
+  vac_tag2.x1TI = vac_tag1_end_xTI
+
+  vac_tag2.vis = 1:0:0:2
+
+#drift section in front of Q3eR
+new BeamDrift vac_Q3
+
+  vac_Q3.ysiz = Tag1_size_Y
+  vac_Q3.delta = vac_delta
+
+  vac_Q3.z0BO = vac_zQBO
+  vac_Q3.x0BO = vac_xQBO
+  vac_Q3.z0TO = vac_zQTO
+  vac_Q3.x0TO = vac_xQTO
+  vac_Q3.z0BI = vac_zQB
+  vac_Q3.x0BI = vac_xQB
+  vac_Q3.z0TI = vac_zQT
+  vac_Q3.x0TI = vac_xQT
+
+  vac_Q3.z1BO = Tag2_pos_Z
+  vac_Q3.x1BO = vac_tag2_xBO
+  vac_Q3.z1TO = Tag2_pos_Z
+  vac_Q3.x1TO = vac_tag2_xTO
+  vac_Q3.z1BI = Tag2_pos_Z
+  vac_Q3.x1BI = vac_tag2_xBI
+  vac_Q3.z1TI = Tag2_pos_Z
+  vac_Q3.x1TI = vac_tag2_xTI
+
+  vac_Q3.vis = 0:1:0:2
+
 
 #const Tag1_size_Y 200. # mm
 
@@ -55,21 +336,17 @@ const vac_phiQ atan((vac_zQB-vac_zQT)/(vac_xQT-vac_xQB))
   #vac_b2b_drift.xW = ExitWin_XB
   #vac_b2b_drift.xA = ExitWin_XA
 
-new BeamDrift vac
+#new BeamDrift vac
 
-  vac.z0B = -20
-  vac.x0B = -5
-
-  vac.z0T = -20
-  vac.x0T = 20
-
-  vac.z1B = 20
-  vac.x1B = -20
-
-  vac.z1T = 20
-  vac.x1T = 20
-
-  vac.ysiz = 10
+  #vac.z0B = -20
+  #vac.x0B = -5
+  #vac.z0T = -20
+  #vac.x0T = 20
+  #vac.z1B = 20
+  #vac.x1B = -20
+  #vac.z1T = 20
+  #vac.x1T = 20
+  #vac.ysiz = 10
 
   #vac.x0B = -5
   #vac.z0B = -20

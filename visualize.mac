@@ -10,13 +10,13 @@
 #/lmon/construct/geometry config/geom_test.in
 
 #input
-#/lmon/input/type gun
-#/gun/energy 10 GeV
-#/gun/particle gamma
-#/gun/direction 0 0 -1
+/lmon/input/type gun
+/gun/energy 15 GeV
+/gun/particle e-
+/gun/direction 0 0 -1
 
-/lmon/input/type hepmc
-/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
+#/lmon/input/type hepmc
+#/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_120kevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
 
@@ -45,7 +45,12 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-#/vis/viewer/set/targetPoint 0 0 -20 m
+#/vis/viewer/set/targetPoint -207 0 -20000 mm
+#/vis/viewer/set/targetPoint -207 0 -20350 mm
+#/vis/viewer/set/targetPoint -174 0 -18500 mm
+#/vis/viewer/set/targetPoint 0 0 -18500 mm
+#/vis/viewer/set/targetPoint -98 0 -14865 mm
+/vis/viewer/set/targetPoint -507 0 -37000 mm
 
 #/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
 
@@ -53,7 +58,7 @@
 /vis/viewer/zoom 2.
 
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 20 mm
+#/vis/scene/add/axes 0 0 0 20 mm
 
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:

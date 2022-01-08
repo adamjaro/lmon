@@ -8,6 +8,9 @@
 //C++
 #include <typeinfo>
 
+//Boost
+#include <boost/tokenizer.hpp>
+
 //Geant headers
 #include "G4LogicalVolume.hh"
 #include "G4NistManager.hh"
@@ -28,6 +31,9 @@
 //local headers
 #include "BeamMagnetV2.h"
 #include "GeoParser.h"
+
+using namespace std;
+using namespace boost;
 
 //_____________________________________________________________________________
 BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
@@ -88,12 +94,7 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4LogicalVolume *vol_vessel = new G4LogicalVolume(shape_vessel, mat_outer, fNam);
 
   //vessel visibility
-  G4VisAttributes *vis_vessel = new G4VisAttributes();
-  vis_vessel->SetColor(0, 1, 0, 0.7); // blue
-  vis_vessel->SetLineWidth(2);
-  vis_vessel->SetForceSolid(true);
-  //vis_vessel->SetForceAuxEdgeVisible(true);
-  vol_vessel->SetVisAttributes(vis_vessel);
+  vol_vessel->SetVisAttributes(ColorDecoder(geo));
 
   //put the magnet vessel to the top volume
   new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_vessel, fNam, top, false, 0);
@@ -134,14 +135,38 @@ void BeamMagnetV2::PrintField(G4FieldManager *fman) {
   G4EquationOfMotion *eq = stepper->GetEquationOfMotion();
   G4cout << "equation: " << typeid(*eq).name() << G4endl;
 
-
-
-
-
-
 }//PrintField
 
+//_____________________________________________________________________________
+G4VisAttributes *BeamMagnetV2::ColorDecoder(GeoParser *geo) {
 
+  G4String col("0:1:0:0.7"); // red:green:blue:alpha 
+  geo->GetOptS(fNam, "vis", col);
+
+  char_separator<char> sep(":");
+  tokenizer< char_separator<char> > clin(col, sep);
+  tokenizer< char_separator<char> >::iterator it = clin.begin();
+
+  stringstream st;
+  for(int i=0; i<4; i++) {
+    st << *(it++) << " ";
+  }
+
+  G4double red=0, green=0, blue=0, alpha=0;
+  st >> red >> green >> blue >> alpha;
+
+  G4VisAttributes *vis = new G4VisAttributes();
+  if(alpha < 1.1) {
+    vis->SetColor(red, green, blue, alpha);
+    vis->SetForceSolid(true);
+  } else {
+    vis->SetColor(red, green, blue);
+    vis->SetForceAuxEdgeVisible(true);
+  }
+
+  return vis;
+
+}//ColorDecoder
 
 
 

@@ -167,7 +167,8 @@ G4String GeoParser::Evaluate(G4String val) {
     TFormula form("form", ss.str().c_str(), false);
 
     ss.str("");
-    ss << form.Eval(0);
+    ss.precision(16);
+    ss << scientific << form.Eval(0);
   }
 
   return ss.str();

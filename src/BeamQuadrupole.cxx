@@ -8,6 +8,9 @@
 //C++
 #include "math.h"
 
+//Boost
+#include <boost/tokenizer.hpp>
+
 //Geant
 #include "G4Cons.hh"
 #include "G4LogicalVolume.hh"
@@ -32,6 +35,9 @@
 //local classes
 #include "GeoParser.h"
 #include "BeamQuadrupole.h"
+
+using namespace std;
+using namespace boost;
 
 //_____________________________________________________________________________
 BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *top):
@@ -117,12 +123,7 @@ BeamQuadrupole::BeamQuadrupole(G4String nam, GeoParser *geo, G4LogicalVolume *to
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //vessel visibility
-  G4VisAttributes *vis_vessel = new G4VisAttributes();
-  vis_vessel->SetColor(0, 0, 1, 0.7); // blue
-  vis_vessel->SetLineWidth(2);
-  vis_vessel->SetForceSolid(true);
-  //vis_vessel->SetForceAuxEdgeVisible(true);
-  vol->SetVisAttributes(vis_vessel);
+  vol->SetVisAttributes(ColorDecoder(geo));
 
   //stop and remove tracks incident on magnet vessel if set to true
   geo->GetOptB(fNam, "remove_tracks", fRemoveTracks);
@@ -181,14 +182,38 @@ void BeamQuadrupole::PrintField(G4FieldManager *fman) {
   G4EquationOfMotion *eq = stepper->GetEquationOfMotion();
   G4cout << "equation: " << typeid(*eq).name() << G4endl;
 
-
-
-
-
-
 }//PrintField
 
+//_____________________________________________________________________________
+G4VisAttributes *BeamQuadrupole::ColorDecoder(GeoParser *geo) {
 
+  G4String col("0:0:1:0.7"); // red:green:blue:alpha 
+  geo->GetOptS(fNam, "vis", col);
+
+  char_separator<char> sep(":");
+  tokenizer< char_separator<char> > clin(col, sep);
+  tokenizer< char_separator<char> >::iterator it = clin.begin();
+
+  stringstream st;
+  for(int i=0; i<4; i++) {
+    st << *(it++) << " ";
+  }
+
+  G4double red=0, green=0, blue=0, alpha=0;
+  st >> red >> green >> blue >> alpha;
+
+  G4VisAttributes *vis = new G4VisAttributes();
+  if(alpha < 1.1) {
+    vis->SetColor(red, green, blue, alpha);
+    vis->SetForceSolid(true);
+  } else {
+    vis->SetColor(red, green, blue);
+    vis->SetForceAuxEdgeVisible(true);
+  }
+
+  return vis;
+
+}//ColorDecoder
 
 
 

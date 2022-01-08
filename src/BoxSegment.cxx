@@ -32,7 +32,7 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   G4double dx = geo->GetD(fNam, "dx")*mm;
   G4double dy = geo->GetD(fNam, "dy")*mm;
   G4double dz = geo->GetD(fNam, "dz")*mm;
-  G4Box *shape = new G4Box(fNam, dx/2, dy/2, dz/2);
+  G4Box *shape = new G4Box(fNam, dx/2., dy/2., dz/2.);
 
   //logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");

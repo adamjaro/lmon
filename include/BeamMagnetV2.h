@@ -28,6 +28,8 @@ class BeamMagnetV2 : public Detector, public G4VSensitiveDetector {
 
     void PrintField(G4FieldManager *fman);
 
+    G4VisAttributes* ColorDecoder(GeoParser *geo);
+
 };
 
 #endif
