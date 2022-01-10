@@ -1,0 +1,60 @@
+
+# Q1eR quadrupole
+const Q1eR_Start_Z -5300. # mm
+const Q1eR_End_Z -7100. # mm
+const Q1eR_InnerRadius 55.5 # mm
+
+new BeamQuadrupole Q1eR
+
+  Q1eR.zpos = (Q1eR_Start_Z+Q1eR_End_Z)/2.
+  Q1eR.r1 = Q1eR_InnerRadius
+  Q1eR.r2 = Q1eR_InnerRadius
+  Q1eR.length = Q1eR_Start_Z-Q1eR_End_Z
+  Q1eR.grad = 0 # T/m
+  Q1eR.angle = TMath::Pi()/2. # rad
+
+# Q2eR quadrupole
+const Q2eR_Start_Z -7600. # mm
+const Q2eR_End_Z -9000. # mm
+const Q2eR_InnerRadius 64.5 # mm
+
+new BeamQuadrupole Q2eR
+
+  Q2eR.zpos = (Q2eR_Start_Z+Q2eR_End_Z)/2
+  Q2eR.r1 = Q2eR_InnerRadius
+  Q2eR.r2 = Q2eR_InnerRadius
+  Q2eR.length = Q2eR_Start_Z-Q2eR_End_Z
+  Q2eR.grad = 0 # T/m
+  Q2eR.angle = TMath::Pi()/2. # rad
+
+# B2eR beam dipole
+const B2eR_Start_Z -9500. # mm
+const B2eR_End_Z -14999.773830630378 # mm
+const B2eR_Start_X 0. # mm
+const B2eR_End_X -49.87797021981341 # mm
+const B2eR_Theta atan((B2eR_Start_X-B2eR_End_X)/(B2eR_Start_Z-B2eR_End_Z))
+const B2eR_Length sqrt((B2eR_Start_X-B2eR_End_X)*(B2eR_Start_X-B2eR_End_X)+(B2eR_Start_Z-B2eR_End_Z)*(B2eR_Start_Z-B2eR_End_Z))
+const B2eR_InnerRadius 98. # mm
+
+new BeamMagnetV2 B2eR
+
+  B2eR.zpos = (B2eR_Start_Z+B2eR_End_Z)/2.
+  B2eR.r1 = B2eR_InnerRadius
+  B2eR.r2 = B2eR_InnerRadius
+  B2eR.length = B2eR_Length
+  B2eR.field = 0 # T
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
