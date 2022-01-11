@@ -1,51 +1,4 @@
 
-const Q3eR_InnerRadius 50. # mm
-const Q3eR_Length 600. # mm
-const Q3eR_StartZ -37696.067 # mm
-const Q3eR_StartX -460.027 # mm
-const Q3eR_EndZ -38295.969 # mm
-const Q3eR_EndX -0470.873 # mm
-const Q3eR_Theta 0.0180766389 # rad
-
-new BeamQuadrupole Q3eR
-
-  Q3eR.r1 = Q3eR_InnerRadius
-  Q3eR.r2 = Q3eR_InnerRadius
-  Q3eR.length = Q3eR_Length
-  Q3eR.xpos = (Q3eR_StartX+Q3eR_EndX)/2
-  Q3eR.zpos = (Q3eR_StartZ+Q3eR_EndZ)/2
-  Q3eR.theta = Q3eR_Theta
-  Q3eR.grad = 0 # T/m
-  Q3eR.angle = TMath::Pi()/2 # rad
-  Q3eR.remove_tracks = 1
-  Q3eR.vis = 0:0:1:0.7
-
-# B2AeR beam dipole
-const B2AeR_Start_Z -9610 # mm
-const B2AeR_End_Z -11390 # mm
-const B2AeR_InnerRadius 70 # mm
-
-new BeamMagnetV2 B2AeR
-
-  B2AeR.zpos = (B2AeR_Start_Z+B2AeR_End_Z)/2
-  B2AeR.r1 = B2AeR_InnerRadius
-  B2AeR.r2 = B2AeR_InnerRadius
-  B2AeR.length = B2AeR_Start_Z-B2AeR_End_Z
-  B2AeR.field = 0.192 # T
-
-const B2BeR_Start_Z -11685. # mm
-const B2BeR_End_Z -14865. # mm
-const B2BeR_InnerRadius 98. # mm
-
-new BeamMagnetV2 B2BeR
-
-  B2BeR.zpos = (B2BeR_Start_Z+B2BeR_End_Z)/2
-  B2BeR.r1 = B2BeR_InnerRadius
-  B2BeR.r2 = B2BeR_InnerRadius
-  B2BeR.length = B2BeR_Start_Z-B2BeR_End_Z
-  B2BeR.field = 0.238 # T
-  B2BeR.vis = 0:1:0:0.7
-
 #Luminosity exit window
 const LumiWin_Z -18500. # mm
 const LumiWin_XY 74. # mm
@@ -60,9 +13,6 @@ new BoxSegment ExitWinBox
 
 #wall thickness at tagger section
 const vac_delta 10. # mm
-
-const B2BeR_Z B2BeR_End_Z
-const B2BeR_XB -B2BeR_InnerRadius
 
 #inner points at Q3eR
 const vac_zQT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
@@ -90,19 +40,30 @@ const vac_rQT (vac_xW-vac_xQB-(vac_zW-vac_zQB)*tan(vac_phiT))/(cos(vac_phiQ)+tan
 const vac_zQTO vac_zQB-vac_rQT*sin(vac_phiQ)
 const vac_xQTO vac_xQB+vac_rQT*cos(vac_phiQ)
 
-#inner point at B2
-const vac_zB B2BeR_Z
-const vac_xB B2BeR_XB
+#upper inner point at B2
+const vac_zBTI B2eR_End_Z-B2eR_InnerRadius*sin(B2eR_Theta)
+const vac_xBTI B2eR_End_X+B2eR_InnerRadius*cos(B2eR_Theta)
+
+#upper outer point at B2
+const vac_zBTO B2eR_End_Z-(B2eR_InnerRadius+vac_delta)*sin(B2eR_Theta)
+const vac_xBTO B2eR_End_X+(B2eR_InnerRadius+vac_delta)*cos(B2eR_Theta)
+
+#lower inner point at B2
+const vac_zB B2eR_End_Z+B2eR_InnerRadius*sin(B2eR_Theta)
+const vac_xB B2eR_End_X-B2eR_InnerRadius*cos(B2eR_Theta)
 
 #slope angle at lower side
 const vac_phiB atan((vac_xB-vac_xQB)/(vac_zB-vac_zQB))
 
 #lower outer point at B2
-const vac_xBO vac_xB-vac_delta/sin((TMath::Pi()/2.)-vac_phiB)
+const vac_rBP vac_delta/sin(B2eR_Theta-vac_phiB+TMath::Pi()/2.)
 
-const vac_rQB (vac_xQB-vac_xBO+(vac_zB-vac_zQB)*tan(vac_phiB))/(cos(vac_phiQ)+sin(vac_phiQ)*tan(vac_phiB))
+const vac_zBO B2eR_End_Z+(B2eR_InnerRadius+vac_rBP)*sin(B2eR_Theta)
+const vac_xBO B2eR_End_X-(B2eR_InnerRadius+vac_rBP)*cos(B2eR_Theta)
 
 #lower outer point at Q3eR
+const vac_rQB (vac_xQB-vac_xBO+(vac_zBO-vac_zQB)*tan(vac_phiB))/(cos(vac_phiQ)+sin(vac_phiQ)*tan(vac_phiB))
+
 const vac_zQBO vac_zQB+vac_rQB*sin(vac_phiQ)
 const vac_xQBO vac_xQB-vac_rQB*cos(vac_phiQ)
 
@@ -113,13 +74,13 @@ const Tag1_pos_Z -20000. # mm
 const Tag1_Length 350. # mm
 
 const vac_tag1_xBI vac_xB-(vac_zB-Tag1_pos_Z)*tan(vac_phiB)
-const vac_tag1_xBO vac_xBO-(vac_zB-Tag1_pos_Z)*tan(vac_phiB)
+const vac_tag1_xBO vac_xBO-(vac_zBO-Tag1_pos_Z)*tan(vac_phiB)
 const vac_tag1_xTO vac_xW-(vac_zW-Tag1_pos_Z)*tan(vac_phiT)
 const vac_tag1_xTI vac_xWI-(vac_zW-Tag1_pos_Z)*tan(vac_phiT)
-const vac_tag1_xWA vac_xBO-(vac_zB-vac_zW)*tan(vac_phiB)
+const vac_tag1_xWA vac_xBO-(vac_zBO-vac_zW)*tan(vac_phiB)
 
 const vac_tag1_end_xBI vac_xB-(vac_zB-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiB)
-const vac_tag1_end_xBO vac_xBO-(vac_zB-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiB)
+const vac_tag1_end_xBO vac_xBO-(vac_zBO-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiB)
 const vac_tag1_end_xTO vac_xW-(vac_zW-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiT)
 const vac_tag1_end_xTI vac_xWI-(vac_zW-(Tag1_pos_Z-Tag1_Length))*tan(vac_phiT)
 
@@ -148,7 +109,7 @@ const Tag2_Theta Tag1_Theta
 const Tag2_Length Tag1_Length
 
 const vac_tag2_xBI vac_xB-(vac_zB-Tag2_pos_Z)*tan(vac_phiB)
-const vac_tag2_xBO vac_xBO-(vac_zB-Tag2_pos_Z)*tan(vac_phiB)
+const vac_tag2_xBO vac_xBO-(vac_zBO-Tag2_pos_Z)*tan(vac_phiB)
 const vac_tag2_xTO vac_xW-(vac_zW-Tag2_pos_Z)*tan(vac_phiT)
 const vac_tag2_xTI vac_xWI-(vac_zW-Tag2_pos_Z)*tan(vac_phiT)
 
@@ -178,11 +139,14 @@ new BeamDrift vac_B2
   vac_B2.x0BI = vac_tag1_xWA
   vac_B2.x0TI = LumiWin_XY/2.
 
+  vac_B2.z1BO = vac_zBO
   vac_B2.x1BO = vac_xBO
-  vac_B2.z1TO = vac_zB
-  vac_B2.x1TO = -vac_xB+vac_delta
+  vac_B2.z1TO = vac_zBTO
+  vac_B2.x1TO = vac_xBTO
+  vac_B2.z1BI = vac_zBO
   vac_B2.x1BI = vac_xBO
-  vac_B2.x1TI = -vac_xB
+  vac_B2.z1TI = vac_zBTI
+  vac_B2.x1TI = vac_xBTI
 
   vac_B2.vis = 1:0:0:2
 
@@ -220,10 +184,13 @@ new BeamDrift vac_win_tag1
   vac_win_tag1.x0BI = Tag1_XBI
   vac_win_tag1.x0TI = vac_tag1_xBO
 
+  vac_win_tag1.z1BO = vac_zBO
   vac_win_tag1.x1BO = vac_xBO-vac_delta
-  vac_win_tag1.z1TO = vac_zB
+  vac_win_tag1.z1TO = vac_zBO
   vac_win_tag1.x1TO = vac_xBO
+  vac_win_tag1.z1BI = vac_zBO
   vac_win_tag1.x1BI = vac_xBO
+  vac_win_tag1.z1TI = vac_zBO
   vac_win_tag1.x1TI = vac_xBO
 
   vac_win_tag1.vis = 1:0:1:2
@@ -318,45 +285,6 @@ new BeamDrift vac_Q3
   vac_Q3.vis = 0:1:0:2
 
 
-#const Tag1_size_Y 200. # mm
-
-#const ExitWin_XB -LumiWin_XY/2. # mm
-#const ExitWin_XA B2BeR_XB-(B2BeR_Z-LumiWin_Z)*(B2BeR_XB-Q3eR_XB)/(B2BeR_Z-Q3eR_ZB)
-
-#drift section from exit window to Q3eR
-
-#new BeamDrift vac_b2b_drift
-
-  #vac_b2b_drift.ysiz = Tag1_size_Y
-  #vac_b2b_drift.zQT = Q3eR_ZT
-  #vac_b2b_drift.xQT = Q3eR_XT
-  #vac_b2b_drift.zQB = Q3eR_ZB
-  #vac_b2b_drift.xQB = Q3eR_XB
-  #vac_b2b_drift.zW = LumiWin_Z
-  #vac_b2b_drift.xW = ExitWin_XB
-  #vac_b2b_drift.xA = ExitWin_XA
-
-#new BeamDrift vac
-
-  #vac.z0B = -20
-  #vac.x0B = -5
-  #vac.z0T = -20
-  #vac.x0T = 20
-  #vac.z1B = 20
-  #vac.x1B = -20
-  #vac.z1T = 20
-  #vac.x1T = 20
-  #vac.ysiz = 10
-
-  #vac.x0B = -5
-  #vac.z0B = -20
-  #vac.x0T = -20
-  #vac.z0T = 20
-
-  #vac.x1B = 20
-  #vac.z1B = 20
-  #vac.x1T = 20
-  #vac.z1T = -20
 
 
 

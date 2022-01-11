@@ -41,9 +41,14 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   G4cout << "  BeamMagnetV2: " << fNam << G4endl;
 
-  //center position along z, mm
-  G4double zpos = 0;
+  //center position along x and z, mm
+  G4double zpos = 0, xpos = 0;
   geo->GetOptD(fNam, "zpos", zpos, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "xpos", xpos, GeoParser::Unit(mm));
+
+  //polar angle along y axis
+  G4double theta = 0;
+  geo->GetOptD(fNam, "theta", theta, GeoParser::Unit(rad));
 
   //total length in z, mm
   G4double length = geo->GetD(fNam, "length")*mm;
@@ -79,13 +84,14 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   vol_inner->SetFieldManager(fman, true);
 
-  //put the inner core to the top volume
-  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_inner, nam_inner, top, false, 0);
-
   //cylindrical outer shape
   G4double r3 = r2*2;
   geo->GetOptD(fNam, "r3", r3, GeoParser::Unit(mm)); // vessel outer radius
   G4Tubs *shape_outer = new G4Tubs(fNam+"_outer", 0., r3, length/2-1e-4*meter, 0., 360.*deg);
+
+  //main magnet volume
+  G4LogicalVolume *main_vol = new G4LogicalVolume(shape_outer, mat_inner, fNam+"_main");
+  main_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
   //magnet vessel around the inner magnetic core
   G4SubtractionSolid *shape_vessel = new G4SubtractionSolid(fNam, shape_outer, shape_inner);
@@ -96,8 +102,17 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   //vessel visibility
   vol_vessel->SetVisAttributes(ColorDecoder(geo));
 
-  //put the magnet vessel to the top volume
-  new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_vessel, fNam, top, false, 0);
+  //put the magnet vessel to the main magnet volume
+  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol_vessel, fNam, main_vol, false, 0);
+
+  //put the inner core to the main magnet volume
+  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol_inner, nam_inner, main_vol, false, 0);
+
+  //put main magnet volume to the top
+  G4RotationMatrix main_rot(G4ThreeVector(0, 1, 0), theta); //CLHEP::HepRotation
+  G4ThreeVector main_pos(xpos, 0, zpos);
+  G4Transform3D main_trans(main_rot, main_pos); //HepGeom::Transform3D
+  new G4PVPlacement(main_trans, main_vol, fNam, top, false, 0);
 
 }//BeamMagnetV2
 

@@ -1,6 +1,8 @@
 
 #all components
 
+include beam_magnets_pro2.in
+
 include vacuum_pro2.in
 
 

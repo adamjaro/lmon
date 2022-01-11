@@ -86,17 +86,28 @@ BeamDrift::BeamDrift(G4String nam, GeoParser *geo, G4LogicalVolume *top):
 
   //vessel visibility
   vessel_vol->SetVisAttributes(ColorDecoder(geo));
+  //vessel_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
 
   //outer shape
-  G4GenericTrap *shape = MakeGT(z0TO, x0TO, z0BO, x0BO, z1TO, x1TO, z1BO, x1BO, ysiz+2*delta, fNam);
+  //G4GenericTrap *shape = MakeGT(z0TO, x0TO, z0BO, x0BO, z1TO, x1TO, z1BO, x1BO, ysiz+2*delta, fNam);
 
   //logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-  G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
+  //G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
+  G4LogicalVolume *vol = new G4LogicalVolume(vessel_outer, mat, fNam);
   vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
+  //vol->SetVisAttributes(ColorDecoder(geo));
 
   //vessel volume in outer shape
   new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vessel_vol, fNam+"_vessel_shape", vol, false, 0);
+
+  //inner volume
+  G4LogicalVolume *inner_vol = new G4LogicalVolume(vessel_inner, mat, fNam+"_vessel_inner");
+  inner_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
+  //inner_vol->SetVisAttributes(ColorDecoder(geo));
+
+  //inner volume in outer shape
+  new G4PVPlacement(0, G4ThreeVector(0, 0, 0), inner_vol, fNam+"_vessel_inner", vol, false, 0);
 
   //placement in top
   G4RotationMatrix rot(G4ThreeVector(1, 0, 0), TMath::Pi()/2); //CLHEP::HepRotation

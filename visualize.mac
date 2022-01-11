@@ -11,7 +11,7 @@
 
 #input
 /lmon/input/type gun
-/gun/energy 15 GeV
+/gun/energy 18 GeV
 /gun/particle e-
 /gun/direction 0 0 -1
 
@@ -45,12 +45,16 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-#/vis/viewer/set/targetPoint -207 0 -20000 mm
-#/vis/viewer/set/targetPoint -207 0 -20350 mm
-#/vis/viewer/set/targetPoint -174 0 -18500 mm
+/vis/viewer/set/targetPoint 0 0 -9500 mm
+#/vis/viewer/set/targetPoint -238 100 -20000 mm  # Tagger 1
+#/vis/viewer/set/targetPoint -233 100 -20350 mm  # Tagger 1 end
+#/vis/viewer/set/targetPoint -243 0 -20350 mm
+#/vis/viewer/set/targetPoint -214 100 -18500 mm  # Exit window
 #/vis/viewer/set/targetPoint 0 0 -18500 mm
-#/vis/viewer/set/targetPoint -98 0 -14865 mm
-/vis/viewer/set/targetPoint -507 0 -37000 mm
+#/vis/viewer/set/targetPoint -148 100 -14999 mm
+#/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
+#/vis/viewer/set/targetPoint 0 0 -9500 mm
+#/vis/viewer/set/targetPoint -462 0 -37696 mm
 
 #/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
 
