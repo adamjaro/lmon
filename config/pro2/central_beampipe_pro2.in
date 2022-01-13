@@ -1,0 +1,30 @@
+
+#central Berylium section
+const cen_mid_zmin -800. # mm
+const cen_mid_zmax 670. # mm
+const cen_mid_r 63.5254/2. # mm, outer radius
+const cen_mid_wall_dr 0.757 # mm, thickness for Berylium middle section
+
+new ConeBeam cen_beam_mid
+
+  cen_beam_mid.rmin0 = cen_mid_r-cen_mid_wall_dr
+  cen_beam_mid.rmax0 = cen_mid_r
+  cen_beam_mid.rmin1 = cen_mid_r-cen_mid_wall_dr
+  cen_beam_mid.rmax1 = cen_mid_r
+  cen_beam_mid.dz = cen_mid_zmax-cen_mid_zmin
+  cen_beam_mid.zpos = (cen_mid_zmax+cen_mid_zmin)/2.
+  cen_beam_mid.wall_mat_name = G4_Be
+
+#section at negative z up to Q3
+const cen_neg_wall_dr 2. # mm
+
+new ConeBeam cen_beam_neg
+
+  cen_beam_neg.rmin0 = Q1eR_InnerRadius
+  cen_beam_neg.rmax0 = Q1eR_InnerRadius+2.
+  cen_beam_neg.rmin1 = cen_mid_r-cen_neg_wall_dr
+  cen_beam_neg.rmax1 = cen_mid_r
+  cen_beam_neg.dz = cen_mid_zmin-Q1eR_Start_Z
+  cen_beam_neg.zpos = (cen_mid_zmin+Q1eR_Start_Z)/2.
+
+

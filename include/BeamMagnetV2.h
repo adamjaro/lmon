@@ -26,6 +26,8 @@ class BeamMagnetV2 : public Detector, public G4VSensitiveDetector {
 
     G4String fNam; // magnet name
 
+    G4bool fRemoveTracks; // stop and remove tracks incident on magnet vessel if set to true
+
     void PrintField(G4FieldManager *fman);
 
     G4VisAttributes* ColorDecoder(GeoParser *geo);

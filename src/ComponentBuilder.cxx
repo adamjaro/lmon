@@ -52,6 +52,7 @@
 #include "ConeBeam.h"
 #include "BeamDrift.h"
 #include "PolBuilder.h"
+#include "CylBeam.h"
 
 //macros
 #define ADD_DETECTOR(det) (fDets.insert( make_pair(#det, &ComponentBuilder::MakeDet<det>) ))
@@ -63,7 +64,8 @@ ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::ve
 
   //beam components
   ADD_COMPONENT( BeamDrift );
-  fComp.insert( make_pair("ConeBeam", &ComponentBuilder::MakeDet< ConeBeam >) );
+  ADD_COMPONENT( ConeBeam );
+  ADD_COMPONENT( CylBeam );
   //fComp.insert( make_pair("Collimator", &ComponentBuilder::MakeDet< Collimator >) );
   //fComp.insert( make_pair("GraphiteFilter", &ComponentBuilder::MakeDet< GraphiteFilter >) );
 

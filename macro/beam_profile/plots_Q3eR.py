@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import ROOT as rt
-from ROOT import gPad, gROOT, gStyle, TFile
+from ROOT import gPad, gROOT, gStyle, TFile, gSystem
 
 import sys
 sys.path.append('../')
@@ -38,10 +38,8 @@ def hits_xy():
     #input
     infile = "../../lmon.root"
 
-    #Q3eR front location
-    xpos = -460.027 # mm
-    zpos = -37696.067 # mm
-    theta = 0.0180766389 # rad
+    #Q3eR location
+    geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
 
     #plot range
     #xybin = 0.3
@@ -52,6 +50,7 @@ def hits_xy():
     tree = inp.Get("DetectorTree")
 
     hits = ParticleCounterHits("Q3eR_det", tree)
+    hits.local_from_geo(geo, "Q3eR")
 
     nevt = -300000
 
@@ -66,8 +65,7 @@ def hits_xy():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, theta)
-            #hit.GlobalToLocal(xpos, 0, zpos)
+            hit.GlobalToLocal()
 
             #print(hit.x, hit.y)
             hXY.Fill(hit.x, hit.y)
@@ -99,19 +97,18 @@ def hits_z():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.027 # mm
-    zpos = -37696.067 # mm
-    theta = 0.0180766389 # rad
+    geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
 
     #plot range
-    zbin = 0.001
-    zmin = -10.1
-    zmax = -9.9
+    zbin = 0.1
+    zmin = 295
+    zmax = 305
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
     hits = ParticleCounterHits("Q3eR_det", tree)
+    hits.local_from_geo(geo, "Q3eR")
 
     nevt = -120
 
@@ -129,7 +126,7 @@ def hits_z():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, theta)
+            hit.GlobalToLocal()
 
             hZ.Fill(hit.z)
 
@@ -149,14 +146,13 @@ def fit_x():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.027 # mm
-    zpos = -37696.067 # mm
-    theta = 0.0180766389 # rad
+    geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
     hits = ParticleCounterHits("Q3eR_det", tree)
+    hits.local_from_geo(geo, "Q3eR")
 
     nevt = -12
 
@@ -169,7 +165,7 @@ def fit_x():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, theta)
+            hit.GlobalToLocal()
 
             xval.append(hit.x)
 
@@ -180,6 +176,7 @@ def fit_x():
     #col = "black"
 
     fig = plt.figure()
+    fig.set_size_inches(5, 5)
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)
@@ -223,14 +220,13 @@ def fit_y():
     infile = "../../lmon.root"
 
     #Q3eR location
-    xpos = -460.027 # mm
-    zpos = -37696.067 # mm
-    theta = 0.0180766389 # rad
+    geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
 
     inp = TFile.Open(infile)
     tree = inp.Get("DetectorTree")
 
     hits = ParticleCounterHits("Q3eR_det", tree)
+    hits.local_from_geo(geo, "Q3eR")
 
     nevt = -12
 
@@ -243,7 +239,7 @@ def fit_y():
         for ihit in range(hits.GetN()):
 
             hit = hits.GetHit(ihit)
-            hit.GlobalToLocal(xpos, 0, zpos, theta)
+            hit.GlobalToLocal()
 
             yval.append(hit.y)
 
@@ -254,6 +250,7 @@ def fit_y():
     #col = "black"
 
     fig = plt.figure()
+    #fig.set_size_inches(5, 5)
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)
@@ -276,13 +273,13 @@ def fit_y():
 
     leg = legend()
     leg.add_entry(leg_lin("red"), "Gaussian fit")
-    leg.add_entry(leg_txt(), "$\mu_y$ (mm): {0:.3f} $\pm$ {1:.3f}".format( pars[0], np.sqrt(cov[0,0]) ))
-    leg.add_entry(leg_txt(), "3$\sigma_y$ (mm): {0:.3f} $\pm$ {1:.3f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+    leg.add_entry(leg_txt(), "$\mu_y$ (mm): {0:.4f} $\pm$ {1:.4f}".format( pars[0], np.sqrt(cov[0,0]) ))
+    leg.add_entry(leg_txt(), "3$\sigma_y$ (mm): {0:.4f} $\pm$ {1:.4f}".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
     leg.draw(plt, col)
 
     log = open("out.txt", "w")
-    log.write("    ge my (mm):  {0:.3f} +/- {1:.3f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
-    log.write("       3sy (mm): {0:.3f} +/- {1:.3f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
+    log.write("    ge my (mm):  {0:.4f} +/- {1:.4f}\n".format( pars[0], np.sqrt(cov[0,0]) ))
+    log.write("       3sy (mm): {0:.4f} +/- {1:.4f}\n".format( 3.*pars[1], 3.*np.sqrt(cov[1,1]) ))
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -447,6 +444,14 @@ if __name__ == "__main__":
     gROOT.SetBatch()
     gStyle.SetPadTickX(1)
     gStyle.SetFrameLineWidth(2)
+
+    #lmon and Geant
+    lmon_top = "/home/jaroslav/sim/lmon"
+    geant_inst = "/home/jaroslav/sim/geant/geant4.10.07.p01/install/include/Geant4"
+
+    gSystem.AddIncludePath(" -I"+lmon_top+"/include")
+    gSystem.AddIncludePath(" -I"+geant_inst)
+    gROOT.ProcessLine(".L "+lmon_top+"/src/GeoParser.cxx+")
 
     main()
 

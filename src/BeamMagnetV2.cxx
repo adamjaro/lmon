@@ -37,9 +37,9 @@ using namespace boost;
 
 //_____________________________________________________________________________
 BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
-    Detector(), G4VSensitiveDetector(nam), fNam(nam) {
+    Detector(), G4VSensitiveDetector(nam), fNam(nam), fRemoveTracks(0) {
 
-  G4cout << "  BeamMagnetV2: " << fNam << G4endl;
+  G4cout << "BeamMagnetV2: " << fNam << G4endl;
 
   //center position along x and z, mm
   G4double zpos = 0, xpos = 0;
@@ -72,15 +72,15 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   fman->SetDetectorField(field);
 
   //alternative stepper
-  G4ClassicalRK4 *stepper = new G4ClassicalRK4(new G4Mag_UsualEqRhs(field));
-  G4VIntegrationDriver *driver = new G4IntegrationDriver<G4ClassicalRK4>(5e-05*mm, stepper);
-  G4ChordFinder *finder = new G4ChordFinder(driver);
-  fman->SetChordFinder(finder);
-  fman->SetMinimumEpsilonStep(5e-4);
-  fman->SetMaximumEpsilonStep(0.01);
+  //G4ClassicalRK4 *stepper = new G4ClassicalRK4(new G4Mag_UsualEqRhs(field));
+  //G4VIntegrationDriver *driver = new G4IntegrationDriver<G4ClassicalRK4>(5e-05*mm, stepper);
+  //G4ChordFinder *finder = new G4ChordFinder(driver);
+  //fman->SetChordFinder(finder);
+  //fman->SetMinimumEpsilonStep(5e-4);
+  //fman->SetMaximumEpsilonStep(0.01);
 
-  //fman->CreateChordFinder(field);
-  PrintField(fman);
+  fman->CreateChordFinder(field);
+  //PrintField(fman);
 
   vol_inner->SetFieldManager(fman, true);
 
@@ -114,14 +114,22 @@ BeamMagnetV2::BeamMagnetV2(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4Transform3D main_trans(main_rot, main_pos); //HepGeom::Transform3D
   new G4PVPlacement(main_trans, main_vol, fNam, top, false, 0);
 
+  //stop and remove tracks incident on magnet vessel if set to true
+  geo->GetOptB(fNam, "remove_tracks", fRemoveTracks);
+  G4cout << "  " << fNam << ", remove_tracks: " << fRemoveTracks << G4endl;
+
 }//BeamMagnetV2
 
 //_____________________________________________________________________________
 G4bool BeamMagnetV2::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //remove the track entering the magnet vessel
-  G4Track *track = step->GetTrack();
-  track->SetTrackStatus(fKillTrackAndSecondaries);
+  if(fRemoveTracks) {
+
+    //remove the track entering the magnet vessel
+    G4Track *track = step->GetTrack();
+    track->SetTrackStatus(fKillTrackAndSecondaries);
+
+  }
 
   return true;
 

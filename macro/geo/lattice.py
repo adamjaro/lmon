@@ -10,9 +10,11 @@ def main():
 
     #magnets to print
     mag = ["Q1ER_6", "Q2ER_6", "D2ER_6", "Q3ER_6"]
+    #mag = ["O3ER_6", "Q3ER_6"]
 
     #parameters for the magnets
     par = ["B_Field", "B_Gradient", "Entrance_X", "Entrance_Z", "Exit_X", "Exit_Z", "Angle"]
+    #par = ["Beta_X", "Beta_Y"]
 
     inp = open(infile, "r")
 

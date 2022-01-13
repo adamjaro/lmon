@@ -10,15 +10,17 @@
 #/lmon/construct/geometry config/geom_test.in
 
 #input
-/lmon/input/type gun
-/gun/energy 18 GeV
-/gun/particle e-
-/gun/direction 0 0 -1
+#/lmon/input/type gun
+#/gun/energy 18 GeV
+#/gun/particle e-
+#/gun/particle gamma
+#/gun/direction 0 0 -1
 
-#/lmon/input/type hepmc
+/lmon/input/type hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_120kevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
+/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 
 #/lmon/input/type tparticle
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root
@@ -34,8 +36,8 @@
 /vis/verbose errors
 #/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
-/vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
-#/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
+#/vis/viewer/set/lightsThetaPhi -45 -45 deg # luminosity side
+/vis/viewer/set/lightsThetaPhi 45 45 deg # tagger side
 #
 # Draw geometry:
 /vis/drawVolume
@@ -45,7 +47,9 @@
 /vis/viewer/set/viewpointThetaPhi -45 -45
 #/vis/viewer/set/viewpointThetaPhi 45 45 deg
 
-/vis/viewer/set/targetPoint 0 0 -9500 mm
+#/vis/viewer/set/targetPoint 0 0 -5300 mm
+#/vis/viewer/set/targetPoint 0 0 -7600 mm
+#/vis/viewer/set/targetPoint 0 0 -9500 mm
 #/vis/viewer/set/targetPoint -238 100 -20000 mm  # Tagger 1
 #/vis/viewer/set/targetPoint -233 100 -20350 mm  # Tagger 1 end
 #/vis/viewer/set/targetPoint -243 0 -20350 mm
@@ -54,7 +58,7 @@
 #/vis/viewer/set/targetPoint -148 100 -14999 mm
 #/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
-#/vis/viewer/set/targetPoint -462 0 -37696 mm
+/vis/viewer/set/targetPoint -462 0 -37696 mm
 
 #/vis/scene/add/text -1400 0 -26000 mm 15 0 0 Collimator
 
@@ -62,7 +66,7 @@
 /vis/viewer/zoom 2.
 
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 0 20 mm
+#/vis/scene/add/axes 0 0 -10 10 mm
 
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:

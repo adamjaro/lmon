@@ -1,7 +1,11 @@
 
 #all components
 
+include fields_18GeV_pro2.in
+
 include beam_magnets_pro2.in
+
+include central_beampipe_pro2.in
 
 include vacuum_pro2.in
 
@@ -12,5 +16,6 @@ new top topmain
   topmain.xsiz = 2000 # mm
   topmain.ysiz = 2000 # mm
   topmain.zsiz = 40000 # mm
+  topmain.material = G4_AIR
   #topmain.zsiz = 100000 # mm
 
