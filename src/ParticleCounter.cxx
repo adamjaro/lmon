@@ -136,6 +136,7 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
   fHitX.push_back( hp.x()/mm );
   fHitY.push_back( hp.y()/mm );
   fHitZ.push_back( hp.z()/mm );
+  fHitParentID.push_back( track->GetParentID() );
 
   //G4cout << track->GetTrackID() << " " << track->GetDynamicParticle()->GetPDGcode() << " " << track->GetTotalEnergy()/GeV;
   //G4cout << " " << hp.x() << " " << hp.y() << " " << hp.z() << G4endl;
@@ -156,6 +157,7 @@ void ParticleCounter::CreateOutput(TTree *tree) {
   u.AddBranch("_HitX", &fHitX);
   u.AddBranch("_HitY", &fHitY);
   u.AddBranch("_HitZ", &fHitZ);
+  u.AddBranch("_HitParentID", &fHitParentID);
 
 }//CreateOutput
 
@@ -167,6 +169,7 @@ void ParticleCounter::ClearEvent() {
   fHitX.clear();
   fHitY.clear();
   fHitZ.clear();
+  fHitParentID.clear();
 
 }//ClearEvent
 

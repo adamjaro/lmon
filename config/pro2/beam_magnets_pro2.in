@@ -86,8 +86,6 @@ new ConeBeam beam_Q1Q2
   beam_Q1Q2.rmin1 = Q1eR_InnerRadius
   beam_Q1Q2.rmax1 = Q1eR_InnerRadius+2.
 
-
-
 #counter at Q3eR
 const Q3eR_det_DZ 10. # mm
 

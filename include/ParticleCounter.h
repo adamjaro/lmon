@@ -38,6 +38,7 @@ class ParticleCounter: public Detector, public G4VSensitiveDetector {
     std::vector<Float_t> fHitX; // hit position in x, mm
     std::vector<Float_t> fHitY; // hit position in y, mm
     std::vector<Float_t> fHitZ; // hit position in z, mm
+    std::vector<Int_t> fHitParentID; // parent ID for track in hit
 
 };
 

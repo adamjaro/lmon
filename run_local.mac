@@ -32,6 +32,6 @@
 #/lmon/output/name data/ew/ew1bx2.root
 
 
-/run/beamOn 20000
+#/run/beamOn 20000
 #/units/list
 

@@ -9,6 +9,8 @@ include central_beampipe_pro2.in
 
 include vacuum_pro2.in
 
+include geom_lowQ2_pro2.in
+
 
 #common top volume
 new top topmain

@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 5
     funclist = []
     funclist.append( make_theta_allE ) # 0
     funclist.append( make_sig_E ) # 1
@@ -261,14 +261,14 @@ def compare_bh_E():
     smax = 1.5e2
 
     inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root", 171.29]
-    inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g18x275/evt.root", 171.14]
+    inBH  = ["/home/jaroslav/sim/bhgen/data/g18x275_emin0p5_100Mevt/evt.root", 171.14]
     #inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_10x100_Lif_emin0p5_beff3_5Mevt.root", 123.83]
     #inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g10x100/evt.root", 123.847]
     #inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_5x41_Lif_emin0p5_beff3_5Mevt.root", 79.18]
     #inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g5x41/evt.root", 1.74425]
 
     gLif = make_sigma(inLif[0], "true_phot_E", ebin, emin, emax, inLif[1])
-    gBH  = make_sigma(inBH[0], "phot_en", ebin, emin, emax, inBH[1], "prim_tree")
+    gBH  = make_sigma(inBH[0], "phot_en", ebin, emin, emax, inBH[1], "bhgen_tree")
 
     gStyle.SetPadTickY(1)
     can = ut.box_canvas()
@@ -303,7 +303,7 @@ def compare_bh_E():
 
     gPad.SetGrid()
 
-    #ut.invert_col(gPad)
+    ut.invert_col(gPad)
     can.SaveAs("01fig.pdf")
 
 #compare_bh_E
@@ -314,7 +314,7 @@ def compare_bh_theta():
     #cross section vs. photon polar angle, comparison with bhgen-eic
 
     tmin = 0
-    tmax = 5
+    tmax = 10
     tbin = 0.03
 
     smin = 1e-3
@@ -325,14 +325,14 @@ def compare_bh_theta():
     #smin = 1e-3 #  1e-2
 
     inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root", 171.29]
-    inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g18x275/evt.root", 171.14]
+    inBH  = ["/home/jaroslav/sim/bhgen/data/g18x275_emin0p5_100Mevt/evt.root", 171.14]
     #inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_10x100_Lif_emin0p5_beff3_5Mevt.root", 123.83]
     #inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g10x100/evt.root", 123.847]
     #inLif = ["/home/jaroslav/sim/GETaLM_data/lumi/lumi_5x41_Lif_emin0p5_beff3_5Mevt.root", 79.18]
     #inBH  = ["/home/jaroslav/sim/bhgen/bhgen-eic/runs/g5x41/evt.root", 1.74425]
 
     gLif = make_sigma_2(inLif[0], "(TMath::Pi()-true_phot_theta)*1000", tbin, tmin, tmax, inLif[1])
-    gBH  = make_sigma_2(inBH[0], "phot_theta*1000", tbin, tmin, tmax, inBH[1], "prim_tree")
+    gBH  = make_sigma_2(inBH[0], "(TMath::Pi()-phot_theta)*1000", tbin, tmin, tmax, inBH[1], "bhgen_tree")
 
     gStyle.SetPadTickY(1)
     can = ut.box_canvas()
@@ -369,7 +369,7 @@ def compare_bh_theta():
 
     gPad.SetGrid()
 
-    #ut.invert_col(gPad)
+    ut.invert_col(gPad)
     can.SaveAs("01fig.pdf")
 
 #compare_bh_theta
@@ -379,17 +379,21 @@ def proton_pt():
 
     ptmin = 0
     ptmax = 800
-    ptbin = 10
+    ptbin = 5
 
     can = ut.box_canvas()
 
-    inp = TFile.Open("/home/jaroslav/sim/bhgen/bhgen-eic/runs/g18x275/evt.root")
-    tree = inp.Get("prim_tree")
+    #inp = TFile.Open("/home/jaroslav/sim/bhgen/bhgen-eic/runs/g18x275/evt.root")
+    #tree = inp.Get("prim_tree")
+    inp = TFile.Open("/home/jaroslav/sim/bhgen/data/g18x275_emin0p5_100Mevt/evt.root")
+    tree = inp.Get("bhgen_tree")
     hPt18 = ut.prepare_TH1D("hPt18", ptbin, ptmin, ptmax)
     tree.Draw("p_pt*1e3 >> hPt18")
 
-    inp2 = TFile.Open("/home/jaroslav/sim/bhgen/bhgen-eic/runs/g10x100/evt.root")
-    tree2 = inp2.Get("prim_tree")
+    #inp2 = TFile.Open("/home/jaroslav/sim/bhgen/bhgen-eic/runs/g10x100/evt.root")
+    #tree2 = inp2.Get("prim_tree")
+    inp2 = TFile.Open("/home/jaroslav/sim/bhgen/data/g10x100_emin0p5_100Mevt/evt.root")
+    tree2 = inp2.Get("bhgen_tree")
     hPt10 = ut.prepare_TH1D("hPt10", ptbin, ptmin, ptmax)
     tree2.Draw("p_pt*1e3 >> hPt10")
 

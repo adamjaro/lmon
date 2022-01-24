@@ -1,0 +1,29 @@
+
+#geometry for low Q^2 taggers
+
+#Tagger 1
+
+const Tag_1_DZ 10. # mm
+
+new ParticleCounter lowQ2s1
+
+  lowQ2s1.dx = Tag1_size_X
+  lowQ2s1.dy = Tag1_size_Y
+  lowQ2s1.dz = Tag_1_DZ
+  lowQ2s1.zpos = (Tag1_Length/2.)-Tag_1_DZ/2.
+  lowQ2s1.place_into = Tagger1box
+  lowQ2s1.remove_tracks = 1
+
+#Tagger 2
+
+const Tag_2_DZ 10. # mm
+
+new ParticleCounter lowQ2s2
+
+  lowQ2s2.dx = Tag2_size_X
+  lowQ2s2.dy = Tag2_size_Y
+  lowQ2s2.dz = Tag_2_DZ
+  lowQ2s2.zpos = (Tag2_Length/2.)-Tag_2_DZ/2.
+  lowQ2s2.place_into = Tagger2box
+  lowQ2s2.remove_tracks = 1
+
