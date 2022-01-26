@@ -131,13 +131,22 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
   const G4ThreeVector hp = step->GetPreStepPoint()->GetPosition();
 
   //add the hit
+  ParticleCounterHits::CounterHit& hit = fHits.Hit();
+  hit.pdg = track->GetDynamicParticle()->GetPDGcode();
+  hit.en = en_step/GeV;
+  hit.x = hp.x()/mm;
+  hit.y = hp.y()/mm;
+  hit.z = hp.z()/mm;
+  hit.parentID = track->GetParentID();
+  fHits.AddHit();
+/*
   fHitPdg.push_back( track->GetDynamicParticle()->GetPDGcode() );
   fHitEn.push_back( en_step/GeV );
   fHitX.push_back( hp.x()/mm );
   fHitY.push_back( hp.y()/mm );
   fHitZ.push_back( hp.z()/mm );
   fHitParentID.push_back( track->GetParentID() );
-
+*/
   //G4cout << track->GetTrackID() << " " << track->GetDynamicParticle()->GetPDGcode() << " " << track->GetTotalEnergy()/GeV;
   //G4cout << " " << hp.x() << " " << hp.y() << " " << hp.z() << G4endl;
 
@@ -149,7 +158,9 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
 void ParticleCounter::CreateOutput(TTree *tree) {
 
   //output from ParticleCounter
+  fHits.CreateOutput(fNam, tree);
 
+/*
   DetUtils u(fNam, tree);
 
   u.AddBranch("_HitPdg", &fHitPdg);
@@ -158,19 +169,21 @@ void ParticleCounter::CreateOutput(TTree *tree) {
   u.AddBranch("_HitY", &fHitY);
   u.AddBranch("_HitZ", &fHitZ);
   u.AddBranch("_HitParentID", &fHitParentID);
-
+*/
 }//CreateOutput
 
 //_____________________________________________________________________________
 void ParticleCounter::ClearEvent() {
 
+  fHits.ClearEvent();
+/*
   fHitPdg.clear();
   fHitEn.clear();
   fHitX.clear();
   fHitY.clear();
   fHitZ.clear();
   fHitParentID.clear();
-
+*/
 }//ClearEvent
 
 

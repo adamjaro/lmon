@@ -67,7 +67,8 @@ target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB}
 add_executable(${BIN} run.cxx)
 target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${Boost_LIBRARIES} ${COMPONENT_LIBS})
 
-
+#analysis codes
+add_subdirectory(analysis)
 
 
 

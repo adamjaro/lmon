@@ -9,6 +9,7 @@ class G4Step;
 
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
+#include "ParticleCounterHits.h"
 
 class ParticleCounter: public Detector, public G4VSensitiveDetector {
 
@@ -31,6 +32,9 @@ class ParticleCounter: public Detector, public G4VSensitiveDetector {
     G4String fNam; //detector name
 
     G4bool fRemoveTracks; // stop and remove tracks incident on the counter
+
+    //hits
+    ParticleCounterHits fHits;
 
     //hits array
     std::vector<Int_t> fHitPdg; // particle pdg

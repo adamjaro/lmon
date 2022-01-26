@@ -10,17 +10,17 @@
 #/lmon/construct/geometry config/geom_test.in
 
 #input
-#/lmon/input/type gun
-#/gun/energy 18 GeV
-#/gun/particle e-
+/lmon/input/type gun
+/gun/energy 10 GeV
+/gun/particle e-
 #/gun/particle gamma
-#/gun/direction 0 0 -1
+/gun/direction 0 0 -1
 
-/lmon/input/type hepmc
+#/lmon/input/type hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_120kevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
-/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
+#/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 
 #/lmon/input/type tparticle
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root
@@ -51,13 +51,13 @@
 #/vis/viewer/set/targetPoint 0 0 -5300 mm
 #/vis/viewer/set/targetPoint 0 0 -7600 mm
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
-#/vis/viewer/set/targetPoint -238 100 -20000 mm  # Tagger 1
+/vis/viewer/set/targetPoint -238 100 -20000 mm  # Tagger 1
 #/vis/viewer/set/targetPoint -233 100 -20350 mm  # Tagger 1 end
 #/vis/viewer/set/targetPoint -243 0 -20350 mm
 #/vis/viewer/set/targetPoint -214 100 -18500 mm  # Exit window
 #/vis/viewer/set/targetPoint 0 0 -18500 mm
 #/vis/viewer/set/targetPoint -148 100 -14999 mm
-/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
+#/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
 #/vis/viewer/set/targetPoint -462 0 -37696 mm
 

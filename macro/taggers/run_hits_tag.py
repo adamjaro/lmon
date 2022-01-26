@@ -18,12 +18,12 @@ def main():
     hits = ParticleCounterTag()
 
     #inputs
-    #indir = "/home/jaroslav/sim/lmon"
-    indir = "/home/jaroslav/sim/lmon/data/taggers/tag1a/0000"
+    indir = "/home/jaroslav/sim/lmon"
+    #indir = "/home/jaroslav/sim/lmon/data/taggers/tag1a/0000"
     inlist = glob(indir+"/lmon.root")
 
     #geometry
-    hits.geo = rt.GeoParser("../../config/geom_all.in")
+    hits.geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
 
     #output
     #hits.outfile = indir+"/hits_spect.root"
