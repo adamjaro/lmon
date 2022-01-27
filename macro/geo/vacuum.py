@@ -21,12 +21,12 @@ class vacuum:
         self.points.append( TVector2(self.geo.GetD(nam, hnam), mult2*self.geo.GetD(nam, vnam)) )
 
     #_____________________________________________________________________________
-    def add_point_2(self, hnam, vnam):
+    def add_point_2(self, hnam, vnam, mult2=1.):
 
         hnam = hnam.split(".")
         vnam = vnam.split(".")
 
-        self.points.append( TVector2(self.geo.GetD(hnam[0], hnam[1]), self.geo.GetD(vnam[0], vnam[1])) )
+        self.points.append( TVector2(self.geo.GetD(hnam[0], hnam[1]), mult2*self.geo.GetD(vnam[0], vnam[1])) )
 
     #_____________________________________________________________________________
     def draw(self):

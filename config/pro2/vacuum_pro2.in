@@ -12,7 +12,8 @@ new BoxSegment ExitWinBox
   ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2.
 
 #wall thickness at tagger section
-const vac_delta 10. # mm
+#const vac_delta 10. # mm
+const vac_delta 2. # mm
 
 #inner points at Q3eR
 const vac_zQT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
@@ -105,7 +106,8 @@ new BoxSegment Tagger1box
 const Tag2_size_X 200. # mm
 const Tag2_size_Y 200. # mm
 const Tag2_pos_Z -37000. # mm
-const Tag2_Theta Tag1_Theta
+#const Tag2_Theta Tag1_Theta
+const Tag2_Theta 0.03 # rad
 const Tag2_Length Tag1_Length
 
 const vac_tag2_xBI vac_xB-(vac_zB-Tag2_pos_Z)*tan(vac_phiB)
@@ -148,7 +150,8 @@ new BeamDrift vac_B2
   vac_B2.z1TI = vac_zBTI
   vac_B2.x1TI = vac_xBTI
 
-  vac_B2.vis = 1:0:0:2
+  vac_B2.vis = 1:0:0:3
+  vac_B2.vis_inout = 1:0:0:2
 
 #drift section in front of tagger 1
 new BeamDrift vac_tag1
@@ -168,7 +171,8 @@ new BeamDrift vac_tag1
   vac_tag1.x1BI = vac_tag1_xWA
   vac_tag1.x1TI = vac_xWI
 
-  vac_tag1.vis = 0:1:0:2
+  vac_tag1.vis = 0:1:0:3
+  vac_tag1.vis_inout = 1:0:0:2
 
 #vacuum in front of tagger 1
 new BeamDrift vac_win_tag1
@@ -193,8 +197,8 @@ new BeamDrift vac_win_tag1
   vac_win_tag1.z1TI = vac_zBO
   vac_win_tag1.x1TI = vac_xBO
 
-  vac_win_tag1.vis = 1:0:1:2
-
+  vac_win_tag1.vis = 1:0:1:3
+  vac_win_tag1.vis_inout = 1:0:0:2
 
 #drift section besides tagger 1
 new BeamDrift vac_side_tag1
@@ -214,7 +218,8 @@ new BeamDrift vac_side_tag1
   vac_side_tag1.x1BI = vac_tag1_xBI
   vac_side_tag1.x1TI = vac_tag1_xTI
 
-  vac_side_tag1.vis = 1:1:0:2
+  vac_side_tag1.vis = 1:1:0:3
+  vac_side_tag1.vis_inout = 1:0:0:2
 
 #vacuum in front of tagger 2
 new BeamDrift vac_win_tag2
@@ -236,7 +241,8 @@ new BeamDrift vac_win_tag2
   vac_win_tag2.x1BI = vac_tag1_end_xBO
   vac_win_tag2.x1TI = vac_tag1_end_xBO
 
-  vac_win_tag2.vis = 1:0:1:2
+  vac_win_tag2.vis = 1:0:1:3
+  vac_win_tag2.vis_inout = 1:0:0:2
 
 #drift section in front of tagger 2
 new BeamDrift vac_tag2
@@ -256,7 +262,8 @@ new BeamDrift vac_tag2
   vac_tag2.x1BI = vac_tag1_end_xBO
   vac_tag2.x1TI = vac_tag1_end_xTI
 
-  vac_tag2.vis = 1:0:0:2
+  vac_tag2.vis = 1:0:0:3
+  vac_tag2.vis_inout = 1:0:0:2
 
 #drift section in front of Q3eR
 new BeamDrift vac_Q3
@@ -282,8 +289,8 @@ new BeamDrift vac_Q3
   vac_Q3.z1TI = Tag2_pos_Z
   vac_Q3.x1TI = vac_tag2_xTI
 
-  vac_Q3.vis = 0:1:0:2
-
+  vac_Q3.vis = 0:1:0:3
+  vac_Q3.vis_inout = 1:0:0:2
 
 
 

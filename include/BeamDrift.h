@@ -26,8 +26,6 @@ class BeamDrift: public Detector {
       G4double z0T, G4double x0T, G4double z0B, G4double x0B, G4double z1T, G4double x1T, G4double z1B, G4double x1B,
       G4double ysiz, G4String nam);
 
-    G4VisAttributes* ColorDecoder(GeoParser *geo);
-
 };
 
 #endif

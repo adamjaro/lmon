@@ -26,7 +26,7 @@
 //local classes
 #include "BeamDrift.h"
 #include "GeoParser.h"
-//#include "ComponentBuilder.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 using namespace boost;
@@ -85,36 +85,31 @@ BeamDrift::BeamDrift(G4String nam, GeoParser *geo, G4LogicalVolume *top):
   G4LogicalVolume *vessel_vol = new G4LogicalVolume(vessel_shape, vessel_mat, fNam+"_vessel_shape");
 
   //vessel visibility
-  vessel_vol->SetVisAttributes(ColorDecoder(geo));
-  //vessel_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
+  ColorDecoder vessel_dec("0:0:1:2"); //red:green:blue:alpha
+  vessel_vol->SetVisAttributes(vessel_dec.MakeVis(geo, fNam, "vis"));
 
-  //outer shape
-  //G4GenericTrap *shape = MakeGT(z0TO, x0TO, z0BO, x0BO, z1TO, x1TO, z1BO, x1BO, ysiz+2*delta, fNam);
-
-  //logical volume
+  //outer logical volume
   G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
-  //G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
   G4LogicalVolume *vol = new G4LogicalVolume(vessel_outer, mat, fNam);
-  vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
-  //vol->SetVisAttributes(ColorDecoder(geo));
+
+  //visibility for inner and outer volume
+  ColorDecoder inout_dec("0:0:0:3");
+
+  vol->SetVisAttributes( inout_dec.MakeVis(geo, fNam, "vis_inout") );
 
   //vessel volume in outer shape
   new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vessel_vol, fNam+"_vessel_shape", vol, false, 0);
 
   //inner volume
   G4LogicalVolume *inner_vol = new G4LogicalVolume(vessel_inner, mat, fNam+"_vessel_inner");
-  inner_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
-  //inner_vol->SetVisAttributes(ColorDecoder(geo));
+  inner_vol->SetVisAttributes( inout_dec.MakeVis(geo, fNam, "vis_inout") );
 
   //inner volume in outer shape
   new G4PVPlacement(0, G4ThreeVector(0, 0, 0), inner_vol, fNam+"_vessel_inner", vol, false, 0);
 
   //placement in top
-  G4RotationMatrix rot(G4ThreeVector(1, 0, 0), TMath::Pi()/2); //CLHEP::HepRotation
-  //G4RotationMatrix rot(G4ThreeVector(1, 0, 0), 0); //CLHEP::HepRotation
-
-  //placement in top
   G4ThreeVector pos(0, 0, 0);
+  G4RotationMatrix rot(G4ThreeVector(1, 0, 0), TMath::Pi()/2); //CLHEP::HepRotation
   G4Transform3D transform(rot, pos); //HepGeom::Transform3D
 
   new G4PVPlacement(transform, vol, fNam, top, false, 0);
@@ -149,37 +144,6 @@ G4GenericTrap *BeamDrift::MakeGT(
   return new G4GenericTrap(nam, ysiz/2, ver);
 
 }//MakeGT
-
-//_____________________________________________________________________________
-G4VisAttributes *BeamDrift::ColorDecoder(GeoParser *geo) {
-
-  G4String col("0:0:1:2"); // red:green:blue:alpha 
-  geo->GetOptS(fNam, "vis", col);
-
-  char_separator<char> sep(":");
-  tokenizer< char_separator<char> > clin(col, sep);
-  tokenizer< char_separator<char> >::iterator it = clin.begin();
-
-  stringstream st;
-  for(int i=0; i<4; i++) {
-    st << *(it++) << " ";
-  }
-
-  G4double red=0, green=0, blue=0, alpha=0;
-  st >> red >> green >> blue >> alpha;
-
-  G4VisAttributes *vis = new G4VisAttributes();
-  if(alpha < 1.1) {
-    vis->SetColor(red, green, blue, alpha);
-    vis->SetForceSolid(true);
-  } else {
-    vis->SetColor(red, green, blue);
-    vis->SetForceAuxEdgeVisible(true);
-  }
-
-  return vis;
-
-}//ColorDecoder
 
 
 

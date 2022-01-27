@@ -22,6 +22,7 @@
 //local classes
 #include "CylBeam.h"
 #include "GeoParser.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 
@@ -69,10 +70,8 @@ CylBeam::CylBeam(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
   new G4PVPlacement(0, G4ThreeVector(0, 0, 0), vol_wall, fNam+"_wall", vol_outer, false, 0);
 
   //wall visibility
-  G4VisAttributes *vis_wall = new G4VisAttributes();
-  vis_wall->SetColor(0.5, 0.5, 0.5); // gray
-  vis_wall->SetForceSolid(true);
-  vol_wall->SetVisAttributes(vis_wall);
+  ColorDecoder dec("0.5:0.5:0.5:1");
+  vol_wall->SetVisAttributes( dec.MakeVis(geo, fNam, "vis") );
 
   //outer volume in the top
   new G4PVPlacement(0, G4ThreeVector(0, 0, zpos), vol_outer, fNam, top, false, 0);

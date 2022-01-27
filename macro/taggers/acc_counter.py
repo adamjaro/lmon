@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 10
+    iplot = 11
 
     func = {}
     func[0] = acc_en_s12
@@ -622,7 +622,8 @@ def acc_en_pitheta():
 
     #2D acceptance in energy and pi - theta in mrad
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
 
     #bins in theta, mrad
     xbin = 0.2
@@ -681,7 +682,7 @@ def acc_en_pitheta():
     leg.AddEntry("", "#bf{"+lab_sel+"}", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_en_pitheta
@@ -691,7 +692,8 @@ def acc_lQ2_en():
 
     #2D acceptance in log_10(Q^2) and energy
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
 
     #bins in energy, GeV
     xbin = 0.3
@@ -758,7 +760,7 @@ def acc_lQ2_en():
     leg.AddEntry("", "#bf{"+lab_sel+"}", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_en
@@ -768,7 +770,8 @@ def acc_lQ2_pitheta():
 
     #2D acceptance in log_10(Q^2) and pi - theta in mrad
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
 
     #bins in theta, mrad
     xbin = 0.3
@@ -837,7 +840,7 @@ def acc_lQ2_pitheta():
     leg.AddEntry("", "#bf{"+lab_sel+"}", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_lQ2_pitheta

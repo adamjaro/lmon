@@ -2,20 +2,22 @@
 from ctypes import c_double
 
 import ROOT as rt
-
-from segment import segment
+from ROOT import TVector2, TGraph, TLatex
 
 #_____________________________________________________________________________
-class magnet(segment):
+class magnet:
     #_____________________________________________________________________________
     def __init__(self, nam, geo):
 
-        inner_r = c_double(0)
-        geo.GetOptD(nam, "inner_r", inner_r) # mm
-        geo.GetOptD(nam, "r1", inner_r) # mm
+        r1 = c_double(0)
+        geo.GetOptD(nam, "inner_r", r1) # mm
+        geo.GetOptD(nam, "r1", r1) # mm
+        self.r1 = r1.value
 
-        self.dx = 2.*inner_r.value
-        self.dy = 2.*inner_r.value
+        r2 = c_double(0)
+        r2.value = r1.value
+        geo.GetOptD(nam, "r2", r2) # mm
+        self.r2 = r2.value
 
         length = c_double(0)
         geo.GetOptD(nam, "length", length) # mm
@@ -39,8 +41,57 @@ class magnet(segment):
 
         self.label = ""
 
-        #draw as projection in x or y
-        self.y_project = False
+    #_____________________________________________________________________________
+    def draw(self):
+
+        #edge points around a closed contour
+        points = []
+        points.append(TVector2(-self.dz/2., -self.r2))
+        points.append(TVector2(-self.dz/2., self.r2))
+        points.append(TVector2(self.dz/2., self.r1))
+        points.append(TVector2(self.dz/2., -self.r1))
+        points.append(TVector2(-self.dz/2., -self.r2))
+
+        #rotate and move to center
+        pcen = TVector2(self.zpos, self.xpos)
+        for i in range(len(points)):
+            points[i] = points[i].Rotate(self.theta) + pcen
+
+        #export points to the graph
+        self.gbox = TGraph(len(points))
+        self.gbox.SetLineColor(self.line_col)
+        self.gbox.SetLineWidth(self.line_width)
+        self.gbox.SetFillStyle(self.fill_style)
+        self.gbox.SetFillColor(self.fill_col)
+
+        for i in range(len(points)):
+            self.gbox.SetPoint(i, points[i].X(), points[i].Y())
+
+        self.gbox.Draw("lfsame")
+
+        #label
+        if self.label == "": return
+
+        #label below the magnet
+        if self.xpos < -1.:
+            align = 32
+            vlab = (self.xpos-self.r2)*1.1
+
+        #label above the magnet
+        else:
+            align = 12
+            vlab = (self.xpos+self.r2)*1.1
+
+        self.glabel = TLatex(self.zpos, vlab, self.label)
+        self.glabel.SetTextSize(0.03)
+        self.glabel.SetTextAngle(90)
+        self.glabel.SetTextAlign(align)
+        self.glabel.Draw("same")
+
+
+
+
+
 
 
 
