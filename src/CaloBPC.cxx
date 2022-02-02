@@ -26,6 +26,7 @@
 //local headers
 #include "CaloBPC.h"
 #include "GeoParser.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 
@@ -56,7 +57,7 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
 
   //geometry for module holding the absorbers and scintillators
   G4double modz = nlay*(abso_z + scin_z); // module length along z
-  G4cout << "  " << fNam << ", modz (mm):" << modz << G4endl;
+  G4cout << "  " << fNam << ", modz (mm): " << modz << G4endl;
   G4String modnam = fNam+"_mod"; //module name
 
   //box shape for the module
@@ -69,9 +70,8 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   G4LogicalVolume *modv = new G4LogicalVolume(mods, mod_mat, modnam);
 
   //module visibility
-  G4VisAttributes *modvis = new G4VisAttributes();
-  modvis->SetColor(0, 0, 1); // blue
-  modv->SetVisAttributes(modvis);
+  ColorDecoder modvis("0:0:1:2");
+  modv->SetVisAttributes(modvis.MakeVis(geo, fNam, "mod_vis"));
 
   //put the module to the top
   G4RotationMatrix modrot(G4ThreeVector(0, 1, 0), mod_rot_y); //is typedef to CLHEP::HepRotation
@@ -99,7 +99,7 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
     G4RotationMatrix *lay_rot = 0x0;
     if( ilay%2 != 0 ) {
       lay_rot = new G4RotationMatrix();
-      lay_rot->rotateZ(90*deg);
+      lay_rot->rotateZ(-90*deg);
     }
 
     new G4PVPlacement(lay_rot, G4ThreeVector(0, 0, lay_zpos), lay_vol, lay_nam, modv, false, ilay);
@@ -118,11 +118,8 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   G4LogicalVolume *abso_vol = new G4LogicalVolume(abso_shape, abso_mat, abso_nam);
 
   //absorber visibility
-  G4VisAttributes *abso_vis = new G4VisAttributes();
-  abso_vis->SetColor(1, 0, 0, 0.5);
-  abso_vis->SetForceSolid(true);
-  abso_vol->SetVisAttributes(abso_vis);
-  //abso_vol->SetVisAttributes( G4VisAttributes::GetInvisible() );
+  ColorDecoder abso_vis("1:0:0:0.5");
+  abso_vol->SetVisAttributes(abso_vis.MakeVis(geo, fNam, "abso_vis"));
 
   //put the absorber to the layer
   new G4PVPlacement(0, G4ThreeVector(0, 0, scin_z/2.), abso_vol, abso_nam, lay_vol, false, 0);
@@ -137,16 +134,17 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   G4LogicalVolume *scin_vol = new G4LogicalVolume(scin_shape, scin_mat, fNam);
 
   //scintillator visibility
-  G4VisAttributes *scin_vis = new G4VisAttributes();
-  scin_vis->SetColor(1, 1, 0, 0.5); // yellow
-  scin_vis->SetForceSolid(true);
-  scin_vol->SetVisAttributes(scin_vis);
+  ColorDecoder scin_vis("1:1:0:0.5");
+  scin_vol->SetVisAttributes(scin_vis.MakeVis(geo, fNam, "scin_vis"));
 
   //put scintillator strips to the layer
   for(G4int ix=0; ix<fNscin; ix++) {
     //vertical strips along x
     G4double xscin_pos = ix*scin_spacing - modxy/2 + scin_ofs + scin_spacing/2;
     new G4PVPlacement(0, G4ThreeVector(xscin_pos, 0, -scin_z/2.), scin_vol, fNam, lay_vol, false, ix);
+
+    //scintillator positions for hits
+    fHits.SetScinPos(ix, xscin_pos);
   }
 
 }//CaloBPC
@@ -154,8 +152,11 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
 //_____________________________________________________________________________
 G4bool CaloBPC::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //consider only steps with energy deposit
+  //deposited energy
   G4double edep_in_step = step->GetTotalEnergyDeposit()/GeV;
+
+  //consider only steps with energy deposit
+  //if( edep_in_step < 1e-12 ) return true;
 
   //strip location
   const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
@@ -163,18 +164,8 @@ G4bool CaloBPC::ProcessHits(G4Step *step, G4TouchableHistory*) {
   G4int istrip = hnd->GetCopyNumber(); // strip index on the layer
   G4int ilay = hnd->GetCopyNumber(1); // layer index in the module
 
-  //scintillator address for the map
-  G4int iscin = ilay*fNscin + istrip;
-
-  //add the scintillator signal
-  map<G4int, ScinSig>::iterator scin_it = fScinArray.find(iscin);
-  if(scin_it == fScinArray.end()) {
-    scin_it = fScinArray.insert( make_pair(iscin, ScinSig(istrip, ilay)) ).first;
-  }
-
-  //add deposited energy for a given scintillator
-  ScinSig& scin = (*scin_it).second;
-  scin.fEdep += edep_in_step;
+  //add signal to the hit
+  fHits.AddSignal(istrip, ilay, edep_in_step);
 
   return true;
 
@@ -183,45 +174,21 @@ G4bool CaloBPC::ProcessHits(G4Step *step, G4TouchableHistory*) {
 //_____________________________________________________________________________
 void CaloBPC::FinishEvent() {
 
-  map<G4int, ScinSig>::iterator i = fScinArray.begin();
-  while( i != fScinArray.end() ) {
-
-    const ScinSig& scin = (*i).second;
-
-    //G4cout << (*i).first << " " << scin.fIlay << " " << scin.fIstrip << " " << scin.fEdep << G4endl;
-
-    fIstrip.push_back( scin.fIstrip );
-    fIlay.push_back( scin.fIlay );
-    fEdep.push_back( scin.fEdep );
-
-    i++;
-  }
+  fHits.FinishEvent();
 
 }//FinishEvent
 
 //_____________________________________________________________________________
 void CaloBPC::ClearEvent() {
 
-  //clear scintillator container and output vectors
-
-  fScinArray.clear();
-
-  fIstrip.clear();
-  fIlay.clear();
-  fEdep.clear();
+  fHits.ClearEvent();
 
 }//ClearEvent
 
 //_____________________________________________________________________________
 void CaloBPC::CreateOutput(TTree *tree) {
 
-  //base name for signals branches
-  string nam(fNam+"_scin");
-
-  //create branches for scintillator signals
-  tree->Branch((nam+"_istrip").c_str(), &fIstrip);
-  tree->Branch((nam+"_ilay").c_str(), &fIlay);
-  tree->Branch((nam+"_edep").c_str(), &fEdep);
+  fHits.CreateOutput(fNam, tree);
 
 }//CreateOutput
 

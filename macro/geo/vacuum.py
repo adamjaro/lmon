@@ -29,6 +29,14 @@ class vacuum:
         self.points.append( TVector2(self.geo.GetD(hnam[0], hnam[1]), mult2*self.geo.GetD(vnam[0], vnam[1])) )
 
     #_____________________________________________________________________________
+    def add_point_const(self, hnam, vnam, mult2=1.):
+
+        hpos = float( str(self.geo.GetConst(hnam)) )
+        vpos = float( str(self.geo.GetConst(vnam)) )
+
+        self.points.append( TVector2(hpos, mult2*vpos) )
+
+    #_____________________________________________________________________________
     def draw(self):
 
         #last point same as the first

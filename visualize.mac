@@ -64,7 +64,7 @@
 /vis/scene/add/text -500 0 -7000 mm 15 0 0 Q1eR
 /vis/scene/add/text -500 0 -9000 mm 15 0 0 Q2eR
 /vis/scene/add/text -500 0 -14000 mm 15 0 0 B2eR
-/vis/scene/add/text -1000 0 -38000 mm 15 0 0 Q2eR
+/vis/scene/add/text -1000 0 -38000 mm 15 0 0 Q3eR
 
 /vis/scene/add/text 500 0 -18500 mm 15 0 0 Exit window
 

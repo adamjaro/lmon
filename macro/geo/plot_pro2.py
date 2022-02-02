@@ -60,29 +60,35 @@ def main():
     q3.label = "Q3eR"
     q3.draw()
 
+    #vacuum from Q1eR to Q2eR
+    q1q2 = vacuum(geo)
+    q1q2.add_point_const("Q1eR_End_Z", "Q1eR_InnerRadius", -1)
+    q1q2.add_point_const("Q2eR_Start_Z", "Q1eR_InnerRadius", -1)
+    q1q2.add_point_const("Q2eR_Start_Z", "Q1eR_InnerRadius")
+    q1q2.add_point_const("Q1eR_End_Z", "Q1eR_InnerRadius")
+    q1q2.draw()
+
+    #vacuum from Q2eR to B2eR
+    q2b2 = vacuum(geo)
+    q2b2.add_point_const("Q2eR_End_Z", "Q2eR_InnerRadius", -1)
+    q2b2.add_point_const("B2eR_Start_Z", "Q2eR_InnerRadius", -1)
+    q2b2.add_point_const("B2eR_Start_Z", "Q2eR_InnerRadius")
+    q2b2.add_point_const("Q2eR_End_Z", "Q2eR_InnerRadius")
+    q2b2.draw()
+
     #beam vacuum
     bvac = vacuum(geo)
+    bvac.add_point("vac_B2", "z1BI", "x1BI")
+    bvac.add_point("vac_win_tag1", "z0BI", "x0BI")
+    bvac.add_point("vac_win_tag1", "z0TO", "x0TO")
+    bvac.add_point("vac_win_tag2", "z0BI", "x0BI")
+    bvac.add_point("vac_win_tag2", "z0TO", "x0TO")
     bvac.add_point("vac_Q3", "z0BI", "x0BI")
     bvac.add_point("vac_Q3", "z0TI", "x0TI")
     bvac.add_point_2("vac_B2.z0TO", "ExitWinBox.dx", -0.5)
     bvac.add_point("vac_B2", "z0TO", "x0TI")
     bvac.add_point("vac_B2", "z1TI", "x1TI")
-    bvac.add_point("vac_B2", "z1BI", "x1BI")
     bvac.draw()
-
-    #vacuum in front of Tagger 1
-    vac_t1 = vacuum(geo)
-    vac_t1.add_point("vac_win_tag1", "z0BI", "x0BI")
-    vac_t1.add_point("vac_win_tag1", "z0TO", "x0TO")
-    vac_t1.add_point("vac_win_tag1", "z1TI", "x1TI")
-    vac_t1.draw()
-
-    #vacuum in front of Tagger 2
-    vac_t2 = vacuum(geo)
-    vac_t2.add_point("vac_win_tag2", "z0BI", "x0BI")
-    vac_t2.add_point("vac_win_tag2", "z0TO", "x0TO")
-    vac_t2.add_point("vac_win_tag2", "z1TO", "x1TI")
-    vac_t2.draw()
 
     #Luminosity exit window
     ew = segment("ExitWinBox", geo)

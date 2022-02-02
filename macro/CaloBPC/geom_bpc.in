@@ -8,4 +8,6 @@ new top topv
 new CaloBPC bpc
 
   bpc.zpos = -90. # mm
+  bpc.abso_vis = 1:0:0:3
+  bpc.scin_vis = 1:1:0:1
 

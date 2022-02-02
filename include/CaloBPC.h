@@ -6,6 +6,7 @@
 
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
+#include "CaloBPCHits.h"
 
 class GeoParser;
 
@@ -30,19 +31,8 @@ class CaloBPC : public Detector, public G4VSensitiveDetector {
     G4String fNam; // name of detector sensitive logical volume
     G4int fNscin; // number of scintillator strips on the layer
 
-    //signal in a given scintillator
-    struct ScinSig {
-      G4int fIstrip; // strip index on the layer
-      G4int fIlay; // layer index in the module
-      G4double fEdep; // deposited energy in the scintillator
-      ScinSig(G4int istrip, G4int ilay): fIstrip(istrip), fIlay(ilay), fEdep(0) {}
-    };
-    std::map<G4int, ScinSig> fScinArray; // container for all scintillator signals
-
-    //output on scintillator signals
-    std::vector<Int_t> fIstrip; // output strip index
-    std::vector<Int_t> fIlay; // output layer index
-    std::vector<Float_t> fEdep; // output deposited energy, GeV
+    //hits
+    CaloBPCHits fHits;
 
 };
 
