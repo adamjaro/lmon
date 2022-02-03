@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 11
+    iplot = 9
 
     func = {}
     func[0] = acc_en_s12
@@ -623,7 +623,8 @@ def acc_en_pitheta():
     #2D acceptance in energy and pi - theta in mrad
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax1/hits_tag.root"
 
     #bins in theta, mrad
     xbin = 0.2
@@ -636,7 +637,7 @@ def acc_en_pitheta():
     ymax = 20
 
     #tagger 1 or 2
-    tag = 1
+    tag = 0
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")

@@ -15,11 +15,10 @@ from ParticleCounterSpect import ParticleCounterSpect
 def main():
 
     #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_tag.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     #mm
     xybin = 1.
@@ -39,8 +38,8 @@ def main():
     counter_hits = ParticleCounterSpect()
 
     # 18x275 GeV
-    #counter_hits.sigma_tot = 0.05326 # mb, quasi-real
-    counter_hits.sigma_tot = 171.29 # mb, bremsstrahlung
+    counter_hits.sigma_tot = 0.05326 # mb, quasi-real
+    #counter_hits.sigma_tot = 171.29 # mb, bremsstrahlung
     counter_hits.lumi_cmsec = 1.54e33 # cm^-2 sec^-1
     counter_hits.nbunch = 290
     counter_hits.Ee = 18. # GeV
@@ -90,7 +89,7 @@ def main():
     xtit = "#it{x} (mm)"
     ut.put_yx_tit(hXY, ytit, xtit, 1.4, 1.4)
 
-    hXY.SetZTitle("Event rate (mm^{-2} s^{-1})")
+    hXY.SetZTitle("Event rate #it{R_{A}} (mm^{-2} s^{-1})")
     hXY.SetTitleOffset(1.4, "Z")
 
     ut.set_margin_lbtr(gPad, 0.1, 0.11, 0.03, 0.15)
@@ -101,7 +100,7 @@ def main():
 
     gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #main

@@ -10,12 +10,15 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
-    funclist = []
-    funclist.append( make_all_E ) # 0
-    funclist.append( make_qrpy ) # 1
+    iplot = 3
 
-    funclist[iplot]()
+    func = {}
+    func[0] = make_all_E
+    func[1] = make_qrpy
+    func[2] = sigma_en
+    func[3] = sigma_pitheta
+
+    func[iplot]()
 
 #main
 
@@ -112,26 +115,182 @@ def make_all_E():
 #make_all_E
 
 #_____________________________________________________________________________
-def make_sigma(inp, sigma):
+def sigma_en():
 
-    lqbin = 0.2
-    lqmin = -11
-    lqmax = 5
+    #cross section as a function of electron energy
+
+    emin = 0 # GeV
+    emax = 24
+    smin = 1e-4
+    smax = 1e3 # mb
+
+    ebin = 0.2
+
+    basedir = "/home/jaroslav/sim/GETaLM_data"
+
+    g1 = make_sigma(basedir+"/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.root", "true_el_E", 0.1, emin, emax, 171.3)
+    g2 = make_sigma(basedir+"/qr/qr_18x275_T3p3_5Mevt.root", "true_el_E", ebin, emin, emax, 0.053)
+    g3 = make_sigma(basedir+"/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root", "true_el_E", ebin, emin, emax, 0.055)
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(emin, smin, emax, smax)
+    frame.Draw()
+
+    xtit = "#it{E_{e}}' (GeV)"
+    ytit = "#frac{d#it{#sigma}}{d#it{E_{e}}'} (mb/GeV)"
+    ut.put_yx_tit(frame, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.02, 0.02)
+
+    g1.SetLineColor(rt.kBlue)
+    g2.SetLineColor(rt.kRed)
+    g3.SetLineColor(rt.kGreen+1)
+    g3.SetLineStyle(rt.kDashed)
+
+    g1.Draw("lsame")
+    g2.Draw("lsame")
+    g3.Draw("lsame")
+
+    gPad.SetLogy()
+
+    gPad.SetGrid()
+
+    leg = ut.prepare_leg(0.2, 0.75, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(g1, "Bremsstrahlung", "l")
+    leg.AddEntry(g2, "Quasi-real", "l")
+    leg.AddEntry(g3, "Pythia6", "l")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#sigma_en
+
+#_____________________________________________________________________________
+def sigma_pitheta():
+
+    #cross section as a function of electron scattering angle as pi - theta in mrad
+
+    tmin = 0 # mrad
+    tmax = 25
+    smin = 1e-4
+    smax = 2e3 # mb
+
+    basedir = "/home/jaroslav/sim/GETaLM_data"
+
+    form = "(TMath::Pi()-true_el_theta)*1e3"
+
+    g1 = make_sigma_2(basedir+"/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.root", form, 0.2, tmin, tmax, 171.3, 5, 1.2)
+    g2 = make_sigma(basedir+"/qr/qr_18x275_T3p3_5Mevt.root", form, 0.2, tmin, tmax, 0.053)
+    g3 = make_sigma(basedir+"/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root", form, 0.2, tmin, tmax, 0.055)
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(tmin, smin, tmax, smax)
+    frame.Draw()
+
+    xtit = "#it{#pi - #theta_{e}}' (mrad)"
+    ytit = "#frac{d#it{#sigma}}{d#it{#theta_{e}}'} (mb/mrad)"
+    ut.put_yx_tit(frame, ytit, xtit, 1.6, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.02, 0.02)
+    g1.SetLineColor(rt.kBlue)
+    g2.SetLineColor(rt.kRed)
+    g3.SetLineColor(rt.kGreen+1)
+    g3.SetLineStyle(rt.kDashed)
+
+    g1.Draw("lsame")
+    g2.Draw("lsame")
+    g3.Draw("lsame")
+
+    leg = ut.prepare_leg(0.6, 0.75, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(g1, "Bremsstrahlung", "l")
+    leg.AddEntry(g2, "Quasi-real", "l")
+    leg.AddEntry(g3, "Pythia6", "l")
+    leg.Draw("same")
+
+    gPad.SetLogy()
+
+    gPad.SetGrid()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#sigma_pitheta
+
+#_____________________________________________________________________________
+def make_sigma(inp, plot, xbin, xmin ,xmax, sigma, tnam="ltree"):
+
+    #cross section plot from the tree
+
+    infile = TFile.Open(inp)
+    tree = infile.Get(tnam)
+
+    hx = ut.prepare_TH1D("hx", xbin, xmin, xmax)
+
+    tree.Draw(plot+" >> hx")
+
+    ut.norm_to_integral(hx, sigma)
+
+    #gx = ut.h1_to_graph(hx)
+    gx = ut.h1_to_graph_nz(hx, 1e-5)
+    gx.SetLineWidth(3)
+
+    return gx
+
+#make_sigma
+
+#_____________________________________________________________________________
+def make_sigma_2(inp, plot, xbin, xmin, xmax, sigma, xmid, bin2):
+
+    #cross section in two binning intervals from the tree
 
     infile = TFile.Open(inp)
     tree = infile.Get("ltree")
 
-    hx = ut.prepare_TH1D("hx", lqbin, lqmin, lqmax)
+    #point to start longer bins
+    #xmid = 1
+    #bin2 = xbin*10.  #  4.
+    #xmid = 1.1
+    #bin2 = xbin*6.
 
-    tree.Draw("TMath::Log10(true_Q2) >> hx")
+    hx = ut.prepare_TH1D_vec("hx", ut.get_bins_vec_2pt(xbin, bin2, xmin, xmax, xmid))
+
+    tree.Draw(plot+" >> hx")
+
+    #normalize to the width of each bin, necessary for variable binning
+    for ibin in range(hx.GetNbinsX()+1):
+        hx.SetBinContent(ibin, hx.GetBinContent(ibin)/hx.GetBinWidth(ibin))
 
     ut.norm_to_integral(hx, sigma)
 
     gx = ut.h1_to_graph(hx)
-    #gx.SetLineColor(rt.kYellow+1)
     gx.SetLineWidth(3)
 
     return gx
+
+#make_sigma_2
+
+#_____________________________________________________________________________
+#def make_sigma(inp, sigma):
+
+#    lqbin = 0.2
+#    lqmin = -11
+#    lqmax = 5
+
+#    infile = TFile.Open(inp)
+#    tree = infile.Get("ltree")
+
+#    hx = ut.prepare_TH1D("hx", lqbin, lqmin, lqmax)
+
+#    tree.Draw("TMath::Log10(true_Q2) >> hx")
+
+#    ut.norm_to_integral(hx, sigma)
+
+#    gx = ut.h1_to_graph(hx)
+#    #gx.SetLineColor(rt.kYellow+1)
+#    gx.SetLineWidth(3)
+
+#    return gx
 
 #make_sigma
 
