@@ -624,7 +624,8 @@ def acc_en_pitheta():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax1/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax2/hits_tag.root"
 
     #bins in theta, mrad
     xbin = 0.2
@@ -637,7 +638,7 @@ def acc_en_pitheta():
     ymax = 20
 
     #tagger 1 or 2
-    tag = 0
+    tag = 1
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")

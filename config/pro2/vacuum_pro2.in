@@ -12,8 +12,8 @@ new BoxSegment ExitWinBox
   ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2.
 
 #wall thickness at tagger section
-#const vac_delta 10. # mm
-const vac_delta 2. # mm
+const vac_delta 30. # mm
+#const vac_delta 2. # mm
 
 #inner points at Q3eR
 const vac_zQT Q3eR_StartZ-Q3eR_InnerRadius*sin(Q3eR_Theta)
