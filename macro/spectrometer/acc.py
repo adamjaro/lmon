@@ -18,7 +18,7 @@ from spec_acc import spec_acc
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = acc_spec
@@ -34,15 +34,15 @@ def main():
 def acc_spec():
 
     #infile = "hits_spect.root"
-    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm2ax2/hits_spect.root"
+    #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
 
     emin = 0
     emax = 19
 
-    amax = 0.07
+    amax = 0.05
 
     inp_lmon = TFile.Open(infile)
     tree_lmon = inp_lmon.Get("event")
@@ -77,7 +77,7 @@ def acc_spec():
 
     print("iacc:", iacc)
 
-    geo = rt.GeoParser("../../config/geom_all.in")
+    geo = rt.GeoParser("../../config/pro1/geom_all.in")
     length = geo.GetD("lumi_dipole", "zpos") - geo.GetD("vac_lumi_spec_mid", "z0")
     print("Length (mm):", length)
     field = 0.37 # T
@@ -95,7 +95,7 @@ def acc_spec():
     leg.AddEntry(acc.acc_func, "Geometry model", "l")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_spec

@@ -7,15 +7,16 @@ from ROOT import gROOT, gSystem
 def main():
 
     #geometry
-    geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
+    geo = rt.GeoParser("../../config/rp1/geom_rp1.in")
+    #geo = rt.GeoParser("../../config/pro2/geom_pro2.in")
     #geo = rt.GeoParser("../../config/pro2/vacuum_pro2.in")
     #geo = rt.GeoParser("../../config/pro2/beam_magnets_pro2.in")
 
     #constants to print
     #con = ["vac_phiT", "vac_phiB", "vac_xB", "vac_xBO", "vac_rQB"]
-    con = ["vac_zQB", "vac_xQB", "vac_zB", "vac_xB"]
+    #con = ["vac_zQB", "vac_xQB", "vac_zB", "vac_xB"]
     #con = ["vac_tag2_xBO", "vac_tag1_end_xBO", "vac_tag1_end_xBI", "vac_tag1_xWA", "vac_tag1_xBO"]
-    #con = ["B2eR_Theta", "B2eR_Length", "Q3eR_Theta", "Q3eR_Length"]
+    con = ["B2eR_Theta", "B2eR_Length", "Q3eR_Theta", "Q3eR_Length", "vac_LBQ", "vac_zDC", "vac_xDC"]
     #con = ["vac_rBP", "vac_zBTI", "vac_xBTI"]
 
     for i in con:

@@ -90,6 +90,49 @@ def main():
     bvac.add_point("vac_B2", "z1TI", "x1TI")
     bvac.draw()
 
+    #geometry from pro1 for luminosity
+    geo2 = rt.GeoParser("../../config/pro1/geom_all.in")
+
+    #spectrometer magnet
+    spec_mag = magnet("lumi_dipole", geo2)
+    spec_mag.label = "Spectr. dipole"
+    spec_mag.draw()
+
+    #vacuum from exit window to spectrometer magnet
+    vac_win = vacuum(geo2)
+    vac_win.add_point("vac_lumi_win_mag", "z1", "dX1", -1.)
+    vac_win.add_point("vac_lumi_win_mag", "z1", "dX1")
+    vac_win.add_point("vac_lumi_win_mag", "z0", "dX0")
+    vac_win.add_point("vac_lumi_win_mag", "z0", "dX0", -1.)
+    vac_win.draw()
+
+    #vacuum from spectrometer magnet to spectrometer detectors
+    vac_mag = vacuum(geo2)
+    vac_mag.add_point("vac_lumi_mag_spec", "z1", "dX1", -1.)
+    vac_mag.add_point("vac_lumi_mag_spec", "z1", "dX1")
+    vac_mag.add_point("vac_lumi_mag_spec", "z0", "dX0")
+    vac_mag.add_point("vac_lumi_mag_spec", "z0", "dX0", -1.)
+    vac_mag.draw()
+
+    #vacuum section from spectrometers to direct photon detector
+    vac_phot = vacuum(geo2)
+    vac_phot.add_point("vac_lumi_spec_phot", "z1", "dX1", -1.)
+    vac_phot.add_point("vac_lumi_spec_phot", "z1", "dX1")
+    vac_phot.add_point("vac_lumi_spec_phot", "z0", "dX0")
+    vac_phot.add_point("vac_lumi_spec_phot", "z0", "dX0", -1.)
+    vac_phot.draw()
+
+    #up spectrometer for both spectrometers
+    up = segment("LumiSUbox", geo2)
+    up.theta = 0
+    up.label = "Spectrometers"
+    up.draw()
+
+    #Luminosity direct photon detector
+    phot = segment("LumiDbox", geo2)
+    phot.label = "Photon detector"
+    phot.draw()
+
     #Luminosity exit window
     ew = segment("ExitWinBox", geo)
     ew.label = "Exit window"
@@ -114,7 +157,7 @@ def main():
 
     gPad.SetGrid()
 
-    ut.invert_col(gPad)
+    #ut.invert_col(gPad)
     c1.SaveAs("01fig.pdf")
 
 #main

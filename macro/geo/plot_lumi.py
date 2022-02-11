@@ -16,8 +16,8 @@ def main():
 
     zmin = -40000.
     zmax = -10100.
-    ymin = -390
-    ymax = 400.
+    ymin = -800
+    ymax = 800.
 
     c1 = TCanvas("c1","c1",1000,700)
     frame = gPad.DrawFrame(zmin, ymin, zmax, ymax) # xmin, ymin, xmax, ymax in ROOT
@@ -113,7 +113,55 @@ def main():
     leg.AddEntry(bvac.gbox, "Vacuum", "f")
     leg.Draw("same")
 
-    gPad.SetGrid()
+    l2 = ut.prepare_leg(0.64, 0.75, 0.25, 0.12, 0.027)
+    l2.AddEntry("", "Space for exit window:", "")
+    l2.AddEntry("", "Center #it{z}: "+str(ew.zpos), "")
+    l2.AddEntry("", "Size in #it{xy}: "+str(ew.dy), "")
+    l2.AddEntry("", "Lenght in #it{z}: "+str(ew.dz), "")
+    l2.Draw("same")
+
+    l3 = ut.prepare_leg(0.45, 0.75, 0.25, 0.12, 0.027)
+    l3.AddEntry("", "Specrometer dipole:", "")
+    l3.AddEntry("", "Center #it{z}: "+str(mag.zpos), "")
+    l3.AddEntry("", "Radius: "+str(mag.r1), "")
+    l3.AddEntry("", "Lenght in #it{z}: "+str(mag.dz), "")
+    l3.Draw("same")
+
+    l4 = ut.prepare_leg(0.15, 0.75, 0.25, 0.15, 0.027)
+    l4.AddEntry("", "Up detector:", "")
+    l4.AddEntry("", "Center #it{z}: "+"{0:.1f}".format(up.zpos), "")
+    l4.AddEntry("", "Center #it{y}: "+"{0:.1f}".format(up.ypos), "")
+    l4.AddEntry("", "Size in #it{xy}: "+str(up.dy), "")
+    l4.AddEntry("", "Lenght in #it{z}: "+str(up.dz), "")
+    l4.Draw("same")
+
+    l5 = ut.prepare_leg(0.1, 0.12, 0.25, 0.15, 0.027)
+    l5.AddEntry("", "Down detector:", "")
+    l5.AddEntry("", "Center #it{z}: "+"{0:.1f}".format(down.zpos), "")
+    l5.AddEntry("", "Center #it{y}: "+"{0:.1f}".format(down.ypos), "")
+    l5.AddEntry("", "Size in #it{xy}: "+str(down.dy), "")
+    l5.AddEntry("", "Lenght in #it{z}: "+str(down.dz), "")
+    l5.Draw("same")
+
+    l6 = ut.prepare_leg(0.3, 0.11, 0.25, 0.12, 0.027)
+    l6.AddEntry("", "Photon detector:", "")
+    l6.AddEntry("", "Center #it{z}: "+"{0:.1f}".format(phot.zpos), "")
+    l6.AddEntry("", "Size in #it{xy}: "+str(phot.dy), "")
+    l6.AddEntry("", "Lenght in #it{z}: "+str(phot.dz), "")
+    l6.Draw("same")
+
+    l7 = ut.prepare_leg(0.5, 0.11, 0.25, 0.12, 0.027)
+    l7.AddEntry("", "B2BeR magnet:", "")
+    l7.AddEntry("", "Center #it{z}: "+str(b2b.zpos), "")
+    l7.AddEntry("", "Radius: "+str(b2b.r1), "")
+    l7.AddEntry("", "Lenght in #it{z}: "+str(b2b.dz), "")
+    l7.Draw("same")
+
+    l8 = ut.prepare_leg(0.3, 0.92, 0.25, 0.01, 0.03)
+    l8.AddEntry("", "Luminosity layout, side view. All dimensions in mm.", "")
+    l8.Draw("same")
+
+    #gPad.SetGrid()
 
     ut.invert_col(gPad)
     c1.SaveAs("01fig.pdf")

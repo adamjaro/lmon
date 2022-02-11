@@ -5,13 +5,14 @@
 
 #detectors and components
 #/lmon/construct/geometry config/pro1/geom_all.in
-/lmon/construct/geometry config/pro2/geom_pro2.in
+#/lmon/construct/geometry config/pro2/geom_pro2.in
+/lmon/construct/geometry config/rp1/geom_rp1.in
 #/lmon/construct/geometry config/geom_beam-gas.in
 #/lmon/construct/geometry config/geom_test.in
 
 #input
 /lmon/input/type gun
-/gun/energy 10 GeV
+/gun/energy 18 GeV
 /gun/particle e-
 #/gun/particle gamma
 /gun/direction 0 0 -1
@@ -57,19 +58,19 @@
 #/vis/viewer/set/targetPoint -214 100 -18500 mm  # Exit window
 #/vis/viewer/set/targetPoint 0 0 -18500 mm
 #/vis/viewer/set/targetPoint -148 100 -14999 mm
-/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
+#/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
-#/vis/viewer/set/targetPoint -462 0 -37696 mm
+/vis/viewer/set/targetPoint -462 0 -37696 mm
 
-/vis/scene/add/text -500 0 -7000 mm 15 0 0 Q1eR
-/vis/scene/add/text -500 0 -9000 mm 15 0 0 Q2eR
-/vis/scene/add/text -500 0 -14000 mm 15 0 0 B2eR
-/vis/scene/add/text -1000 0 -38000 mm 15 0 0 Q3eR
+#/vis/scene/add/text -500 0 -7000 mm 15 0 0 Q1eR
+#/vis/scene/add/text -500 0 -9000 mm 15 0 0 Q2eR
+#/vis/scene/add/text -500 0 -14000 mm 15 0 0 B2eR
+#/vis/scene/add/text -1000 0 -38000 mm 15 0 0 Q3eR
 
-/vis/scene/add/text 500 0 -18500 mm 15 0 0 Exit window
+#/vis/scene/add/text 500 0 -18500 mm 15 0 0 Exit window
 
-/vis/scene/add/text -1000 0 -20000 mm 15 0 0 Tagger 1
-/vis/scene/add/text -1000 0 -37000 mm 15 0 0 Tagger 2
+#/vis/scene/add/text -1000 0 -20000 mm 15 0 0 Tagger 1
+#/vis/scene/add/text -1000 0 -37000 mm 15 0 0 Tagger 2
 
 # Specify zoom value:
 /vis/viewer/zoom 2.
