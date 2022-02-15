@@ -1,0 +1,111 @@
+
+#tagger planes in RP1
+
+#spacing in z for individual planes
+const tag_iz 300. # mm
+
+#transverse size for the planes
+const tag_size_xy 150. # mm
+
+#plane thickness along z
+const tag_size_z 1. # mm
+
+#distance between plane edge and Q3eR axis
+const tag_dist_Q3 40. # mm
+
+#global z start for planes in tagger 1
+const tag_s1_z -20000. # mm
+
+#global z start for planes in tagger 2
+const tag_s2_z -36500. # mm
+
+#local x position for the planes
+const tag_pos_x -0.5*tag_size_xy+vac_dxQ-tag_dist_Q3
+
+#local z position for starting plane in tagger 1
+const tag_s1_start_z (tag_s1_z-vac_zQ)*(1./(cos(vac_TQ3)))-0.5*vac_LBQ
+
+#local z position for starting plane in tagger 2
+const tag_s2_start_z (tag_s2_z-vac_zQ)*(1./(cos(vac_TQ3)))-0.5*vac_LBQ
+
+#tagger 1, plane A
+new ParticleCounter lowQ2_s1A
+
+  lowQ2_s1A.zpos = tag_s1_start_z
+  lowQ2_s1A.xpos = tag_pos_x
+  lowQ2_s1A.dx = tag_size_xy
+  lowQ2_s1A.dy = tag_size_xy
+  lowQ2_s1A.dz = tag_size_z
+  lowQ2_s1A.place_into = vac_B2Q3
+
+#tagger 1, plane B
+new ParticleCounter lowQ2_s1B
+
+  lowQ2_s1B.zpos = tag_s1_start_z-tag_iz
+  lowQ2_s1B.xpos = tag_pos_x
+  lowQ2_s1B.dx = tag_size_xy
+  lowQ2_s1B.dy = tag_size_xy
+  lowQ2_s1B.dz = tag_size_z
+  lowQ2_s1B.place_into = vac_B2Q3
+
+#tagger 1, plane C
+new ParticleCounter lowQ2_s1C
+
+  lowQ2_s1C.zpos = tag_s1_start_z-2.*tag_iz
+  lowQ2_s1C.xpos = tag_pos_x
+  lowQ2_s1C.dx = tag_size_xy
+  lowQ2_s1C.dy = tag_size_xy
+  lowQ2_s1C.dz = tag_size_z
+  lowQ2_s1C.place_into = vac_B2Q3
+
+#tagger 2, plane A
+new ParticleCounter lowQ2_s2A
+
+  lowQ2_s2A.zpos = tag_s2_start_z
+  lowQ2_s2A.xpos = tag_pos_x
+  lowQ2_s2A.dx = tag_size_xy
+  lowQ2_s2A.dy = tag_size_xy
+  lowQ2_s2A.dz = tag_size_z
+  lowQ2_s2A.place_into = vac_B2Q3
+
+#tagger 2, plane B
+new ParticleCounter lowQ2_s2B
+
+  lowQ2_s2B.zpos = tag_s2_start_z-tag_iz
+  lowQ2_s2B.xpos = tag_pos_x
+  lowQ2_s2B.dx = tag_size_xy
+  lowQ2_s2B.dy = tag_size_xy
+  lowQ2_s2B.dz = tag_size_z
+  lowQ2_s2B.place_into = vac_B2Q3
+
+#tagger 2, plane C
+new ParticleCounter lowQ2_s2C
+
+  lowQ2_s2C.zpos = tag_s2_start_z-2.*tag_iz
+  lowQ2_s2C.xpos = tag_pos_x
+  lowQ2_s2C.dx = tag_size_xy
+  lowQ2_s2C.dy = tag_size_xy
+  lowQ2_s2C.dz = tag_size_z
+  lowQ2_s2C.place_into = vac_B2Q3
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

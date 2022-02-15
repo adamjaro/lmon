@@ -99,18 +99,20 @@ void ParticleCounterHits::ConnectInput(string nam, TTree *tree) {
 }//ConnectInput
 
 //_____________________________________________________________________________
-ParticleCounterHits::CounterHit& ParticleCounterHits::LoadHit(int i) {
+ParticleCounterHits::CounterHit ParticleCounterHits::GetHit(int i) {
 
-  fHit.pdg = fHitPdg->at(i);
-  fHit.en = fHitEn->at(i);
-  fHit.x = fHitX->at(i);
-  fHit.y = fHitY->at(i);
-  fHit.z = fHitZ->at(i);
-  fHit.parentID = fHitParentID->at(i);
+  ParticleCounterHits::CounterHit hit;
 
-  return fHit;
+  hit.pdg = fHitPdg->at(i);
+  hit.en = fHitEn->at(i);
+  hit.x = fHitX->at(i);
+  hit.y = fHitY->at(i);
+  hit.z = fHitZ->at(i);
+  hit.parentID = fHitParentID->at(i);
 
-}//LoadHit
+  return hit;
+
+}//GetHit
 
 //_____________________________________________________________________________
 void ParticleCounterHits::LocalFromGeo(G4String nam, GeoParser *geo) {
@@ -136,17 +138,22 @@ void ParticleCounterHits::LocalFromGeo(G4String nam, GeoParser *geo) {
 }//LocalFromGeo
 
 //_____________________________________________________________________________
-void ParticleCounterHits::GlobalToLocal() {
+ParticleCounterHits::CounterHit ParticleCounterHits::GlobalToLocal(CounterHit in) {
 
-  TVector3 pos(fHit.x-fXpos, fHit.y-fYpos, fHit.z-fZpos);
+  CounterHit hit(in);
+
+  TVector3 pos(in.x-fXpos, in.y-fYpos, in.z-fZpos);
   pos.RotateY(-fTheta_y);
   pos.RotateX(-fTheta_x);
 
-  fHit.x = pos.X();
-  fHit.y = pos.Y();
-  fHit.z = pos.Z();
+  hit.x = pos.X();
+  hit.y = pos.Y();
+  hit.z = pos.Z();
+
+  return hit;
 
 }//GlobalToLocal
+
 
 
 

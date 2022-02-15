@@ -76,14 +76,7 @@ new BoxSegment vac_B2Q3
   vac_B2Q3.xpos = vac_xDC
   vac_B2Q3.theta = vac_TQ3
 
-new ParticleCounter rp1
 
-  rp1.dx = 100
-  rp1.dy = 100
-  rp1.dz = 10
-  rp1.zpos = 5-vac_LBQ/2.
-  rp1.xpos = vac_dxQ
-  rp1.place_into = vac_B2Q3
 
 
 

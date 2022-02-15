@@ -21,6 +21,17 @@ class ParticleCounterHits {
     public:
 
       CounterHit(): pdg(0), en(0), x(0), y(0), z(0), parentID(0) {}
+      CounterHit(const CounterHit& h): pdg(h.pdg), en(h.en), x(h.x),
+        y(h.y), z(h.z), parentID(h.parentID) {}
+      CounterHit& operator=(const CounterHit& h) {
+        pdg = h.pdg;
+        en = h.en;
+        x = h.x;
+        y = h.y;
+        z = h.z;
+        parentID = h.parentID;
+        return *this;
+      }
 
       Int_t pdg; // particle pdg
       Float_t en; // hit energy, GeV
@@ -35,10 +46,10 @@ class ParticleCounterHits {
 
     void ConnectInput(std::string nam, TTree *tree);
     int GetNHits() { return fHitPdg->size(); }
-    CounterHit& LoadHit(int i);
+    CounterHit GetHit(int i);
 
     void LocalFromGeo(G4String nam, GeoParser *geo);
-    void GlobalToLocal();
+    CounterHit GlobalToLocal(CounterHit in);
 
   private:
 

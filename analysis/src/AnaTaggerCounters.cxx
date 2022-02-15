@@ -121,6 +121,7 @@ int main(int argc, char* argv[]) {
 
   //event loop
   Long64_t nev = tree.GetEntries();
+  //Long64_t nev = 220;
   Long64_t iprint = nev/12;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
@@ -136,12 +137,12 @@ int main(int argc, char* argv[]) {
     s1_nhit = 0;
     for(int ihit=0; ihit<hits_tag1.GetNHits(); ihit++) {
 
-      ParticleCounterHits::CounterHit& hit = hits_tag1.LoadHit(ihit);
+      ParticleCounterHits::CounterHit hit = hits_tag1.GetHit(ihit);
 
       if( hit.parentID != 0 ) continue;
       s1_nhit++;
 
-      hits_tag1.GlobalToLocal();
+      hit = hits_tag1.GlobalToLocal(hit);
 
       s1_en = hit.en;
       s1_x = hit.x;
@@ -149,8 +150,8 @@ int main(int argc, char* argv[]) {
       s1_z = hit.z;
       s1_pdg = hit.pdg;
 
-      //cout << iev << " " << ihit << " " << hit.pdg  << " " << hit.parentID  << " " << hit.en;
-      //cout << " " << hit.x << " " << hit.y << " " << hit.z << endl;
+      //cout << iev << " " << ihit << " " << hit.pdg  << " " << hit.parentID  << " " << hit.en << " ";
+      //cout << iev << " " << hit.x << " " << hit.y << " " << hit.z << endl;
 
     }
 
@@ -163,12 +164,12 @@ int main(int argc, char* argv[]) {
     s2_nhit = 0;
     for(int ihit=0; ihit<hits_tag2.GetNHits(); ihit++) {
 
-      ParticleCounterHits::CounterHit& hit = hits_tag2.LoadHit(ihit);
+      ParticleCounterHits::CounterHit hit = hits_tag2.GetHit(ihit);
 
       if( hit.parentID != 0 ) continue;
       s2_nhit++;
 
-      hits_tag2.GlobalToLocal();
+      hit = hits_tag2.GlobalToLocal(hit);
 
       s2_en = hit.en;
       s2_x = hit.x;
