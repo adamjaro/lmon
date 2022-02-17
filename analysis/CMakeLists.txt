@@ -1,6 +1,6 @@
 
 #binary executables
-set(BIN AnaTaggerCounters RecoBPC AnaRPCounters)
+set(BIN AnaTaggerCounters RecoBPC AnaRPCounters AnaRPRecoCreate)
 
 foreach(ibin ${BIN})
   add_executable(${ibin} src/${ibin}.cxx)

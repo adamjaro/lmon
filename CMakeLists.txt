@@ -57,6 +57,9 @@ add_subdirectory(calo)
 #polarimetry
 add_subdirectory(polarimetry)
 
+#Roman Pots
+add_subdirectory(roman_pots)
+
 #base shared library
 #add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})

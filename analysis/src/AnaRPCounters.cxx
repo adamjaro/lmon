@@ -18,118 +18,10 @@
 
 //local classes
 #include "GeoParser.h"
-#include "ParticleCounterHits.h"
+#include "TagCounter.h"
 
 using namespace std;
 using namespace boost;
-
-//_____________________________________________________________________________
-class plane {
-public:
-
-  //_____________________________________________________________________________
-  plane(string nam, TTree *tree, GeoParser *geo): fNam(nam) {
-
-    fHits.ConnectInput("lowQ2_"+fNam, tree);
-    fHits.LocalFromGeo("vac_B2Q3", geo);
-    fOfsX = geo->GetD("lowQ2_"+fNam, "xpos");
-
-    ptree = new TTree(fNam.c_str(), fNam.c_str());
-    ptree->Branch("x", &fX, "x/D");
-    ptree->Branch("y", &fY, "y/D");
-    ptree->Branch("z", &fZ, "Z/D");
-  }//plane
-
-  //_____________________________________________________________________________
-  bool is_hit() {
-
-    int nhit = 0;
-    //hit loop
-    for(int ihit=0; ihit<fHits.GetNHits(); ihit++) {
-
-      ParticleCounterHits::CounterHit hit = fHits.GetHit(ihit);
-      if( hit.parentID != 0 ) continue;
-
-      hit = fHits.GlobalToLocal(hit);
-      fX = hit.x - fOfsX;
-      fY = hit.y;
-      fZ = hit.z;
-      nhit++;
-    }//hit loop
-
-    if( nhit <= 0 ) return false;
-
-    ptree->Fill();
-    return true;
-
-  }//is_hit
-
-  //_____________________________________________________________________________
-  void write_outputs() {
-    cout << "Plane " << fNam << ": " << ptree->GetEntries() << endl;
-    ptree->Write();
-  }//write_outputs
-
-private:
-
-  string fNam; // plane name
-  ParticleCounterHits fHits; // hits for the plane
-  TTree *ptree; // plane output tree
-  Double_t fX; // x of primary hit, mm
-  Double_t fY; // y of primary hit, mm
-  Double_t fZ; // z of primary hit, mm
-  Double_t fOfsX; // offset in local x position, mm
-
-};//plane
-
-//_____________________________________________________________________________
-class tagger {
-public:
-
-  //_____________________________________________________________________________
-  tagger(string nam, TTree *tree , TTree *otree, GeoParser *geo): fNam(nam),
-      fIsHit(0), fNPlane(0) {
-
-    //planes for the station, A, B and C
-    fPlanes.push_back( new plane(fNam+"A", tree, geo) );
-    fPlanes.push_back( new plane(fNam+"B", tree, geo) );
-    fPlanes.push_back( new plane(fNam+"C", tree, geo) );
-
-    //branches for output tree
-    otree->Branch((fNam+"_IsHit").c_str(), &fIsHit, (fNam+"_IsHit/O").c_str());
-    otree->Branch((fNam+"_NPlane").c_str(), &fNPlane, (fNam+"_NPlane/I").c_str());
-
-  }//tagger
-
-  //_____________________________________________________________________________
-  void process_event() {
-
-    fNPlane = 0;
-    fIsHit = kTRUE;
-    //planes loop
-    for(unsigned int i=0; i<fPlanes.size(); i++) {
-
-      fIsHit *= fPlanes[i]->is_hit();
-
-      if( !fPlanes[i]->is_hit() ) continue;
-      fNPlane++;
-    }//planes loop
-
-  }//process_event
-
-  //_____________________________________________________________________________
-  void write_outputs() {
-    for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &plane::write_outputs ));
-  }//write_outputs
-
-private:
-
-  string fNam; // station name
-  vector<plane*> fPlanes; // planes for the station
-  Bool_t fIsHit; // flag for hit in station
-  Int_t fNPlane; // number of planes with hit
-
-};//tagger
 
 //_____________________________________________________________________________
 int main(int argc, char* argv[]) {
@@ -198,8 +90,16 @@ int main(int argc, char* argv[]) {
   otree.Branch("true_el_E", &true_el_E, "true_el_E/D");
 
   //tagger stations
-  tagger s1("s1", &tree, &otree, &geo);
-  tagger s2("s2", &tree, &otree, &geo);
+  TagCounter s1("s1", &tree, &otree, &geo);
+  TagCounter s2("s2", &tree, &otree, &geo);
+  s1.CreateOutput();
+  s1.AddOutputBranch("true_el_E", &true_el_E);
+  s1.AddOutputBranch("true_el_theta", &true_el_theta);
+  s1.AddOutputBranch("true_el_phi", &true_el_phi);
+  s2.CreateOutput();
+  s2.AddOutputBranch("true_el_E", &true_el_E);
+  s2.AddOutputBranch("true_el_theta", &true_el_theta);
+  s2.AddOutputBranch("true_el_phi", &true_el_phi);
 
   //event loop
   Long64_t nev = tree.GetEntries();
@@ -212,8 +112,8 @@ int main(int argc, char* argv[]) {
       cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
 
-    s1.process_event();
-    s2.process_event();
+    s1.ProcessEvent();
+    s2.ProcessEvent();
 
     otree.Fill();
 
@@ -222,8 +122,8 @@ int main(int argc, char* argv[]) {
   cout << "All events: " << tree.GetEntries() << endl;
 
   otree.Write();
-  s1.write_outputs();
-  s2.write_outputs();
+  s1.WriteOutputs();
+  s2.WriteOutputs();
   out.Close();
 
   return 0;

@@ -49,6 +49,9 @@ class ParticleCounterHits {
     CounterHit GetHit(int i);
 
     void LocalFromGeo(G4String nam, GeoParser *geo);
+    G4double GetXPos() { return fXpos; }
+    void SetXPos(G4double x) { fXpos = x; }
+
     CounterHit GlobalToLocal(CounterHit in);
 
   private:
