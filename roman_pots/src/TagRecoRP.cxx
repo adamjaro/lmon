@@ -88,7 +88,7 @@ void TagRecoRP::Initialize(program_options::variables_map *opt_map) {
         //theta_y
         for(int ity=1; ity<fHThetaY->GetNbinsX()+1; ity++) {
 
-          fLinks.insert( pair(vector<int>({ix, iy, itx, ity}), Link()) );
+          fLinks.insert( make_pair(vector<int>({ix, iy, itx, ity}), Link()) );
 
         }//theta_y
       }//theta_x
@@ -125,7 +125,7 @@ void TagRecoRP::Import(TFile *in) {
     link_tree->GetEntry(i);
 
     //create the link from input tree
-    map<vector<int>, Link>::iterator ilnk = fLinks.insert( pair(vector<int>({ix, iy, itx, ity}), Link()) ).first;
+    map<vector<int>, Link>::iterator ilnk = fLinks.insert( make_pair(vector<int>({ix, iy, itx, ity}), Link()) ).first;
 
     //set the link
     Link& lnk = (*ilnk).second;
