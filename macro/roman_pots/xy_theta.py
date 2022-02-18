@@ -31,10 +31,12 @@ def xy():
     xybin = 1
     xymax = 80
 
-    inp = "../../analysis/ini/hits_tag.root"
+    #inp = "../../analysis/ini/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag_pass2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax1/hits_tag_first10.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
 
@@ -78,10 +80,12 @@ def theta_x():
     tmin = -20
     tmax = 40
 
-    inp = "../../analysis/ini/hits_tag.root"
+    #inp = "../../analysis/ini/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag_pass2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax1/hits_tag_first10.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     val = "(theta_x*1e3)" # to mrad
 
@@ -103,7 +107,7 @@ def theta_x():
     ax.set_xlabel("theta_x (mrad)")
     ax.set_ylabel("Normalized counts")
 
-    #ax.set_yscale("log")
+    ax.set_yscale("log")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -117,8 +121,12 @@ def theta_y():
     tbin = 0.1
     tmin = -10
     tmax = 10
+    #tmin = -5
+    #tmax = -2.5
 
-    inp = "../../analysis/ini/hits_tag.root"
+    #inp = "../../analysis/ini/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag_pass2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax1/hits_tag_first10.root"
 
     det = "s1"
     #det = "s2"
@@ -140,10 +148,10 @@ def theta_y():
 
     plt.plot(hx[0], hx[1], "-", color="red", lw=1)
 
-    ax.set_xlabel("theta_x (mrad)")
+    ax.set_xlabel("theta_y (mrad)")
     ax.set_ylabel("Normalized counts")
 
-    #ax.set_yscale("log")
+    ax.set_yscale("log")
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
