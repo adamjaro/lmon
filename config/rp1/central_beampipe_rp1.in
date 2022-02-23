@@ -69,7 +69,7 @@ new CylSegment hcal
   hcal.rmin = hcal_rmin
   hcal.rmax = hcal_rmax
   hcal.mat_name = G4_Fe
-
+  #hcal.vis = 1:0:0:3
 
 
 

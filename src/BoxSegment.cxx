@@ -19,6 +19,7 @@
 //local classes
 #include "BoxSegment.h"
 #include "GeoParser.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 
@@ -39,11 +40,8 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //visibility
-  G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 0, 1);
-  //vis->SetForceSolid(true);
-  vis->SetForceWireframe();
-  vol->SetVisAttributes(vis);
+  ColorDecoder vis("0:0:1:2");
+  vol->SetVisAttributes( vis.MakeVis(geo, fNam, "vis") );
 
   //center position, mm
   G4double xpos=0*mm, ypos=0*mm, zpos=0*mm;

@@ -15,7 +15,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = rate
@@ -125,26 +125,48 @@ def rate():
 def interp_sigma():
 
     #beam emittance
-    eps_x = 20e-9 # m
-    eps_y = 1.3e-9 # m
+    #eps_x = 20e-9 # m
+    #eps_y = 1.3e-9 # m
+    eps_x = 24e-9 # m
+    eps_y = 2e-9 # m
 
-    df = load_esr()
+    #lattice input, previous version
+    #df = load_esr()
 
-    #range with pressure data
-    df = df.query("s>-15 and s<10")
+    #lattice input, current
+    df = load_lattice()
+
+    #alias the 's' position as exit in z
+    df["s"] = df["orbit_z"]
+
+    #sort and swap derivative sign
+    df = df.sort_values(by=["s"])
+    df["alpha_x"] = -df["alpha_x"]
+    df["alpha_y"] = -df["alpha_y"]
+
+    #selection for a given range
+    #df = df.query("s>-15 and s<10")
+    df = df.query("s>-40 and s<40")
+
+    #positions in z (meters) where to print the sigma_x (mm)
+    zpos = [-20, -36.5]
 
     interp_x = CubicHermiteSpline(df["s"], df["beta_x"], -2*df["alpha_x"])
     interp_y = CubicHermiteSpline(df["s"], df["beta_y"], -2*df["alpha_y"])
+
+    for i in zpos:
+        print("z (m):", i, ", sigma_x (mm):", get_beam_sigma(eps_x, interp_x(i)))
 
     xs = np.linspace(df["s"][ df["s"].index[0] ], df["s"][ df["s"].index[-1] ], 300)
 
     print("range:", xs[0], xs[-1])
 
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
+    fig.set_size_inches(5, 5)
     ax = fig.add_subplot(1, 1, 1)
     set_axes_color(ax, col)
     set_grid(plt, col)
@@ -157,14 +179,17 @@ def interp_sigma():
         sigma_y.append( get_beam_sigma(eps_y, interp_y(i)) )
 
     #plot in detector coordinates
-    plt.plot(-1*df["s"], get_beam_sigma(eps_x, df["beta_x"]), "o", markersize=4, color="blue", lw=1)
-    plt.plot(-1*xs, sigma_x, "-", color="blue", lw=1)
+    #sign = -1
+    sign = 1
+    plt.plot(sign*df["s"], get_beam_sigma(eps_x, df["beta_x"]), "o", markersize=4, color="blue", lw=1)
+    plt.plot(sign*xs, sigma_x, "-", color="blue", lw=1)
 
-    plt.plot(-1*df["s"], get_beam_sigma(eps_y, df["beta_y"]), "o", markersize=4, color="red", lw=1)
-    plt.plot(-1*xs, sigma_y, "-", color="red", lw=1)
+    plt.plot(sign*df["s"], get_beam_sigma(eps_y, df["beta_y"]), "o", markersize=4, color="red", lw=1)
+    plt.plot(sign*xs, sigma_y, "-", color="red", lw=1)
 
     leg = legend()
-    leg.add_entry(leg_txt(), "$E_e$ = 10 GeV")
+    #leg.add_entry(leg_txt(), "$E_e$ = 10 GeV")
+    leg.add_entry(leg_txt(), "$E_e$ = 18 GeV")
     leg.add_entry(leg_lin("blue"), "$\sigma_x$")
     leg.add_entry(leg_lin("red"), "$\sigma_y$")
     leg.draw(plt, col)
@@ -340,6 +365,49 @@ def load_pressure():
     return xls
 
 #load_pressure
+
+#_____________________________________________________________________________
+def load_lattice():
+
+    #lattice input
+    infile = "/home/jaroslav/sim/lattice/211020-esr-ir-db64819/210921a-esr-ir6-275-18-db64819.txt"
+
+    #open the input file
+    inp = open(infile, "r")
+
+    #file header
+    head = []
+    for i in inp.readline().split("   "):
+        if i == "": continue
+
+        head.append(i.strip().replace(" ", "_").lower())
+
+    #skip the next two lines
+    inp.readline()
+    inp.readline()
+
+    #input values
+    val = []
+
+    #loop over data lines
+    for i in inp:
+        ii = i.split()
+        lin = []
+
+        if ii[0] == "IP6": continue
+
+        for k in range(len(ii)):
+            if k < 2:
+                lin.append( ii[k] )
+            else:
+                lin.append( float(ii[k]) )
+        val.append(lin)
+
+    df = DataFrame(val, columns=head)
+
+    return df
+
+#load_lattice
 
 #_____________________________________________________________________________
 def set_axes_color(ax, col):

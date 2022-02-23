@@ -65,6 +65,7 @@ new BeamDrift vac_B2
 
   vac_B2.vis = 0:0:0:3
   vac_B2.vis_inout = 1:0:0:2
+  #vac_B2.vis_inout = 1:0:0:3
 
 #element for drift section from B2eR to Q3eR
 new BoxSegment vac_B2Q3
@@ -75,7 +76,7 @@ new BoxSegment vac_B2Q3
   vac_B2Q3.zpos = vac_zDC
   vac_B2Q3.xpos = vac_xDC
   vac_B2Q3.theta = vac_TQ3
-
+  #vac_B2Q3.vis = 0:0:0:3
 
 
 
