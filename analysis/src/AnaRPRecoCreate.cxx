@@ -18,7 +18,8 @@
 
 //local classes
 #include "GeoParser.h"
-#include "TagRecoRP.h"
+//#include "TagRecoRP.h"
+#include "EThetaPhiReco.h"
 #include "TagCounter.h"
 
 using namespace std;
@@ -36,8 +37,20 @@ int main(int argc, char* argv[]) {
   ;
 
   //reconstruction for tagger stations
-  TagRecoRP s1_rec("s1", &opt);
-  TagRecoRP s2_rec("s2", &opt);
+  //TagRecoRP s1_rec("s1", &opt);
+  //TagRecoRP s2_rec("s2", &opt);
+  EThetaPhiReco s1_rec("s1", &opt);
+  EThetaPhiReco s2_rec("s2", &opt);
+
+  //quantities measured by the taggers
+  s1_rec.MakeQuantity("x"); // x position, mm
+  s1_rec.MakeQuantity("y"); // y position, mm
+  s1_rec.MakeQuantity("tx", 1e-3); // theta_x angle, set in mrad, conversion to rad
+  s1_rec.MakeQuantity("ty", 1e-3); // theta_y angle, mrad conversion to rad
+  s2_rec.MakeQuantity("x");
+  s2_rec.MakeQuantity("y");
+  s2_rec.MakeQuantity("tx", 1e-3);
+  s2_rec.MakeQuantity("ty", 1e-3);
 
   //load the configuration file
   if(argc < 2) {
@@ -106,11 +119,15 @@ int main(int argc, char* argv[]) {
     tag_s2.ProcessEvent();
 
     if( tag_s1.GetIsHit() ) {
-      s1_rec.AddInput(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY(), true_el_E, true_el_theta, true_el_phi);
+      //s1_rec.AddInput(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY(), true_el_E, true_el_theta, true_el_phi);
+      Double_t quant[4]{tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY()};
+      s1_rec.AddInput(quant, true_el_E, true_el_theta, true_el_phi);
     }
 
     if( tag_s2.GetIsHit() ) {
-      s2_rec.AddInput(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY(), true_el_E, true_el_theta, true_el_phi);
+      //s2_rec.AddInput(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY(), true_el_E, true_el_theta, true_el_phi);
+      Double_t quant[4]{tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY()};
+      s2_rec.AddInput(quant, true_el_E, true_el_theta, true_el_phi);
     }
 
     //otree.Fill();

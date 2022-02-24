@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = en
@@ -34,8 +34,8 @@ def en():
     emin = 3
     emax = 19
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    inp = "../../analysis/ini/tag_rec.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
 
     #det = "s1"
     det = "s2"
@@ -49,7 +49,8 @@ def en():
 
     hxy = ut.prepare_TH2D("hxy", ebin, emin, emax, ebin, emin, emax)
 
-    tree.Draw("rec_el_E:true_el_E >> hxy", sel)
+    #tree.Draw("rec_el_E:true_el_E >> hxy", sel)
+    tree.Draw("rec_E:true_el_E >> hxy", sel)
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
@@ -64,7 +65,7 @@ def en():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en
@@ -77,8 +78,8 @@ def pitheta():
     tmin = 0
     tmax = 11
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    inp = "../../analysis/ini/tag_rec.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
 
     #det = "s1"
     det = "s2"
@@ -92,7 +93,8 @@ def pitheta():
 
     hxy = ut.prepare_TH2D("hxy", tbin, tmin, tmax, tbin, tmin, tmax)
 
-    tree.Draw("(TMath::Pi()-rec_el_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
+    #tree.Draw("(TMath::Pi()-rec_el_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
+    tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
 
     ytit = "Reconstructed #it{#pi-#theta_{e}} (mrad)"
     xtit = "Generated true #it{#pi-#theta_{e,gen}} (mrad)"
@@ -107,7 +109,7 @@ def pitheta():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #pitheta
@@ -120,8 +122,8 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    inp = "../../analysis/ini/tag_rec.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
 
     #det = "s1"
     det = "s2"
@@ -135,7 +137,8 @@ def phi():
 
     hxy = ut.prepare_TH2D("hxy", pbin, pmin, pmax, pbin, pmin, pmax)
 
-    tree.Draw("rec_el_phi:true_el_phi >> hxy", sel)
+    #tree.Draw("rec_el_phi:true_el_phi >> hxy", sel)
+    tree.Draw("rec_phi:true_el_phi >> hxy", sel)
 
     ytit = "Reconstructed #it{#phi_{e}} (rad)"
     xtit = "Generated true #it{#phi_{e,gen}} (rad)"
@@ -150,7 +153,7 @@ def phi():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phi
@@ -163,9 +166,9 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "../../analysis/ini/tag_rec.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec.root"
 
     #det = "s1"
     #lab = "Tagger 1"
@@ -180,7 +183,8 @@ def lQ2():
 
     hxy = ut.prepare_TH2D("hxy", qbin, qmin, qmax, qbin, qmin, qmax)
 
-    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy")
+    rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
+    tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy")
 
     ytit = "Reconstructed electron log_{10}(Q^{2})"
     xtit = "Generated true log_{10}(Q^{2})"
@@ -199,7 +203,7 @@ def lQ2():
     leg.AddEntry("", lab, "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2

@@ -19,7 +19,8 @@
 
 //local classes
 #include "GeoParser.h"
-#include "TagRecoRP.h"
+//#include "TagRecoRP.h"
+#include "EThetaPhiReco.h"
 #include "TagCounter.h"
 
 using namespace std;
@@ -68,8 +69,10 @@ int main(int argc, char* argv[]) {
   tree.SetBranchAddress("true_Q2", &true_Q2);
 
   //reconstruction for tagger stations
-  TagRecoRP s1_rec("s1", &opt);
-  TagRecoRP s2_rec("s2", &opt);
+  //TagRecoRP s1_rec("s1", &opt);
+  //TagRecoRP s2_rec("s2", &opt);
+  EThetaPhiReco s1_rec("s1");
+  EThetaPhiReco s2_rec("s2");
 
   //import the response for reconstruction
   string input_resp = opt_map["main.input_resp"].as<string>();
@@ -127,33 +130,16 @@ int main(int argc, char* argv[]) {
 
 
     if( tag_s1.GetIsHit() ) {
-      s1_rec.Reconstruct(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY());
+      //s1_rec.Reconstruct(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY());
+      Double_t quant[4]{tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY()};
+      s1_rec.Reconstruct(quant);
     }
 
     if( tag_s2.GetIsHit() ) {
-      s2_rec.Reconstruct(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY());
+      //s2_rec.Reconstruct(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY());
+      Double_t quant[4]{tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY()};
+      s2_rec.Reconstruct(quant);
     }
-
-
-/*
-    if( tag_s1.GetIsHit() ) {
-      if( s1_rec.Reconstruct(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY()) ) {
-
-        //cout << true_el_E << " " << (TMath::Pi()-true_el_theta)*1e3 << " " << true_el_phi << endl << endl;
-        cout << TMath::Log10(true_Q2) << endl << endl;
-
-      }
-    }
-
-    if( tag_s2.GetIsHit() ) {
-      if( s2_rec.Reconstruct(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY()) ) {
-
-        cout << true_el_E << " " << (TMath::Pi()-true_el_theta)*1e3 << " " << true_el_phi << endl << endl;
-
-      }
-    }
-*/
-
 
   }//event loop
 
