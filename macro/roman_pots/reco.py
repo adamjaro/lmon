@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 5
 
     func = {}
     func[0] = en
@@ -34,8 +34,8 @@ def en():
     emin = 3
     emax = 19
 
-    inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
 
     #det = "s1"
     det = "s2"
@@ -78,11 +78,11 @@ def pitheta():
     tmin = 0
     tmax = 11
 
-    inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     sel = ""
 
@@ -122,13 +122,14 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
+    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
 
     #det = "s1"
     det = "s2"
 
-    sel = ""
+    #sel = ""
+    sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det+"_rec")
@@ -166,15 +167,18 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec.root"
+    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
 
     #det = "s1"
     #lab = "Tagger 1"
 
     det = "s2"
     lab = "Tagger 2"
+
+    #sel = ""
+    sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det+"_rec")
@@ -184,7 +188,7 @@ def lQ2():
     hxy = ut.prepare_TH2D("hxy", qbin, qmin, qmax, qbin, qmin, qmax)
 
     rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
-    tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy")
+    tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy", sel)
 
     ytit = "Reconstructed electron log_{10}(Q^{2})"
     xtit = "Generated true log_{10}(Q^{2})"
@@ -257,32 +261,35 @@ def compare_lQ2():
     #input, color, rate in MHz by taggers/hit_rate.py
     #Tagger 1
     inp_s1 = [\
-        {"in": "tag4ax2/tag_rec.root", "col": "red", "rate": 19.1405, "lab": "Bremsstrahlung", "tree": "s1_rec"}, \
-        {"in": "tag4a/tag_rec.root", "col": "blue", "rate": 0.002905, "lab": "Quasi-real", "tree": "s1_rec"}, \
-        {"in": "tag4ax3/tag_rec.root", "col": "orange", "rate": 0.004053, "lab": "Pythia6", "tree": "s1_rec"} \
+        {"in": "tag4ax2/tag_rec_pass5.root", "col": "red", "rate": 19.1405, "lab": "Bremsstrahlung", "tree": "s1_rec"}, \
+        {"in": "tag4a/tag_rec_pass5.root", "col": "blue", "rate": 0.002905, "lab": "Quasi-real", "tree": "s1_rec"}, \
+        {"in": "tag4ax3/tag_rec_pass5.root", "col": "orange", "rate": 0.004053, "lab": "Pythia6", "tree": "s1_rec"} \
     ]
     #Tagger 2
     inp_s2 = [\
-        {"in": "tag4ax2/tag_rec.root", "col": "red", "rate": 22.0011, "lab": "Bremsstrahlung", "tree": "s2_rec"}, \
-        {"in": "tag4a/tag_rec.root", "col": "blue", "rate": 0.005642, "lab": "Quasi-real", "tree": "s2_rec"}, \
-        {"in": "tag4ax3/tag_rec.root", "col": "orange", "rate": 0.008656, "lab": "Pythia6", "tree": "s2_rec"} \
+        {"in": "tag4ax2/tag_rec_pass5.root", "col": "red", "rate": 22.0011, "lab": "Bremsstrahlung", "tree": "s2_rec"}, \
+        {"in": "tag4a/tag_rec_pass5.root", "col": "blue", "rate": 0.005642, "lab": "Quasi-real", "tree": "s2_rec"}, \
+        {"in": "tag4ax3/tag_rec_pass5.root", "col": "orange", "rate": 0.008656, "lab": "Pythia6", "tree": "s2_rec"} \
     ]
 
-    #tnam = "Tagger 1"
-    #inp = inp_s1
+    tnam = "Tagger 1"
+    inp = inp_s1
 
-    tnam = "Tagger 2"
-    inp = inp_s2
+    #tnam = "Tagger 2"
+    #inp = inp_s2
 
     #range along x in log_10(Q^2) (GeV^2)
     xmin = -10
     xmax = -1
     xbin = 0.1
 
+    sel = ""
+    #sel = "(TMath::Pi()-rec_theta)>1e-3"
+
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -293,6 +300,9 @@ def compare_lQ2():
     leg = legend()
     leg.add_entry(leg_txt(), tnam)
 
+    #Q^2 formula
+    rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
+
     #inputs loop
     for i in inp:
 
@@ -300,7 +310,7 @@ def compare_lQ2():
         tree = infile.Get(i["tree"])
 
         hx = ut.prepare_TH1D("hx_"+i["col"], xbin, xmin, xmax)
-        tree.Draw("TMath::Log10(rec_Q2) >> hx_"+i["col"])
+        tree.Draw("TMath::Log10("+rec_Q2+") >> hx_"+i["col"], sel)
         ut.norm_to_integral(hx, i["rate"])
 
         xp, yp = ut.h1_to_arrays(hx)

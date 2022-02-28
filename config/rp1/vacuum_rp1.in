@@ -64,7 +64,7 @@ new BeamDrift vac_B2
   vac_B2.x1BI = vac_xBO
 
   vac_B2.vis = 0:0:0:3
-  vac_B2.vis_inout = 1:0:0:2
+  vac_B2.vis_inout = 0:0:1:2
   #vac_B2.vis_inout = 1:0:0:3
 
 #element for drift section from B2eR to Q3eR
@@ -78,10 +78,39 @@ new BoxSegment vac_B2Q3
   vac_B2Q3.theta = vac_TQ3
   #vac_B2Q3.vis = 0:0:0:3
 
+#coupling to luminosity exit window
+const vac_zW lumi_win_z
 
+#lower x at the exit window
+const vac_xW vac_xB0T-(vac_zB0T-vac_zW)*TMath::Tan(vac_TQ3)
 
+#element in front of exit window
+new BeamDrift vac_win
 
+  vac_win.ysiz = 2.*vac_rBI
+  vac_win.delta = 0. # mm
 
+  vac_win.z0TO = vac_zW
+  vac_win.x0TO = vac_xB0T
+  vac_win.z0BO = vac_zW
+  vac_win.x0BO = vac_xW
+
+  vac_win.z0TI = vac_zW
+  vac_win.x0TI = vac_xB0T
+  vac_win.z0BI = vac_zW
+  vac_win.x0BI = vac_xW
+
+  vac_win.z1TO = vac_zB0T
+  vac_win.x1TO = vac_xB0T
+  vac_win.z1BO = vac_zB0T
+  vac_win.x1BO = vac_xB0T
+
+  vac_win.x1TI = vac_xB0T
+  vac_win.z1BI = vac_zB0T
+  vac_win.x1BI = vac_xB0T
+
+  vac_win.vis = 0:0:0:3
+  vac_win.vis_inout = 0:0:1:2
 
 
 

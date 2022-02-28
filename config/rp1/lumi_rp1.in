@@ -1,0 +1,34 @@
+
+#starting z position for exit window
+const lumi_win_z -18700. # mm
+
+#size in xy for box holding the exit window, < 1 mrad
+const lumi_win_dx 37.5 # mm
+
+#tilt angle for exit window
+const lumi_win_TW 0.25 # rad
+
+#size in z for box holding the exit window
+const lumi_win_dz lumi_win_dx/TMath::Tan(lumi_win_TW)
+
+#box volume holding the exit window
+new BoxSegment ExitWinBox
+
+  ExitWinBox.dx = lumi_win_dx
+  ExitWinBox.dy = lumi_win_dx
+  ExitWinBox.dz = lumi_win_dz
+  ExitWinBox.zpos = lumi_win_z-lumi_win_dz/2.
+  ExitWinBox.vis = 1:0:0:2
+
+#exit window thickness
+const lumi_win_thickness 2.6 # mm
+
+#exit window
+new ExitWindowV1 ew
+
+  ew.dx = lumi_win_thickness
+  ew.dy = lumi_win_dx
+  ew.dz = sqrt(lumi_win_dx*lumi_win_dx+lumi_win_dz*lumi_win_dz)-(lumi_win_thickness/tan(lumi_win_TW))
+  ew.tilt = lumi_win_TW
+  ew.place_into = ExitWinBox
+

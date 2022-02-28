@@ -7,6 +7,8 @@ include beam_magnets_rp1.in
 
 include central_beampipe_rp1.in
 
+include lumi_rp1.in
+
 include vacuum_rp1.in
 
 include tag_rp1.in
