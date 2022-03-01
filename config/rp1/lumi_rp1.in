@@ -32,3 +32,153 @@ new ExitWindowV1 ew
   ew.tilt = lumi_win_TW
   ew.place_into = ExitWinBox
 
+#parameters for spectrometer magnet
+const lumi_mag_zpos -28200. # mm, center in z
+const lumi_mag_rin 100. # mm, inner radius
+const lumi_mag_rout 160. # mm, outer radius
+const lumi_mag_dz 600. # mm, length along z
+
+#dipole spectrometer magnet
+new Magnet lumi_dipole
+
+  lumi_dipole.zpos = lumi_mag_zpos
+  lumi_dipole.dz = lumi_mag_dz
+  lumi_dipole.inner_r = lumi_mag_rin
+  lumi_dipole.outer_r = lumi_mag_rout
+  lumi_dipole.field = lumi_mag_field
+
+#vacuum section from exit window to spectrometer magnet
+new VacLumi lumi_vac_win_mag
+
+  lumi_vac_win_mag.z0 = lumi_win_z-lumi_win_dz
+  lumi_vac_win_mag.z1 = lumi_mag_zpos+lumi_mag_dz/2.
+  lumi_vac_win_mag.dX0 = lumi_win_dx/2.
+  lumi_vac_win_mag.dY0 = lumi_win_dx/2.
+  lumi_vac_win_mag.dX1 = lumi_mag_rin
+  lumi_vac_win_mag.dY1 = lumi_mag_rin
+
+#parameters for spectrometer detectors
+const lumi_spec_z -36400. # mm, starting point in z
+const lumi_spec_dxy 200. # mm, full front size in x and y
+const lumi_spec_dz 350. # mm, full length along z
+const lumi_spec_yS 60. # mm, elevation in y
+
+#angle from the end of the dipole magnet
+const lumi_spec_zS (lumi_mag_zpos-lumi_mag_dz/2.)-lumi_spec_z
+const lumi_spec_alpha asin(lumi_spec_dxy/(2.*sqrt(lumi_spec_zS*lumi_spec_zS+lumi_spec_yS*lumi_spec_yS)))+atan(lumi_spec_yS/lumi_spec_zS)
+
+#center for spectrometer detectors (down detector is at -yC at -alpha)
+const lumi_spec_cdet 0.5*sqrt(lumi_spec_dz*lumi_spec_dz+lumi_spec_dxy*lumi_spec_dxy)
+const lumi_spec_zC lumi_spec_z-lumi_spec_cdet*sin(atan(lumi_spec_dz/lumi_spec_dxy)-lumi_spec_alpha)
+const lumi_spec_yC lumi_spec_yS+lumi_spec_cdet*cos(atan(lumi_spec_dz/lumi_spec_dxy)-lumi_spec_alpha)
+
+#up spectrometer
+new BoxSegment LumiSUbox
+
+  LumiSUbox.dx = lumi_spec_dxy
+  LumiSUbox.dy = lumi_spec_dxy
+  LumiSUbox.dz = lumi_spec_dz
+  LumiSUbox.zpos = lumi_spec_zC
+  LumiSUbox.ypos = lumi_spec_yC
+  LumiSUbox.rotate_x = 1
+  LumiSUbox.theta = lumi_spec_alpha
+
+#down spectrometer
+new BoxSegment LumiSDbox
+
+  LumiSDbox.dx = lumi_spec_dxy
+  LumiSDbox.dy = lumi_spec_dxy
+  LumiSDbox.dz = lumi_spec_dz
+  LumiSDbox.zpos = lumi_spec_zC
+  LumiSDbox.ypos = -lumi_spec_yC
+  LumiSDbox.rotate_x = 1
+  LumiSDbox.theta = -lumi_spec_alpha
+
+#direct photon detector
+const lumiD_z -37000. # mm, start position in z
+const lumiD_dxy 160. # mm, full size in x and y
+const lumiD_dz 350. # mm, full length along z
+
+new BoxSegment LumiDbox
+
+  LumiDbox.dx = lumiD_dxy
+  LumiDbox.dy = lumiD_dxy
+  LumiDbox.dz = lumiD_dz
+  LumiDbox.zpos = lumiD_z-lumiD_dz/2.
+
+#edge points around spectrometer detectors
+const lumi_spec_zT lumi_spec_z+lumi_spec_dxy*sin(lumi_spec_alpha)
+const lumi_spec_yT lumi_spec_yS+lumi_spec_dxy*cos(lumi_spec_alpha)
+
+const lumi_spec_zF lumi_spec_z-lumi_spec_dz*cos(lumi_spec_alpha)
+const lumi_spec_yF lumi_spec_yS+lumi_spec_dz*sin(lumi_spec_alpha)
+
+#vacuum section from spectrometer magnet to spectrometer detectors
+new VacLumi lumi_vac_mag_spec
+
+  lumi_vac_mag_spec.z0 = lumi_mag_zpos-lumi_mag_dz/2.
+  lumi_vac_mag_spec.z1 = lumi_spec_zT
+  lumi_vac_mag_spec.dX0 = lumi_mag_rin
+  lumi_vac_mag_spec.dY0 = lumi_mag_rin
+  lumi_vac_mag_spec.dX1 = lumi_spec_dxy/2.
+  lumi_vac_mag_spec.dY1 = lumi_spec_yT
+
+#vacuum section in front of luminosity spectrometers
+new VacLumi lumi_vac_spec_front
+
+  lumi_vac_spec_front.z0 = lumi_spec_zT
+  lumi_vac_spec_front.z1 = lumi_spec_z
+  lumi_vac_spec_front.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_front.dY0 = lumi_spec_yT
+  lumi_vac_spec_front.dX1 = lumi_spec_dxy/2.
+  lumi_vac_spec_front.dY1 = lumi_spec_yS
+  #lumi_vac_spec_front.vis = 1:0:0:2
+
+#vacuum section between luminosity spectrometers
+new VacLumi lumi_vac_spec_mid
+
+  lumi_vac_spec_mid.z0 = lumi_spec_z
+  lumi_vac_spec_mid.z1 = lumi_spec_zF
+  lumi_vac_spec_mid.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_mid.dY0 = lumi_spec_yS
+  lumi_vac_spec_mid.dX1 = lumi_spec_dxy/2.
+  lumi_vac_spec_mid.dY1 = lumi_spec_yF
+  #lumi_vac_spec_mid.vis = 1:0:0:2
+
+#vacuum section from spectrometers to direct photon detector
+new VacLumi lumi_vac_spec_phot
+
+  lumi_vac_spec_phot.z0 = lumi_spec_zF
+  lumi_vac_spec_phot.z1 = lumiD_z
+  lumi_vac_spec_phot.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_phot.dY0 = lumi_spec_yF
+  lumi_vac_spec_phot.dX1 = lumiD_dxy/2.
+  lumi_vac_spec_phot.dY1 = lumiD_dxy/2.
+  #lumi_vac_spec_phot.vis = 1:0:0:2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

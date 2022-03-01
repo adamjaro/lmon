@@ -19,7 +19,7 @@ def main():
     #con = ["B2eR_Theta", "B2eR_Length", "Q3eR_Theta", "Q3eR_Length", "vac_LBQ", "vac_zDC", "vac_xDC"]
     #con = ["vac_rBP", "vac_zBTI", "vac_xBTI"]
     #con = ["tag_s1_start_z", "tag_pos_x"]
-    con = ["vac_zB0T", "vac_xB0T", "vac_TQ3", "vac_xW", "lumi_win_dz"]
+    con = ["vac_zB0T", "vac_xB0T", "vac_TQ3", "vac_xW", "lumi_win_dz", "lumi_spec_alpha"]
 
     for i in con:
         print(i+":", geo.GetConst(i))

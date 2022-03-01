@@ -22,6 +22,7 @@
 //local classes
 #include "VacLumi.h"
 #include "GeoParser.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 
@@ -76,11 +77,8 @@ VacLumi::VacLumi(const G4String& nam, GeoParser *geo, G4LogicalVolume *top):
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //visibility
-  G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(0, 0, 1);
-  //vis->SetForceSolid(true);
-  vis->SetForceWireframe();
-  vol->SetVisAttributes(vis);
+  ColorDecoder vis("0:0:1:2"); //red:green:blue:alpha
+  vol->SetVisAttributes(vis.MakeVis(geo, fNam, "vis"));
 
   //placement in top
   new G4PVPlacement(0, G4ThreeVector(0, 0, zcen), vol, fNam, top, false, 0);
