@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 5
+    iplot = 0
 
     func = {}
     func[0] = en
@@ -34,11 +34,11 @@ def en():
     emin = 3
     emax = 19
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
+    inp = "../../analysis/ini/tag_rec.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     sel = ""
 
@@ -79,10 +79,10 @@ def pitheta():
     tmax = 11
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
 
@@ -123,10 +123,10 @@ def phi():
     pmax = TMath.Pi()+0.1
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     #sel = ""
     sel = "(TMath::Pi()-rec_theta)>1e-3"
@@ -154,6 +154,10 @@ def phi():
 
     gPad.SetGrid()
 
+    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "#pi-#theta_{#it{e},rec} > 1 mrad", "")
+    leg.Draw("same")
+
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
@@ -168,8 +172,8 @@ def lQ2():
     qmax = -1
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
 
     #det = "s1"
     #lab = "Tagger 1"
@@ -177,8 +181,8 @@ def lQ2():
     det = "s2"
     lab = "Tagger 2"
 
-    #sel = ""
-    sel = "(TMath::Pi()-rec_theta)>1e-3"
+    sel = ""
+    #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det+"_rec")
@@ -207,7 +211,7 @@ def lQ2():
     leg.AddEntry("", lab, "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2
@@ -272,11 +276,11 @@ def compare_lQ2():
         {"in": "tag4ax3/tag_rec_pass5.root", "col": "orange", "rate": 0.008656, "lab": "Pythia6", "tree": "s2_rec"} \
     ]
 
-    tnam = "Tagger 1"
-    inp = inp_s1
+    #tnam = "Tagger 1"
+    #inp = inp_s1
 
-    #tnam = "Tagger 2"
-    #inp = inp_s2
+    tnam = "Tagger 2"
+    inp = inp_s2
 
     #range along x in log_10(Q^2) (GeV^2)
     xmin = -10
@@ -287,9 +291,9 @@ def compare_lQ2():
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)

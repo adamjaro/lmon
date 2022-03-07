@@ -203,7 +203,7 @@ void EThetaPhiReco::AddOutputBranch(string nam, Double_t *val) {
 }//AddOutputBranch
 
 //_____________________________________________________________________________
-void EThetaPhiReco::Reconstruct(Double_t *quant) {
+Bool_t EThetaPhiReco::Reconstruct(Double_t *quant) {
 
   //run reconstruction for the measured quantities
 
@@ -211,7 +211,7 @@ void EThetaPhiReco::Reconstruct(Double_t *quant) {
   map<ULong64_t, Link>::iterator ilnk = fLinks.find( GetIdx(quant) );
 
   //test for the link
-  if( ilnk == fLinks.end() ) return;
+  if( ilnk == fLinks.end() ) return kFALSE;
 
   //set the reconstructed particle
   Link& lnk = (*ilnk).second;
@@ -220,6 +220,8 @@ void EThetaPhiReco::Reconstruct(Double_t *quant) {
   rec_phi = lnk.phi;
 
   fRecTree->Fill();
+
+  return kTRUE;
 
 }//Reconstruct
 

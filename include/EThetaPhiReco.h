@@ -22,7 +22,7 @@ class EThetaPhiReco {
     void CreateRecoOutput();
     void AddOutputBranch(std::string nam, Double_t *val);
 
-    void Reconstruct(Double_t *quant);
+    Bool_t Reconstruct(Double_t *quant);
     void WriteRecoOutput() { fRecTree->Write(); }
 
   private:

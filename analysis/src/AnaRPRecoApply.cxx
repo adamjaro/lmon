@@ -19,7 +19,6 @@
 
 //local classes
 #include "GeoParser.h"
-//#include "TagRecoRP.h"
 #include "EThetaPhiReco.h"
 #include "TagCounter.h"
 
@@ -69,8 +68,6 @@ int main(int argc, char* argv[]) {
   tree.SetBranchAddress("true_Q2", &true_Q2);
 
   //reconstruction for tagger stations
-  //TagRecoRP s1_rec("s1", &opt);
-  //TagRecoRP s2_rec("s2", &opt);
   EThetaPhiReco s1_rec("s1");
   EThetaPhiReco s2_rec("s2");
 
@@ -114,6 +111,14 @@ int main(int argc, char* argv[]) {
   TagCounter tag_s1("s1", &tree, &otree, &geo);
   TagCounter tag_s2("s2", &tree, &otree, &geo);
 
+  //kinematics and reconstruction flags in interaction tree
+  otree.Branch("true_el_E", &true_el_E, "true_el_E/D");
+  otree.Branch("true_el_theta", &true_el_theta, "true_el_theta/D");
+  otree.Branch("true_el_phi", &true_el_phi, "true_el_phi/D");
+  Bool_t s1_IsRec, s2_IsRec;
+  otree.Branch("s1_IsRec", &s1_IsRec, "s1_IsRec/O");
+  otree.Branch("s2_IsRec", &s2_IsRec, "s2_IsRec/O");
+
   //event loop
   Long64_t nev = tree.GetEntries();
   //Long64_t nev = 320;
@@ -128,18 +133,20 @@ int main(int argc, char* argv[]) {
     tag_s1.ProcessEvent();
     tag_s2.ProcessEvent();
 
+    s1_IsRec = kFALSE;
+    s2_IsRec = kFALSE;
 
     if( tag_s1.GetIsHit() ) {
-      //s1_rec.Reconstruct(tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY());
       Double_t quant[4]{tag_s1.GetX(), tag_s1.GetY(), tag_s1.GetThetaX(), tag_s1.GetThetaY()};
-      s1_rec.Reconstruct(quant);
+      s1_IsRec = s1_rec.Reconstruct(quant);
     }
 
     if( tag_s2.GetIsHit() ) {
-      //s2_rec.Reconstruct(tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY());
       Double_t quant[4]{tag_s2.GetX(), tag_s2.GetY(), tag_s2.GetThetaX(), tag_s2.GetThetaY()};
-      s2_rec.Reconstruct(quant);
+      s2_IsRec = s2_rec.Reconstruct(quant);
     }
+
+    otree.Fill();
 
   }//event loop
 
@@ -147,6 +154,7 @@ int main(int argc, char* argv[]) {
 
   s1_rec.WriteRecoOutput();
   s2_rec.WriteRecoOutput();
+  otree.Write();
 
   out.Close();
 
