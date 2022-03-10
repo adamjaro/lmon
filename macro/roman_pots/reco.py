@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 2
 
     func = {}
     func[0] = en
@@ -34,11 +34,11 @@ def en():
     emin = 3
     emax = 19
 
-    inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
+    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
 
@@ -79,7 +79,7 @@ def pitheta():
     tmax = 11
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
 
     #det = "s1"
     det = "s2"
@@ -123,7 +123,7 @@ def phi():
     pmax = TMath.Pi()+0.1
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax4/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
 
     det = "s1"
     #det = "s2"

@@ -60,8 +60,6 @@ void TParticleReader::GeneratePrimaryVertex(G4Event *evt) {
     return;
   }
 
-  G4PrimaryVertex *vtx = 0; // event vertex
-
   //particles loop
   for(Int_t i=0; i<fPart->GetEntriesFast(); i++) {
     TParticle *p = dynamic_cast<TParticle*>(fPart->At(i));
@@ -69,8 +67,10 @@ void TParticleReader::GeneratePrimaryVertex(G4Event *evt) {
     //select according to pdg if required
     if( fSelPdg.empty() != true && fSelPdg.find(p->GetPdgCode()) == fSelPdg.end() ) continue;
 
-    //make the primary vertex
-    if(!vtx) vtx = new G4PrimaryVertex(p->Vx()*mm, p->Vy()*mm, p->Vz()*mm, 0);
+    //primary vertex for the particle
+    G4PrimaryVertex *vtx = new G4PrimaryVertex(p->Vx()*mm, p->Vy()*mm, p->Vz()*mm, 0);
+
+    //G4cout << "  particle: " << p->GetPdgCode() << " " << p->Energy() << " " << p->Vz() << G4endl;
 
     //create the G4 particle
     G4PrimaryParticle *gp = new G4PrimaryParticle(p->GetPdgCode(), p->Px()*GeV, p->Py()*GeV, p->Pz()*GeV, p->Energy()*GeV);
@@ -79,12 +79,10 @@ void TParticleReader::GeneratePrimaryVertex(G4Event *evt) {
     //put the G4 particle to the vertex
     vtx->SetPrimary(gp);
 
+    //put the vertex to the event
+    evt->AddPrimaryVertex(vtx);
+
   }//particles loop
-
-  if(!vtx) return;
-
-  //put the vertex to the event
-  evt->AddPrimaryVertex(vtx);
 
   //fDat->Print("TParticleReader y:", "true_y");
 

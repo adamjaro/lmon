@@ -6,7 +6,7 @@ new top topv
   topv.ysiz = 4000 # mm
   topv.zsiz = 4000 # mm
 
-new TrackDet l1
+#new TrackDet l1
 
   l1.dx = 20 # mm
   l1.dy = 20 # mm
@@ -19,24 +19,6 @@ new TrackDet l1
 
 
 
-
-
-
-#const LumiWin_Z -18500 # mm
-#const LumiWin_Z 0 # mm
-#const LumiWin_XY 40 # mm
-#const LumiWin_DZ 60 # mm
-
-#new BoxSegment ExitWinBox #construction box for luminosity exit window
-
-  #full size in x, y and z, mm
-#  ExitWinBox.dx = LumiWin_XY
-#  ExitWinBox.dy = LumiWin_XY
-#  ExitWinBox.dz = LumiWin_DZ
-  #ExitWinBox.zpos = LumiWin_Z-LumiWin_DZ/2
-#  ExitWinBox.theta = 0.2
-
-#const LumiWinCounter_DZ 20 # mm
 
 
 

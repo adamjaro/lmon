@@ -24,9 +24,6 @@ class MCEvent : public Detector {
   private:
 
     void ReadEvtDat(const G4Event *evt);
-    void ReadPhoton(G4PrimaryParticle *part);
-    void ReadElectron(G4PrimaryParticle *part);
-    void GetThetaPhi(G4PrimaryParticle *part, Double_t &theta, Double_t &phi);
 
     G4String fNam; // class name
 
@@ -38,18 +35,9 @@ class MCEvent : public Detector {
     std::vector<Float_t> fPartPy; //particle py, GeV
     std::vector<Float_t> fPartPz; //particle pz, GeV
     std::vector<Float_t> fPartEn; //particle energy, GeV
-
-    Double_t fPhotGen; // energy of generated photon
-    Double_t fPhotTheta; // polar angle of generated photon
-    Double_t fPhotPhi; // azimuthan angle  of generated photon
-
-    Double_t fVx; // x of generated vertex, mm
-    Double_t fVy; // y of generated vertex, mm
-    Double_t fVz; // z of generated vertex, mm
-
-    Double_t fElGen; // energy of scattered electron
-    Double_t fElTheta; // polar angle of generated photon
-    Double_t fElPhi; // azimuthan angle  of generated photon
+    std::vector<Float_t> fPartVx; //particle position in x, mm
+    std::vector<Float_t> fPartVy; //particle position in y, mm
+    std::vector<Float_t> fPartVz; //particle position in z, mm
 
 };
 
