@@ -93,6 +93,8 @@ void MCEvent::CreateOutput(TTree *tree) {
   tree->Branch("gen_vy", &fPartVy);
   tree->Branch("gen_vz", &fPartVz);
 
+  fDat.CreateOutput(tree);
+
 }//CreateOutput
 
 //_____________________________________________________________________________
