@@ -177,7 +177,8 @@ def acc_en():
 
     #energy acceptance or reconstruction efficiency
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
 
     emin = 0
     emax = 19

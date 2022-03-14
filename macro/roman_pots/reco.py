@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 0
 
     func = {}
     func[0] = en
@@ -35,10 +35,11 @@ def en():
     emax = 19
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
 
     sel = ""
 

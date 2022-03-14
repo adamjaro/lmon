@@ -11,6 +11,7 @@
 
 //ROOT
 #include "TTree.h"
+#include "TMath.h"
 
 //Geant
 #include "G4String.hh"
@@ -37,7 +38,7 @@ TagCounterPlane::TagCounterPlane(string nam, TTree *tree, GeoParser *geo):
 bool TagCounterPlane::IsHit() {
 
   fX = -999; fY = -999; fZ = -999;
-  int nhit = 0;
+  nhit = 0;
 
   //hit loop
   for(int ihit=0; ihit<fHits.GetNHits(); ihit++) {
@@ -50,6 +51,22 @@ bool TagCounterPlane::IsHit() {
     fY = hit.y;
     fZ = hit.z;
     nhit++;
+
+    //inner hit loop
+    for(int jhit=ihit+1; jhit<fHits.GetNHits(); jhit++) {
+      ParticleCounterHits::CounterHit hit2 = fHits.GetHit(jhit);
+      if( hit2.parentID != 0 ) continue;
+      hit2 = fHits.GlobalToLocal(hit2);
+
+      fDx = TMath::Abs( hit.x-hit2.x );
+      fDy = TMath::Abs( hit.y-hit2.y );
+      fDxy = TMath::Sqrt( fDx*fDx + fDy*fDy );
+
+      //cout << fNam << " " << fDx << " " << fDy << " " << fDxy << endl;
+      pair_tree->Fill();
+
+    }//inner hit loop
+
   }//hit loop
 
   if( nhit <= 0 ) return false;
@@ -67,7 +84,12 @@ void TagCounterPlane::CreateOutput() {
   ptree = new TTree(fNam.c_str(), fNam.c_str());
   ptree->Branch("x", &fX, "x/D");
   ptree->Branch("y", &fY, "y/D");
-  ptree->Branch("z", &fZ, "Z/D");
+  ptree->Branch("z", &fZ, "x/D");
+
+  pair_tree = new TTree((fNam+"_pairs").c_str(), (fNam+"_pairs").c_str());
+  pair_tree->Branch("dx", &fDx, "dx/D");
+  pair_tree->Branch("dy", &fDy, "dy/D");
+  pair_tree->Branch("dxy", &fDxy, "dxy/D");
 
 }//CreateOutput
 
@@ -78,6 +100,7 @@ void TagCounterPlane::WriteOutputs() {
 
   cout << "Plane " << fNam << ": " << ptree->GetEntries() << endl;
   ptree->Write();
+  pair_tree->Write();
 
 }//WriteOutputs
 

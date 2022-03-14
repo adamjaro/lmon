@@ -55,6 +55,11 @@ void TagCounter::ProcessEvent() {
 
   if( !fIsHit ) return;
 
+  //hits in planes in event
+  fNA = fPlanes[0]->GetNhit();
+  fNB = fPlanes[1]->GetNhit();
+  fNC = fPlanes[2]->GetNhit();
+
   //planes for track parameters
   TagCounterPlane *p0 = fPlanes[2];
   TagCounterPlane *p1 = fPlanes[0];
@@ -89,6 +94,9 @@ void TagCounter::CreateOutput(bool create_planes) {
   fSTree->Branch("z", &fZ, "z/D");
   fSTree->Branch("theta_x", &fThetaX, "theta_x/D");
   fSTree->Branch("theta_y", &fThetaY, "theta_y/D");
+  fSTree->Branch("nA", &fNA, "nA/I");
+  fSTree->Branch("nB", &fNB, "nB/I");
+  fSTree->Branch("nC", &fNC, "nC/I");
 
   //output for planes
   if(create_planes) {

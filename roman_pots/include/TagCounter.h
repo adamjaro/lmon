@@ -36,6 +36,9 @@ class TagCounter {
 
     Bool_t fIsHit; // flag for hit in station
     Int_t fNPlane; // number of planes with hit in event
+    Int_t fNA; // number of hits in plane A in event
+    Int_t fNB; // number of hits in plane B in event
+    Int_t fNC; // number of hits in plane C in event
 
     TTree *fSTree; // output tree for a given tagger station
     Double_t fX; // track position in x, mm

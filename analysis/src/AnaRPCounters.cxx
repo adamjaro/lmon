@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
     ("main.input", program_options::value<string>(), "Analysis input")
     ("main.geo", program_options::value<string>(), "Geometry configuration")
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
+    ("main.planes_output", program_options::value<bool>(), "Output for individual planes")
   ;
 
   //load the configuration file
@@ -89,14 +90,17 @@ int main(int argc, char* argv[]) {
   otree.Branch("true_el_phi", &true_el_phi, "true_el_phi/D");
   otree.Branch("true_el_E", &true_el_E, "true_el_E/D");
 
+  //output for individual planes
+  bool planes_output = opt_map["main.planes_output"].as<bool>();
+
   //tagger stations
   TagCounter s1("s1", &tree, &otree, &geo);
   TagCounter s2("s2", &tree, &otree, &geo);
-  s1.CreateOutput();
+  s1.CreateOutput(planes_output);
   s1.AddOutputBranch("true_el_E", &true_el_E);
   s1.AddOutputBranch("true_el_theta", &true_el_theta);
   s1.AddOutputBranch("true_el_phi", &true_el_phi);
-  s2.CreateOutput();
+  s2.CreateOutput(planes_output);
   s2.AddOutputBranch("true_el_E", &true_el_E);
   s2.AddOutputBranch("true_el_theta", &true_el_theta);
   s2.AddOutputBranch("true_el_phi", &true_el_phi);
