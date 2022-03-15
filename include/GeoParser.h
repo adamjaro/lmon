@@ -4,6 +4,7 @@
 
 #include <map>
 #include <boost/tokenizer.hpp>
+#include "G4String.hh"
 
 class GeoParser {
 
