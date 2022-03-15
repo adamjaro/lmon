@@ -28,6 +28,8 @@ class CaloBPC : public Detector, public G4VSensitiveDetector {
 
   private:
 
+    G4LogicalVolume* GetMotherVolume(G4String mother_nam, G4LogicalVolume *top);
+
     G4String fNam; // name of detector sensitive logical volume
     G4int fNscin; // number of scintillator strips on the layer
 

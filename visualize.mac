@@ -6,16 +6,16 @@
 #detectors and components
 #/lmon/construct/geometry config/pro1/geom_all.in
 #/lmon/construct/geometry config/pro2/geom_pro2.in
-#/lmon/construct/geometry config/rp1/geom_rp1.in
+/lmon/construct/geometry config/rp1/geom_rp1.in
 #/lmon/construct/geometry config/geom_beam-gas.in
-/lmon/construct/geometry config/geom_test.in
+#/lmon/construct/geometry config/geom_test.in
 
 #input
-#/lmon/input/type gun
-#/gun/energy 10 GeV
-#/gun/particle e-
-#/gun/particle gamma
-#/gun/direction 0 0 -1
+/lmon/input/type gun
+/gun/energy 10 GeV
+/gun/particle e-
+/gun/particle gamma
+/gun/direction 0 0 -1
 
 #/lmon/input/type hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
@@ -23,8 +23,8 @@
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 
-/lmon/input/type tparticle
-/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/lgen_18x275.root
+#/lmon/input/type tparticle
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/lgen_18x275.root
 
 # Initialize kernel
 /run/initialize
@@ -62,7 +62,7 @@
 #/vis/viewer/set/targetPoint -499.9 100 -37000 mm  # Tagger 2
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
 #/vis/viewer/set/targetPoint -462 0 -37696 mm
-#/vis/viewer/set/targetPoint 0 0 -36400 mm # spectrometers
+/vis/viewer/set/targetPoint 0 0 -36400 mm # spectrometers
 
 #/vis/scene/add/text -500 0 -7000 mm 15 0 0 Q1eR
 #/vis/scene/add/text -500 0 -9000 mm 15 0 0 Q2eR
@@ -78,7 +78,7 @@
 /vis/viewer/zoom 2.
 
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 10 mm
+#/vis/scene/add/axes 0 0 0 10 mm
 
 # Draw smooth trajectories at end of event, showing trajectory points
 # as markers 2 pixels wide:

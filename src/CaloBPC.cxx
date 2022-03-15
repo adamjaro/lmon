@@ -45,6 +45,7 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
 
   //module internal dimensions
   G4double modxy = 138*mm; // module transverse size
+  geo->GetOptD(fNam, "modxy", modxy, GeoParser::Unit(mm));
   G4double abso_z = 3.5*mm; // absorber thickness along z
   G4double scin_z = 2.6*mm; // scintillator thickness along z
 
@@ -54,6 +55,11 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   G4double scin_x = 7.9*mm; // scintillator width in x
   G4double scin_spacing = 8*mm; // spacing of scintillator strips
   G4double scin_ofs = 1*mm; // first scintillator offset from the module edge
+
+  geo->GetOptI(fNam, "nscin", fNscin);
+  geo->GetOptD(fNam, "scin_x", scin_x, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "scin_spacing", scin_spacing, GeoParser::Unit(mm));
+  geo->GetOptD(fNam, "scin_ofs", scin_ofs, GeoParser::Unit(mm));
 
   //geometry for module holding the absorbers and scintillators
   G4double modz = nlay*(abso_z + scin_z); // module length along z
@@ -73,12 +79,19 @@ CaloBPC::CaloBPC(const G4String& nam, GeoParser *geo, G4LogicalVolume *top): Det
   ColorDecoder modvis("0:0:1:2");
   modv->SetVisAttributes(modvis.MakeVis(geo, fNam, "mod_vis"));
 
-  //put the module to the top
+  //put the module to its mother volume
   G4RotationMatrix modrot(G4ThreeVector(0, 1, 0), mod_rot_y); //is typedef to CLHEP::HepRotation
   G4ThreeVector modpos(mod_xpos, 0, mod_zpos);
   G4Transform3D modtrans(modrot, modpos); // is HepGeom::Transform3D
 
-  new G4PVPlacement(modtrans, modv, modnam, top, false, 0);
+  //mother volume for the module
+  G4LogicalVolume *mother_vol = top;
+  G4String mother_nam;
+  if( geo->GetOptS(fNam, "place_into", mother_nam) ) {
+    mother_vol = GetMotherVolume(mother_nam, top);
+  }
+
+  new G4PVPlacement(modtrans, modv, modnam, mother_vol, false, 0);
 
   //layer holding the absorber and scintillator strips
   G4double lay_z = abso_z+scin_z; // layer thickness along z
@@ -192,6 +205,21 @@ void CaloBPC::CreateOutput(TTree *tree) {
 
 }//CreateOutput
 
+//_____________________________________________________________________________
+G4LogicalVolume* CaloBPC::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
+
+  for(size_t i=0; i<top->GetNoDaughters(); i++) {
+
+    G4LogicalVolume *dv = top->GetDaughter(i)->GetLogicalVolume();
+
+    if( dv->GetName() == mother_nam ) {
+      return dv;
+    }
+  }
+
+  return 0x0;
+
+}//GetMotherVolume
 
 
 

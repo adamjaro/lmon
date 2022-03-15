@@ -60,7 +60,7 @@ new VacLumi lumi_vac_win_mag
 #parameters for spectrometer detectors
 const lumi_spec_z -36400. # mm, starting point in z
 const lumi_spec_dxy 200. # mm, full front size in x and y
-const lumi_spec_dz 350. # mm, full length along z
+const lumi_spec_dz 500. # mm, full length along z
 const lumi_spec_yS 60. # mm, elevation in y
 
 #angle from the end of the dipole magnet
@@ -95,7 +95,7 @@ new BoxSegment LumiSDbox
   LumiSDbox.theta = -lumi_spec_alpha
 
 #direct photon detector
-const lumiD_z -37000. # mm, start position in z
+const lumiD_z -37300. # mm, start position in z
 const lumiD_dxy 160. # mm, full size in x and y
 const lumiD_dz 350. # mm, full length along z
 
@@ -156,17 +156,102 @@ new VacLumi lumi_vac_spec_phot
   lumi_vac_spec_phot.dY1 = lumiD_dxy/2.
   #lumi_vac_spec_phot.vis = 1:0:0:2
 
+#tracking layers in spectrometers
+const spec_lay_size_z 1. # mm, layer thickness along z
+const spec_lay_iz 100. # mm, spacing in z for individual layers
 
+#starting position in z for layers
+const spec_lay_start_z (lumi_spec_dz/2.)-spec_lay_size_z/2.
 
+#up, layer A
+new ParticleCounter up_layA
 
+  up_layA.zpos = spec_lay_start_z
+  up_layA.dx = lumi_spec_dxy
+  up_layA.dy = lumi_spec_dxy
+  up_layA.dz = spec_lay_size_z
+  up_layA.place_into = LumiSUbox
 
+#up, layer B
+new ParticleCounter up_layB
 
+  up_layB.zpos = spec_lay_start_z-spec_lay_iz
+  up_layB.dx = lumi_spec_dxy
+  up_layB.dy = lumi_spec_dxy
+  up_layB.dz = spec_lay_size_z
+  up_layB.place_into = LumiSUbox
 
+#up, layer C
+new ParticleCounter up_layC
 
+  up_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
+  up_layC.dx = lumi_spec_dxy
+  up_layC.dy = lumi_spec_dxy
+  up_layC.dz = spec_lay_size_z
+  up_layC.place_into = LumiSUbox
 
+#calorimeter center position in z, based on its length of 158.6 mm
+const spec_calo_zpos (lumi_spec_dz/2.)-3.*spec_lay_iz-0.5*158.6
+const spec_calo_scin_ofs 0.05 # mm, scintillator offset
 
+#calorimeter scintillator spacing for 200 mm front size
+const spec_calo_nscin 25
 
+#up calorimeter
+new CaloBPC up_cal
 
+  up_cal.zpos = spec_calo_zpos
+  up_cal.place_into = LumiSUbox
+  up_cal.modxy = lumi_spec_dxy
+  up_cal.nscin = spec_calo_nscin
+  up_cal.scin_ofs = spec_calo_scin_ofs
+
+#tracking layers and calorimeter in down spectrometer
+
+#down, layer A
+new ParticleCounter down_layA
+
+  down_layA.zpos = spec_lay_start_z
+  down_layA.dx = lumi_spec_dxy
+  down_layA.dy = lumi_spec_dxy
+  down_layA.dz = spec_lay_size_z
+  down_layA.place_into = LumiSDbox
+
+#down, layer B
+new ParticleCounter down_layB
+
+  down_layB.zpos = spec_lay_start_z-spec_lay_iz
+  down_layB.dx = lumi_spec_dxy
+  down_layB.dy = lumi_spec_dxy
+  down_layB.dz = spec_lay_size_z
+  down_layB.place_into = LumiSDbox
+
+#down, layer C
+new ParticleCounter down_layC
+
+  down_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
+  down_layC.dx = lumi_spec_dxy
+  down_layC.dy = lumi_spec_dxy
+  down_layC.dz = spec_lay_size_z
+  down_layC.place_into = LumiSDbox
+
+#down calorimeter
+new CaloBPC down_cal
+
+  down_cal.zpos = spec_calo_zpos
+  down_cal.place_into = LumiSDbox
+  down_cal.modxy = lumi_spec_dxy
+  down_cal.nscin = spec_calo_nscin
+  down_cal.scin_ofs = spec_calo_scin_ofs
+
+#counter in place of direct photon detector
+new ParticleCounter phot_cnt
+
+  phot_cnt.zpos = (lumiD_dz/2.)-spec_lay_size_z/2.
+  phot_cnt.dx = lumiD_dxy
+  phot_cnt.dy = lumiD_dxy
+  phot_cnt.dz = spec_lay_size_z
+  phot_cnt.place_into = LumiDbox
 
 
 
