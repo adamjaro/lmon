@@ -19,6 +19,10 @@ class SpectPlane {
 
     bool IsHit();
 
+    Double_t GetX() { return fX; }
+    Double_t GetY() { return fY; }
+    Double_t GetZ() { return fZ; }
+
     void CreateOutput();
     void WriteOutputs();
 

@@ -4,6 +4,7 @@
 
 // Spectrometer detecting station
 
+#include "CaloBPCHits.h"
 class SpectPlane;
 
 class SpectDet {
@@ -15,14 +16,35 @@ class SpectDet {
     void SetLayEmin(double emin);
     void SetLayPdg(int pdg);
 
-    void ProcessEvent();
+    bool IsHit();
+
+    Double_t GetX() { return fX; }
+    Double_t GetY() { return fY; }
+    Double_t GetZ() { return fZ; }
+    Double_t GetThetaX() { return fThetaX; }
+    Double_t GetThetaY() { return fThetaY; }
+    Double_t GetCalE() { return fCalE; }
 
     void CreateOutput();
     void WriteOutputs();
 
   private:
 
+    Double_t GetTheta(Double_t xyA, Double_t zA, Double_t xyC, Double_t zC);
+
+    std::string fNam; // detector name
+
     std::vector<SpectPlane*> fLay; // tracking layers
+
+    CaloBPCHits fCal; // calorimeter hits
+
+    TTree *fSTree; // output tree for a given spectrometer
+    Double_t fX; // track position in x, mm
+    Double_t fY; // track position in y, mm
+    Double_t fZ; // track position in z, mm
+    Double_t fThetaX; // track angle in x, mrad
+    Double_t fThetaY; // track angle in y, mrad
+    Double_t fCalE; // calorimeter deposited energy, GeV
 
 };
 

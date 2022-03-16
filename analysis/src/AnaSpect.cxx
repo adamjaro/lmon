@@ -3,6 +3,7 @@
 #include <iostream>
 #include "glob.h"
 #include <fstream>
+#include <vector>
 
 //Boost
 #include <boost/program_options.hpp>
@@ -55,6 +56,12 @@ int main(int argc, char* argv[]) {
     tree.Add( glob_inputs.gl_pathv[i] );
   }
 
+  //MC data
+  vector<Int_t> *gen_pdg = 0x0;
+  vector<Float_t> *gen_en = 0x0;
+  tree.SetBranchAddress("gen_pdg", &gen_pdg);
+  tree.SetBranchAddress("gen_en", &gen_en);
+
   //geometry
   string geo_nam = get_str(opt_map, "main.geo");
   cout << "Geometry: " << geo_nam << endl;
@@ -73,8 +80,31 @@ int main(int argc, char* argv[]) {
   cout << "Output: " << outfile << endl;
   TFile out(outfile.c_str(), "recreate");
 
+  //detector outputs
   up.CreateOutput();
   down.CreateOutput();
+
+  //interaction tree
+  TTree otree("event", "event");
+  Bool_t up_hit, down_hit;
+  Double_t up_x, up_y, up_z, up_tx, up_ty, up_calE;
+  Double_t down_x, down_y, down_z, down_tx, down_ty, down_calE;
+  Double_t phot_en;
+  otree.Branch("up_hit", &up_hit, "up_hit/O");
+  otree.Branch("down_hit", &down_hit, "down_hit/O");
+  otree.Branch("up_x", &up_x, "up_x/D");
+  otree.Branch("up_y", &up_y, "up_y/D");
+  otree.Branch("up_z", &up_z, "up_z/D");
+  otree.Branch("up_tx", &up_tx, "up_tx/D");
+  otree.Branch("up_ty", &up_ty, "up_ty/D");
+  otree.Branch("up_calE", &up_calE, "up_calE/D");
+  otree.Branch("down_x", &down_x, "down_x/D");
+  otree.Branch("down_y", &down_y, "down_y/D");
+  otree.Branch("down_z", &down_z, "down_z/D");
+  otree.Branch("down_tx", &down_tx, "down_tx/D");
+  otree.Branch("down_ty", &down_ty, "down_ty/D");
+  otree.Branch("down_calE", &down_calE, "down_calE/D");
+  otree.Branch("phot_en", &phot_en, "phot_en/D");
 
   //event loop
   Long64_t nev = tree.GetEntries();
@@ -87,8 +117,29 @@ int main(int argc, char* argv[]) {
       //cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
 
-    up.ProcessEvent();
-    down.ProcessEvent();
+    //generated photon energy
+    for(unsigned long imc=0; imc<gen_pdg->size(); imc++) {
+      if( gen_pdg->at(imc) == 22 ) phot_en = gen_en->at(imc);
+    }
+
+    up_hit = up.IsHit();
+    down_hit = down.IsHit();
+
+    up_x = up.GetX();
+    up_y = up.GetY();
+    up_z = up.GetZ();
+    up_tx = up.GetThetaX();
+    up_ty = up.GetThetaY();
+    up_calE = up.GetCalE();
+
+    down_x = down.GetX();
+    down_y = down.GetY();
+    down_z = down.GetZ();
+    down_tx = down.GetThetaX();
+    down_ty = down.GetThetaY();
+    down_calE = down.GetCalE();
+
+    otree.Fill();
 
   }//event loop
 
@@ -96,6 +147,7 @@ int main(int argc, char* argv[]) {
 
   up.WriteOutputs();
   down.WriteOutputs();
+  otree.Write();
   out.Close();
 
   return 0;
