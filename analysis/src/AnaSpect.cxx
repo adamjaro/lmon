@@ -86,12 +86,13 @@ int main(int argc, char* argv[]) {
 
   //interaction tree
   TTree otree("event", "event");
-  Bool_t up_hit, down_hit;
+  Bool_t up_hit, down_hit, is_spect;
   Double_t up_x, up_y, up_z, up_tx, up_ty, up_calE;
   Double_t down_x, down_y, down_z, down_tx, down_ty, down_calE;
   Double_t phot_en;
   otree.Branch("up_hit", &up_hit, "up_hit/O");
   otree.Branch("down_hit", &down_hit, "down_hit/O");
+  otree.Branch("is_spect", &is_spect, "is_spect/O");
   otree.Branch("up_x", &up_x, "up_x/D");
   otree.Branch("up_y", &up_y, "up_y/D");
   otree.Branch("up_z", &up_z, "up_z/D");
@@ -124,6 +125,7 @@ int main(int argc, char* argv[]) {
 
     up_hit = up.IsHit();
     down_hit = down.IsHit();
+    is_spect = up_hit and down_hit;
 
     up_x = up.GetX();
     up_y = up.GetY();
