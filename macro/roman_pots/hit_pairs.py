@@ -91,6 +91,7 @@ def dxy():
 def hit_rate():
 
     #hit rate in simulated bunch crossings
+    pass
 
 #_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):

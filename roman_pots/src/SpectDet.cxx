@@ -22,7 +22,7 @@ using namespace std;
 
 //_____________________________________________________________________________
 SpectDet::SpectDet(std::string nam, string geo_nam, TTree *tree, GeoParser *geo):
-    fNam(nam), fSTree(0x0) {
+    fNam(nam), fCalEmin(0), fSTree(0x0) {
 
   fLay.push_back( new SpectPlane(nam+"_layA", geo_nam, tree, geo) );
   fLay.push_back( new SpectPlane(nam+"_layB", geo_nam, tree, geo) );
@@ -70,6 +70,9 @@ bool SpectDet::IsHit() {
   for(unsigned long i=0; i<fCal.GetNhits(); i++) {
     fCalE += fCal.GetHit(i).en;
   }
+
+  //selection for minimal calorimeter energy
+  if( fCalE < fCalEmin ) return false;
 
   if(fSTree) fSTree->Fill();
 

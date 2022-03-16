@@ -70,10 +70,14 @@ int main(int argc, char* argv[]) {
   SpectDet up("up", "LumiSUbox", &tree, &geo);
   SpectDet down("down", "LumiSDbox", &tree, &geo);
 
-  up.SetLayEmin(0.1);
-  down.SetLayEmin(0.1);
+  //selection criteria
+  up.SetLayEmin(0.1); // GeV
   up.SetLayPdg(11);
+  up.SetCalEmin(0.02); // GeV
+
+  down.SetLayEmin(0.1);
   down.SetLayPdg(-11);
+  down.SetCalEmin(0.02);
 
   //outputs
   string outfile = get_str(opt_map, "main.outfile");
@@ -115,7 +119,7 @@ int main(int argc, char* argv[]) {
     tree.GetEntry(iev);
 
     if( iev > 0 and iev%iprint == 0 ) {
-      //cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
+      cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
 
     //generated photon energy

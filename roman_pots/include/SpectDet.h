@@ -15,6 +15,7 @@ class SpectDet {
 
     void SetLayEmin(double emin);
     void SetLayPdg(int pdg);
+    void SetCalEmin(Double_t emin) { fCalEmin = emin; }
 
     bool IsHit();
 
@@ -33,6 +34,8 @@ class SpectDet {
     Double_t GetTheta(Double_t xyA, Double_t zA, Double_t xyC, Double_t zC);
 
     std::string fNam; // detector name
+
+    Double_t fCalEmin; // minimal calorimeter energy, GeV
 
     std::vector<SpectPlane*> fLay; // tracking layers
 
