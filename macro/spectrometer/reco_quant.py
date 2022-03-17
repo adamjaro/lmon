@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 4
 
     func = {}
     func[0] = x
@@ -38,7 +38,7 @@ def x():
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -81,7 +81,7 @@ def y():
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -174,8 +174,8 @@ def theta_y():
     #sel += "&&up_calE>0.02"
     #sel += "&&down_calE>0.02"
 
-    inp = "~/sim/lmon/analysis/ini/spect.root"
-    #inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    #inp = "~/sim/lmon/analysis/ini/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -217,17 +217,17 @@ def calE():
     #calorimeter energy in spectrometer
 
     #GeV
-    #xbin = 0.01
-    #xmin = 0
-    #xmax = 1
-    xbin = 5e-4
+    xbin = 0.01
     xmin = 0
-    xmax = 0.06
+    xmax = 1
+    #xbin = 5e-4
+    #xmin = 0
+    #xmax = 0.06
 
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 

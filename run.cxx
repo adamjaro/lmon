@@ -90,10 +90,6 @@ int main(int argc, char* argv[]) {
   //action
   runManager->SetUserInitialization(new ActionInitialization);
 
-  //visualization
-  G4VisExecutive *visManager = new G4VisExecutive;
-  visManager->Initialize();
-
   //user interface manager
   G4UImanager *UImanager = G4UImanager::GetUIpointer();
 
@@ -104,13 +100,14 @@ int main(int argc, char* argv[]) {
     UImanager->ApplyCommand(command+macro);
   } else {
     //interactive
+    G4VisExecutive *visManager = new G4VisExecutive;
+    visManager->Initialize();
     UImanager->ApplyCommand(command+vis_mac);
     ui->SessionStart();
     delete ui;
   }
 
   //job termination
-  delete visManager;
   delete runManager;
 
   return 0;

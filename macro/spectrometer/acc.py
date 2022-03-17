@@ -38,7 +38,7 @@ def acc_spec():
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm3a/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
 
     emin = 0
     emax = 19
@@ -97,7 +97,7 @@ def acc_spec():
     leg.AddEntry(acc.acc_func, "Geometry model", "l")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_spec
