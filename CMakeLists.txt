@@ -35,8 +35,8 @@ find_package(ROOT REQUIRED COMPONENTS Core EG Hist Physics RIO Tree MathCore)
 include(${ROOT_USE_FILE})
 
 #dictionary for detectors
-set (DICT G__DET.cxx)
-ROOT_GENERATE_DICTIONARY(G__DET Detector.h SensDetDummy.h ExitWinZEUS.h LINKDEF include/LinkDef.h)
+#set (DICT G__DET.cxx)
+#ROOT_GENERATE_DICTIONARY(G__DET Detector.h SensDetDummy.h ExitWinZEUS.h LINKDEF include/LinkDef.h)
 
 #component libraries
 set(COMPONENT_LIBS)

@@ -35,6 +35,7 @@ RootOut::RootOut(): fOut(0), fDetTree(0) {
 
   //inctruct ROOT not to write anything about G4VSensitiveDetector to file
   //by pointing it to an empty dummy class SensDetDummy
+/*
   if( gROOT->GetVersionInt() >= 60000 ) {
     // ROOT 6
     ROOT::AddClass("G4VSensitiveDetector", 0, typeid(SensDetDummy), TClass::GetDict("SensDetDummy"), 0);
@@ -42,7 +43,7 @@ RootOut::RootOut(): fOut(0), fDetTree(0) {
     // ROOT 5
     TClass::GetClass("SensDetDummy")->Clone("G4VSensitiveDetector");
   }
-
+*/
 }//RootOut
 
 //_____________________________________________________________________________
