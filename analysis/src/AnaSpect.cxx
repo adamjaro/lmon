@@ -61,6 +61,10 @@ int main(int argc, char* argv[]) {
   vector<Float_t> *gen_en = 0x0;
   tree.SetBranchAddress("gen_pdg", &gen_pdg);
   tree.SetBranchAddress("gen_en", &gen_en);
+  Double_t true_phot_theta, true_phot_phi, true_phot_E;
+  tree.SetBranchAddress("true_phot_theta", &true_phot_theta);
+  tree.SetBranchAddress("true_phot_phi", &true_phot_phi);
+  tree.SetBranchAddress("true_phot_E", &true_phot_E);
 
   //geometry
   string geo_nam = get_str(opt_map, "main.geo");
@@ -90,6 +94,9 @@ int main(int argc, char* argv[]) {
 
   //interaction tree
   TTree otree("event", "event");
+  otree.Branch("true_phot_theta", &true_phot_theta, "true_phot_theta/D");
+  otree.Branch("true_phot_phi", &true_phot_phi, "true_phot_phi/D");
+  otree.Branch("true_phot_E", &true_phot_E, "true_phot_E/D");
   Bool_t up_hit, down_hit, is_spect;
   Double_t up_x, up_y, up_z, up_tx, up_ty, up_calE;
   Double_t down_x, down_y, down_z, down_tx, down_ty, down_calE;
