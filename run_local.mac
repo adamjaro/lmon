@@ -4,9 +4,9 @@
 #detectors and components
 #/lmon/construct/geometry config/pro1/geom_all.in
 #/lmon/construct/geometry config/pro2/geom_pro2.in
-#/lmon/construct/geometry config/rp1/geom_rp1.in
+/lmon/construct/geometry config/rp1/geom_rp1.in
 #/lmon/construct/geometry config/geom_beam-gas.in
-/lmon/construct/geometry config/geom_test.in
+#/lmon/construct/geometry config/geom_test.in
 
 /run/initialize
 
@@ -34,6 +34,6 @@
 #/lmon/output/name data/ew/ew1bx2.root
 
 
-#/run/beamOn 12
+/run/beamOn 4
 #/units/list
 
