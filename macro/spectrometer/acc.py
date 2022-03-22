@@ -39,7 +39,7 @@ def acc_spec():
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1bx1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm1cx1/hits_spect.root"
     #infile = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
-    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax1/spect.root"
+    infile = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     emin = 0
     emax = 19
@@ -50,7 +50,8 @@ def acc_spec():
     tree_lmon = inp_lmon.Get("event")
 
     #acc_lmon = rt.acc_Q2_kine(tree_lmon, "gen_en", "is_spect")
-    acc_lmon = rt.acc_Q2_kine(tree_lmon, "phot_en", "is_spect")
+    #acc_lmon = rt.acc_Q2_kine(tree_lmon, "phot_en", "is_spect")
+    acc_lmon = rt.acc_Q2_kine(tree_lmon, "true_phot_E", "is_spect")
     acc_lmon.prec = 0.04
     #acc_lmon.prec = 0.1
     acc_lmon.delt = 1e-2

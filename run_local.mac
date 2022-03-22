@@ -19,7 +19,7 @@
 #/lmon/input/type tparticle
 #/lmon/input/tparticle/select 22
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_1Mevt.root
-#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/lgen_18x275.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/gen_uni.root
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_Qe_beff2_120kevt.root
 
 #/lmon/input/type hepmc

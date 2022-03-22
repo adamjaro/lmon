@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 4
+    iplot = 7
 
     func = {}
     func[0] = x
@@ -22,6 +22,9 @@ def main():
     func[2] = theta_x
     func[3] = theta_y
     func[4] = calE
+    func[5] = true_E
+    func[6] = true_pitheta
+    func[7] = true_phi
 
     func[iplot]()
 
@@ -38,7 +41,7 @@ def x():
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -81,7 +84,7 @@ def y():
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -124,11 +127,13 @@ def theta_x():
     xbin = 0.1
     xmin = -20
     xmax = 20
+    #xmin = -10
+    #xmax = 10
 
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -175,7 +180,7 @@ def theta_y():
     #sel += "&&down_calE>0.02"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -227,7 +232,7 @@ def calE():
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4a/spect_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
     det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
 
@@ -260,6 +265,118 @@ def calE():
 #calE
 
 #_____________________________________________________________________________
+def true_E():
+
+    #true photon energy
+
+    #GeV
+    xbin = 0.1
+    xmin = 0
+    xmax = 19
+
+    sel = "is_spect==1"
+
+    #inp = "~/sim/lmon/analysis/ini/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    fig.set_size_inches(5, 5)
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    hx = make_h1(inp, "event", "true_phot_E", xbin, xmin, xmax, sel)
+    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
+
+    ax.set_xlabel("$E$ (GeV)")
+    ax.set_ylabel("Normalized counts")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#true_E
+
+#_____________________________________________________________________________
+def true_pitheta():
+
+    #true photon pi - theta in mrad
+
+    #mrad
+    xbin = 0.01
+    xmin = 0
+    xmax = 10
+
+    sel = "is_spect==1"
+
+    #inp = "~/sim/lmon/analysis/ini/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    fig.set_size_inches(5, 5)
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    hx = make_h1(inp, "event", "(TMath::Pi()-true_phot_theta)*1e3", xbin, xmin, xmax, sel)
+    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
+
+    ax.set_xlabel(r"$\pi - \theta$ (mrad)")
+    ax.set_ylabel("Normalized counts")
+
+    ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#true_pitheta
+
+#_____________________________________________________________________________
+def true_phi():
+
+    #true photon phi in rad
+
+    #rad
+    xbin = 0.01
+    xmin = -3.5
+    xmax = 3.5
+
+    sel = "is_spect==1"
+
+    #inp = "~/sim/lmon/analysis/ini/spect.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    fig.set_size_inches(5, 5)
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    hx = make_h1(inp, "event", "true_phot_phi", xbin, xmin, xmax, sel)
+    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
+
+    ax.set_xlabel(r"$\phi$ (rad)")
+    ax.set_ylabel("Normalized counts")
+
+    #ax.set_yscale("log")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#true_phi
+
+#_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
 
     inp = TFile.Open(infile)
@@ -267,8 +384,10 @@ def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
 
     #tree.Print()
 
-    hx = ut.prepare_TH1D(tnam+"_"+val+"_hx", xbin, xmin, xmax)
-    tree.Draw(val+" >> "+tnam+"_"+val+"_hx", sel)
+    #hx = ut.prepare_TH1D(tnam+"_"+val+"_hx", xbin, xmin, xmax)
+    #tree.Draw(val+" >> "+tnam+"_"+val+"_hx", sel)
+    hx = ut.prepare_TH1D(tnam+"_hx", xbin, xmin, xmax)
+    tree.Draw(val+" >> "+tnam+"_hx", sel)
 
     print(val, "entries:", hx.GetEntries())
 
