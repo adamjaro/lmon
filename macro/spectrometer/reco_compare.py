@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 3
 
     func = {}
     func[0] = en
@@ -28,11 +28,12 @@ def main():
 def en():
 
     #GeV
-    ebin = 0.1
+    ebin = 0.3
     emin = 3
     emax = 19
 
-    inp = "../../analysis/ini/spect_rec.root"
+    #inp = "../../analysis/ini/spect_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
 
     sel = ""
 
@@ -44,6 +45,7 @@ def en():
     hxy = ut.prepare_TH2D("hxy", ebin, emin, emax, ebin, emin, emax)
 
     tree.Draw("rec_E:true_phot_E >> hxy", sel)
+    print("Entries:", hxy.GetEntries())
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
@@ -67,11 +69,12 @@ def en():
 def pitheta():
 
     #mrad
-    tbin = 0.01
+    tbin = 0.03
     tmin = 0
-    tmax = 2
+    tmax = 1.2
 
-    inp = "../../analysis/ini/spect_rec.root"
+    #inp = "../../analysis/ini/spect_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
 
     sel = ""
 
@@ -106,14 +109,15 @@ def pitheta():
 def phi():
 
     #GeV
-    pbin = 0.1
+    pbin = 0.3
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    inp = "../../analysis/ini/spect_rec.root"
+    #inp = "../../analysis/ini/spect_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
 
     #sel = ""
-    sel = "(TMath::Pi()-rec_theta)>0.8e-3"
+    sel = "(TMath::Pi()-rec_theta)>0.4e-3"
 
     infile = TFile.Open(inp)
     tree = infile.Get("spec_rec")
@@ -151,17 +155,18 @@ def eff_en_pitheta():
 
     #reconstruction efficiency in energy (GeV) and pi - theta (mrad)
 
-    inp = "../../analysis/ini/spect_rec.root"
+    #inp = "../../analysis/ini/spect_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
 
     #bins in theta, mrad
-    xbin = 0.01
+    xbin = 0.03
     xmin = 0
-    xmax = 2
+    xmax = 1.2
 
     #bins in energy, GeV
     ybin = 0.3
-    ymin = 1
-    ymax = 20
+    ymin = 3
+    ymax = 19
 
     infile = TFile.Open(inp)
     tree_in = infile.Get("event")

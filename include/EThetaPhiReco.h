@@ -47,11 +47,14 @@ class EThetaPhiReco {
     class Link {
       public:
 
-      Link(): en(0), theta(0), phi(0) {}
+      Link(): en(0), theta(0), phi(0), en_err(0), theta_err(0), phi_err(0) {}
 
       Double_t en; // particle energy, GeV
       Double_t theta; // particle polar angle, rad
       Double_t phi; // particle azimuthal angle, rad
+      Double_t en_err; // corresponding errors, same units
+      Double_t theta_err;
+      Double_t phi_err;
 
       void AddParticle(double e, double t, double p);
 
@@ -62,6 +65,7 @@ class EThetaPhiReco {
       private:
 
       Double_t GetMean(std::vector<double>& v);
+      Double_t GetErr(std::vector<double>& v, Double_t m);
 
       std::vector<double> fEn; // inputs in energy, GeV
       std::vector<double> fTheta; // inputs in theta, rad

@@ -33,6 +33,8 @@ int main(int argc, char* argv[]) {
     ("main.geo", program_options::value<string>(), "Geometry configuration")
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
     ("main.input_resp", program_options::value<string>(), "Response input for reconstruction")
+    ("main.up_y_min", program_options::value<double>(), "Minimal up y")
+    ("main.down_y_max", program_options::value<double>(), "Maximal down y")
   ;
 
   //load the configuration file
@@ -81,6 +83,16 @@ int main(int argc, char* argv[]) {
   down.SetLayPdg(-11);
   down.SetCalEmin(0.02);
 
+  Double_t up_y_min=-9e9, down_y_max=9e9;
+  if( opt_map.find("main.up_y_min") != opt_map.end() ) {
+    up_y_min = opt_map["main.up_y_min"].as<double>();
+    cout << "up_y_min: " << up_y_min << endl;
+  }
+  if( opt_map.find("main.down_y_max") != opt_map.end() ) {
+    down_y_max = opt_map["main.down_y_max"].as<double>();
+    cout << "down_y_max: " << down_y_max << endl;
+  }
+
   //import the response for reconstruction
   string input_resp = get_str(opt_map, "main.input_resp");
   cout << "Response input: " << input_resp << endl;
@@ -98,6 +110,17 @@ int main(int argc, char* argv[]) {
   spec_rec.AddOutputBranch("true_phot_E", &true_phot_E);
   spec_rec.AddOutputBranch("true_phot_theta", &true_phot_theta);
   spec_rec.AddOutputBranch("true_phot_phi", &true_phot_phi);
+  Double_t quant[10];
+  spec_rec.AddOutputBranch("up_x", &quant[0]); // xup
+  spec_rec.AddOutputBranch("down_x", &quant[1]); // xdown
+  spec_rec.AddOutputBranch("up_y", &quant[2]); // yup
+  spec_rec.AddOutputBranch("down_y", &quant[3]); // ydown
+  spec_rec.AddOutputBranch("up_tx", &quant[4]); // txup
+  spec_rec.AddOutputBranch("down_tx", &quant[5]); // txdown
+  spec_rec.AddOutputBranch("up_ty", &quant[6]); // tyup
+  spec_rec.AddOutputBranch("down_ty", &quant[7]); // tydown
+  spec_rec.AddOutputBranch("up_calE", &quant[8]); // eup
+  spec_rec.AddOutputBranch("down_calE", &quant[9]); // edown
 
   //interaction tree
   TTree otree("event", "event");
@@ -114,6 +137,7 @@ int main(int argc, char* argv[]) {
   Long64_t nev = tree.GetEntries();
   //Long64_t nev = 220;
   Long64_t iprint = nev/12;
+  Long64_t nrec=0;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
 
@@ -128,13 +152,16 @@ int main(int argc, char* argv[]) {
     //spectrometer coincidence
     is_spect = up_hit and down_hit;
 
+    if( up_hit and up.GetY() < up_y_min ) is_spect = kFALSE;
+
+    if( down_hit and down.GetY() > down_y_max ) is_spect = kFALSE;
+
     is_rec = kFALSE;
 
     //proceed with reconstruction only for spectrometer coincidence
     if( is_spect ) {
 
       //measured quantities, same order as they were created by MakeQuantity
-      Double_t quant[10];
       quant[0] = up.GetX(); // xup
       quant[1] = down.GetX(); // xdown
       quant[2] = up.GetY(); // yup
@@ -149,6 +176,7 @@ int main(int argc, char* argv[]) {
       //run the reconstruction
       is_rec = spec_rec.Reconstruct(quant);
 
+      nrec++;
     }
 
     //fill the interaction tree
@@ -157,6 +185,7 @@ int main(int argc, char* argv[]) {
   }//event loop
 
   cout << "All events: " << tree.GetEntries() << endl;
+  cout << "Reconstructed events: " << nrec << endl;
 
   spec_rec.WriteRecoOutput();
   otree.Write();

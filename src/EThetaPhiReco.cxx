@@ -18,6 +18,7 @@
 #include "TTree.h"
 #include "TH1D.h"
 #include "TFile.h"
+#include "TMath.h"
 
 //local classes
 #include "EThetaPhiReco.h"
@@ -113,13 +114,16 @@ void EThetaPhiReco::Export() {
   //tree on links
   TTree link_tree((fNam+"_links").c_str(), (fNam+"_links").c_str());
   ULong64_t idx;
-  Double_t en, theta, phi;
+  Double_t en, theta, phi, en_err, theta_err, phi_err;
   Int_t ninp;
   link_tree.Branch("idx", &idx, "idx/l");
   link_tree.Branch("en", &en, "en/D");
   link_tree.Branch("theta", &theta, "theta/D");
   link_tree.Branch("phi", &phi, "phi/D");
   link_tree.Branch("ninp", &ninp, "ninp/I");
+  link_tree.Branch("en_err", &en_err, "en_err/D");
+  link_tree.Branch("theta_err", &theta_err, "theta_err/D");
+  link_tree.Branch("phi_err", &phi_err, "phi_err/D");
 
   //link loop
   for(map<ULong64_t, Link>::iterator i = fLinks.begin(); i != fLinks.end(); i++) {
@@ -134,6 +138,9 @@ void EThetaPhiReco::Export() {
     theta = lnk.theta;
     phi = lnk.phi;
     ninp = lnk.GetNinp();
+    en_err = lnk.en_err;
+    theta_err = lnk.theta_err;
+    phi_err = lnk.phi_err;
 
     link_tree.Fill();
 
@@ -290,12 +297,18 @@ void EThetaPhiReco::Link::Evaluate() {
     en = GetMean(fEn);
     theta = GetMean(fTheta);
     phi = GetMean(fPhi);
+    en_err = GetErr(fEn, en);
+    theta_err = GetErr(fTheta, theta);
+    phi_err = GetErr(fPhi, phi);
 
   } else {
 
     en = fEn[0];
     theta = fTheta[0];
     phi = fPhi[0];
+    en_err = -1;
+    theta_err = -1;
+    phi_err = -1;
   }
 
 }//Link::Evaluate
@@ -313,6 +326,24 @@ Double_t EThetaPhiReco::Link::GetMean(std::vector<double>& v) {
   }
 
   return sum/nx;
+
+}//GetMean
+
+//_____________________________________________________________________________
+Double_t EThetaPhiReco::Link::GetErr(std::vector<double>& v, Double_t m) {
+
+  //error for the mean
+
+  if( v.size() <= 1 ) return -1;
+
+  Double_t nx = Double_t(v.size());
+
+  Double_t sum = 0.;
+  for(unsigned int i=0; i<v.size(); i++) {
+    sum += (v[i]-m)*(v[i]-m);
+  }
+
+  return TMath::Sqrt( sum/(nx*(nx-1)) );
 
 }//GetMean
 
