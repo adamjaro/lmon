@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 3
 
     func = {}
     func[0] = x
@@ -43,11 +43,11 @@ def x():
     #inp = "~/sim/lmon/analysis/ini/spect.root"
     inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
-    det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
+    det = [{"nam": "up", "col": "red", "lab": "$x_{\mathrm{up}}$"}, {"nam": "down", "col": "blue", "lab": "$x_{\mathrm{down}}$"}]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -63,8 +63,12 @@ def x():
         hx = make_h1(inp, "event", i["nam"]+"_x", xbin, xmin, xmax, sel)
         plt.plot(hx[0], hx[1], "-", color=i["col"], lw=1)
 
+        leg.add_entry(leg_lin(i["col"]), i["lab"])
+
     ax.set_xlabel("$x$ (mm)")
     ax.set_ylabel("Normalized counts")
+
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -77,7 +81,7 @@ def y():
     #y position on spectrometer
 
     #mm
-    xbin = 1
+    xbin = 5
     xmin = -200
     xmax = 200
 
@@ -86,11 +90,11 @@ def y():
     #inp = "~/sim/lmon/analysis/ini/spect.root"
     inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
-    det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
+    det = [{"nam": "up", "col": "red", "lab": "$y_{\mathrm{up}}$"}, {"nam": "down", "col": "blue", "lab": "$y_{\mathrm{down}}$"}]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -106,7 +110,7 @@ def y():
         hx = make_h1(inp, "event", i["nam"]+"_y", xbin, xmin, xmax, sel)
         plt.plot(hx[0], hx[1], "-", color=i["col"], lw=1)
 
-        leg.add_entry(leg_lin(i["col"]), i["nam"])
+        leg.add_entry(leg_lin(i["col"]), i["lab"])
 
     ax.set_xlabel("$y$ (mm)")
     ax.set_ylabel("Normalized counts")
@@ -125,21 +129,22 @@ def theta_x():
 
     #mrad
     xbin = 0.1
-    xmin = -20
-    xmax = 20
-    #xmin = -10
-    #xmax = 10
+    #xmin = -20
+    #xmax = 20
+    xmin = -10
+    xmax = 10
 
     sel = "is_spect==1"
 
     #inp = "~/sim/lmon/analysis/ini/spect.root"
     inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
-    det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
+    det = [{"nam": "up", "col": "red", "lab": r"$\theta_{x,\mathrm{up}}$"},\
+      {"nam": "down", "col": "blue", "lab": r"$\theta_{x,\mathrm{down}}$"}]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -155,8 +160,12 @@ def theta_x():
         hx = make_h1(inp, "event", i["nam"]+"_tx", xbin, xmin, xmax, sel)
         plt.plot(hx[0], hx[1], "-", color=i["col"], lw=1)
 
+        leg.add_entry(leg_lin(i["col"]), i["lab"])
+
     ax.set_xlabel(r"$\theta_x$ (mrad)")
     ax.set_ylabel("Normalized counts")
+
+    leg.draw(plt, col)
 
     ax.set_yscale("log")
 
@@ -182,11 +191,12 @@ def theta_y():
     #inp = "~/sim/lmon/analysis/ini/spect.root"
     inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect.root"
 
-    det = [{"nam": "up", "col": "red"}, {"nam": "down", "col": "blue"}]
+    det = [{"nam": "up", "col": "red", "lab": r"$\theta_{y,\mathrm{up}}$"},\
+      {"nam": "down", "col": "blue", "lab": r"$\theta_{y,\mathrm{down}}$"}]
 
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -202,7 +212,7 @@ def theta_y():
         hx = make_h1(inp, "event", i["nam"]+"_ty", xbin, xmin, xmax, sel)
         plt.plot(hx[0], hx[1], "-", color=i["col"], lw=1)
 
-        leg.add_entry(leg_lin(i["col"]), i["nam"])
+        leg.add_entry(leg_lin(i["col"]), i["lab"])
 
     ax.set_xlabel(r"$\theta_y$ (mrad)")
     ax.set_ylabel("Normalized counts")

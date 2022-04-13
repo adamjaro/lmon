@@ -99,7 +99,7 @@ def acc_spec():
     leg.AddEntry(acc.acc_func, "Geometry model", "l")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #acc_spec

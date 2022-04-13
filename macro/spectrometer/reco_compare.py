@@ -21,6 +21,7 @@ def main():
     func[1] = pitheta
     func[2] = phi
     func[3] = eff_en_pitheta
+    func[4] = en_spectrum
 
     func[iplot]()
 
@@ -33,7 +34,7 @@ def en():
     emax = 19
 
     #inp = "../../analysis/ini/spect_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass4.root"
 
     sel = ""
 
@@ -47,8 +48,8 @@ def en():
     tree.Draw("rec_E:true_phot_E >> hxy", sel)
     print("Entries:", hxy.GetEntries())
 
-    ytit = "Reconstructed energy #it{E_{e}} (GeV)"
-    xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
+    ytit = "Reconstructed energy #it{E_{#gamma}} (GeV)"
+    xtit = "Generated true energy #it{E_{#gamma,gen}} (GeV)"
     ut.put_yx_tit(hxy, ytit, xtit, 1.9, 1.3)
 
     ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
@@ -60,7 +61,7 @@ def en():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en
@@ -71,10 +72,10 @@ def pitheta():
     #mrad
     tbin = 0.03
     tmin = 0
-    tmax = 1.2
+    tmax = 1.5
 
     #inp = "../../analysis/ini/spect_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass4.root"
 
     sel = ""
 
@@ -100,7 +101,7 @@ def pitheta():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #pitheta
@@ -114,9 +115,9 @@ def phi():
     pmax = TMath.Pi()+0.1
 
     #inp = "../../analysis/ini/spect_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass4.root"
 
-    #sel = ""
+    sel = ""
     sel = "(TMath::Pi()-rec_theta)>0.4e-3"
 
     infile = TFile.Open(inp)
@@ -142,10 +143,10 @@ def phi():
     gPad.SetGrid()
 
     leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
-    leg.AddEntry("", "#pi-#theta_{#it{e},rec} > 1 mrad", "")
+    leg.AddEntry("", "#pi-#theta_{#it{#gamma},rec} > 0.4 mrad", "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phi
@@ -156,7 +157,7 @@ def eff_en_pitheta():
     #reconstruction efficiency in energy (GeV) and pi - theta (mrad)
 
     #inp = "../../analysis/ini/spect_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass3.root"
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass4.root"
 
     #bins in theta, mrad
     xbin = 0.03
@@ -185,8 +186,8 @@ def eff_en_pitheta():
 
     hSpe.Divide(hAll)
 
-    ytit = "Photon energy #it{E} (GeV)"
-    xtit = "Photon polar angle #it{#pi}-#it{#theta} (mrad)"
+    ytit = "Generated true energy #it{E_{#gamma,gen}} (GeV)"
+    xtit = "Generated true #it{#pi}-#it{#theta_{#gamma,gen}} (mrad)"
     ut.put_yx_tit(hSpe, ytit, xtit, 1.4, 1.3)
 
     hSpe.SetTitleOffset(1.4, "Z")
@@ -208,10 +209,87 @@ def eff_en_pitheta():
     #leg.AddEntry("", "#bf{"+lab_sel+"}", "")
     #leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #eff_en_pitheta
+
+#_____________________________________________________________________________
+def en_spectrum():
+
+    #spectrum in energy, reconstructed and true generated energy
+
+    #GeV
+    xbin = 0.5
+    xmin = 3
+    xmax = 19
+
+    inp = "/home/jaroslav/sim/lmon/data/luminosity/lm4ax3/spect_rec_pass4.root"
+
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    fig.set_size_inches(5, 5)
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    hx = make_h1(inp, "spec_rec", "true_phot_E", xbin, xmin, xmax)
+    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
+
+    hx2 = make_h1(inp, "spec_rec", "rec_E", xbin, xmin, xmax)
+    plt.plot(hx2[0], hx2[1], "-", color="blue", lw=1)
+
+    ax.set_xlabel("$E$ (GeV)")
+    ax.set_ylabel("Normalized counts")
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#en_spectrum
+
+#_____________________________________________________________________________
+def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
+
+    inp = TFile.Open(infile)
+    tree = inp.Get(tnam)
+
+    #tree.Print()
+
+    #hx = ut.prepare_TH1D(tnam+"_"+val+"_hx", xbin, xmin, xmax)
+    #tree.Draw(val+" >> "+tnam+"_"+val+"_hx", sel)
+    hx = ut.prepare_TH1D(tnam+"_hx", xbin, xmin, xmax)
+    tree.Draw(val+" >> "+tnam+"_hx", sel)
+
+    print(val, "entries:", hx.GetEntries())
+
+    ut.norm_to_integral(hx, 1.)
+
+    return ut.h1_to_arrays(hx)
+
+#make_h1
+
+#_____________________________________________________________________________
+def set_axes_color(ax, col):
+
+    ax.xaxis.label.set_color(col)
+    ax.yaxis.label.set_color(col)
+    ax.tick_params(which = "both", colors = col)
+    ax.spines["bottom"].set_color(col)
+    ax.spines["left"].set_color(col)
+    ax.spines["top"].set_color(col)
+    ax.spines["right"].set_color(col)
+
+#set_axes_color
+
+#_____________________________________________________________________________
+def set_grid(px, col="lime"):
+
+    px.grid(True, color = col, linewidth = 0.5, linestyle = "--")
+
+#set_grid
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

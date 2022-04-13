@@ -27,13 +27,13 @@ def dxy():
     #distribution in Delta_xy for hit pairs
 
     #mm
-    xbin = 1
-    xmax = 180
-    #xbin = 0.1
-    #xmax = 10
+    #xbin = 1
+    #xmax = 180
+    xbin = 0.1
+    xmax = 10
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5ax1/hits_tag.root"
 
@@ -45,9 +45,9 @@ def dxy():
     ltit = {"s1": "Tagger 1", "s2": "Tagger 2"}
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
