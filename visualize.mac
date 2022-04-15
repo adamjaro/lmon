@@ -12,9 +12,9 @@
 
 #input
 /lmon/input/type gun
-/gun/energy 11 GeV
+/gun/energy 18 GeV
 /gun/particle e-
-/gun/particle gamma
+#/gun/particle gamma
 /gun/direction 0 0 -1
 
 #/lmon/input/type hepmc

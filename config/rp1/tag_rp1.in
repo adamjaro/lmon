@@ -5,7 +5,8 @@
 const tag_iz 300. # mm
 
 #transverse size for the planes
-const tag_size_xy 150. # mm
+#const tag_size_xy 150. # mm
+const tag_size_xy 28. # mm
 
 #plane thickness along z
 const tag_size_z 1. # mm
@@ -88,7 +89,40 @@ new ParticleCounter lowQ2_s2C
   lowQ2_s2C.dz = tag_size_z
   lowQ2_s2C.place_into = vac_B2Q3
 
+#kinematic peak tagger detector opposite to tagger 2
 
+#local x for kinematic peak planes
+const tagp_pos_x 0.5*tag_size_xy+vac_dxQ+tag_dist_Q3
+
+#peak tagger, plane A
+new ParticleCounter lowQ2_sPA
+
+  lowQ2_sPA.zpos = tag_s2_start_z
+  lowQ2_sPA.xpos = tagp_pos_x
+  lowQ2_sPA.dx = tag_size_xy
+  lowQ2_sPA.dy = tag_size_xy
+  lowQ2_sPA.dz = tag_size_z
+  lowQ2_sPA.place_into = vac_B2Q3
+
+#peak tagger, plane B
+new ParticleCounter lowQ2_sPB
+
+  lowQ2_sPB.zpos = tag_s2_start_z-tag_iz
+  lowQ2_sPB.xpos = tagp_pos_x
+  lowQ2_sPB.dx = tag_size_xy
+  lowQ2_sPB.dy = tag_size_xy
+  lowQ2_sPB.dz = tag_size_z
+  lowQ2_sPB.place_into = vac_B2Q3
+
+#peak tagger, plane C
+new ParticleCounter lowQ2_sPC
+
+  lowQ2_sPC.zpos = tag_s2_start_z-2.*tag_iz
+  lowQ2_sPC.xpos = tagp_pos_x
+  lowQ2_sPC.dx = tag_size_xy
+  lowQ2_sPC.dy = tag_size_xy
+  lowQ2_sPC.dz = tag_size_z
+  lowQ2_sPC.place_into = vac_B2Q3
 
 
 

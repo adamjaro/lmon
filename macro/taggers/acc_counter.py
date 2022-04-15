@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 9
+    iplot = 11
 
     func = {}
     func[0] = acc_en_s12
@@ -626,7 +626,8 @@ def acc_en_pitheta():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax1/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3ax2/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #bins in theta, mrad
     xbin = 0.2
@@ -639,7 +640,7 @@ def acc_en_pitheta():
     ymax = 20
 
     #tagger 1 or 2
-    tag = 0
+    tag = 1
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -697,7 +698,8 @@ def acc_lQ2_en():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #bins in energy, GeV
     xbin = 0.3
@@ -710,7 +712,7 @@ def acc_lQ2_en():
     ymax = 0
 
     #tagger 1 or 2
-    tag = 1
+    tag = 0
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -776,7 +778,8 @@ def acc_lQ2_pitheta():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag3a/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #bins in theta, mrad
     xbin = 0.3
@@ -789,7 +792,7 @@ def acc_lQ2_pitheta():
     ymax = 0
 
     #tagger 1 or 2
-    tag = 1
+    tag = 0
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")

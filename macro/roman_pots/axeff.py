@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 0
 
     func = {}
     func[0] = acc_en_pitheta
@@ -31,10 +31,11 @@ def acc_en_pitheta():
     #2D acceptance in energy and pi - theta in mrad
 
     #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #tagger 1 or 2, both = 3
-    tag = 3
+    tag = 2
 
     #bins in theta, mrad
     xbin = 0.2
