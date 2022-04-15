@@ -96,6 +96,7 @@ int main(int argc, char* argv[]) {
   //tagger stations
   TagCounter s1("s1", &tree, &otree, &geo);
   TagCounter s2("s2", &tree, &otree, &geo);
+  TagCounter sP("sP", &tree, &otree, &geo);
   s1.CreateOutput(planes_output);
   s1.AddOutputBranch("true_el_E", &true_el_E);
   s1.AddOutputBranch("true_el_theta", &true_el_theta);
@@ -104,6 +105,10 @@ int main(int argc, char* argv[]) {
   s2.AddOutputBranch("true_el_E", &true_el_E);
   s2.AddOutputBranch("true_el_theta", &true_el_theta);
   s2.AddOutputBranch("true_el_phi", &true_el_phi);
+  sP.CreateOutput(planes_output);
+  sP.AddOutputBranch("true_el_E", &true_el_E);
+  sP.AddOutputBranch("true_el_theta", &true_el_theta);
+  sP.AddOutputBranch("true_el_phi", &true_el_phi);
 
   //event loop
   Long64_t nev = tree.GetEntries();
@@ -118,6 +123,7 @@ int main(int argc, char* argv[]) {
 
     s1.ProcessEvent();
     s2.ProcessEvent();
+    sP.ProcessEvent();
 
     otree.Fill();
 
@@ -128,6 +134,7 @@ int main(int argc, char* argv[]) {
   otree.Write();
   s1.WriteOutputs();
   s2.WriteOutputs();
+  sP.WriteOutputs();
   out.Close();
 
   return 0;
