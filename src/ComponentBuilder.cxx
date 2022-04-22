@@ -54,6 +54,7 @@
 #include "PolBuilder.h"
 #include "CylBeam.h"
 #include "CylSegment.h"
+#include "TrkMapsBasic.h"
 
 //macros
 #define ADD_DETECTOR(det) (fDets.insert( make_pair(#det, &ComponentBuilder::MakeDet<det>) ))
@@ -95,6 +96,7 @@ ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::ve
   fDets.insert( make_pair("CaloBPC", &ComponentBuilder::MakeDet< CaloBPC >) );
   fDets.insert( make_pair("TrackDet", &ComponentBuilder::MakeDet< TrackDet >) );
   //fDets.insert( make_pair("", &ComponentBuilder::MakeDet<  >) );
+  ADD_DETECTOR( TrkMapsBasic );
 
   for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i);
 

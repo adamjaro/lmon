@@ -11,8 +11,9 @@
 /run/initialize
 
 /lmon/input/type gun
-/gun/energy 11 GeV
-/gun/particle gamma
+/gun/energy 10 GeV
+/gun/particle e-
+#/gun/particle gamma
 /gun/position 0 0 0 mm
 /gun/direction 0 0 -1
 
@@ -34,6 +35,6 @@
 #/lmon/output/name data/ew/ew1bx2.root
 
 
-/run/beamOn 4
+/run/beamOn 1
 #/units/list
 

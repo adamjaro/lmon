@@ -6,13 +6,13 @@ new top topv
   topv.ysiz = 4000 # mm
   topv.zsiz = 4000 # mm
 
-#new TrackDet l1
+new TrkMapsBasic maps
 
-  l1.dx = 20 # mm
-  l1.dy = 20 # mm
-  l1.dz = 30 # mm
-  #l1.zpos = 10 # mm
-  #l1.vis_full = 0
+  maps.dz = 1 # mm
+  maps.dxy = 1 # mm
+  maps.nx = 10
+  maps.ny = 10
+
 
 
 
