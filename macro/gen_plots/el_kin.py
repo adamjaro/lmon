@@ -117,7 +117,7 @@ def en_pitheta_lQ2():
     hE = hEQ2.Project3DProfile("yx")
 
     hE.SetTitle("")
-    ytit = "Polar angle #it{#pi-#theta_{e}} (mrad)"
+    ytit = "Scattering (polar) angle #it{#pi-#theta_{e}} (mrad)"
     xtit = "Electron energy #it{E_{e}} (GeV)"
     ut.put_yx_tit(hE, ytit, xtit, 1.2, 1.2)
 
@@ -142,7 +142,7 @@ def en_pitheta_lQ2():
 
     #gPad.SetLogz()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en_pitheta_lQ2

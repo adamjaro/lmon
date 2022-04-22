@@ -35,11 +35,12 @@ def en():
     emax = 19
 
     #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
 

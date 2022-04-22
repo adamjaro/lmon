@@ -32,12 +32,14 @@ def xy():
     xymax = 80
 
     #inp = "../../analysis/ini/hits_tag.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag_pass2.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag.root" # _pass2
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax1/hits_tag_first10.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5ax1/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #det = "s1"
-    det = "s2"
+    #det = "s2"
+    det = "s1A"
 
     sel = ""
 

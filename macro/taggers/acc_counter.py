@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 11
+    iplot = 1
 
     func = {}
     func[0] = acc_en_s12
@@ -114,8 +114,9 @@ def acc_lQ2_s12():
 
     #acceptance in log_10(Q^2) for tagger 1 and tagger 2
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/hits_tag_pass2.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -130,14 +131,14 @@ def acc_lQ2_s12():
     as1.modif = 1 # log_10(Q^2) from Q2
     as1.prec = 0.05
     as1.bmin = 0.1
-    as1.nev = int(1e5)
+    #as1.nev = int(1e5)
     gs1 = as1.get()
 
     as2 = rt.acc_Q2_kine(tree, "true_Q2", "s2_IsHit")
     as2.modif = 1 # log_10(Q^2) from Q2
     as2.prec = 0.05
     as2.bmin = 0.1
-    as2.nev = int(1e5)
+    #as2.nev = int(1e5)
     gs2 = as2.get()
 
     can = ut.box_canvas()

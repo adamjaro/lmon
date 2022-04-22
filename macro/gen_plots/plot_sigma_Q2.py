@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = make_all_E
@@ -120,7 +120,7 @@ def sigma_en():
     #cross section as a function of electron energy
 
     emin = 0 # GeV
-    emax = 24
+    emax = 23
     smin = 1e-4
     smax = 1e3 # mb
 
@@ -136,28 +136,28 @@ def sigma_en():
     frame = gPad.DrawFrame(emin, smin, emax, smax)
     frame.Draw()
 
-    xtit = "#it{E_{e}}' (GeV)"
-    ytit = "#frac{d#it{#sigma}}{d#it{E_{e}}'} (mb/GeV)"
-    ut.put_yx_tit(frame, ytit, xtit, 1.6, 1.3)
+    xtit = "Electron energy #it{E_{e}} (GeV)"
+    ytit = "#frac{d#it{#sigma}}{d#it{E_{e}}} (mb/GeV)"
+    ut.put_yx_tit(frame, ytit, xtit, 1.7, 1.3)
 
     ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.02, 0.02)
 
-    g1.SetLineColor(rt.kBlue)
-    g2.SetLineColor(rt.kRed)
-    g3.SetLineColor(rt.kGreen+1)
-    g3.SetLineStyle(rt.kDashed)
+    g1.SetLineColor(rt.kBlue) # kBlue
+    g2.SetLineColor(rt.kRed) # kRed
+    g3.SetLineColor(rt.kGreen+1) # kGreen+1
+    g2.SetLineStyle(rt.kDashed)
 
     g1.Draw("lsame")
-    g2.Draw("lsame")
     g3.Draw("lsame")
+    g2.Draw("lsame")
 
     gPad.SetLogy()
 
     gPad.SetGrid()
 
-    leg = ut.prepare_leg(0.2, 0.75, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
+    leg = ut.prepare_leg(0.2, 0.8, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
     leg.AddEntry(g1, "Bremsstrahlung", "l")
-    leg.AddEntry(g2, "Quasi-real", "l")
+    leg.AddEntry(g2, "Quasi-real photoproduction", "l")
     leg.AddEntry(g3, "Pythia6", "l")
     leg.Draw("same")
 

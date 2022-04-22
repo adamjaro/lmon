@@ -31,11 +31,12 @@ def acc_en_pitheta():
     #2D acceptance in energy and pi - theta in mrad
 
     #inp = "../../analysis/ini/tag_rec.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5_v2.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
 
     #tagger 1 or 2, both = 3
-    tag = 2
+    tag = 1
 
     #bins in theta, mrad
     xbin = 0.2

@@ -78,7 +78,9 @@ ParticleCounter::ParticleCounter(const G4String& nam, GeoParser *geo, G4LogicalV
   }
 
   //placement in mother volume
-  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), 0); //CLHEP::HepRotation
+  G4double rotate_y = 0; // rotation along y axis
+  geo->GetOptD(fNam, "rotate_y", rotate_y, GeoParser::Unit(rad));
+  G4RotationMatrix rot(G4ThreeVector(0, 1, 0), rotate_y); //CLHEP::HepRotation
   G4ThreeVector pos(xpos, ypos, zpos);
   G4Transform3D transform(rot, pos); //HepGeom::Transform3D
 

@@ -38,6 +38,7 @@ new ParticleCounter lowQ2_s1A
   lowQ2_s1A.dy = tag_size_xy
   lowQ2_s1A.dz = tag_size_z
   lowQ2_s1A.place_into = vac_B2Q3
+  #lowQ2_s1A.rotate_y = TMath::Pi()/4
 
 #tagger 1, plane B
 new ParticleCounter lowQ2_s1B
@@ -48,6 +49,7 @@ new ParticleCounter lowQ2_s1B
   lowQ2_s1B.dy = tag_size_xy
   lowQ2_s1B.dz = tag_size_z
   lowQ2_s1B.place_into = vac_B2Q3
+  #lowQ2_s1B.rotate_y = TMath::Pi()/4
 
 #tagger 1, plane C
 new ParticleCounter lowQ2_s1C
@@ -58,6 +60,7 @@ new ParticleCounter lowQ2_s1C
   lowQ2_s1C.dy = tag_size_xy
   lowQ2_s1C.dz = tag_size_z
   lowQ2_s1C.place_into = vac_B2Q3
+  #lowQ2_s1C.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane A
 new ParticleCounter lowQ2_s2A
@@ -68,6 +71,7 @@ new ParticleCounter lowQ2_s2A
   lowQ2_s2A.dy = tag_size_xy
   lowQ2_s2A.dz = tag_size_z
   lowQ2_s2A.place_into = vac_B2Q3
+  #lowQ2_s2A.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane B
 new ParticleCounter lowQ2_s2B
@@ -78,6 +82,7 @@ new ParticleCounter lowQ2_s2B
   lowQ2_s2B.dy = tag_size_xy
   lowQ2_s2B.dz = tag_size_z
   lowQ2_s2B.place_into = vac_B2Q3
+  #lowQ2_s2B.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane C
 new ParticleCounter lowQ2_s2C
@@ -88,6 +93,7 @@ new ParticleCounter lowQ2_s2C
   lowQ2_s2C.dy = tag_size_xy
   lowQ2_s2C.dz = tag_size_z
   lowQ2_s2C.place_into = vac_B2Q3
+  #lowQ2_s2C.rotate_y = TMath::Pi()/4
 
 #kinematic peak tagger detector opposite to tagger 2
 
