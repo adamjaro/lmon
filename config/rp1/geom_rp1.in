@@ -11,8 +11,8 @@ include lumi_rp1.in
 
 include vacuum_rp1.in
 
-include tag_rp1.in
-#include tag_maps_rp1.in
+#include tag_rp1.in
+include tag_maps_rp1.in
 
 
 #common top volume

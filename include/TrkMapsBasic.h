@@ -6,7 +6,7 @@
 
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
-//#include "CaloBPCHits.h"
+#include "TrkMapsBasicHits.h"
 
 class GeoParser;
 
@@ -22,9 +22,9 @@ class TrkMapsBasic : public Detector, public G4VSensitiveDetector {
 
     //called via Detector
     virtual const G4String& GetName() const {return fNam;}
-    //virtual void CreateOutput(TTree*);
-    //virtual void ClearEvent();
-    //virtual void FinishEvent();
+    virtual void CreateOutput(TTree*);
+    virtual void ClearEvent();
+    virtual void FinishEvent();
 
   private:
 
@@ -33,7 +33,7 @@ class TrkMapsBasic : public Detector, public G4VSensitiveDetector {
     G4String fNam; // name of detector sensitive logical volume
 
     //hits
-    //CaloBPCHits fHits;
+    TrkMapsBasicHits fHits;
 
 };
 

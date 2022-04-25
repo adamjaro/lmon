@@ -107,24 +107,33 @@ TrkMapsBasic::TrkMapsBasic(const G4String& nam, GeoParser *geo, G4LogicalVolume 
 //_____________________________________________________________________________
 G4bool TrkMapsBasic::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //deposited energy
-  G4double edep_in_step = step->GetTotalEnergyDeposit()/keV;
-
-  //pixel location
-  const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
-
-  G4int ipix = hnd->GetCopyNumber(); // pixel index in the row
-  G4int irow = hnd->GetCopyNumber(1); // row index in the layer
-
-  //global pixel position
-  G4ThreeVector origin(0, 0, 0);
-  G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
-
-  G4cout << ipix << " " << irow << " " << edep_in_step << " " << gpos.x()/mm << " " << gpos.y()/mm << " " << gpos.z()/mm << G4endl;
+  //signal in hits
+  fHits.AddSignal(step);
 
   return true;
 
 }//ProcessHits
+
+//_____________________________________________________________________________
+void TrkMapsBasic::CreateOutput(TTree *tree) {
+
+  fHits.CreateOutput(fNam, tree);
+
+}//CreateOutput
+
+//_____________________________________________________________________________
+void TrkMapsBasic::ClearEvent() {
+
+  fHits.ClearEvent();
+
+}//ClearEvent
+
+//_____________________________________________________________________________
+void TrkMapsBasic::FinishEvent() {
+
+  fHits.FinishEvent();
+
+}//FinishEvent
 
 //_____________________________________________________________________________
 G4LogicalVolume* TrkMapsBasic::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
