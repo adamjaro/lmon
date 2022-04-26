@@ -76,36 +76,39 @@ new TrkMapsBasic lowQ2_s1C
   #lowQ2_s1C.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane A
-#new ParticleCounter lowQ2_s2A
+new TrkMapsBasic lowQ2_s2A
 
-#  lowQ2_s2A.zpos = tag_s2_start_z
-#  lowQ2_s2A.xpos = tag_pos_x
-#  lowQ2_s2A.dx = tag_size_xy
-#  lowQ2_s2A.dy = tag_size_xy
-#  lowQ2_s2A.dz = tag_size_z
-#  lowQ2_s2A.place_into = vac_B2Q3
+  lowQ2_s2A.zpos = tag_s2_start_z
+  lowQ2_s2A.xpos = tag_pos_x
+  lowQ2_s2A.dxy = tag_dxy
+  lowQ2_s2A.nx = tag_nxy
+  lowQ2_s2A.ny = tag_nxy
+  lowQ2_s2A.dz = tag_size_z
+  lowQ2_s2A.place_into = vac_B2Q3
   #lowQ2_s2A.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane B
-#new ParticleCounter lowQ2_s2B
+new TrkMapsBasic lowQ2_s2B
 
-#  lowQ2_s2B.zpos = tag_s2_start_z-tag_iz
-#  lowQ2_s2B.xpos = tag_pos_x
-#  lowQ2_s2B.dx = tag_size_xy
-#  lowQ2_s2B.dy = tag_size_xy
-#  lowQ2_s2B.dz = tag_size_z
-#  lowQ2_s2B.place_into = vac_B2Q3
+  lowQ2_s2B.zpos = tag_s2_start_z-tag_iz
+  lowQ2_s2B.xpos = tag_pos_x
+  lowQ2_s2B.dxy = tag_dxy
+  lowQ2_s2B.nx = tag_nxy
+  lowQ2_s2B.ny = tag_nxy
+  lowQ2_s2B.dz = tag_size_z
+  lowQ2_s2B.place_into = vac_B2Q3
   #lowQ2_s2B.rotate_y = TMath::Pi()/4
 
 #tagger 2, plane C
-#new ParticleCounter lowQ2_s2C
+new TrkMapsBasic lowQ2_s2C
 
-#  lowQ2_s2C.zpos = tag_s2_start_z-2.*tag_iz
-#  lowQ2_s2C.xpos = tag_pos_x
-#  lowQ2_s2C.dx = tag_size_xy
-#  lowQ2_s2C.dy = tag_size_xy
-#  lowQ2_s2C.dz = tag_size_z
-#  lowQ2_s2C.place_into = vac_B2Q3
+  lowQ2_s2C.zpos = tag_s2_start_z-2.*tag_iz
+  lowQ2_s2C.xpos = tag_pos_x
+  lowQ2_s2C.dxy = tag_dxy
+  lowQ2_s2C.nx = tag_nxy
+  lowQ2_s2C.ny = tag_nxy
+  lowQ2_s2C.dz = tag_size_z
+  lowQ2_s2C.place_into = vac_B2Q3
   #lowQ2_s2C.rotate_y = TMath::Pi()/4
 
 

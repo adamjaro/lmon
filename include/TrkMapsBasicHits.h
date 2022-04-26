@@ -4,11 +4,13 @@
 
 // Hits for TrkMapsBasic
 
+class GeoParser;
+
 class TrkMapsBasicHits {
 
   public:
 
-    TrkMapsBasicHits() {}
+    TrkMapsBasicHits();
 
     void AddSignal(G4Step *step);
     void CreateOutput(G4String nam, TTree *tree);
@@ -18,6 +20,12 @@ class TrkMapsBasicHits {
     void ConnectInput(std::string nam, TTree *tree);
     void LoadHits();
     unsigned long GetNhits() { return fHitsR.size(); }
+
+    void LocalFromGeo(G4String nam, GeoParser *geo);
+    G4double GetXPos() { return fXpos; }
+    void SetXPos(G4double x) { fXpos = x; }
+
+    void GlobalToLocal();
 
     //hit representation
     class Hit {
@@ -37,6 +45,8 @@ class TrkMapsBasicHits {
 
     };//Hit
 
+    const Hit& GetHit(unsigned long i) { return fHitsR[i]; }
+
   private:
 
     //run-time containers for hits
@@ -54,6 +64,12 @@ class TrkMapsBasicHits {
 
     std::vector<Int_t> *fItrk; // track index
     std::vector<Int_t> *fPdg; // track PDG code
+
+    G4double fXpos; // plane position in x, mm
+    G4double fYpos; // plane position in y, mm
+    G4double fZpos; // plane position in z, mm
+    G4double fThetaX; // plane rotation along x, rad
+    G4double fThetaY; // plane rotation along y, rad
 
 };
 

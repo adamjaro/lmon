@@ -131,6 +131,8 @@ void TrkMapsBasic::ClearEvent() {
 //_____________________________________________________________________________
 void TrkMapsBasic::FinishEvent() {
 
+  //G4cout << "FinishEvent for " << fNam << G4endl;
+
   fHits.FinishEvent();
 
 }//FinishEvent

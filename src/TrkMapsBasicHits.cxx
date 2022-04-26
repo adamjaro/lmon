@@ -11,6 +11,7 @@
 
 //ROOT
 #include "TTree.h"
+#include "TVector3.h"
 
 //Geant
 #include "G4Step.hh"
@@ -19,9 +20,15 @@
 
 //local classes
 #include "DetUtils.h"
+#include "GeoParser.h"
 #include "TrkMapsBasicHits.h"
 
 using namespace std;
+
+//_____________________________________________________________________________
+TrkMapsBasicHits::TrkMapsBasicHits(): fXpos(0), fYpos(0), fZpos(0), fThetaX(0), fThetaY(0) {
+
+}//ParticleCounterHits
 
 //_____________________________________________________________________________
 void TrkMapsBasicHits::AddSignal(G4Step *step) {
@@ -138,8 +145,8 @@ void TrkMapsBasicHits::FinishEvent() {
     fItrk->push_back( hit.itrk );
     fPdg->push_back( hit.pdg );
 
-    G4cout << hit.itrk << " " << hit.pdg <<  " " << hit.ipix << " " << hit.irow << " " << hit.en;
-    G4cout << " " << hit.x << " " << hit.y << " " << hit.z << G4endl;
+    //G4cout << hit.itrk << " " << hit.pdg <<  " " << hit.ipix << " " << hit.irow << " " << hit.en;
+    //G4cout << " " << hit.x << " " << hit.y << " " << hit.z << G4endl;
 
   }//hits loop
 
@@ -189,9 +196,52 @@ void TrkMapsBasicHits::LoadHits() {
 
 }//LoadHits
 
+//_____________________________________________________________________________
+void TrkMapsBasicHits::LocalFromGeo(G4String nam, GeoParser *geo) {
 
+  //plane position from geometry
 
+  geo->GetOptD(nam, "xpos", fXpos, GeoParser::Unit(mm));
+  geo->GetOptD(nam, "ypos", fYpos, GeoParser::Unit(mm));
+  geo->GetOptD(nam, "zpos", fZpos, GeoParser::Unit(mm));
 
+  G4double theta = 0;
+  geo->GetOptD(nam, "theta", theta, GeoParser::Unit(rad));
+
+  G4bool rotate_x = false;
+  geo->GetOptB(nam, "rotate_x", rotate_x);
+
+  if( rotate_x ) {
+    fThetaX = theta;
+  } else {
+    fThetaY = theta;
+  }
+
+  //cout << fXpos << " " << fYpos << " " << fZpos << " " << fThetaX << " " << fThetaY << endl;
+
+}//LocalFromGeo
+
+//_____________________________________________________________________________
+void TrkMapsBasicHits::GlobalToLocal() {
+
+  //transform hit positions from global to local coordinates
+
+  //hits loop
+  for(unsigned long i=0; i<fHitsR.size(); i++) {
+
+    Hit& h = fHitsR[i];
+
+    TVector3 pos(h.x-fXpos, h.y-fYpos, h.z-fZpos);
+    pos.RotateY(-fThetaY);
+    pos.RotateX(-fThetaX);
+
+    h.x = pos.X();
+    h.y = pos.Y();
+    h.z = pos.Z();
+
+  }//hits loop
+
+}//GlobalToLocal
 
 
 

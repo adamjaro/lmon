@@ -3,7 +3,7 @@
 
 set build="build"
 
-setenv PATH ${PATH}:"`pwd`/$build":"`pwd`/$build/analysis"
+setenv PATH ${PATH}:"`pwd`/$build":"`pwd`/$build/analysis":"`pwd`/$build/analysis_tasks/run_macros"
 
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:"`pwd`/$build"
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:"`pwd`/$build":"`pwd`/$build/analysis_tasks"
 

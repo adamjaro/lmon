@@ -72,7 +72,7 @@ target_link_libraries(${BIN} ${Geant4_LIBRARIES} ${LIB} ${Boost_LIBRARIES} ${COM
 
 #analysis codes
 add_subdirectory(analysis)
-
+add_subdirectory(analysis_tasks)
 
 
 
