@@ -107,8 +107,28 @@ TrkMapsBasic::TrkMapsBasic(const G4String& nam, GeoParser *geo, G4LogicalVolume 
 //_____________________________________________________________________________
 G4bool TrkMapsBasic::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
-  //signal in hits
-  fHits.AddSignal(step);
+  //pixel location
+  const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
+  G4int ipix = hnd->GetCopyNumber(); // pixel index in the row
+  G4int irow = hnd->GetCopyNumber(1); // row index in the layer
+
+  //global pixel position
+  G4ThreeVector origin(0, 0, 0);
+  G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
+  G4double x = gpos.x()/mm;
+  G4double y = gpos.y()/mm;
+  G4double z = gpos.z()/mm;
+
+  //deposited energy in step
+  G4double en = step->GetTotalEnergyDeposit()/keV;
+
+  //track ID and PDG in the step
+  G4Track *track = step->GetTrack();
+  G4int itrk = track->GetTrackID();
+  G4int pdg = track->GetParticleDefinition()->GetPDGEncoding();
+
+  //add signal to the hits
+  fHits.AddSignal(ipix, irow, x, y, z, en, itrk, pdg);
 
   return true;
 

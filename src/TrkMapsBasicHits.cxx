@@ -14,9 +14,7 @@
 #include "TVector3.h"
 
 //Geant
-#include "G4Step.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4NavigationHistory.hh"
 
 //local classes
 #include "DetUtils.h"
@@ -31,49 +29,28 @@ TrkMapsBasicHits::TrkMapsBasicHits(): fXpos(0), fYpos(0), fZpos(0), fThetaX(0), 
 }//ParticleCounterHits
 
 //_____________________________________________________________________________
-void TrkMapsBasicHits::AddSignal(G4Step *step) {
+void TrkMapsBasicHits::AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en, G4int itrk, G4int pdg) {
 
   //add signal for a given pixel
 
-  //track ID and PDG in the step
-  G4Track *track = step->GetTrack();
-  G4int itrk = track->GetTrackID();
-  G4int pdg = track->GetParticleDefinition()->GetPDGEncoding();
-
-  //pixel location
-  const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
-  G4int ipix = hnd->GetCopyNumber(); // pixel index in the row
-  G4int irow = hnd->GetCopyNumber(1); // row index in the layer
-
-  //hit at a given pixel location
+  //hit at a given pixel location given by ipix and irow
   map<pair<Int_t, Int_t>, Hit>::iterator it = fHitsW.find( pair(ipix, irow) );
 
-  //new hit at a given location
+  //create new hit at a given location if not alread present
   if( it == fHitsW.end() ) {
 
-    //global pixel position
-    G4ThreeVector origin(0, 0, 0);
-    G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
-    G4double x = gpos.x()/mm;
-    G4double y = gpos.y()/mm;
-    G4double z = gpos.z()/mm;
-
-    //create the hit
     it = fHitsW.insert( make_pair(pair(ipix, irow), Hit(ipix, irow, x, y, z, itrk, pdg)) ).first;
   }
 
   //add deposited energy in the hit
   Hit& hit = (*it).second;
-  hit.en += step->GetTotalEnergyDeposit()/keV;
+  hit.en += en;
 
   //lowest track ID associated with the hit and its PDG code
   if( itrk < hit.itrk ) {
     hit.itrk = itrk;
     hit.pdg = pdg;
   }
-
-  //G4cout << itrk << " " << pdg <<  " " << ipix << " " << irow << " " << edep_in_step;
-  //G4cout << " " << gpos.x()/mm << " " << gpos.y()/mm << " " << gpos.z()/mm << G4endl;
 
 }//AddSignal
 

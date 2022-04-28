@@ -12,7 +12,7 @@ class TrkMapsBasicHits {
 
     TrkMapsBasicHits();
 
-    void AddSignal(G4Step *step);
+    void AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en, G4int itrk, G4int pdg);
     void CreateOutput(G4String nam, TTree *tree);
     void ClearEvent();
     void FinishEvent();
