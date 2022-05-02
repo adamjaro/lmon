@@ -32,6 +32,7 @@ int main(int argc, char* argv[]) {
   opt.add_options()("mac,m", po::value<string>(), "batch macro");
   opt.add_options()("seed,s", po::value<long>(), "random seed");
   opt.add_options()("phys", po::value<string>(), "physics list");
+  opt.add_options()("optics", po::value<bool>(), "turn optics on");
 
   //parse the arguments
   po::variables_map opt_map;
@@ -83,8 +84,14 @@ int main(int argc, char* argv[]) {
   //physics
   G4PhysListFactory phys_factory;
   G4VModularPhysicsList *physicsList = phys_factory.GetReferencePhysList(physics_name);
-  //G4OpticalPhysics *optics = new G4OpticalPhysics();
-  //physicsList->RegisterPhysics(optics); // uncomment to turn optics on
+
+  //turn optics on if requested
+  if(opt_map.count("optics") and opt_map["optics"].as<bool>() == true) {
+    G4OpticalPhysics *optics = new G4OpticalPhysics();
+    physicsList->RegisterPhysics(optics);
+  }
+
+  //set the physics list
   runManager->SetUserInitialization(physicsList);
 
   //action

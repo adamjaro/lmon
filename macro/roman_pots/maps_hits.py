@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 0
 
     func = {}
     func[0] = xy
@@ -33,12 +33,14 @@ def xy():
     xymax = 80
     #xymax = 10
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5cx1/maps_basic.root"
 
-    det = "hs1A"
+    #det = "s1A"
+    det = "s2A"
 
     #sel = ""
-    sel = "id1A!=1"
+    sel = "id>2"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -49,7 +51,7 @@ def xy():
 
     hxy = ut.prepare_TH2D("hxy", xybin, -xymax, xymax, xybin, -xymax, xymax)
 
-    tree.Draw("y1A:x1A >> hxy", sel)
+    tree.Draw("y:x >> hxy", sel)
 
     hxy.SetXTitle("#it{x} (mm)")
     hxy.SetYTitle("#it{y} (mm)")
@@ -85,15 +87,13 @@ def en():
 
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
 
-    #det = "hs1A"
-    det = "hs2A"
+    #det = "s1C"
+    det = "s2C"
 
     #sel = ""
-    #sel = "id1A!=1"
-    sel = "id2A!=1"
+    sel = "id!=1"
 
-    #val = "en1A"
-    val = "en2A"
+    val = "en"
 
     hx = make_h1(inp, det, val, xbin, 0, xmax, sel)
 
@@ -134,11 +134,9 @@ def nhits():
     det = "event"
 
     sel = ""
-    #sel = "id1A!=1"
-    #sel = "id2A!=1"
 
-    #val = "n1A"
-    val = "n2A"
+    #val = "s1A_nhit"
+    val = "s2C_nhit"
 
     hx = make_h1(inp, det, val, xbin, 0, xmax, sel)
 

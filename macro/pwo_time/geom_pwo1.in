@@ -1,0 +1,12 @@
+
+new CompCal cal
+
+  cal.zpos = 0
+  cal.ypos = 0
+
+new top topv
+
+  topv.xsiz = 4000 # mm
+  topv.ysiz = 4000 # mm
+  topv.zsiz = 4000 # mm
+
