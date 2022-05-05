@@ -39,79 +39,105 @@ const tag_s1_start_z (tag_s1_z-vac_zQ)*(1./(cos(vac_TQ3)))-0.5*vac_LBQ
 #local z position for starting plane in tagger 2
 const tag_s2_start_z (tag_s2_z-vac_zQ)*(1./(cos(vac_TQ3)))-0.5*vac_LBQ
 
-#tagger 1, plane A
-new TrkMapsBasic lowQ2_s1A
+#Tagger 1 planes 1 - 4, ordered in increasing z
 
-  lowQ2_s1A.zpos = tag_s1_start_z
-  lowQ2_s1A.xpos = tag_pos_x
-  lowQ2_s1A.dxy = tag_dxy
-  lowQ2_s1A.nx = tag_nxy
-  lowQ2_s1A.ny = tag_nxy
-  lowQ2_s1A.dz = tag_size_z
-  lowQ2_s1A.place_into = vac_B2Q3
-  #lowQ2_s1A.rotate_y = TMath::Pi()/4
+#tagger 1, plane 1
+new TrkMapsBasic lowQ2_s1_1
 
-#tagger 1, plane B
-new TrkMapsBasic lowQ2_s1B
+  lowQ2_s1_1.zpos = tag_s1_start_z-3.*tag_iz
+  lowQ2_s1_1.xpos = tag_pos_x
+  lowQ2_s1_1.dxy = tag_dxy
+  lowQ2_s1_1.nx = tag_nxy
+  lowQ2_s1_1.ny = tag_nxy
+  lowQ2_s1_1.dz = tag_size_z
+  lowQ2_s1_1.place_into = vac_B2Q3
+  #lowQ2_s1_1.rotate_y = TMath::Pi()/4
 
-  lowQ2_s1B.zpos = tag_s1_start_z-tag_iz
-  lowQ2_s1B.xpos = tag_pos_x
-  lowQ2_s1B.dxy = tag_dxy
-  lowQ2_s1B.nx = tag_nxy
-  lowQ2_s1B.ny = tag_nxy
-  lowQ2_s1B.dz = tag_size_z
-  lowQ2_s1B.place_into = vac_B2Q3
-  #lowQ2_s1B.rotate_y = TMath::Pi()/4
+#tagger 1, plane 2
+new TrkMapsBasic lowQ2_s1_2
 
-#tagger 1, plane C
-new TrkMapsBasic lowQ2_s1C
+  lowQ2_s1_2.zpos = tag_s1_start_z-2.*tag_iz
+  lowQ2_s1_2.xpos = tag_pos_x
+  lowQ2_s1_2.dxy = tag_dxy
+  lowQ2_s1_2.nx = tag_nxy
+  lowQ2_s1_2.ny = tag_nxy
+  lowQ2_s1_2.dz = tag_size_z
+  lowQ2_s1_2.place_into = vac_B2Q3
+  #lowQ2_s1_2.rotate_y = TMath::Pi()/4
 
-  lowQ2_s1C.zpos = tag_s1_start_z-2.*tag_iz
-  lowQ2_s1C.xpos = tag_pos_x
-  lowQ2_s1C.dxy = tag_dxy
-  lowQ2_s1C.nx = tag_nxy
-  lowQ2_s1C.ny = tag_nxy
-  lowQ2_s1C.dz = tag_size_z
-  lowQ2_s1C.place_into = vac_B2Q3
-  #lowQ2_s1C.rotate_y = TMath::Pi()/4
+#tagger 1, plane 3
+new TrkMapsBasic lowQ2_s1_3
 
-#tagger 2, plane A
-new TrkMapsBasic lowQ2_s2A
+  lowQ2_s1_3.zpos = tag_s1_start_z-tag_iz
+  lowQ2_s1_3.xpos = tag_pos_x
+  lowQ2_s1_3.dxy = tag_dxy
+  lowQ2_s1_3.nx = tag_nxy
+  lowQ2_s1_3.ny = tag_nxy
+  lowQ2_s1_3.dz = tag_size_z
+  lowQ2_s1_3.place_into = vac_B2Q3
+  #lowQ2_s1_3.rotate_y = TMath::Pi()/4
 
-  lowQ2_s2A.zpos = tag_s2_start_z
-  lowQ2_s2A.xpos = tag_pos_x
-  lowQ2_s2A.dxy = tag_dxy
-  lowQ2_s2A.nx = tag_nxy
-  lowQ2_s2A.ny = tag_nxy
-  lowQ2_s2A.dz = tag_size_z
-  lowQ2_s2A.place_into = vac_B2Q3
-  #lowQ2_s2A.rotate_y = TMath::Pi()/4
+#tagger 1, plane 4
+new TrkMapsBasic lowQ2_s1_4
 
-#tagger 2, plane B
-new TrkMapsBasic lowQ2_s2B
+  lowQ2_s1_4.zpos = tag_s1_start_z
+  lowQ2_s1_4.xpos = tag_pos_x
+  lowQ2_s1_4.dxy = tag_dxy
+  lowQ2_s1_4.nx = tag_nxy
+  lowQ2_s1_4.ny = tag_nxy
+  lowQ2_s1_4.dz = tag_size_z
+  lowQ2_s1_4.place_into = vac_B2Q3
+  #lowQ2_s1_4.rotate_y = TMath::Pi()/4
 
-  lowQ2_s2B.zpos = tag_s2_start_z-tag_iz
-  lowQ2_s2B.xpos = tag_pos_x
-  lowQ2_s2B.dxy = tag_dxy
-  lowQ2_s2B.nx = tag_nxy
-  lowQ2_s2B.ny = tag_nxy
-  lowQ2_s2B.dz = tag_size_z
-  lowQ2_s2B.place_into = vac_B2Q3
-  #lowQ2_s2B.rotate_y = TMath::Pi()/4
+#Tagger 2 planes 1 - 4, ordered in increasing z
 
-#tagger 2, plane C
-new TrkMapsBasic lowQ2_s2C
+#tagger 2, plane 1
+new TrkMapsBasic lowQ2_s2_1
 
-  lowQ2_s2C.zpos = tag_s2_start_z-2.*tag_iz
-  lowQ2_s2C.xpos = tag_pos_x
-  lowQ2_s2C.dxy = tag_dxy
-  lowQ2_s2C.nx = tag_nxy
-  lowQ2_s2C.ny = tag_nxy
-  lowQ2_s2C.dz = tag_size_z
-  lowQ2_s2C.place_into = vac_B2Q3
-  #lowQ2_s2C.rotate_y = TMath::Pi()/4
+  lowQ2_s2_1.zpos = tag_s2_start_z-3.*tag_iz
+  lowQ2_s2_1.xpos = tag_pos_x
+  lowQ2_s2_1.dxy = tag_dxy
+  lowQ2_s2_1.nx = tag_nxy
+  lowQ2_s2_1.ny = tag_nxy
+  lowQ2_s2_1.dz = tag_size_z
+  lowQ2_s2_1.place_into = vac_B2Q3
+  #lowQ2_s2_1.rotate_y = TMath::Pi()/4
 
+#tagger 2, plane 2
+new TrkMapsBasic lowQ2_s2_2
 
+  lowQ2_s2_2.zpos = tag_s2_start_z-2.*tag_iz
+  lowQ2_s2_2.xpos = tag_pos_x
+  lowQ2_s2_2.dxy = tag_dxy
+  lowQ2_s2_2.nx = tag_nxy
+  lowQ2_s2_2.ny = tag_nxy
+  lowQ2_s2_2.dz = tag_size_z
+  lowQ2_s2_2.place_into = vac_B2Q3
+  #lowQ2_s2_2.rotate_y = TMath::Pi()/4
+
+#tagger 2, plane 3
+new TrkMapsBasic lowQ2_s2_3
+
+  lowQ2_s2_3.zpos = tag_s2_start_z-tag_iz
+  lowQ2_s2_3.xpos = tag_pos_x
+  lowQ2_s2_3.dxy = tag_dxy
+  lowQ2_s2_3.nx = tag_nxy
+  lowQ2_s2_3.ny = tag_nxy
+  lowQ2_s2_3.dz = tag_size_z
+  lowQ2_s2_3.place_into = vac_B2Q3
+  #lowQ2_s2_3.rotate_y = TMath::Pi()/4
+
+#tagger 2, plane 4
+new TrkMapsBasic lowQ2_s2_4
+
+  lowQ2_s2_4.zpos = tag_s2_start_z
+  lowQ2_s2_4.xpos = tag_pos_x
+  lowQ2_s2_4.dxy = tag_dxy
+  lowQ2_s2_4.nx = tag_nxy
+  lowQ2_s2_4.ny = tag_nxy
+  lowQ2_s2_4.dz = tag_size_z
+  lowQ2_s2_4.place_into = vac_B2Q3
+  #lowQ2_s2_4.rotate_y = TMath::Pi()/4
 
 
 

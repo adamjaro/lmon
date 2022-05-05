@@ -67,25 +67,38 @@ def multiple_pulses():
 
     #draw signal pulses over multiple events
 
-    inp = "pwo_100evt.root"
+    #inp = "pwo.root"
+    #inp = "pwo_100evt.root"
+    inp = "/home/jaroslav/sim/lmon/data/lmon_uni_1_18GeV_0p5ns_1kevt.root"
+    #inp = "/home/jaroslav/sim/lmon/data/pwo/tests/pwo_uni_1_18GeV_0p5ns_1kevt.root"
 
-    nevt = 100
+    nevt = 120
     #nevt = 1000
 
-    cell = "03x03"
+    #cell = "cal_03x03"
+    cell = "phot_03x03"
 
     emin = 17.5  # 0
     emax = 3
 
     ofs = 0  # 10 or 500
 
+    #ymax = 200
+    #ymin = -1e3
+    ymax = 10
+    ymin = -2000
+
+    #xmin = 0
+    #xmax = 30
+    xmin = 100
+    xmax = 150
+
     infile = TFile.Open(inp)
     tree = infile.Get("DetectorTree")
 
     can = ut.box_canvas()
 
-    #frame = gPad.DrawFrame(100, -6.2e3, 150, 200)
-    frame = gPad.DrawFrame(0, -1e3, 30, 200)
+    frame = gPad.DrawFrame(xmin, ymin, xmax, ymax)
     frame.Draw()
     #frame.SetLineColor(rt.kWhite)
 
@@ -98,8 +111,8 @@ def multiple_pulses():
     hitTime = std.vector(float)()
     hitNphot = std.vector(int)()
 
-    tree.SetBranchAddress("cal_"+cell+"_OpDet_hits_time", hitTime)
-    tree.SetBranchAddress("cal_"+cell+"_OpDet_hits_nphot", hitNphot)
+    tree.SetBranchAddress(cell+"_OpDet_hits_time", hitTime)
+    tree.SetBranchAddress(cell+"_OpDet_hits_nphot", hitNphot)
 
     gROOT.ProcessLine("struct Entry {Double_t val;};")
     phot_en = rt.Entry()

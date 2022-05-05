@@ -35,11 +35,18 @@ TagMapsBasicPlane::TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *ge
 }//TagMapsBasicPlane
 
 //_____________________________________________________________________________
-void TagMapsBasicPlane::ProcessEvent() {
+void TagMapsBasicPlane::LoadHits() {
 
   //load hits for current event in input tree
   fHits.LoadHits();
   fHits.GlobalToLocal();
+
+}//LoadHits
+
+//_____________________________________________________________________________
+void TagMapsBasicPlane::ProcessEvent() {
+
+  //process hits for current event
 
   fNhit = 0;
 
@@ -63,7 +70,7 @@ void TagMapsBasicPlane::ProcessEvent() {
     fPdg = hit.pdg;
     fId = hit.itrk;
 
-    //cout << hit.pdg << " " << hit.x << " " << hit.y << " " << hit.z << " " << hit.en << endl;
+    //cout << fNam << ": " << hit.pdg << " " << hit.x << " " << hit.y << " " << hit.z << " " << hit.en << endl;
 
     //fill output for the layer
     if(fTree) fTree->Fill();

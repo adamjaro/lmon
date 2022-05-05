@@ -29,7 +29,8 @@ TrkMapsBasicHits::TrkMapsBasicHits(): fXpos(0), fYpos(0), fZpos(0), fThetaX(0), 
 }//ParticleCounterHits
 
 //_____________________________________________________________________________
-void TrkMapsBasicHits::AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en, G4int itrk, G4int pdg) {
+void TrkMapsBasicHits::AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en,
+    G4int itrk, G4int pdg, G4bool is_prim) {
 
   //add signal for a given pixel
 
@@ -39,7 +40,7 @@ void TrkMapsBasicHits::AddSignal(G4int ipix, G4int irow, G4double x, G4double y,
   //create new hit at a given location if not alread present
   if( it == fHitsW.end() ) {
 
-    it = fHitsW.insert( make_pair(pair(ipix, irow), Hit(ipix, irow, x, y, z, itrk, pdg)) ).first;
+    it = fHitsW.insert( make_pair(pair(ipix, irow), Hit(ipix, irow, x, y, z, itrk, pdg, is_prim)) ).first;
   }
 
   //add deposited energy in the hit
@@ -50,6 +51,11 @@ void TrkMapsBasicHits::AddSignal(G4int ipix, G4int irow, G4double x, G4double y,
   if( itrk < hit.itrk ) {
     hit.itrk = itrk;
     hit.pdg = pdg;
+  }
+
+  //update primary flag if not set
+  if( hit.is_prim == kFALSE ) {
+    hit.is_prim = is_prim;
   }
 
 }//AddSignal
@@ -67,6 +73,7 @@ void TrkMapsBasicHits::CreateOutput(G4String nam, TTree *tree) {
   fEn = new vector<Double_t>();
   fItrk = new vector<Int_t>();
   fPdg = new vector<Int_t>();
+  fPrim = new vector<Bool_t>();
 
   DetUtils u(nam, tree);
 
@@ -80,6 +87,7 @@ void TrkMapsBasicHits::CreateOutput(G4String nam, TTree *tree) {
 
   u.AddBranch("_HitItrk", fItrk);
   u.AddBranch("_HitPdg", fPdg);
+  u.AddBranch("_HitPrim", fPrim);
 
 }//CreateOutput
 
@@ -98,6 +106,7 @@ void TrkMapsBasicHits::ClearEvent() {
   fEn->clear();
   fItrk->clear();
   fPdg->clear();
+  fPrim->clear();
 
 }//ClearEvent
 
@@ -121,9 +130,10 @@ void TrkMapsBasicHits::FinishEvent() {
 
     fItrk->push_back( hit.itrk );
     fPdg->push_back( hit.pdg );
+    fPrim->push_back( hit.is_prim );
 
     //G4cout << hit.itrk << " " << hit.pdg <<  " " << hit.ipix << " " << hit.irow << " " << hit.en;
-    //G4cout << " " << hit.x << " " << hit.y << " " << hit.z << G4endl;
+    //G4cout << " " << hit.x << " " << hit.y << " " << hit.z << " " << hit.is_prim << G4endl;
 
   }//hits loop
 
@@ -142,6 +152,7 @@ void TrkMapsBasicHits::ConnectInput(std::string nam, TTree *tree) {
   fEn = 0x0;
   fItrk = 0x0;
   fPdg = 0x0;
+  fPrim = 0x0;
 
   tree->SetBranchAddress((nam+"_HitIpix").c_str(), &fIpix);
   tree->SetBranchAddress((nam+"_HitIrow").c_str(), &fIrow);
@@ -153,6 +164,7 @@ void TrkMapsBasicHits::ConnectInput(std::string nam, TTree *tree) {
 
   tree->SetBranchAddress((nam+"_HitItrk").c_str(), &fItrk);
   tree->SetBranchAddress((nam+"_HitPdg").c_str(), &fPdg);
+  tree->SetBranchAddress((nam+"_HitPrim").c_str(), &fPrim);
 
 }//ConnectInput
 
@@ -166,7 +178,7 @@ void TrkMapsBasicHits::LoadHits() {
   //input vector loop
   for(unsigned long i=0; i<fIpix->size(); i++) {
 
-    fHitsR.push_back( Hit(fIpix->at(i), fIrow->at(i), fX->at(i), fY->at(i), fZ->at(i), fItrk->at(i), fPdg->at(i)) );
+    fHitsR.push_back( Hit(fIpix->at(i), fIrow->at(i), fX->at(i), fY->at(i), fZ->at(i), fItrk->at(i), fPdg->at(i), fPrim->at(i)) );
     fHitsR.back().en = fEn->at(i);
 
   }//input vector loop
@@ -194,6 +206,7 @@ void TrkMapsBasicHits::LocalFromGeo(G4String nam, GeoParser *geo) {
     fThetaY = theta;
   }
 
+  //cout << "TrkMapsBasicHits::LocalFromGeo: ";
   //cout << fXpos << " " << fYpos << " " << fZpos << " " << fThetaX << " " << fThetaY << endl;
 
 }//LocalFromGeo

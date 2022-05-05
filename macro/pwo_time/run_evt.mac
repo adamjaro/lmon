@@ -4,28 +4,28 @@
 
 /run/initialize
 
-#/lmon/input/type gun
-#/gun/energy 1 GeV
-#/gun/particle gamma
-#/gun/position 0 0 -1 mm
-#/gun/direction 0 0 -1
+/lmon/input/type gun
+/gun/energy 2 GeV
+/gun/particle gamma
+/gun/position 0 0 -1 mm
+/gun/direction 0 0 -1
 
-/lmon/input/type gps
+#/lmon/input/type gps
 #/gps/energy 2 MeV
-/gps/ene/type Lin
-/gps/ene/min 1 GeV
-/gps/ene/max 18 GeV
-/gps/ene/gradient 0
-/gps/ene/intercept 1
+#/gps/ene/type Lin
+#/gps/ene/min 1 GeV
+#/gps/ene/max 18 GeV
+#/gps/ene/gradient 0
+#/gps/ene/intercept 1
 #/gps/particle e-
-/gps/particle gamma
-/gps/position 0 0 -1 mm
-/gps/direction 0 0 -1
+#/gps/particle gamma
+#/gps/position 0 0 -1 mm
+#/gps/direction 0 0 -1
 
 #output
 /lmon/output/name pwo.root
 #/lmon/output/name pwo_100evt.root
 
-/run/beamOn 100
+/run/beamOn 1
 
 

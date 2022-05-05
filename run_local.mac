@@ -10,18 +10,18 @@
 
 /run/initialize
 
-/lmon/input/type gun
-/gun/energy 10 GeV
-/gun/particle e-
+#/lmon/input/type gun
+#/gun/energy 10 GeV
+#/gun/particle e-
 #/gun/particle gamma
 #/gun/position 0 0 0 mm
-/gun/direction 0 0 -1
+#/gun/direction 0 0 -1
 
-#/lmon/input/type tparticle
+/lmon/input/type tparticle
 #/lmon/input/tparticle/select 22
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_1Mevt.root
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/gen_uni.root
-#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root
+/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root
 
 #/lmon/input/type hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
@@ -35,6 +35,6 @@
 #/lmon/output/name data/ew/ew1bx2.root
 
 
-/run/beamOn 1
+/run/beamOn 3200
 #/units/list
 

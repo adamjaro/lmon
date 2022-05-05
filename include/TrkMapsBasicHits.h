@@ -12,7 +12,7 @@ class TrkMapsBasicHits {
 
     TrkMapsBasicHits();
 
-    void AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en, G4int itrk, G4int pdg);
+    void AddSignal(G4int ipix, G4int irow, G4double x, G4double y, G4double z, G4double en, G4int itrk, G4int pdg, G4bool is_prim);
     void CreateOutput(G4String nam, TTree *tree);
     void ClearEvent();
     void FinishEvent();
@@ -22,8 +22,12 @@ class TrkMapsBasicHits {
     unsigned long GetNhits() { return fHitsR.size(); }
 
     void LocalFromGeo(G4String nam, GeoParser *geo);
+
     G4double GetXPos() { return fXpos; }
+    G4double GetZPos() { return fZpos; }
+
     void SetXPos(G4double x) { fXpos = x; }
+    void SetZPos(G4double z) { fZpos = z; }
 
     void GlobalToLocal();
 
@@ -31,8 +35,8 @@ class TrkMapsBasicHits {
     class Hit {
     public:
 
-      Hit(Int_t ip, Int_t ir, Double_t xp, Double_t yp, Double_t zp, Int_t it, Int_t pd):
-        ipix(ip), irow(ir), x(xp), y(yp), z(zp), en(0), itrk(it), pdg(pd) {}
+      Hit(Int_t ip, Int_t ir, Double_t xp, Double_t yp, Double_t zp, Int_t it, Int_t pd, Bool_t prim):
+        ipix(ip), irow(ir), x(xp), y(yp), z(zp), en(0), itrk(it), pdg(pd), is_prim(prim) {}
 
       Int_t ipix; // pixel index in the row
       Int_t irow; // row index in the layer
@@ -42,6 +46,7 @@ class TrkMapsBasicHits {
       Double_t en; // hit energy, keV
       Int_t itrk; // track index
       Int_t pdg; // track PDG code
+      Bool_t is_prim; // hit by primary particle
 
     };//Hit
 
@@ -64,6 +69,7 @@ class TrkMapsBasicHits {
 
     std::vector<Int_t> *fItrk; // track index
     std::vector<Int_t> *fPdg; // track PDG code
+    std::vector<Bool_t> *fPrim; // primary flag
 
     G4double fXpos; // plane position in x, mm
     G4double fYpos; // plane position in y, mm

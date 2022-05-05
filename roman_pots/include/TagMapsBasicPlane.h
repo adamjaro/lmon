@@ -12,10 +12,14 @@ class TagMapsBasicPlane {
 
     TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree);
 
+    void LoadHits();
+
     void ProcessEvent();
 
     void CreateOutput();
     void WriteOutputs();
+
+    TrkMapsBasicHits& GetHits() { return fHits; }
 
   private:
 

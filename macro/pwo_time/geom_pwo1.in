@@ -1,7 +1,7 @@
 
 new CompCal cal
 
-  cal.zpos = 0
+  cal.zpos = -1000 # mm
   cal.ypos = 0
 
 new top topv

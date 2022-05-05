@@ -127,8 +127,13 @@ G4bool TrkMapsBasic::ProcessHits(G4Step *step, G4TouchableHistory*) {
   G4int itrk = track->GetTrackID();
   G4int pdg = track->GetParticleDefinition()->GetPDGEncoding();
 
+  //track by primary particle
+  G4bool is_prim = track->GetParentID() > 0 ? false : true;
+
+  //G4cout << "TrkMapsBasic::ProcessHits: " << track->GetTrackID() << " " << track->GetParentID() << " " << is_prim << endl;
+
   //add signal to the hits
-  fHits.AddSignal(ipix, irow, x, y, z, en, itrk, pdg);
+  fHits.AddSignal(ipix, irow, x, y, z, en, itrk, pdg, is_prim);
 
   return true;
 

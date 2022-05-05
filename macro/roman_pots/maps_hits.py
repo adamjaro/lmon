@@ -30,17 +30,18 @@ def xy():
 
     #mm
     xybin = 1
-    xymax = 80
+    xymax = 220
     #xymax = 10
 
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5cx1/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5cx1/maps_basic.root"
 
-    #det = "s1A"
-    det = "s2A"
+    det = "s1_1"
+    #det = "s2A"
 
-    #sel = ""
-    sel = "id>2"
+    sel = ""
+    #sel = "id>2"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
