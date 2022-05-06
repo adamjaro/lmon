@@ -12,8 +12,6 @@ class TagMapsBasicPlane {
 
     TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree);
 
-    void LoadHits();
-
     void ProcessEvent();
 
     void CreateOutput();
@@ -23,10 +21,17 @@ class TagMapsBasicPlane {
 
   private:
 
+    void LoadHits();
+    unsigned long FindHitEmax();
+    int FindAdjHits(unsigned long ih, std::vector<unsigned long>& adj_hits);
+    int GetHitsCount();
+
     std::string fNam; // plane name
     TrkMapsBasicHits fHits; // hits for the plane
 
-    // for hits
+    std::map<unsigned long, bool> fHitStat; // status flags for hits in plane
+
+    //selection criteria for hits
     Double_t fEmin; // keV, threshold in energy
 
     TTree *fTree; // plane output tree
@@ -41,6 +46,33 @@ class TagMapsBasicPlane {
 
     Int_t fNhit; // number of hits in plane in event
     Int_t fNhitPrim; // number of primary hits in plane in event
+    Int_t fNCls; // number of clusters in event
+    Int_t fNClsPrim; // number of primary clusters in event
+
+    //cluster representation
+    class Cluster {
+    public:
+      Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1) {}
+
+      Double_t x; // cluster x position, mm
+      Double_t y; // cluster y position, mm
+      Double_t en; // cluster energy, keV
+      Int_t nhits; // number of hits for the cluster
+      Bool_t is_prim; // flag for primary particle
+
+      std::vector<unsigned long> hits; // indices for hits contributing to cluster
+
+    };//Cluster
+
+    std::vector<Cluster> fCls; // clusters in event
+
+    //custers output tree
+    TTree *fClsTree; // clusters output tree
+    Double_t fClsX; // x of cluster, mm
+    Double_t fClsY; // y of cluster, mm
+    Double_t fClsE; // cluster energy, keV
+    Int_t fClsNhits; // number of hits in cluster
+    Bool_t fClsPrim; // primary flag for cluster
 
 };
 

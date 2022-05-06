@@ -178,18 +178,18 @@ def ntrk():
     #tracks num
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v2.root"
 
     #det = "s1"
-    #det = "s2"
+    det = "s2"
     #det = "s1_1"
-    det = "s2_1"
+    #det = "s2_1"
 
-    #val = "_ntrk"
-    val = "_nhit"
+    val = "_ntrk"
+    #val = "_nhit"
 
     hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
-    #hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
+    hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
 
     #plot
     plt.style.use("dark_background")
@@ -203,7 +203,7 @@ def ntrk():
     set_grid(plt, col)
 
     plt.plot(hx[0], hx[1], "-", color="red", lw=1)
-    #plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
+    plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
 
     ax.set_xlabel("Tracks per event")
     ax.set_ylabel("Normalized counts")

@@ -8,6 +8,7 @@
 //C++
 #include <vector>
 #include <string>
+#include <map>
 
 //ROOT
 #include "TTree.h"
@@ -35,21 +36,197 @@ TagMapsBasicPlane::TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *ge
 }//TagMapsBasicPlane
 
 //_____________________________________________________________________________
+void TagMapsBasicPlane::ProcessEvent() {
+
+  //process hits for current event
+
+  LoadHits();
+  fCls.clear();
+
+  //if( GetHitsCount() < 2 ) return;
+
+  //hits loop
+  while(GetHitsCount() > 0) {
+
+    //hit with most energy deposition as a seed for the cluster
+    unsigned long ih = FindHitEmax();
+    fHitStat[ih] = false; // mark the hit as used
+
+    //initialize the cluster to the seed
+    fCls.push_back(Cluster());
+    Cluster& cls = fCls.back();
+    cls.hits.push_back(ih);
+
+    //adjacent hits for the hit with the most energy
+    int nfound = FindAdjHits(ih, cls.hits);
+
+    //search for adjacent hits from the first set
+    vector<unsigned long> adj_hits_sec;
+    do {
+      nfound = 0;
+      adj_hits_sec.clear();
+
+      for(vector<unsigned long>::iterator ith = cls.hits.begin(); ith<cls.hits.end(); ith++) {
+
+        nfound += FindAdjHits(*ith, adj_hits_sec);
+      }
+
+      //append the next set of adjacent hits to the cluster hits
+      for(vector<unsigned long>::iterator ith = adj_hits_sec.begin(); ith<adj_hits_sec.end(); ith++) {
+        cls.hits.push_back(*ith);
+      }
+
+    } while( nfound > 0 );
+
+  }//hits loop
+
+  fNCls = 0;
+  fNClsPrim = 0;
+
+  //clusters loop
+  for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
+    Cluster& cls = *icls;
+
+    //number of hits in the cluster
+    cls.nhits = cls.hits.size();
+
+    //cluster position by energy-weighted average
+    for(unsigned int ihit=0; ihit<cls.hits.size(); ihit++) {
+      const TrkMapsBasicHits::Hit& hit = fHits.GetHit( cls.hits[ihit] );
+
+      cls.en += hit.en;
+      cls.x += hit.x*hit.en;
+      cls.y += hit.y*hit.en;
+
+      cls.is_prim = cls.is_prim && hit.is_prim;
+    }
+
+    cls.x = cls.x/cls.en;
+    cls.y = cls.y/cls.en;
+
+    //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.en << " " << cls.is_prim << endl;
+
+    //fill output on clusters
+    fClsX = cls.x;
+    fClsY = cls.y;
+    fClsE = cls.en;
+    fClsNhits = cls.nhits;
+    fClsPrim = cls.is_prim;
+
+    fClsTree->Fill();
+
+    //increment event counters
+    fNCls++;
+    if( cls.is_prim ) fNClsPrim++;
+
+  }//clusters loop
+
+}//ProcessEvent
+
+//_____________________________________________________________________________
+int TagMapsBasicPlane::FindAdjHits(unsigned long ih, vector<unsigned long>& adj_hits) {
+
+  //find hits adjacent to a hit at a given ih
+  //along pixel and row direction
+
+  const TrkMapsBasicHits::Hit& hit_start = fHits.GetHit(ih);
+  Int_t ipix_start = hit_start.ipix;
+  Int_t irow_start = hit_start.irow;
+
+  //range in pixel and row indices for adjacent hits
+  Int_t pmin = ipix_start-1;
+  Int_t pmax = ipix_start+1;
+  Int_t rmin = irow_start-1;
+  Int_t rmax = irow_start+1;
+
+  //counter for found hits
+  int nfound = 0;
+
+  for(unsigned long ihit=0; ihit<fHits.GetNhits(); ihit++) {
+    if( !fHitStat[ihit] ) continue;
+
+    //hit indices
+    const TrkMapsBasicHits::Hit& hit = fHits.GetHit(ihit);
+    Int_t ipix = hit.ipix;
+    Int_t irow = hit.irow;
+
+    //apply the range for adjacent hit
+    if( ipix < pmin or ipix > pmax ) continue;
+    if( irow < rmin or irow > rmax ) continue;
+
+    //adjacent hit found
+    adj_hits.push_back(ihit);
+
+    //mark the hit as used
+    fHitStat[ihit] = false;
+
+    nfound++;
+
+  }
+
+  return nfound;
+
+}//FindAdjHits
+
+//_____________________________________________________________________________
+unsigned long TagMapsBasicPlane::FindHitEmax() {
+
+  //hit with most energy deposition
+
+  //initial values
+  unsigned long ih = 0;
+  Double_t en = -1.;
+
+  //compare to all other hits
+  for(unsigned long ihit=0; ihit<fHits.GetNhits(); ihit++) {
+    if( !fHitStat[ihit] ) continue;
+
+    const TrkMapsBasicHits::Hit& hit = fHits.GetHit(ihit);
+
+    if( hit.en < en ) continue;
+
+    //update for hit at larger energy
+    en = hit.en;
+    ih = ihit;
+
+  }
+
+  return ih;
+
+}//FindHitEmax
+
+//_____________________________________________________________________________
+int TagMapsBasicPlane::GetHitsCount() {
+
+  //count hits with active status
+
+  int nhit = 0;
+  for(unsigned long ihit=0; ihit<fHitStat.size(); ihit++) {
+
+    if( fHitStat[ihit] ) nhit++;
+  }
+
+  return nhit;
+
+}//GetHitsCount
+
+//_____________________________________________________________________________
 void TagMapsBasicPlane::LoadHits() {
+
+  //set initial status for all hits based on selection criteria
 
   //load hits for current event in input tree
   fHits.LoadHits();
   fHits.GlobalToLocal();
 
-}//LoadHits
+  //clear the status flags
+  fHitStat.clear();
 
-//_____________________________________________________________________________
-void TagMapsBasicPlane::ProcessEvent() {
-
-  //process hits for current event
-
+  //hit counters
   fNhit = 0;
   fNhitPrim = 0;
+
+  //fNsel = 0;
 
   //hits loop
   for(unsigned long ihit=0; ihit<fHits.GetNhits(); ihit++) {
@@ -57,10 +234,17 @@ void TagMapsBasicPlane::ProcessEvent() {
     //get the hit
     const TrkMapsBasicHits::Hit& hit = fHits.GetHit(ihit);
 
+    //create status entry for the hit
+    map<unsigned long, bool>::iterator istat = fHitStat.insert( make_pair(ihit, false) ).first;
+
     //energy threshold
     if( hit.en < fEmin ) continue;
 
-    //set the outputs
+    //mark hit as accepted
+    (*istat).second = true;
+    //fNsel++;
+
+    //set the hit outputs
     fNhit++;
 
     fX = hit.x;
@@ -75,12 +259,12 @@ void TagMapsBasicPlane::ProcessEvent() {
 
     //cout << fNam << ": " << hit.pdg << " " << hit.x << " " << hit.y << " " << hit.z << " " << hit.en << endl;
 
-    //fill output for the layer
+    //fill the hit output for the layer
     if(fTree) fTree->Fill();
 
   }//hits loop
 
-}//ProcessEvent
+}//LoadHits
 
 //_____________________________________________________________________________
 void TagMapsBasicPlane::CreateOutput() {
@@ -89,14 +273,24 @@ void TagMapsBasicPlane::CreateOutput() {
   fTree = new TTree(fNam.c_str(), fNam.c_str());
   fTree->Branch("x", &fX, "x/D");
   fTree->Branch("y", &fY, "y/D");
-  fTree->Branch("z", &fZ, "x/D");
+  fTree->Branch("z", &fZ, "z/D");
   fTree->Branch("en", &fE, "en/D");
   fTree->Branch("pdg", &fPdg, "pdg/I");
   fTree->Branch("id", &fId, "id/I");
 
+  //clusters tree
+  fClsTree = new TTree((fNam+"_clusters").c_str(), (fNam+"_clusters").c_str());
+  fClsTree->Branch("x", &fClsX, "x/D");
+  fClsTree->Branch("y", &fClsY, "y/D");
+  fClsTree->Branch("en", &fClsE, "en/D");
+  fClsTree->Branch("nhits", &fClsNhits, "nhits/I");
+  fClsTree->Branch("is_prim", &fClsPrim, "is_prim/O");
+
   //event tree
   fEvtTree->Branch((fNam+"_nhit").c_str(), &fNhit, (fNam+"_nhit/I").c_str());
   fEvtTree->Branch((fNam+"_nhit_prim").c_str(), &fNhitPrim, (fNam+"_nhit_prim/I").c_str());
+  fEvtTree->Branch((fNam+"_ncls").c_str(), &fNCls, (fNam+"_ncls/I").c_str());
+  fEvtTree->Branch((fNam+"_ncls_prim").c_str(), &fNClsPrim, (fNam+"_ncls_prim/I").c_str());
 
 }//CreateOutput
 
@@ -105,8 +299,9 @@ void TagMapsBasicPlane::WriteOutputs() {
 
   if(!fTree) return;
 
-  cout << "Plane " << fNam << ": " << fTree->GetEntries() << endl;
+  cout << "Plane " << fNam << ", hits: " << fTree->GetEntries() << ", clusters: " << fClsTree->GetEntries() << endl;
   fTree->Write();
+  fClsTree->Write();
 
 }//WriteOutputs
 

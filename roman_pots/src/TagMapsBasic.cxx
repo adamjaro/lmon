@@ -58,7 +58,7 @@ TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *
 void TagMapsBasic::ProcessEvent() {
 
   //load hits for individual planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::LoadHits ));
+  //for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::LoadHits ));
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::ProcessEvent ));
 
   //run tracking for hits in planes
