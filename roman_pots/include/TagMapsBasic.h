@@ -28,7 +28,8 @@ class TagMapsBasic {
     std::string fNam; // station name
     std::vector<TagMapsBasicPlane*> fPlanes; // planes for the station
 
-    Double_t fEmin; // keV, threshold in energy
+    Double_t fEmin; // keV, threshold in energy for hits
+    Double_t fChi2ndfMax; // maximal reduced chi2 for tracks
 
     Double_t fL; // plane spacing, mm
     Double_t fZ[4]; // local z positions for planes, mm

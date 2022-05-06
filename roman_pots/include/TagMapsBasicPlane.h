@@ -40,6 +40,7 @@ class TagMapsBasicPlane {
     TTree *fEvtTree; // event output tree, provided from outside
 
     Int_t fNhit; // number of hits in plane in event
+    Int_t fNhitPrim; // number of primary hits in plane in event
 
 };
 

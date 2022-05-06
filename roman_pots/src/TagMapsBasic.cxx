@@ -26,7 +26,7 @@ using namespace std;
 
 //_____________________________________________________________________________
 TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree):
-    fNam(nam), fEmin(0.4), fEvtTree(evt_tree) {
+    fNam(nam), fEmin(0.4), fChi2ndfMax(4), fEvtTree(evt_tree) {
 
   //planes for the station, 1 - 4
   fPlanes.push_back( new TagMapsBasicPlane(fNam+"_1", tree, geo, evt_tree) );
@@ -102,6 +102,10 @@ void TagMapsBasic::ProcessEvent() {
           //track parameters in x and y
           MakeTrack(x, fPosX, fSlopeX, fThetaX, fChi2X);
           MakeTrack(y, fPosY, fSlopeY, fThetaY, fChi2Y);
+
+          //maximal tracks reduced chi2
+          if( fChi2X > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
+          if( fChi2Y > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
 
           //track for primary particle
           fPrim = h1.is_prim and h2.is_prim and h3.is_prim and h4.is_prim;

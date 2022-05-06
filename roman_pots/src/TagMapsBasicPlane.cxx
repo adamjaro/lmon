@@ -49,6 +49,7 @@ void TagMapsBasicPlane::ProcessEvent() {
   //process hits for current event
 
   fNhit = 0;
+  fNhitPrim = 0;
 
   //hits loop
   for(unsigned long ihit=0; ihit<fHits.GetNhits(); ihit++) {
@@ -69,6 +70,8 @@ void TagMapsBasicPlane::ProcessEvent() {
 
     fPdg = hit.pdg;
     fId = hit.itrk;
+
+    if( hit.is_prim ) fNhitPrim++;
 
     //cout << fNam << ": " << hit.pdg << " " << hit.x << " " << hit.y << " " << hit.z << " " << hit.en << endl;
 
@@ -93,6 +96,7 @@ void TagMapsBasicPlane::CreateOutput() {
 
   //event tree
   fEvtTree->Branch((fNam+"_nhit").c_str(), &fNhit, (fNam+"_nhit/I").c_str());
+  fEvtTree->Branch((fNam+"_nhit_prim").c_str(), &fNhitPrim, (fNam+"_nhit_prim/I").c_str());
 
 }//CreateOutput
 
