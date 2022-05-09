@@ -12,6 +12,7 @@
 
 //ROOT
 #include "TTree.h"
+#include "TMath.h"
 
 //Geant
 #include "G4String.hh"
@@ -99,12 +100,21 @@ void TagMapsBasicPlane::ProcessEvent() {
       cls.y += hit.y*hit.en;
 
       cls.is_prim = cls.is_prim && hit.is_prim;
+
+      cls.sigma_x += hit.en*hit.x*hit.x;
+      cls.sigma_y += hit.en*hit.y*hit.y;
     }
 
     cls.x = cls.x/cls.en;
     cls.y = cls.y/cls.en;
 
-    //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.en << " " << cls.is_prim << endl;
+    cls.sigma_x = cls.GetSigma(cls.sigma_x, cls.x);
+    cls.sigma_y = cls.GetSigma(cls.sigma_y, cls.y);
+
+    //if(cls.nhits > 1) {
+      //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.en << " " << cls.is_prim << " ";
+      //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.sigma_x << " " << cls.sigma_y << endl;
+    //}
 
     //fill output on clusters
     fClsX = cls.x;
@@ -112,6 +122,8 @@ void TagMapsBasicPlane::ProcessEvent() {
     fClsE = cls.en;
     fClsNhits = cls.nhits;
     fClsPrim = cls.is_prim;
+    fClsSigX = cls.sigma_x;
+    fClsSigY = cls.sigma_y;
 
     fClsTree->Fill();
 
@@ -285,6 +297,8 @@ void TagMapsBasicPlane::CreateOutput() {
   fClsTree->Branch("en", &fClsE, "en/D");
   fClsTree->Branch("nhits", &fClsNhits, "nhits/I");
   fClsTree->Branch("is_prim", &fClsPrim, "is_prim/O");
+  fClsTree->Branch("sigma_x", &fClsSigX, "sigma_x/D");
+  fClsTree->Branch("sigma_y", &fClsSigY, "sigma_y/D");
 
   //event tree
   fEvtTree->Branch((fNam+"_nhit").c_str(), &fNhit, (fNam+"_nhit/I").c_str());
@@ -305,7 +319,20 @@ void TagMapsBasicPlane::WriteOutputs() {
 
 }//WriteOutputs
 
+//_____________________________________________________________________________
+Double_t TagMapsBasicPlane::Cluster::GetSigma(Double_t swx2, Double_t pos) {
 
+  //Bevington, Robinson, eq. 4.22, p. 58
+
+  if( hits.size() < 2 ) return 0;
+
+  Double_t sig2 = ((swx2/en) - pos*pos)/(hits.size() - 1);
+
+  if(sig2 > 0) return TMath::Sqrt(sig2);
+
+  return 0;
+
+}//Cluster::GetSigma
 
 
 

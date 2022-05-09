@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = xy
@@ -30,17 +30,19 @@ def xy():
 
     #mm
     xybin = 1
-    xymax = 220
+    #xymax = 220
+    xymax = 90
     #xymax = 10
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5cx1/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v3.root"
 
-    det = "s1_1"
+    det = "s1_4_clusters"
     #det = "s2A"
 
-    sel = ""
+    #sel = ""
+    sel = "is_prim==0"
     #sel = "id>2"
 
     infile = TFile.Open(inp)
@@ -84,15 +86,16 @@ def en():
 
     #keV
     xbin = 1
-    xmax = 120
+    xmax = 500
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v3.root"
 
-    #det = "s1C"
-    det = "s2C"
+    det = "s1_1_clusters"
+    #det = "s2C"
 
-    #sel = ""
-    sel = "id!=1"
+    sel = ""
+    #sel = "is_prim==0"
 
     val = "en"
 
@@ -130,14 +133,18 @@ def nhits():
     xbin = 1
     xmax = 20
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v3.root"
 
-    det = "event"
+    #det = "event"
+    det = "s1_4_clusters"
 
-    sel = ""
+    #val = "s1_1_nhit"
+    #val = "s1_4_ncls_prim"
+    val = "nhits"
 
-    #val = "s1A_nhit"
-    val = "s2C_nhit"
+    #sel = ""
+    sel = "is_prim==1"
+    #sel = val+">0"
 
     hx = make_h1(inp, det, val, xbin, 0, xmax, sel)
 
@@ -154,7 +161,7 @@ def nhits():
 
     plt.plot(hx[0], hx[1], "-", color="red", lw=1)
 
-    ax.set_xlabel("E (keV)")
+    ax.set_xlabel("Number of hits")
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")

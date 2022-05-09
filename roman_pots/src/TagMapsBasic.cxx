@@ -58,46 +58,39 @@ TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *
 void TagMapsBasic::ProcessEvent() {
 
   //load hits for individual planes
-  //for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::LoadHits ));
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::ProcessEvent ));
 
-  //run tracking for hits in planes
-  TrkMapsBasicHits& hits1 = fPlanes[0]->GetHits();
-  TrkMapsBasicHits& hits2 = fPlanes[1]->GetHits();
-  TrkMapsBasicHits& hits3 = fPlanes[2]->GetHits();
-  TrkMapsBasicHits& hits4 = fPlanes[3]->GetHits();
-
-  //cout << "TagMapsBasic::ProcessEvent: ";
+  //clusters in planes
+  const vector<TagMapsBasicPlane::Cluster>& cls1 = fPlanes[0]->GetClusters();
+  const vector<TagMapsBasicPlane::Cluster>& cls2 = fPlanes[1]->GetClusters();
+  const vector<TagMapsBasicPlane::Cluster>& cls3 = fPlanes[2]->GetClusters();
+  const vector<TagMapsBasicPlane::Cluster>& cls4 = fPlanes[3]->GetClusters();
 
   //number of tracks per event
   fNtrk = 0;
   fNtrkPrim = 0;
 
   //plane 1
-  for(unsigned long i1=0; i1<hits1.GetNhits(); i1++) {
-    const TrkMapsBasicHits::Hit& h1 = hits1.GetHit(i1);
-    if( !SelectHit(h1) ) continue;
+  for(unsigned long i1=0; i1<cls1.size(); i1++) {
+    const TagMapsBasicPlane::Cluster& c1 = cls1[i1];
 
     //plane 2
-    for(unsigned long i2=0; i2<hits2.GetNhits(); i2++) {
-      const TrkMapsBasicHits::Hit& h2 = hits2.GetHit(i2);
-      if( !SelectHit(h2) ) continue;
+    for(unsigned long i2=0; i2<cls2.size(); i2++) {
+      const TagMapsBasicPlane::Cluster& c2 = cls2[i2];
 
       //plane 3
-      for(unsigned long i3=0; i3<hits3.GetNhits(); i3++) {
-        const TrkMapsBasicHits::Hit& h3 = hits3.GetHit(i3);
-        if( !SelectHit(h3) ) continue;
+      for(unsigned long i3=0; i3<cls3.size(); i3++) {
+        const TagMapsBasicPlane::Cluster& c3 = cls3[i3];
 
         //plane 4
-        for(unsigned long i4=0; i4<hits4.GetNhits(); i4++) {
-          const TrkMapsBasicHits::Hit& h4 = hits4.GetHit(i4);
-          if( !SelectHit(h4) ) continue;
+        for(unsigned long i4=0; i4<cls4.size(); i4++) {
+          const TagMapsBasicPlane::Cluster& c4 = cls4[i4];
 
-          //make the track from the hits
+          //make the track from the clusters
 
           //track points in x and y
-          Double_t x[] = {h1.x, h2.x, h3.x, h4.x};
-          Double_t y[] = {h1.y, h2.y, h3.y, h4.y};
+          Double_t x[] = {c1.x, c2.x, c3.x, c4.x};
+          Double_t y[] = {c1.y, c2.y, c3.y, c4.y};
 
           //track parameters in x and y
           MakeTrack(x, fPosX, fSlopeX, fThetaX, fChi2X);
@@ -108,7 +101,7 @@ void TagMapsBasic::ProcessEvent() {
           if( fChi2Y > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
 
           //track for primary particle
-          fPrim = h1.is_prim and h2.is_prim and h3.is_prim and h4.is_prim;
+          fPrim = c1.is_prim and c2.is_prim and c3.is_prim and c4.is_prim;
 
           fTrkTree->Fill();
 
@@ -119,12 +112,6 @@ void TagMapsBasic::ProcessEvent() {
       }//plane 3
     }//plane 2
   }//plane 1
-
-  //if(ntrk>0) cout << ntrk << endl;
-
-      //cout << h1.x << " " << h2.x << endl;
-
-  //cout <<  << " " << h2.GetNhits() << endl;
 
 }//ProcessEvent
 
@@ -190,6 +177,8 @@ void TagMapsBasic::WriteOutputs() {
 
   //write outputs for the planes
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::WriteOutputs ));
+
+  cout << "Tagger " << fNam << ", tracks: " << fTrkTree->GetEntries() << endl;
 
   fTrkTree->Write();
 

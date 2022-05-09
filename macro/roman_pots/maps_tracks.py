@@ -37,13 +37,14 @@ def chi2():
     xbin = 0.1
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    #sel = ""
-    sel = "is_prim==1"
+    sel = ""
+    #sel = "is_prim==1"
 
     hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
     hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
@@ -81,14 +82,14 @@ def xy():
     xybin = 1
     xymax = 80
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
 
-    #sel = ""
-    sel = "(chi2_x<8)&&(chi2_y<8)&&(is_prim==0)"
+    sel = ""
+    #sel = "(chi2_x<8)&&(chi2_y<8)&&(is_prim==0)"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -134,7 +135,8 @@ def theta():
     xmin = -100
     xmax = 100
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -178,7 +180,8 @@ def ntrk():
     #tracks num
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v2.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v2.root"
 
     #det = "s1"
     det = "s2"

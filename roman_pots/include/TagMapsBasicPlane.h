@@ -19,6 +19,9 @@ class TagMapsBasicPlane {
 
     TrkMapsBasicHits& GetHits() { return fHits; }
 
+    class Cluster;
+    const std::vector<Cluster>& GetClusters() { return fCls; }
+
   private:
 
     void LoadHits();
@@ -50,19 +53,25 @@ class TagMapsBasicPlane {
     Int_t fNClsPrim; // number of primary clusters in event
 
     //cluster representation
+  public:
     class Cluster {
     public:
-      Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1) {}
+      Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1), sigma_x(0), sigma_y(0) {}
 
       Double_t x; // cluster x position, mm
       Double_t y; // cluster y position, mm
       Double_t en; // cluster energy, keV
       Int_t nhits; // number of hits for the cluster
       Bool_t is_prim; // flag for primary particle
+      Double_t sigma_x; // uncertainty in cluster x position, mm
+      Double_t sigma_y; // uncertainty in cluster y position, mm
 
       std::vector<unsigned long> hits; // indices for hits contributing to cluster
 
+      Double_t GetSigma(Double_t swx2, Double_t pos);
+
     };//Cluster
+  private:
 
     std::vector<Cluster> fCls; // clusters in event
 
@@ -73,6 +82,8 @@ class TagMapsBasicPlane {
     Double_t fClsE; // cluster energy, keV
     Int_t fClsNhits; // number of hits in cluster
     Bool_t fClsPrim; // primary flag for cluster
+    Double_t fClsSigX; // uncertainty in x of cluster, mm
+    Double_t fClsSigY; // uncertainty in y of cluster, mm
 
 };
 

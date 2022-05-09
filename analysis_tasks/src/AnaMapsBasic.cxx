@@ -68,9 +68,9 @@ void AnaMapsBasic::Run(const char *conf) {
 
   //tagger stations
   TagMapsBasic s1("s1", &tree, &geo, &otree);
-  //TagMapsBasic s2("s2", &tree, &geo, &otree);
+  TagMapsBasic s2("s2", &tree, &geo, &otree);
   s1.CreateOutput();
-  //s2.CreateOutput();
+  s2.CreateOutput();
 
   //event loop
   Long64_t nev = tree.GetEntries();
@@ -78,13 +78,13 @@ void AnaMapsBasic::Run(const char *conf) {
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
 
-    //if( iev > 0 and iev%iprint == 0 ) {
-      //cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
-    //}
+    if( iev > 0 and iev%iprint == 0 ) {
+      cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
+    }
 
     //process the event for both taggers
     s1.ProcessEvent();
-    //s2.ProcessEvent();
+    s2.ProcessEvent();
 
     //fill event tree
     otree.Fill();
@@ -92,7 +92,7 @@ void AnaMapsBasic::Run(const char *conf) {
   }//event loop
 
   s1.WriteOutputs();
-  //s2.WriteOutputs();
+  s2.WriteOutputs();
   otree.Write();
   out.Close();
 
