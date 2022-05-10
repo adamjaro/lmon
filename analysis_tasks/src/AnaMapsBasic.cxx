@@ -53,6 +53,13 @@ void AnaMapsBasic::Run(const char *conf) {
     tree.Add( glob_inputs.gl_pathv[i] );
   }
 
+  //input true kinematics
+  Double_t true_el_E, true_el_theta, true_el_phi, true_Q2;
+  tree.SetBranchAddress("true_el_E", &true_el_E);
+  tree.SetBranchAddress("true_el_theta", &true_el_theta);
+  tree.SetBranchAddress("true_el_phi", &true_el_phi);
+  tree.SetBranchAddress("true_Q2", &true_Q2);
+
   //geometry
   string geo_nam = GetStr(opt_map, "main.geo");
   cout << "Geometry: " << geo_nam << endl;
@@ -65,6 +72,10 @@ void AnaMapsBasic::Run(const char *conf) {
 
   //interaction (event) output tree
   TTree otree("event", "event");
+  otree.Branch("true_el_E", &true_el_E, "true_el_E/D");
+  otree.Branch("true_el_theta", &true_el_theta, "true_el_theta/D");
+  otree.Branch("true_el_phi", &true_el_phi, "true_el_phi/D");
+  otree.Branch("true_Q2", &true_Q2, "true_Q2/D");
 
   //tagger stations
   TagMapsBasic s1("s1", &tree, &geo, &otree);

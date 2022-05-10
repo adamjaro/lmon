@@ -37,11 +37,11 @@ def chi2():
     xbin = 0.1
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     sel = ""
     #sel = "is_prim==1"
@@ -82,8 +82,8 @@ def xy():
     xybin = 1
     xymax = 80
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -135,8 +135,8 @@ def theta():
     xmin = -100
     xmax = 100
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -180,8 +180,8 @@ def ntrk():
     #tracks num
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v2.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
 
     #det = "s1"
     det = "s2"
@@ -205,8 +205,8 @@ def ntrk():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
-    plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
+    plt.plot(hx[0], hx[1], "-", color="blue", lw=1)
+    plt.plot(hy[0], hy[1], "--", color="red", lw=1)
 
     ax.set_xlabel("Tracks per event")
     ax.set_ylabel("Normalized counts")
