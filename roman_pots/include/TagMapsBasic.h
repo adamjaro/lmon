@@ -17,6 +17,7 @@ class TagMapsBasic {
     void ProcessEvent();
 
     void CreateOutput();
+    void AddTrackBranch(std::string nam, Double_t *val);
     void WriteOutputs();
 
   private:

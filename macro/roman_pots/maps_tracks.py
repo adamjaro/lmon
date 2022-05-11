@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = chi2
@@ -22,6 +22,7 @@ def main():
     func[2] = theta
     func[3] = ntrk
     func[4] = chi2_xy
+    func[5] = tx_en
 
     func[iplot]()
 
@@ -34,25 +35,25 @@ def chi2():
     #chi^2
     #xbin = 1
     #xmax = 120
-    xbin = 0.1
+    xbin = 0.05
     xmax = 12
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    sel = ""
-    #sel = "is_prim==1"
+    #sel = ""
+    sel = "is_prim==1"
 
     hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
     hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -63,10 +64,22 @@ def chi2():
     plt.plot(hx[0], hx[1], "-", color="red", lw=1)
     plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
 
-    ax.set_xlabel("chi2/ndf")
+    ax.set_xlabel("Tracks $\chi^2$/ndf")
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")
+
+    leg = legend()
+    tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
+    leg.add_entry(leg_txt(), tnam[det])
+    if sel == "":
+        leg.add_entry(leg_txt(), "All tracks")
+    else:
+        leg.add_entry(leg_txt(), "Primary electrons")
+
+    leg.add_entry(leg_lin("red"), "$\chi^2_x$/ndf (horizontal)")
+    leg.add_entry(leg_lin("blue"), "$\chi^2_y$/ndf (vertical)")
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -83,7 +96,7 @@ def xy():
     xymax = 80
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -102,8 +115,8 @@ def xy():
 
     tree.Draw("pos_y:pos_x >> hxy", sel)
 
-    hxy.SetXTitle("#it{x} (mm)")
-    hxy.SetYTitle("#it{y} (mm)")
+    hxy.SetXTitle("#it{x_{0}} (mm)")
+    hxy.SetYTitle("#it{y_{0}} (mm)")
 
     hxy.SetTitleOffset(1.3, "Y")
     hxy.SetTitleOffset(1.3, "X")
@@ -120,7 +133,12 @@ def xy():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
+    tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
+    leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
+    leg.Draw("same")
+
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #xy
@@ -131,22 +149,25 @@ def theta():
     #theta angle for tracks
 
     #mrad
-    xbin = 1
-    xmin = -100
-    xmax = 100
+    #xbin = 1
+    #xmin = -100
+    #xmax = 100
+    xbin = 0.4
+    xmin = -10
+    xmax = 10
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    #sel = ""
-    #sel = "(chi2_x<8)&&(chi2_y<8)"
-    sel = "(chi2_x<8)&&(chi2_y<8)&&(is_prim==1)"
+    val = "theta_x"
+    #val = "theta_y"
 
-    hx = make_h1(inp, det, "1e3*theta_x", xbin, xmin, xmax, sel)
-    hy = make_h1(inp, det, "1e3*theta_y", xbin, xmin, xmax, sel)
+    #hx = make_h1(inp, det, "1e3*"+val, xbin, xmin, xmax)
+    hsel = make_h1(inp, det, "1e3*"+val, xbin, xmin, xmax, "is_prim==1")
+
 
     #plot
     plt.style.use("dark_background")
@@ -159,13 +180,21 @@ def theta():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
-    plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
+    #plt.plot(hx[0], hx[1], "-", color="blue", lw=1)
+    plt.plot(hsel[0], hsel[1], "--", color="red", lw=1)
 
-    ax.set_xlabel("theta (mrad)")
+    tnam = {"theta_x": r"$\theta_x$", "theta_y": r"$\theta_y$"}
+    ax.set_xlabel(tnam[val]+" (mrad)")
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")
+
+    leg = legend()
+    tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
+    leg.add_entry(leg_txt(), tnam[det])
+    leg.add_entry(leg_lin("blue"), "All tracks")
+    leg.add_entry(leg_lin("red", "--"), "Primary electrons")
+    #leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -181,7 +210,7 @@ def ntrk():
     xmax = 12
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v4.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
 
     #det = "s1"
     det = "s2"
@@ -195,9 +224,9 @@ def ntrk():
     hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -212,6 +241,13 @@ def ntrk():
     ax.set_ylabel("Normalized counts")
 
     ax.set_yscale("log")
+
+    leg = legend()
+    tnam = {"s1": "Tagger 1", "s2": "Tagger2"}
+    leg.add_entry(leg_txt(), tnam[det])
+    leg.add_entry(leg_lin("blue"), "All tracks")
+    leg.add_entry(leg_lin("red", "--"), "Primary electrons")
+    leg.draw(plt, col)
 
     fig.savefig("01fig.pdf", bbox_inches = "tight")
     plt.close()
@@ -230,7 +266,7 @@ def chi2_xy():
     xymax = 4
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -273,6 +309,64 @@ def chi2_xy():
 #chi2_xy
 
 #_____________________________________________________________________________
+def tx_en():
+
+    #theta_x and energy for tagger 1 to address peak in theta_x below 0
+
+    #mrad
+    xbin = 0.4
+    xmin = -10
+    xmax = 10
+
+    #GeV
+    ybin = 0.1
+    ymin = 0
+    ymax = 20
+
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+
+    det = "s1_tracks"
+
+    #sel = ""
+    sel = "is_prim==1"
+    #sel = "id>2"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get(det)
+
+    #tree.Print()
+
+    can = ut.box_canvas()
+
+    hxy = ut.prepare_TH2D("hxy", xbin, xmin, xmax, ybin, ymin, ymax)
+
+    tree.Draw("(true_el_E):(theta_x*1e3) >> hxy", sel)
+
+    hxy.SetXTitle("theta_x (mrad)")
+    hxy.SetYTitle("True E (GeV)")
+
+    hxy.SetTitleOffset(1.3, "Y")
+    hxy.SetTitleOffset(1.3, "X")
+
+    #hxy.GetXaxis().CenterTitle()
+    #hxy.GetYaxis().CenterTitle()
+
+    ut.set_margin_lbtr(gPad, 0.09, 0.1, 0.02, 0.11)
+
+    hxy.SetMinimum(0.98)
+    hxy.SetContour(300)
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#tx_en
+
+#_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
 
     inp = TFile.Open(infile)
@@ -307,6 +401,34 @@ def set_grid(px, col="lime"):
     px.grid(True, color = col, linewidth = 0.5, linestyle = "--")
 
 #set_grid
+
+#_____________________________________________________________________________
+class legend:
+    def __init__(self):
+        self.items = []
+        self.data = []
+    def add_entry(self, i, d):
+        self.items.append(i)
+        self.data.append(d)
+    def draw(self, px, col=None, **kw):
+        leg = px.legend(self.items, self.data, **kw)
+        if col != None:
+            px.setp(leg.get_texts(), color=col)
+            if col != "black":
+                leg.get_frame().set_edgecolor("orange")
+        return leg
+
+#_____________________________________________________________________________
+def leg_lin(col, sty="-"):
+    return Line2D([0], [0], lw=2, ls=sty, color=col)
+
+#_____________________________________________________________________________
+def leg_txt():
+    return Line2D([0], [0], lw=0)
+
+#_____________________________________________________________________________
+def leg_dot(fig, col, siz=8):
+    return Line2D([0], [0], marker="o", color=fig.get_facecolor(), markerfacecolor=col, markersize=siz)
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

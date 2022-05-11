@@ -173,6 +173,15 @@ void TagMapsBasic::CreateOutput() {
 }//CreateOutput
 
 //_____________________________________________________________________________
+void TagMapsBasic::AddTrackBranch(string nam, Double_t *val) {
+
+  //add a branch to the station output tree
+
+  fTrkTree->Branch(nam.c_str(), val, (nam+"/D").c_str());
+
+}//AddTrackBranch
+
+//_____________________________________________________________________________
 void TagMapsBasic::WriteOutputs() {
 
   //write outputs for the planes

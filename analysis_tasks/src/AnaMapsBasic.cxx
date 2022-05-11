@@ -82,6 +82,14 @@ void AnaMapsBasic::Run(const char *conf) {
   TagMapsBasic s2("s2", &tree, &geo, &otree);
   s1.CreateOutput();
   s2.CreateOutput();
+  s1.AddTrackBranch("true_el_E", &true_el_E);
+  s1.AddTrackBranch("true_el_theta", &true_el_theta);
+  s1.AddTrackBranch("true_el_phi", &true_el_phi);
+  s1.AddTrackBranch("true_Q2", &true_Q2);
+  s2.AddTrackBranch("true_el_E", &true_el_E);
+  s2.AddTrackBranch("true_el_theta", &true_el_theta);
+  s2.AddTrackBranch("true_el_phi", &true_el_phi);
+  s2.AddTrackBranch("true_Q2", &true_Q2);
 
   //event loop
   Long64_t nev = tree.GetEntries();
