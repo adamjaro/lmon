@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = xy
@@ -90,7 +90,9 @@ def en():
     xmax = 500
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
 
     #det = "s1_4_clusters"
     #det = "s2_4_clusters"
@@ -106,9 +108,9 @@ def en():
     hy = make_h1(inp, "s2_4_clusters", val, xbin, 0, xmax)
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -144,11 +146,13 @@ def nhits():
     xbin = 1
     xmax = 20
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
 
     #det = "event"
-    det = "s1_1_clusters"
-    #det = "s2_4_clusters"
+    #det = "s1_4_clusters"
+    det = "s2_1_clusters"
 
     tnam = "Tagger 1, plane 1"
     #tnam = "Tagger 2, plane 4"
@@ -165,9 +169,9 @@ def nhits():
     hsel = make_h1(inp, det, val, xbin, 0, xmax, "is_prim==1")
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -184,7 +188,7 @@ def nhits():
     ax.set_yscale("log")
 
     leg = legend()
-    leg.add_entry(leg_txt(), tnam)
+    #leg.add_entry(leg_txt(), tnam)
     leg.add_entry(leg_lin("blue"), "All clusters")
     leg.add_entry(leg_lin("red", "--"), "Primary electrons")
     leg.draw(plt, col)
@@ -201,17 +205,21 @@ def cls_size():
 
     #mm
     xbin = 0.005
-    xmax = 0.15
+    #xmax = 0.15
+    xmax = 0.2
 
     #num of hits
     ybin = 1
     ymin = 1
-    ymax = 6
+    #ymax = 6
+    ymax = 12
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
 
-    #det = "s1_1_clusters"
-    det = "s2_1_clusters"
+    #det = "s1_4_clusters"
+    det = "s2_4_clusters"
 
     #sel = ""
     sel = "nhits>1"
@@ -248,7 +256,7 @@ def cls_size():
     leg.AddEntry("", "Tagger 2, plane 1", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #cls_size

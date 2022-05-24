@@ -41,6 +41,8 @@ void ParticleCounterHits::AddHit() {
   fHitY->push_back( fHit.y );
   fHitZ->push_back( fHit.z );
   fHitParentID->push_back( fHit.parentID );
+  fHitItrk->push_back( fHit.itrk );
+  fHitPrim->push_back( fHit.is_prim );
 
 }//AddHit
 
@@ -55,6 +57,8 @@ void ParticleCounterHits::CreateOutput(G4String nam, TTree *tree) {
   fHitY = new vector<Float_t>();
   fHitZ = new vector<Float_t>();
   fHitParentID = new vector<Int_t>();
+  fHitItrk = new vector<Int_t>();
+  fHitPrim = new vector<Bool_t>();
 
   DetUtils u(nam, tree);
 
@@ -64,6 +68,8 @@ void ParticleCounterHits::CreateOutput(G4String nam, TTree *tree) {
   u.AddBranch("_HitY", fHitY);
   u.AddBranch("_HitZ", fHitZ);
   u.AddBranch("_HitParentID", fHitParentID);
+  u.AddBranch("_HitItrk", fHitItrk);
+  u.AddBranch("_HitPrim", fHitPrim);
 
 }//CreateOutput
 
@@ -76,6 +82,8 @@ void ParticleCounterHits::ClearEvent() {
   fHitY->clear();
   fHitZ->clear();
   fHitParentID->clear();
+  fHitItrk->clear();
+  fHitPrim->clear();
 
 }//ClearEvent
 
@@ -88,6 +96,8 @@ void ParticleCounterHits::ConnectInput(string nam, TTree *tree) {
   fHitY = 0x0;
   fHitZ = 0x0;
   fHitParentID = 0x0;
+  fHitItrk = 0x0;
+  fHitPrim = 0x0;
 
   tree->SetBranchAddress((nam+"_HitPdg").c_str(), &fHitPdg);
   tree->SetBranchAddress((nam+"_HitEn").c_str(), &fHitEn);
@@ -95,6 +105,8 @@ void ParticleCounterHits::ConnectInput(string nam, TTree *tree) {
   tree->SetBranchAddress((nam+"_HitY").c_str(), &fHitY);
   tree->SetBranchAddress((nam+"_HitZ").c_str(), &fHitZ);
   tree->SetBranchAddress((nam+"_HitParentID").c_str(), &fHitParentID);
+  tree->SetBranchAddress((nam+"_HitItrk").c_str(), &fHitItrk);
+  tree->SetBranchAddress((nam+"_HitPrim").c_str(), &fHitPrim);
 
 }//ConnectInput
 
@@ -109,6 +121,8 @@ ParticleCounterHits::CounterHit ParticleCounterHits::GetHit(int i) {
   hit.y = fHitY->at(i);
   hit.z = fHitZ->at(i);
   hit.parentID = fHitParentID->at(i);
+  hit.itrk = fHitItrk->at(i);
+  hit.is_prim = fHitPrim->at(i);
 
   return hit;
 

@@ -9,7 +9,8 @@ const tag_iz 300. # mm
 #const tag_size_set_xy 28. # mm
 
 #pixel size along x and y
-const tag_dxy 0.2 # mm
+#const tag_dxy 0.2 # mm
+const tag_dxy 0.1 # mm
 
 #plane thickness along z, 50 micro meters
 const tag_size_z 0.05 # mm
@@ -25,7 +26,8 @@ const tag_s2_z -36500. # mm
 
 #number of pixels along x and y
 #const tag_nxy int(TMath::Floor(tag_size_set_xy/tag_dxy))
-const tag_nxy 750
+#const tag_nxy 750
+const tag_nxy 1500
 
 #plane size set by pixels
 const tag_size_xy tag_dxy*tag_nxy
@@ -138,6 +140,67 @@ new TrkMapsBasic lowQ2_s2_4
   lowQ2_s2_4.dz = tag_size_z
   lowQ2_s2_4.place_into = vac_B2Q3
   #lowQ2_s2_4.rotate_y = TMath::Pi()/4
+
+#counting planes before and after each tagger
+
+#counter thickness along z
+const tag_cnt_size_z 1. # mm
+
+#offset to tagger layers along z
+const tag_cnt_ofs_z 2. # mm
+
+#counter before tagger 1, plane 2
+new ParticleCounter lowQ2_cnt_s1_2
+
+  lowQ2_cnt_s1_2.zpos = tag_s1_start_z+tag_cnt_ofs_z
+  lowQ2_cnt_s1_2.xpos = tag_pos_x
+  lowQ2_cnt_s1_2.dx = tag_size_xy
+  lowQ2_cnt_s1_2.dy = tag_size_xy
+  lowQ2_cnt_s1_2.dz = tag_cnt_size_z
+  lowQ2_cnt_s1_2.place_into = vac_B2Q3
+  lowQ2_cnt_s1_2.vis = 0:0:1:0.3
+
+#counter after tagger 1, plane 1
+new ParticleCounter lowQ2_cnt_s1_1
+
+  lowQ2_cnt_s1_1.zpos = tag_s1_start_z-3.*tag_iz-tag_cnt_ofs_z
+  lowQ2_cnt_s1_1.xpos = tag_pos_x
+  lowQ2_cnt_s1_1.dx = tag_size_xy
+  lowQ2_cnt_s1_1.dy = tag_size_xy
+  lowQ2_cnt_s1_1.dz = tag_cnt_size_z
+  lowQ2_cnt_s1_1.place_into = vac_B2Q3
+  lowQ2_cnt_s1_1.vis = 0:0:1:0.3
+
+#counter before tagger 2, plane 2
+new ParticleCounter lowQ2_cnt_s2_2
+
+  lowQ2_cnt_s2_2.zpos = tag_s2_start_z+tag_cnt_ofs_z
+  lowQ2_cnt_s2_2.xpos = tag_pos_x
+  lowQ2_cnt_s2_2.dx = tag_size_xy
+  lowQ2_cnt_s2_2.dy = tag_size_xy
+  lowQ2_cnt_s2_2.dz = tag_cnt_size_z
+  lowQ2_cnt_s2_2.place_into = vac_B2Q3
+  lowQ2_cnt_s2_2.vis = 0:0:1:0.3
+
+#counter after tagger 2, plane 1
+new ParticleCounter lowQ2_cnt_s2_1
+
+  lowQ2_cnt_s2_1.zpos = tag_s2_start_z-3.*tag_iz-tag_cnt_ofs_z
+  lowQ2_cnt_s2_1.xpos = tag_pos_x
+  lowQ2_cnt_s2_1.dx = tag_size_xy
+  lowQ2_cnt_s2_1.dy = tag_size_xy
+  lowQ2_cnt_s2_1.dz = tag_cnt_size_z
+  lowQ2_cnt_s2_1.place_into = vac_B2Q3
+  lowQ2_cnt_s2_1.vis = 0:0:1:0.3
+
+
+
+
+
+
+
+
+
 
 
 

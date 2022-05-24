@@ -17,7 +17,6 @@
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4SystemOfUnits.hh"
-#include "G4VisAttributes.hh"
 #include "G4PVPlacement.hh"
 #include "G4Transform3D.hh"
 #include "G4RotationMatrix.hh"
@@ -26,6 +25,7 @@
 //local classes
 #include "ParticleCounter.h"
 #include "GeoParser.h"
+#include "ColorDecoder.h"
 
 using namespace std;
 
@@ -59,10 +59,8 @@ ParticleCounter::ParticleCounter(const G4String& nam, GeoParser *geo, G4LogicalV
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //visibility
-  G4VisAttributes *vis = new G4VisAttributes();
-  vis->SetColor(1, 0, 0, 0.3);
-  vis->SetForceSolid(true);
-  vol->SetVisAttributes(vis);
+  ColorDecoder vis("1:0:0:0.3");
+  vol->SetVisAttributes(vis.MakeVis(geo, fNam, "vis"));
 
   //center position, mm
   G4double xpos=0*mm, ypos=0*mm, zpos=0*mm;
@@ -139,6 +137,8 @@ G4bool ParticleCounter::ProcessHits(G4Step *step, G4TouchableHistory*) {
   hit.y = hp.y()/mm;
   hit.z = hp.z()/mm;
   hit.parentID = track->GetParentID();
+  hit.itrk = track->GetTrackID();
+  hit.is_prim = track->GetParentID() > 0 ? kFALSE : kTRUE;
   fHits.AddHit();
 
   //G4cout << track->GetTrackID() << " " << track->GetDynamicParticle()->GetPDGcode() << " " << track->GetTotalEnergy()/GeV;

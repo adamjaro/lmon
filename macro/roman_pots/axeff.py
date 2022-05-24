@@ -35,7 +35,8 @@ def acc_en_pitheta():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5_v2.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5b/hits_tag_pass2.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
 
     #tagger 1 or 2, both = 3
     tag = 2
@@ -55,11 +56,13 @@ def acc_en_pitheta():
 
     if tag == 1:
         #sel = "s1_IsHit==1"
-        sel = "s1_ntrk_prim>0"
+        #sel = "s1_ntrk_prim>0"
+        sel = "s1_ntrk>0"
         lab_sel = "Tagger 1"
     elif tag == 2:
         #sel = "s2_IsHit==1"
         sel = "s2_ntrk_prim>0"
+        #sel = "s2_ntrk>0"
         lab_sel = "Tagger 2"
     elif tag == 3:
         sel = "s1_IsHit==1&&s2_IsHit==1"

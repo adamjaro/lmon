@@ -22,7 +22,7 @@ class ParticleCounterHits {
 
       CounterHit(): pdg(0), en(0), x(0), y(0), z(0), parentID(0) {}
       CounterHit(const CounterHit& h): pdg(h.pdg), en(h.en), x(h.x),
-        y(h.y), z(h.z), parentID(h.parentID) {}
+        y(h.y), z(h.z), parentID(h.parentID), itrk(h.itrk), is_prim(h.is_prim) {}
       CounterHit& operator=(const CounterHit& h) {
         pdg = h.pdg;
         en = h.en;
@@ -30,6 +30,8 @@ class ParticleCounterHits {
         y = h.y;
         z = h.z;
         parentID = h.parentID;
+        itrk = h.itrk;
+        is_prim = h.is_prim;
         return *this;
       }
 
@@ -39,6 +41,8 @@ class ParticleCounterHits {
       Float_t y; // hit position in y, mm
       Float_t z; // hit position in z, mm
       Int_t parentID; // parent ID for track in hit
+      Int_t itrk; // track index
+      Bool_t is_prim; // hit by primary particle
 
     };
 
@@ -66,6 +70,8 @@ class ParticleCounterHits {
     std::vector<Float_t> *fHitY;
     std::vector<Float_t> *fHitZ;
     std::vector<Int_t> *fHitParentID;
+    std::vector<Int_t> *fHitItrk; // track index
+    std::vector<Bool_t> *fHitPrim; // primary flag
 
     G4double fXpos; // counter position in x, mm
     G4double fYpos; // counter position in y, mm
