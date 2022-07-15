@@ -20,6 +20,8 @@ class TagCounterPlane {
     Double_t GetZ() { return fZ; }
     Int_t GetNhit() { return nhit; }
 
+    ParticleCounterHits& GetHits() { return fHits; }
+
     void CreateOutput();
     void WriteOutputs();
 

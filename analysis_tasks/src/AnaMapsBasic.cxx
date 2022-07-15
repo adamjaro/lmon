@@ -19,6 +19,7 @@
 //local classes
 #include "TagMapsBasic.h"
 #include "GeoParser.h"
+#include "RefCounter.h"
 #include "AnaMapsBasic.h"
 
 using namespace std;
@@ -91,19 +92,26 @@ void AnaMapsBasic::Run(const char *conf) {
   s2.AddTrackBranch("true_el_phi", &true_el_phi);
   s2.AddTrackBranch("true_Q2", &true_Q2);
 
+  //reference counters
+  RefCounter cnt_s1("cnt_s1", &tree, &geo, &otree);
+  RefCounter cnt_s2("cnt_s2", &tree, &geo, &otree);
+
   //event loop
   Long64_t nev = tree.GetEntries();
-  Long64_t iprint = nev/12;
+  //Long64_t iprint = nev/12;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
-
+/*
     if( iev > 0 and iev%iprint == 0 ) {
       cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
-
+*/
     //process the event for both taggers
     s1.ProcessEvent();
     s2.ProcessEvent();
+
+    cnt_s1.ProcessEvent();
+    cnt_s2.ProcessEvent();
 
     //fill event tree
     otree.Fill();
@@ -112,7 +120,12 @@ void AnaMapsBasic::Run(const char *conf) {
 
   s1.WriteOutputs();
   s2.WriteOutputs();
+
+  cnt_s1.WriteOutputs();
+  cnt_s2.WriteOutputs();
+
   otree.Write();
+
   out.Close();
 
 }//Run

@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -41,7 +41,8 @@ def chi2():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -164,7 +165,8 @@ def theta():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -220,7 +222,8 @@ def ntrk():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     det = "s1"
     #det = "s2"

@@ -31,19 +31,22 @@ def xy():
 
     #mm
     xybin = 1
+    #xybin = 0.01
     #xymax = 220
     xymax = 90
-    #xymax = 10
+    #xymax = 1
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5c/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v3.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v3.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     det = "s1_4_clusters"
     #det = "s2A"
 
-    #sel = ""
-    sel = "is_prim==0"
+    sel = ""
+    #sel = "is_prim==0"
     #sel = "id>2"
 
     infile = TFile.Open(inp)
@@ -56,6 +59,8 @@ def xy():
     hxy = ut.prepare_TH2D("hxy", xybin, -xymax, xymax, xybin, -xymax, xymax)
 
     tree.Draw("y:x >> hxy", sel)
+    #tree.Draw("(y+0.05):(x+0.05) >> hxy", sel)
+    #tree.Draw("(y+0.1):(x+0.1) >> hxy", sel)
 
     hxy.SetXTitle("#it{x} (mm)")
     hxy.SetYTitle("#it{y} (mm)")
@@ -140,7 +145,7 @@ def en():
 #_____________________________________________________________________________
 def nhits():
 
-    #number of hits per event
+    #number of hits per event or cluster (depending on input)
 
     #keV
     xbin = 1
@@ -148,7 +153,8 @@ def nhits():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "event"
     #det = "s1_4_clusters"
@@ -216,7 +222,8 @@ def cls_size():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "s1_4_clusters"
     det = "s2_4_clusters"

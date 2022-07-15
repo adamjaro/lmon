@@ -34,6 +34,8 @@ TagMapsBasicPlane::TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *ge
   //correct for local plane position inside its volume
   fHits.SetXPos( fHits.GetXPos() + geo->GetD("lowQ2_"+fNam, "xpos") );
 
+  //cout << fNam << " xpos (mm): " << fHits.GetXPos() << endl;
+
 }//TagMapsBasicPlane
 
 //_____________________________________________________________________________
