@@ -158,7 +158,7 @@ def nhits():
 
     #det = "event"
     #det = "s1_4_clusters"
-    det = "s2_1_clusters"
+    det = "s1_1_clusters"
 
     tnam = "Tagger 1, plane 1"
     #tnam = "Tagger 2, plane 4"
@@ -175,9 +175,9 @@ def nhits():
     hsel = make_h1(inp, det, val, xbin, 0, xmax, "is_prim==1")
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -194,7 +194,8 @@ def nhits():
     ax.set_yscale("log")
 
     leg = legend()
-    #leg.add_entry(leg_txt(), tnam)
+    leg.add_entry(leg_txt(), tnam)
+    #leg.add_entry(leg_txt(), det)
     leg.add_entry(leg_lin("blue"), "All clusters")
     leg.add_entry(leg_lin("red", "--"), "Primary electrons")
     leg.draw(plt, col)
@@ -211,8 +212,8 @@ def cls_size():
 
     #mm
     xbin = 0.005
-    #xmax = 0.15
-    xmax = 0.2
+    xmax = 0.1
+    #xmax = 0.2
 
     #num of hits
     ybin = 1
@@ -226,7 +227,7 @@ def cls_size():
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "s1_4_clusters"
-    det = "s2_4_clusters"
+    det = "s1_1_clusters"
 
     #sel = ""
     sel = "nhits>1"
@@ -260,10 +261,11 @@ def cls_size():
 
     leg = ut.prepare_leg(0.15, 0.87, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
     #tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
-    leg.AddEntry("", "Tagger 2, plane 1", "")
+    leg.AddEntry("", "Tagger 1, plane 1", "")
+    #leg.AddEntry("", det, "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #cls_size

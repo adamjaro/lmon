@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = chi2
@@ -44,20 +44,20 @@ def chi2():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     #sel = ""
-    #sel = "is_prim==1"
-    sel = "is_prim==0"
+    sel = "is_prim==1"
+    #sel = "is_prim==0"
 
     hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
     hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -76,10 +76,10 @@ def chi2():
     leg = legend()
     tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
     leg.add_entry(leg_txt(), tnam[det])
-    #if sel == "":
-    #    leg.add_entry(leg_txt(), "All tracks")
-    #else:
-    #    leg.add_entry(leg_txt(), "Primary electrons")
+    if sel == "":
+        leg.add_entry(leg_txt(), "All tracks")
+    elif sel == "is_prim==1":
+        leg.add_entry(leg_txt(), "Primary electrons")
 
     leg.add_entry(leg_lin("red"), "$\chi^2_x$/ndf (horizontal)")
     leg.add_entry(leg_lin("blue"), "$\chi^2_y$/ndf (vertical)")
@@ -102,7 +102,7 @@ def xy():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -144,7 +144,7 @@ def xy():
     leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #xy
@@ -168,8 +168,8 @@ def theta():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     #val = "theta_x"
     val = "theta_y"
@@ -179,9 +179,9 @@ def theta():
 
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -217,7 +217,7 @@ def ntrk():
 
     #tracks num
     #xmax = 12
-    xmax = 1000
+    xmax = 400
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
@@ -225,8 +225,8 @@ def ntrk():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
     #det = "s1_1"
     #det = "s2_1"
 
@@ -237,9 +237,9 @@ def ntrk():
     hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -256,7 +256,7 @@ def ntrk():
     ax.set_yscale("log")
 
     leg = legend()
-    tnam = {"s1": "Tagger 1", "s2": "Tagger2"}
+    tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
     leg.add_entry(leg_txt(), tnam[det])
     leg.add_entry(leg_lin("blue"), "All tracks")
     leg.add_entry(leg_lin("red", "--"), "Primary electrons")

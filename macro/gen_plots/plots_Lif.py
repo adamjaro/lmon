@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 6
     funclist = []
     funclist.append( make_theta_allE ) # 0
     funclist.append( make_sig_E ) # 1
@@ -18,6 +18,7 @@ def main():
     funclist.append( compare_bh_E ) # 3
     funclist.append( compare_bh_theta ) # 4
     funclist.append( proton_pt ) # 5
+    funclist.append( num_interactions ) # 6
 
     funclist[iplot]()
 
@@ -423,6 +424,39 @@ def proton_pt():
     can.SaveAs("01fig.pdf")
 
 #proton_pt
+
+#_____________________________________________________________________________
+def num_interactions():
+
+    #number of interactions per bunch crossing in Lifshitz_bx model
+
+    xmax = 45
+
+    inp = "/home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_bx_nb_emin0p1_T3p3_10kevt.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("ltree")
+
+    can = ut.box_canvas()
+
+    hx = ut.prepare_TH1D("hx", 1, 0, xmax)
+    tree.Draw("num_interactions >> hx")
+    ut.line_h1(hx)
+
+    ut.put_yx_tit(hx, "Counts", "Number of interactions per bunch crossing", 1.5, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.02, 0.03)
+
+    hx.Draw()
+
+    gPad.SetGrid()
+
+    #gPad.SetLogy()
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#num_interactions
 
 #_____________________________________________________________________________
 def make_sigma(inp, plot, xbin, xmin ,xmax, sigma, tnam="ltree"):
