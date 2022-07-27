@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -223,12 +223,12 @@ def ntrk():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v2.root"
 
     #det = "s1"
-    det = "s2"
-    #det = "s1_1"
-    #det = "s2_1"
+    #det = "s2"
+    #det = "cnt_s1"
+    det = "cnt_s2"
 
     val = "_ntrk"
     #val = "_nhit"
@@ -237,9 +237,9 @@ def ntrk():
     hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -256,8 +256,9 @@ def ntrk():
     ax.set_yscale("log")
 
     leg = legend()
-    tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
-    leg.add_entry(leg_txt(), tnam[det])
+    #tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
+    #leg.add_entry(leg_txt(), tnam[det])
+    leg.add_entry(leg_txt(), det)
     leg.add_entry(leg_lin("blue"), "All tracks")
     leg.add_entry(leg_lin("red", "--"), "Primary electrons")
     leg.draw(plt, col)

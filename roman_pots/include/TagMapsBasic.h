@@ -20,37 +20,58 @@ class TagMapsBasic {
     void AddTrackBranch(std::string nam, Double_t *val);
     void WriteOutputs();
 
+    void FinishEvent();
+
+    class Track;
+    std::vector<Track>& GetTracks() { return fTracks; }
+
   private:
 
-    bool SelectHit(const TrkMapsBasicHits::Hit& hit);
-    //void MakeTrack(Double_t x1, Double_t x2, Double_t x3, Double_t x4, );
     void MakeTrack(Double_t *x, Double_t& pos, Double_t& slope, Double_t& theta, Double_t& chi2);
 
     std::string fNam; // station name
     std::vector<TagMapsBasicPlane*> fPlanes; // planes for the station
 
-    Double_t fEmin; // keV, threshold in energy for hits
     Double_t fChi2ndfMax; // maximal reduced chi2 for tracks
 
     Double_t fL; // plane spacing, mm
     Double_t fZ[4]; // local z positions for planes, mm
 
+    //track representation
+  public:
+    class Track {
+    public:
+      Track(): x(0), y(0), slope_x(0), slope_y(0), theta_x(0), theta_y(0),
+        chi2_x(0), chi2_y(0), is_prim(0), itrk(-1), pdg(0), is_associate(0) {}
+
+      Double_t x; // track position in x, mm
+      Double_t y; // track position in y, mm
+      Double_t slope_x; // track slope in x
+      Double_t slope_y; // track slope in y
+      Double_t theta_x; // track angle along x, rad
+      Double_t theta_y; // track angle along y, rad
+      Double_t chi2_x; // track chi^2 in x
+      Double_t chi2_y; // track chi^2 in y
+      Bool_t is_prim; // track for primary particle
+      Int_t itrk; // index for MC particle
+      Int_t pdg; // pdg for MC particle
+      Bool_t is_associate; // track association to a reference MC particle
+
+    };//Track
+
+  private:
+
+    std::vector<Track> fTracks; // tracks in event
+
     //tracks tree
     TTree *fTrkTree;
-    Double_t fPosX; // track position in x, mm
-    Double_t fPosY; // track position in y, mm
-    Double_t fSlopeX; // track slope in x
-    Double_t fSlopeY; // track slope in y
-    Double_t fThetaX; // track angle along x, rad
-    Double_t fThetaY; // track angle along y, rad
-    Double_t fChi2X; // track chi^2 in x
-    Double_t fChi2Y; // track chi^2 in y
-    Bool_t fPrim; // track for primary particle
+    Track fOutTrk; // track instance for output tree
 
     //event quantities
     TTree *fEvtTree;
     Int_t fNtrk; // number of tracks per event
     Int_t fNtrkPrim; // number of primary tracks per event
+    Int_t fNtrkAssociated; // number of tracks associated with MC particle
 
 };
 

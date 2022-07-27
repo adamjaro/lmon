@@ -60,6 +60,11 @@ void TagMapsBasicPlane::ProcessEvent() {
     Cluster& cls = fCls.back();
     cls.hits.push_back(ih);
 
+    //MC track and pdg from the seed hit
+    const TrkMapsBasicHits::Hit& seed_hit = fHits.GetHit( ih );
+    cls.itrk = seed_hit.itrk;
+    cls.pdg = seed_hit.pdg;
+
     //adjacent hits for the hit with the most energy
     int nfound = FindAdjHits(ih, cls.hits);
 

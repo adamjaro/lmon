@@ -56,7 +56,8 @@ class TagMapsBasicPlane {
   public:
     class Cluster {
     public:
-      Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1), sigma_x(0), sigma_y(0) {}
+      Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1),
+                 sigma_x(0), sigma_y(0), itrk(-1), pdg(0) {}
 
       Double_t x; // cluster x position, mm
       Double_t y; // cluster y position, mm
@@ -65,6 +66,8 @@ class TagMapsBasicPlane {
       Bool_t is_prim; // flag for primary particle
       Double_t sigma_x; // uncertainty in cluster x position, mm
       Double_t sigma_y; // uncertainty in cluster y position, mm
+      Int_t itrk; // MC track index associated with the cluster
+      Int_t pdg; // PDG code for the MC track
 
       std::vector<unsigned long> hits; // indices for hits contributing to cluster
 

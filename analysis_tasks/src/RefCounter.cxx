@@ -47,6 +47,9 @@ RefCounter::RefCounter(string nam, TTree *tree, GeoParser *geo, TTree *otree):
 //_____________________________________________________________________________
 void RefCounter::ProcessEvent() {
 
+  //initialize the reference tracks in event
+  fTracks.clear();
+
   //hits for the planes
   ParticleCounterHits& hits1 = fP1->GetHits();
   ParticleCounterHits& hits2 = fP2->GetHits();
@@ -87,6 +90,18 @@ void RefCounter::ProcessEvent() {
 
       //fill the track tree
       fTrackTree->Fill();
+
+      //add the reference track for the event
+      fTracks.push_back( Track() );
+      Track& trk = fTracks.back();
+
+      trk.x = fX;
+      trk.y = fY;
+      trk.theta_x = fThetaX;
+      trk.theta_y = fThetaY;
+      trk.is_prim = fPrim;
+      trk.itrk = h2.itrk;
+      trk.pdg = h2.pdg;
 
     }//hit loop, plane 2
 

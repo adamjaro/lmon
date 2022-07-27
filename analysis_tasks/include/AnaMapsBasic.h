@@ -12,6 +12,8 @@ class AnaMapsBasic {
 
   private:
 
+    void AssociateMC(TagMapsBasic& tag, RefCounter& cnt);
+
     std::string GetStr(boost::program_options::variables_map& opt_map, std::string par);
 
 };

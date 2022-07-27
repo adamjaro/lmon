@@ -17,6 +17,9 @@ class RefCounter {
 
     void WriteOutputs();
 
+    class Track;
+    const std::vector<Track>& GetTracks() { return fTracks; }
+
   private:
 
     std::string fNam; // station name
@@ -33,6 +36,27 @@ class RefCounter {
     Double_t fThetaX; // track angle in x, rad
     Double_t fThetaY; // track angle in y, rad
     Bool_t fPrim; // track for primary particle
+
+    //track in reference counter
+  public:
+    class Track {
+    public:
+      Track(): x(0), y(0), theta_x(0), theta_y(0),
+               is_prim(0), itrk(-1), pdg(0) {}
+
+      Double_t x; // track position in x, mm
+      Double_t y; // track position in y, mm
+      Double_t theta_x; // track angle along x, rad
+      Double_t theta_y; // track angle along y, rad
+      Bool_t is_prim; // track for primary particle
+      Int_t itrk; // index for MC particle
+      Int_t pdg; // pdg for MC particle
+
+    };//Track
+
+  private:
+
+    std::vector<Track> fTracks; // reference tracks in event
 
 };
 

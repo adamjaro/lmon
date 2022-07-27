@@ -98,20 +98,26 @@ void AnaMapsBasic::Run(const char *conf) {
 
   //event loop
   Long64_t nev = tree.GetEntries();
-  //Long64_t iprint = nev/12;
+  Long64_t iprint = nev/12;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
-/*
+
     if( iev > 0 and iev%iprint == 0 ) {
       cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
-*/
+
     //process the event for both taggers
     s1.ProcessEvent();
     s2.ProcessEvent();
 
     cnt_s1.ProcessEvent();
     cnt_s2.ProcessEvent();
+
+    AssociateMC(s1, cnt_s1);
+    AssociateMC(s2, cnt_s2);
+
+    s1.FinishEvent();
+    s2.FinishEvent();
 
     //fill event tree
     otree.Fill();
@@ -129,6 +135,42 @@ void AnaMapsBasic::Run(const char *conf) {
   out.Close();
 
 }//Run
+
+//_____________________________________________________________________________
+void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
+
+  //associate tagger tracks with MC particles in reference counter
+
+  vector<TagMapsBasic::Track>& tracks = tag.GetTracks();
+  const vector<RefCounter::Track>& ref_cnt = cnt.GetTracks();
+
+  //tracks loop
+  for(auto it = tracks.begin(); it != tracks.end(); it++) {
+
+    //measured track
+    TagMapsBasic::Track& trk = *it;
+
+    //test for reference track using defined index to MC particle
+    if( trk.itrk < 0 ) continue;
+
+    //reference tracks loop
+    for(auto ir = ref_cnt.begin(); ir != ref_cnt.end(); ir++) {
+
+      //reference track
+      const RefCounter::Track& ref = *ir;
+
+      //associate measured track with reference track
+      if( ref.itrk != trk.itrk ) continue;
+
+      //measured track is associated
+      trk.is_associate = true;
+
+      //reference values for track position and angles will be here
+
+    }//reference tracks loop
+  }//tracks loop
+
+}//AssociateMC
 
 //_____________________________________________________________________________
 string AnaMapsBasic::GetStr(program_options::variables_map& opt_map, std::string par) {

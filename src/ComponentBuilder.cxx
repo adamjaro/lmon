@@ -73,29 +73,27 @@ ComponentBuilder::ComponentBuilder(G4LogicalVolume *top, GeoParser *geo, std::ve
   //fComp.insert( make_pair("GraphiteFilter", &ComponentBuilder::MakeDet< GraphiteFilter >) );
 
   //vacuum segments
-  fComp.insert( make_pair("VacDrift", &ComponentBuilder::MakeDet< VacDrift >) );
-  fComp.insert( make_pair("VacTaggerWin", &ComponentBuilder::MakeDet< VacTaggerWin >) );
-  fComp.insert( make_pair("VacB2lumiWin", &ComponentBuilder::MakeDet< VacB2lumiWin >) );
-  fComp.insert( make_pair("BoxSegment", &ComponentBuilder::MakeDet< BoxSegment >) );
-  fComp.insert( make_pair("VacLumi", &ComponentBuilder::MakeDet< VacLumi >) );
-  //fComp.insert( make_pair("", &ComponentBuilder::MakeDet<  >) );
+  ADD_COMPONENT( VacDrift );
+  ADD_COMPONENT( VacTaggerWin );
+  ADD_COMPONENT( VacB2lumiWin );
+  ADD_COMPONENT( BoxSegment );
+  ADD_COMPONENT( VacLumi );
 
   //detectors or active segments
-  fDets.insert( make_pair("ParticleCounter", &ComponentBuilder::MakeDet< ParticleCounter >) );
-  fDets.insert( make_pair("ExitWindowV1", &ComponentBuilder::MakeDet< ExitWindowV1 >) );
-  fDets.insert( make_pair("ExitWindowV2", &ComponentBuilder::MakeDet< ExitWindowV2 >) );
-  fDets.insert( make_pair("BeamMagnetV2", &ComponentBuilder::MakeDet< BeamMagnetV2 >) );
-  fDets.insert( make_pair("BeamQuadrupole", &ComponentBuilder::MakeDet< BeamQuadrupole >) );
-  fDets.insert( make_pair("Magnet", &ComponentBuilder::MakeDet< Magnet >) );
-  fDets.insert( make_pair("BeamPipeV1", &ComponentBuilder::MakeDet< BeamPipeV1 >) );
-  fDets.insert( make_pair("ConeAperture", &ComponentBuilder::MakeDet< ConeAperture >) );
-  fDets.insert( make_pair("CollimatorV2", &ComponentBuilder::MakeDet< CollimatorV2 >) );
-  fDets.insert( make_pair("BoxCal", &ComponentBuilder::MakeDet< BoxCal >) );
-  fDets.insert( make_pair("BoxCalV2", &ComponentBuilder::MakeDet< BoxCalV2 >) );
-  fDets.insert( make_pair("CompCal", &ComponentBuilder::MakeDet< CompCal >) );
-  fDets.insert( make_pair("CaloBPC", &ComponentBuilder::MakeDet< CaloBPC >) );
-  fDets.insert( make_pair("TrackDet", &ComponentBuilder::MakeDet< TrackDet >) );
-  //fDets.insert( make_pair("", &ComponentBuilder::MakeDet<  >) );
+  ADD_DETECTOR( ParticleCounter );
+  ADD_DETECTOR( ExitWindowV1 );
+  ADD_DETECTOR( ExitWindowV2 );
+  ADD_DETECTOR( BeamMagnetV2 );
+  ADD_DETECTOR( BeamQuadrupole );
+  ADD_DETECTOR( Magnet );
+  ADD_DETECTOR( BeamPipeV1 );
+  ADD_DETECTOR( ConeAperture );
+  ADD_DETECTOR( CollimatorV2 );
+  ADD_DETECTOR( BoxCal );
+  ADD_DETECTOR( BoxCalV2 );
+  ADD_DETECTOR( CompCal );
+  ADD_DETECTOR( CaloBPC );
+  ADD_DETECTOR( TrackDet );
   ADD_DETECTOR( TrkMapsBasic );
 
   for(unsigned int i=0; i<fGeo->GetN(); i++) AddDetector(i);
