@@ -189,6 +189,10 @@ void TagMapsBasic::CreateOutput() {
   fTrkTree->Branch("chi2_y", &fOutTrk.chi2_y, "chi2_y/D");
   fTrkTree->Branch("is_prim", &fOutTrk.is_prim, "is_prim/O");
   fTrkTree->Branch("is_associate", &fOutTrk.is_associate, "is_associate/O");
+  fTrkTree->Branch("ref_x", &fOutTrk.ref_x, "ref_x/D");
+  fTrkTree->Branch("ref_y", &fOutTrk.ref_y, "ref_y/D");
+  fTrkTree->Branch("ref_theta_x", &fOutTrk.ref_theta_x, "ref_theta_x/D");
+  fTrkTree->Branch("ref_theta_y", &fOutTrk.ref_theta_y, "ref_theta_y/D");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());

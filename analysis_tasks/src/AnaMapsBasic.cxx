@@ -165,7 +165,11 @@ void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
       //measured track is associated
       trk.is_associate = true;
 
-      //reference values for track position and angles will be here
+      //reference values for track position and angles
+      trk.ref_x = ref.x;
+      trk.ref_y = ref.y;
+      trk.ref_theta_x = ref.theta_x;
+      trk.ref_theta_y = ref.theta_y;
 
     }//reference tracks loop
   }//tracks loop
