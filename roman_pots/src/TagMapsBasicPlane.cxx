@@ -46,7 +46,9 @@ void TagMapsBasicPlane::ProcessEvent() {
   LoadHits();
   fCls.clear();
 
-  //if( GetHitsCount() < 2 ) return;
+  //if( GetHitsCount() < 12 ) return;
+
+  //cout << fNam << " hits: " << GetHitsCount() << endl;
 
   //hits loop
   while(GetHitsCount() > 0) {
@@ -69,22 +71,25 @@ void TagMapsBasicPlane::ProcessEvent() {
     int nfound = FindAdjHits(ih, cls.hits);
 
     //search for adjacent hits from the first set
-    vector<unsigned long> adj_hits_sec;
+    list<unsigned long> adj_hits_sec;
     do {
       nfound = 0;
       adj_hits_sec.clear();
 
-      for(vector<unsigned long>::iterator ith = cls.hits.begin(); ith<cls.hits.end(); ith++) {
+      for(list<unsigned long>::iterator ith = cls.hits.begin(); ith != cls.hits.end(); ith++) {
 
         nfound += FindAdjHits(*ith, adj_hits_sec);
       }
 
       //append the next set of adjacent hits to the cluster hits
-      for(vector<unsigned long>::iterator ith = adj_hits_sec.begin(); ith<adj_hits_sec.end(); ith++) {
+      for(list<unsigned long>::iterator ith = adj_hits_sec.begin(); ith != adj_hits_sec.end(); ith++) {
         cls.hits.push_back(*ith);
       }
 
     } while( nfound > 0 );
+
+    //test for uniform gradient in cluster hits
+    GradientTest(cls);
 
   }//hits loop
 
@@ -99,8 +104,8 @@ void TagMapsBasicPlane::ProcessEvent() {
     cls.nhits = cls.hits.size();
 
     //cluster position by energy-weighted average
-    for(unsigned int ihit=0; ihit<cls.hits.size(); ihit++) {
-      const TrkMapsBasicHits::Hit& hit = fHits.GetHit( cls.hits[ihit] );
+    for(list<unsigned long>::iterator ith = cls.hits.begin(); ith != cls.hits.end(); ith++) {
+      const TrkMapsBasicHits::Hit& hit = fHits.GetHit( *ith );
 
       cls.en += hit.en;
       cls.x += hit.x*hit.en;
@@ -117,6 +122,11 @@ void TagMapsBasicPlane::ProcessEvent() {
 
     cls.sigma_x = cls.GetSigma(cls.sigma_x, cls.x);
     cls.sigma_y = cls.GetSigma(cls.sigma_y, cls.y);
+
+    //if(cls.nhits > 4) {
+      //cout << fNam << " " << cls.nhits << endl;
+      //PrintCluster(cls);
+    //}
 
     //if(cls.nhits > 1) {
       //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.en << " " << cls.is_prim << " ";
@@ -140,10 +150,12 @@ void TagMapsBasicPlane::ProcessEvent() {
 
   }//clusters loop
 
+  //cout << fNam << " clusters: " << fNCls << " " << fNClsPrim << endl;
+
 }//ProcessEvent
 
 //_____________________________________________________________________________
-int TagMapsBasicPlane::FindAdjHits(unsigned long ih, vector<unsigned long>& adj_hits) {
+int TagMapsBasicPlane::FindAdjHits(unsigned long ih, list<unsigned long>& adj_hits) {
 
   //find hits adjacent to a hit at a given ih
   //along pixel and row direction
@@ -228,6 +240,118 @@ int TagMapsBasicPlane::GetHitsCount() {
   return nhit;
 
 }//GetHitsCount
+
+//_____________________________________________________________________________
+void TagMapsBasicPlane::GradientTest(Cluster& cls) {
+
+  //test hits in cluster for decreasing gradient from the seed
+  //and remove those hits which would cause an increase in the gradient
+
+  //cout << fNam << " grad test: " << cls.is_prim << " " << cls.nhits;
+  //cout << " " << cls.x << " " << cls.y << endl;
+
+  //seed hit for the cluster
+  const TrkMapsBasicHits::Hit& seed_hit = fHits.GetHit( cls.hits.front() );
+
+  list<unsigned long> hits_to_remove;
+
+  //hit loop
+  for(list<unsigned long>::iterator ith = cls.hits.begin(); ith != cls.hits.end(); ith++) {
+    const TrkMapsBasicHits::Hit& hit = fHits.GetHit( *ith );
+
+    //distance to the seed
+    Int_t dx = seed_hit.ipix-hit.ipix;
+    Int_t dy = seed_hit.irow-hit.irow;
+
+    //adjacent hits over two or more pixels
+    if( labs(dx) < 2 and labs(dy) < 2 ) continue;
+
+    //direction to the seed in x and y
+    Int_t dxy[2] = {0, 0};
+    if( dx != 0 ) dxy[0] = dx>0?1:-1;
+    if( dy != 0 ) dxy[1] = dy>0?1:-1;
+
+    //cout << "  hit: " << hit.ipix << " " << hit.irow;
+    //cout << " " << Form("%.0f", hit.en) << " " << hit.is_prim;
+    //cout << " Dx: " << dx << " Dy: " << dy << " dxy: " << dxy[0] << " " << dxy[1] << endl;
+
+    //hit status to satisfy the gradient, true = keep, false = remove from the cluster
+    bool grad_stat = false;
+
+    //all hits in the direction to the seed by a unit distance
+    for(auto ihs = cls.hits.begin(); ihs != cls.hits.end(); ihs++) {
+      const TrkMapsBasicHits::Hit& hit_to_seed = fHits.GetHit( *ihs );
+      if( labs(hit_to_seed.ipix-hit.ipix) > 1 or labs(hit_to_seed.irow-hit.irow) > 1 ) continue; //unit distance
+      if( hit_to_seed.ipix == hit.ipix and hit_to_seed.irow == hit.irow ) continue; //same hit
+
+      //hit is in the direction to seed by dxy
+      if( hit.ipix+dxy[0] != hit_to_seed.ipix and hit.irow+dxy[1] != hit_to_seed.irow ) continue;
+
+      //cout << "    hit_to_seed: " << Form("%.0f", hit_to_seed.en) << endl;
+
+      //hit of larger energy in the direction to the seed
+      if( hit_to_seed.en > hit.en ) grad_stat = true;
+    }
+
+    //cout << "    grad_stat: " << grad_stat << endl;
+
+    //keep the hits satisfying the gradient
+    if( grad_stat ) continue;
+
+    //cout << "    to remove: " << Form("%.0f", hit.en) << endl;
+
+    //remove the hit not in gradient and all hits in the direction away from the seed
+    for(auto ihs = cls.hits.begin(); ihs != cls.hits.end(); ihs++) {
+      const TrkMapsBasicHits::Hit& hit_from_seed = fHits.GetHit( *ihs );
+      if( hit_from_seed.ipix == hit.ipix and hit_from_seed.irow == hit.irow ) continue; //same hit
+
+      //unit distance about the seed
+      if( labs(hit_from_seed.ipix-seed_hit.ipix) < 2
+        and labs(hit_from_seed.irow-seed_hit.irow) < 2 ) continue;
+
+      //direction from the hit not in gradient
+      Int_t gdx = SignI( hit_from_seed.ipix - hit.ipix );
+      Int_t gdy = SignI( hit_from_seed.irow - hit.irow );
+
+      //cout << "    hit_from_seed: " << Form("%.0f", hit_from_seed.en) << " ";
+      //cout << gdx << " " << gdy << " " << dxy[0] << " " << dxy[1] << endl;
+
+      //diagonal direction
+      if( (labs(dxy[0]) + labs(dxy[1])) > 1 ) {
+        if( dxy[0] == gdx ) continue;
+        if( dxy[1] == gdy ) continue;
+      }
+
+      //direction along x or y
+      if( dxy[0] == 0 ) {
+        if( gdy == 0 ) continue;
+        if( dxy[1] == gdy ) continue;
+      }
+      if( dxy[1] == 0 ) {
+        if( gdx == 0 ) continue;
+        if( dxy[0] == gdx ) continue;
+      }
+
+      //cout << "    remove hit_from_seed: " << Form("%.0f", hit_from_seed.en) << " ";
+      //cout << gdx << " " << gdy << " " << dxy[0] << " " << dxy[1] << endl;
+
+      //remove the hit, direction away from the seed
+      hits_to_remove.push_back( *ihs );
+    }
+
+    //remove the original hit not in gradient
+    hits_to_remove.push_back( *ith );
+
+  }//hit loop
+
+  //removing the hits from the cluster
+  for(list<unsigned long>::iterator ith = hits_to_remove.begin(); ith != hits_to_remove.end(); ith++) {
+
+    cls.hits.remove( *ith );
+    fHitStat[ *ith ] = true;
+  }
+
+}//GradientTest
 
 //_____________________________________________________________________________
 void TagMapsBasicPlane::LoadHits() {
@@ -341,7 +465,33 @@ Double_t TagMapsBasicPlane::Cluster::GetSigma(Double_t swx2, Double_t pos) {
 
 }//Cluster::GetSigma
 
+//_____________________________________________________________________________
+void TagMapsBasicPlane::PrintCluster(Cluster& cls) {
 
+  //print cluster parameters
+
+  cout << fNam << " cluster: " << cls.is_prim << " " << cls.nhits;
+  cout << " " << cls.x << " " << cls.y << endl;
+
+  //hit loop
+  for(list<unsigned long>::iterator ith = cls.hits.begin(); ith != cls.hits.end(); ith++) {
+    const TrkMapsBasicHits::Hit& hit = fHits.GetHit( *ith );
+
+    cout << "  hit: " << hit.ipix << " " << hit.irow;// << " " << hit.x << " " << hit.y;
+    cout << " " << Form("%.0f", hit.en) << " " << hit.is_prim;
+
+    if(ith != cls.hits.begin()) {
+      const TrkMapsBasicHits::Hit& seed_hit = fHits.GetHit( cls.hits.front() );
+
+      cout << " Dx: " << seed_hit.ipix-hit.ipix;// << " " << seed_hit.x-hit.x;
+      cout << " Dy: " << seed_hit.irow-hit.irow;// << " " << seed_hit.y-hit.y;
+    }
+
+    cout << endl;
+
+  }//hit loop
+
+}//PrintCluster
 
 
 

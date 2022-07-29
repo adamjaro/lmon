@@ -4,6 +4,8 @@
 
 // MAPS plane for tagger station
 
+#include <list>
+
 #include "TrkMapsBasicHits.h"
 
 class TagMapsBasicPlane {
@@ -26,8 +28,12 @@ class TagMapsBasicPlane {
 
     void LoadHits();
     unsigned long FindHitEmax();
-    int FindAdjHits(unsigned long ih, std::vector<unsigned long>& adj_hits);
+    int FindAdjHits(unsigned long ih, std::list<unsigned long>& adj_hits);
     int GetHitsCount();
+    void GradientTest(Cluster& cls);
+    Int_t SignI(Int_t i) {return (0<i)-(i<0);}
+
+    void PrintCluster(Cluster& cls);
 
     std::string fNam; // plane name
     TrkMapsBasicHits fHits; // hits for the plane
@@ -69,7 +75,7 @@ class TagMapsBasicPlane {
       Int_t itrk; // MC track index associated with the cluster
       Int_t pdg; // PDG code for the MC track
 
-      std::vector<unsigned long> hits; // indices for hits contributing to cluster
+      std::list<unsigned long> hits; // indices for hits contributing to cluster
 
       Double_t GetSigma(Double_t swx2, Double_t pos);
 

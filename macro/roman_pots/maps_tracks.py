@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -38,11 +38,11 @@ def chi2():
     xbin = 0.05
     xmax = 12
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v3.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v3.root"
 
     det = "s1_tracks"
     #det = "s2_tracks"
@@ -222,14 +222,14 @@ def ntrk():
     xmax = 30
     #xmax = 400
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v3.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
     #det = "cnt_s1"
     #det = "cnt_s2"
 

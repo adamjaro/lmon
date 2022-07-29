@@ -221,10 +221,11 @@ def cls_size():
     #ymax = 6
     ymax = 12
 
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
 
     #det = "s1_4_clusters"
     det = "s1_1_clusters"
@@ -265,7 +266,7 @@ def cls_size():
     #leg.AddEntry("", det, "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #cls_size
