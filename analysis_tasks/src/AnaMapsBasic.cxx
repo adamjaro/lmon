@@ -56,10 +56,13 @@ void AnaMapsBasic::Run(const char *conf) {
 
   //input true kinematics
   Double_t true_el_E, true_el_theta, true_el_phi, true_Q2;
+  Double_t true_x, true_y;
   tree.SetBranchAddress("true_el_E", &true_el_E);
   tree.SetBranchAddress("true_el_theta", &true_el_theta);
   tree.SetBranchAddress("true_el_phi", &true_el_phi);
   tree.SetBranchAddress("true_Q2", &true_Q2);
+  tree.SetBranchAddress("true_x", &true_x);
+  tree.SetBranchAddress("true_y", &true_y);
 
   //geometry
   string geo_nam = GetStr(opt_map, "main.geo");
@@ -77,6 +80,8 @@ void AnaMapsBasic::Run(const char *conf) {
   otree.Branch("true_el_theta", &true_el_theta, "true_el_theta/D");
   otree.Branch("true_el_phi", &true_el_phi, "true_el_phi/D");
   otree.Branch("true_Q2", &true_Q2, "true_Q2/D");
+  otree.Branch("true_x", &true_x, "true_x/D");
+  otree.Branch("true_y", &true_y, "true_y/D");
 
   //tagger stations
   TagMapsBasic s1("s1", &tree, &geo, &otree);
