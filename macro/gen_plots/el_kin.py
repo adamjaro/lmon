@@ -10,11 +10,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 2
 
     funclist = {}
     funclist[0] = en_pitheta
     funclist[1] = en_pitheta_lQ2
+    funclist[2] = lx_lQ2_en
 
     funclist[iplot]()
 
@@ -119,7 +120,7 @@ def en_pitheta_lQ2():
     hE.SetTitle("")
     ytit = "Scattering (polar) angle #it{#pi-#theta_{e}} (mrad)"
     xtit = "Electron energy #it{E_{e}} (GeV)"
-    ut.put_yx_tit(hE, ytit, xtit, 1.2, 1.2)
+    ut.put_yx_tit(hE, ytit, xtit, 1.1, 1.2)
 
     hE.SetZTitle("Virtuality #it{Q}^{2} (GeV^{2})")
     hE.SetTitleOffset(1.7, "Z")
@@ -142,10 +143,86 @@ def en_pitheta_lQ2():
 
     #gPad.SetLogz()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en_pitheta_lQ2
+
+#_____________________________________________________________________________
+def lx_lQ2_en():
+
+    #log_10(x) (y axis), log_10(Q^2) (x axis) and electron energy as color scale
+
+    #log_10(x), y axis
+    ybin = 0.05
+    ymin = -12
+    ymax = -1
+
+    #log_10(GeV^2), x axis
+    xbin = 0.05
+    xmin = -9
+    xmax = 0
+
+    #GeV, z axis as color scale
+    zbin = 0.05
+    zmin = 0
+    zmax = 18
+    #zmin = 0.0001
+    #zmax = 1.26
+
+    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root"
+    #inp = "/home/jaroslav/sim/GETaLM_data/py/pythia_ep_18x275_Q2all_T3p3_5Mevt.root"
+
+    sel = ""
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("ltree")
+
+    can = ut.box_canvas()
+
+    hxyz = ut.prepare_TH3D("hxyz", xbin, xmin, xmax, ybin, ymin, ymax, zbin, zmin, zmax)
+
+    tree.Draw("true_el_E:(TMath::Log10(true_x)):(TMath::Log10(true_Q2)) >> hxyz", sel) # zyx
+
+    hxy = hxyz.Project3DProfile("yx")
+
+    hxy.SetTitle("")
+    ytit = "Bjorken #it{x}"
+    xtit = "Virtuality #it{Q}^{2} (GeV^{2})"
+    ut.put_yx_tit(hxy, ytit, xtit, 1.4, 1.3)
+
+    hxy.SetZTitle("Electron energy #it{E_{e}} (GeV)")
+    hxy.SetTitleOffset(1.4, "Z")
+
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
+
+    hxy.SetMinimum(0)
+    hxy.SetMaximum(18)
+    hxy.SetContour(300)
+
+    #Q^2 labels in powers of 10
+    ax = hxy.GetXaxis()
+    labels = range(-9, 1)
+    for i in range(len(labels)):
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ax.SetLabelOffset(0.015)
+
+    #x labels in powers of 10
+    ay = hxy.GetYaxis()
+    labels = range(-12, 0, 2)
+    for i in range(len(labels)):
+        ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+
+    gPad.SetGrid()
+
+    hxy.Draw("colz")
+
+    #gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#lx_lQ2_en
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

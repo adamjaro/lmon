@@ -25,6 +25,7 @@
 #include "WScFiZX.h"
 #include "WScFiZXv2.h"
 #include "WScFiZXv3.h"
+#include "CalPWO.h"
 
 //_____________________________________________________________________________
 CaloBuilder::CaloBuilder(G4LogicalVolume *top, GeoParser *geo, std::vector<Detector*> *det):
@@ -60,6 +61,9 @@ void CaloBuilder::AddDetector(unsigned int i) {
 
   } else if( type == "WScFiZXv3" ) {
     det = new WScFiZXv3(name, fGeo, fTop);
+
+  } else if( type == "CalPWO" ) {
+    det = new CalPWO(name, fGeo, fTop);
 
   }
 

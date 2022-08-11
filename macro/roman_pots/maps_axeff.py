@@ -37,8 +37,8 @@ def pitheta_en():
 
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -56,9 +56,9 @@ def pitheta_en():
 
     ytit = "Scattering (polar) angle #it{#pi-#theta_{e}} (mrad)"
     xtit = "Electron energy #it{E_{e}} (GeV)"
-    ut.put_yx_tit(hxy_sel, ytit, xtit, 1.2, 1.2)
+    ut.put_yx_tit(hxy_sel, ytit, xtit, 1.1, 1.2)
 
-    hxy_sel.SetZTitle("Acceptance #times Efficiency")
+    hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
     hxy_sel.SetTitleOffset(1.4, "Z")
 
     ut.set_margin_lbtr(gPad, 0.09, 0.09, 0.015, 0.15)
@@ -87,16 +87,16 @@ def lx_lQ2():
     #acceptance x efficiency in Bjorken x and Q^2, both as log_10
 
     #log_10(x)
-    ybin = 0.2
+    ybin = 0.05
     ymin = -12
-    ymax = 0
+    ymax = -1
 
     #log_10(GeV^2)
-    xbin = 0.25
-    xmin = -7
-    xmax = -1
+    xbin = 0.05
+    xmin = -9
+    xmax = 0
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v2.root"
 
     det = "s1"
     #det = "s2"
@@ -115,14 +115,14 @@ def lx_lQ2():
 
     hxy_sel.Divide(hxy_all)
 
-    ytit = "lx"
-    xtit = "lQ2"
-    ut.put_yx_tit(hxy_sel, ytit, xtit, 1.2, 1.2)
+    ytit = "Bjorken #it{x}"
+    xtit = "Virtuality #it{Q}^{2} (GeV^{2})"
+    ut.put_yx_tit(hxy_sel, ytit, xtit, 1.4, 1.3)
 
-    hxy_sel.SetZTitle("Acceptance #times Efficiency")
+    hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
     hxy_sel.SetTitleOffset(1.4, "Z")
 
-    ut.set_margin_lbtr(gPad, 0.09, 0.09, 0.015, 0.15)
+    ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
 
     gPad.SetGrid()
 
@@ -130,9 +130,22 @@ def lx_lQ2():
     hxy_sel.SetMaximum(1)
     hxy_sel.SetContour(300)
 
+    #Q^2 labels in powers of 10
+    ax = hxy_sel.GetXaxis()
+    labels = range(-9, 1)
+    for i in range(len(labels)):
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ax.SetLabelOffset(0.015)
+
+    #x labels in powers of 10
+    ay = hxy_sel.GetYaxis()
+    labels = range(-12, 0, 2)
+    for i in range(len(labels)):
+        ay.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+
     hxy_sel.Draw("colz")
 
-    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
+    leg = ut.prepare_leg(0.15, 0.88, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
     leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
     leg.Draw("same")

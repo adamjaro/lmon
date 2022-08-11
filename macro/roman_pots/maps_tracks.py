@@ -229,8 +229,8 @@ def ntrk():
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
 
     #det = "s1"
-    det = "s2"
-    #det = "cnt_s1"
+    #det = "s2"
+    det = "cnt_s1"
     #det = "cnt_s2"
 
     val = "_ntrk"
@@ -238,12 +238,12 @@ def ntrk():
 
     hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
     hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
-    hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
+    #hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
 
     #plot
-    plt.style.use("dark_background")
-    col = "lime"
-    #col = "black"
+    #plt.style.use("dark_background")
+    #col = "lime"
+    col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)
@@ -253,7 +253,7 @@ def ntrk():
 
     plt.plot(hx[0], hx[1], "-", color="blue", lw=1)
     plt.plot(hy[0], hy[1], "--", color="red", lw=1)
-    plt.plot(hy1[0], hy1[1], "--", color="gold", lw=1)
+    #plt.plot(hy1[0], hy1[1], "--", color="gold", lw=1)
 
     ax.set_xlabel("Tracks per event")
     ax.set_ylabel("Normalized counts")
@@ -261,9 +261,10 @@ def ntrk():
     ax.set_yscale("log")
 
     leg = legend()
-    #tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
-    #leg.add_entry(leg_txt(), tnam[det])
-    leg.add_entry(leg_txt(), det)
+    tnam = {"s1": "Tagger 1", "s2": "Tagger 2",\
+    "cnt_s1": "Reference for tagger 1", "cnt_s2": "Reference for tagger 2"}
+    leg.add_entry(leg_txt(), tnam[det])
+    #leg.add_entry(leg_txt(), det)
     leg.add_entry(leg_lin("blue"), "All tracks")
     leg.add_entry(leg_lin("red", "--"), "Primary electrons")
     leg.draw(plt, col)
