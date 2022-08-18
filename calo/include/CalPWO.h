@@ -21,11 +21,17 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
 
     //called via Detector
     virtual const G4String& GetName() const { return fNam; }
+    virtual void Add(std::vector<Detector*> *vec);
 
   private:
 
+    void SetCrystalOptics(G4Material *mat);
+    void SetCrystalSurface(G4LogicalVolume *vol);
+    void SetCrystalBoundary(G4VPhysicalVolume *crystal, G4VPhysicalVolume *glass);
+
     G4String fNam; // name of detector sensitive logical volume
 
+    Detector *fPMT; // PMT photocathode
 
 };
 
