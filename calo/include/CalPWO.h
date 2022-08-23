@@ -29,6 +29,8 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
     void SetCrystalSurface(G4LogicalVolume *vol);
     void SetCrystalBoundary(G4VPhysicalVolume *crystal, G4VPhysicalVolume *glass);
 
+    std::vector<G4double> LambdaNMtoEV(const std::vector<G4double>& lambda);
+
     G4String fNam; // name of detector sensitive logical volume
 
     Detector *fPMT; // PMT photocathode

@@ -7,6 +7,7 @@
 //_____________________________________________________________________________
 
 //C++
+#include <vector>
 
 //ROOT
 
@@ -166,23 +167,22 @@ void CalPWO::SetCrystalOptics(G4Material *mat) {
 
   //scintillation and optical properties for the crystal
 
-  const G4int ntab = 2;
-  G4double scin_en[] = {2.9*eV, 3.*eV}; // 420 nm (the range is 414 - 428 nm)
-  G4double scin_fast[] = {1., 1.};
+  std::vector<G4double> scin_lam = {414, 428}; // nm, scintillation wavelength
+  std::vector<G4double> scin_fast = {1., 1.}; // all in fast component
 
   G4MaterialPropertiesTable *tab = new G4MaterialPropertiesTable();
-
-  tab->AddProperty("FASTCOMPONENT", scin_en, scin_fast, ntab);
-  tab->AddConstProperty("FASTTIMECONSTANT", 6*ns);
-  tab->AddConstProperty("SCINTILLATIONYIELD", 600/MeV);
+  tab->AddProperty("FASTCOMPONENT", LambdaNMtoEV(scin_lam), scin_fast);
+  tab->AddConstProperty("FASTTIMECONSTANT", 1*ps);
+  tab->AddConstProperty("SCINTILLATIONYIELD", 300/MeV);
   tab->AddConstProperty("RESOLUTIONSCALE", 1.);
 
-  G4double opt_en[] = {1.551*eV, 3.545*eV}; // 350 - 800 nm
-  G4double opt_r[] = {2.4, 2.4};
-  G4double opt_abs[] = {200*cm, 200*cm};
+  //uniform optical properties
+  std::vector<G4double> opt_lam = {350, 800}; // nm
+  std::vector<G4double> opt_r = {2.4, 2.4};
+  std::vector<G4double> opt_abs = {200*cm, 200*cm};
 
-  tab->AddProperty("RINDEX", opt_en, opt_r, ntab);
-  tab->AddProperty("ABSLENGTH", opt_en, opt_abs, ntab);
+  tab->AddProperty("RINDEX", LambdaNMtoEV(opt_lam), opt_r);
+  tab->AddProperty("ABSLENGTH", LambdaNMtoEV(opt_lam), opt_abs);
 
   mat->SetMaterialPropertiesTable(tab);
 
@@ -193,17 +193,16 @@ void CalPWO::SetCrystalSurface(G4LogicalVolume *vol) {
 
   //crystal optical surface
 
-  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface", unified, polished, dielectric_metal);
+  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface", unified, ground, dielectric_metal);
   new G4LogicalSkinSurface("CrystalSurfaceL", vol, surface);
 
   //surface material
-  const G4int ntab = 2;
-  G4double opt_en[] = {1.551*eV, 3.545*eV}; // 350 - 800 nm
-  G4double reflectivity[] = {0.8, 0.8};
-  G4double efficiency[] = {0.9, 0.9};
+  std::vector<G4double> opt_lam = {350, 800}; // nm
+  std::vector<G4double> reflectivity = {0.9, 0.9};
+  std::vector<G4double> efficiency = {1., 1.};
   G4MaterialPropertiesTable *surfmat = new G4MaterialPropertiesTable();
-  surfmat->AddProperty("REFLECTIVITY", opt_en, reflectivity, ntab);
-  surfmat->AddProperty("EFFICIENCY", opt_en, efficiency, ntab);
+  surfmat->AddProperty("REFLECTIVITY", LambdaNMtoEV(opt_lam), reflectivity);
+  surfmat->AddProperty("EFFICIENCY", LambdaNMtoEV(opt_lam), efficiency);
   surface->SetMaterialPropertiesTable(surfmat);
   //csurf->DumpInfo();
 
@@ -216,30 +215,62 @@ void CalPWO::SetCrystalBoundary(G4VPhysicalVolume *crystal, G4VPhysicalVolume *g
 
   G4OpticalSurface *surf = new G4OpticalSurface("CrytalGlassS");
   surf->SetType(dielectric_dielectric); // photons go to the detector, must have rindex defined
-  //surf->SetType(dielectric_metal); // photon is absorbed when reaching the detector, no material rindex required
-  //surf->SetFinish(ground);
   surf->SetFinish(polished);
   //surf->SetModel(unified);
   surf->SetModel(glisur);
 
   new G4LogicalBorderSurface("CrytalGlassB", crystal, glass, surf);
 
-  const G4int ntab = 2;
-  G4double opt_en[] = {1.551*eV, 3.545*eV}; // 350 - 800 nm
-  //G4double reflectivity[] = {0., 0.};
-  G4double reflectivity[] = {0.1, 0.1};
-  //G4double reflectivity[] = {0.9, 0.9};
-  //G4double reflectivity[] = {1., 1.};
-  G4double efficiency[] = {1., 1.};
+  std::vector<G4double> opt_lam = {350, 800}; // nm
+  std::vector<G4double> reflectivity = {1., 1.};
+  std::vector<G4double> efficiency = {1., 1.};
 
   G4MaterialPropertiesTable *surfmat = new G4MaterialPropertiesTable();
-  surfmat->AddProperty("REFLECTIVITY", opt_en, reflectivity, ntab);
-  surfmat->AddProperty("EFFICIENCY", opt_en, efficiency, ntab);
+  surfmat->AddProperty("REFLECTIVITY", LambdaNMtoEV(opt_lam), reflectivity);
+  surfmat->AddProperty("EFFICIENCY", LambdaNMtoEV(opt_lam), efficiency);
   surf->SetMaterialPropertiesTable(surfmat);
 
 }//SetCrystalBoundary
 
+//_____________________________________________________________________________
+std::vector<G4double> CalPWO::LambdaNMtoEV(const std::vector<G4double>& lambda) {
 
+  //converting wavelength (lambda) in nm to energy (en) in eV
+  /*
+
+    E = h nu
+
+          nu = c/lambda
+
+    E = h c / lambda
+
+        h = 6.625 x 10^-34 J s
+
+        c = 3 x 10^8 m/s
+
+        1 J = 1.602 x 10^-19 eV
+
+        1 m = 10^9 nm
+
+        h c = ((6.625 x 3)/ 1.602) x 10^-34 x 10^8 x 10^19 x 10^9 = 10^2 x ((6.625 x 3)/ 1.602) = 1240.637 eV nm 
+
+    E (eV) = 1240.637 / lambda (nm)
+
+  */
+
+  //energy in eV
+  std::vector<G4double> en;
+
+  //wavelength (nm) loop
+  for(auto i: lambda) {
+
+    en.push_back( (1240.637/i)*eV );
+
+  }//wavelength (nm) loop
+
+  return en;
+
+}//LambdaNMtoEV
 
 
 

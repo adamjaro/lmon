@@ -10,12 +10,11 @@ new CaloBuilder calo # set to create the calorimeters
 #single cell of CalPWO
 
 const crystal_xy 25. # mm
-const crystal_z 30. # mm
+const crystal_z 10. # mm
 const wrapping_thickness 0.3 # mm
-#const wrapping_thickness 3. # mm
 
-#const phot_z 2. # mm
-const phot_z 10. # mm
+const phot_xy 23. # mm
+const phot_z 2. # mm
 
 const modz wrapping_thickness+crystal_z+phot_z
 const modxy crystal_xy+2.*wrapping_thickness
@@ -33,9 +32,9 @@ new CalPWO pwo
   pwo.zpos = -modz/2.
   pwo.crystal_vis = 1:0:0:0.3
   pwo.wrapping_vis = 0:1:0:2
-  pwo.radius = crystal_xy/2
+  pwo.radius = phot_xy/2
   pwo.dz = phot_z
-  pwo.cath_lay_vis = 1:0:0:0.5
+  pwo.cath_lay_vis = 1:0:0:2
   pwo.cath_main_vis = 0:0:1:0.4
 
 

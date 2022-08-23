@@ -27,8 +27,10 @@ class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
 
   private:
 
-    void SetOptics(G4Material *mat, G4LogicalVolume *glass_vol);
+    void SetOptics(G4Material *mat, G4LogicalVolume *glass_vol, G4Material *cath_mat, G4LogicalVolume *cath_vol);
     void SetBoundary(G4VPhysicalVolume *cath_phys);
+
+    std::vector<G4double> LambdaNMtoEV(const std::vector<G4double>& lambda);
 
     G4String fNam; // name of sensitive photocathode logical volume
 

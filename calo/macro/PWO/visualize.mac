@@ -16,6 +16,8 @@
 #output
 /lmon/output/name pwo.root
 
+/process/optical/boundary/setInvokeSD true
+
 # Initialize kernel
 /run/initialize
 
