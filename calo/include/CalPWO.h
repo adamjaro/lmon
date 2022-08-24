@@ -31,6 +31,8 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
 
     std::vector<G4double> LambdaNMtoEV(const std::vector<G4double>& lambda);
 
+    G4LogicalVolume* GetMotherVolume(G4String mother_nam, G4LogicalVolume *top);
+
     G4String fNam; // name of detector sensitive logical volume
 
     Detector *fPMT; // PMT photocathode

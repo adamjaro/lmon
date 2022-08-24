@@ -9,6 +9,7 @@
 #include <vector>
 
 //ROOT
+#include "TTree.h"
 
 //Geant
 #include "G4NistManager.hh"
@@ -203,8 +204,6 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
   //point in current step
   G4StepPoint *point = step->GetPostStepPoint();
 
-  G4String procname = point->GetProcessDefinedStep()->GetProcessName();
-
   //hit time, ns
   G4double time = point->GetGlobalTime()/ns;
 
@@ -224,18 +223,37 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
   G4double pmt_z = gpos.z()/mm;
 */
 
-  G4cout << "PhotoCathPMT::ProcessHits " << track->GetTrackStatus() << " ";
-  G4cout << procname << " " << time << " " << hit_x << " " << hit_y << " " << hit_z << G4endl;
+  //add the hit
+  PhotoHits::Hit& hit = fHits.CreateHit();
+  hit.pos_x = hit_x;
+  hit.pos_y = hit_y;
+  hit.pos_z = hit_z;
+  hit.time = time;
 
   return true;
 
 }//ProcessHits
 
+//_____________________________________________________________________________
+void PhotoCathPMT::CreateOutput(TTree *tree) {
 
+  fHits.CreateOutput(fNam, tree);
 
+}//CreateOutput
 
+//_____________________________________________________________________________
+void PhotoCathPMT::ClearEvent() {
 
+  fHits.ClearEvent();
 
+}//ClearEvent
+
+//_____________________________________________________________________________
+void PhotoCathPMT::FinishEvent() {
+
+  fHits.FinishEvent();
+
+}//FinishEvent
 
 
 

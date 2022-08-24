@@ -4,6 +4,8 @@
 
 //builder for a set of calorimeters
 
+#include <map>
+
 class CaloBuilder {
 
   public:
@@ -19,6 +21,14 @@ class CaloBuilder {
     GeoParser *fGeo; // geometry parser
 
     std::vector<Detector*> *fDet; //all detectors
+
+    //factory function for individual detectors
+    template<class det> Detector* MakeDet(G4String nam, GeoParser *geo, G4LogicalVolume *vol) {
+      return new det(nam, geo, vol);
+    }
+    typedef Detector* (CaloBuilder::*MakeDetPtr)(G4String, GeoParser*, G4LogicalVolume*);
+
+    std::map<G4String, MakeDetPtr> fDets; // local defined detectors
 
 };
 

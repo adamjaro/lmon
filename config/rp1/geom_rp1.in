@@ -14,6 +14,7 @@ include vacuum_rp1.in
 #include tag_rp1.in
 include tag_maps_rp1.in
 
+new CaloBuilder calo
 
 #common top volume
 new top topmain

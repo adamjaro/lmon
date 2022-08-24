@@ -5,6 +5,7 @@
 
 #detectors and components
 /lmon/construct/geometry geom_pwo_cell.in
+#/lmon/construct/geometry geom_pwo_module.in
 
 #input
 /lmon/input/type gun

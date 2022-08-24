@@ -35,6 +35,6 @@
 #/lmon/output/name data/ew/ew1bx2.root
 
 
-/run/beamOn 1
+#/run/beamOn 1
 #/units/list
 

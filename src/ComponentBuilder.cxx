@@ -114,6 +114,7 @@ void ComponentBuilder::AddDetector(unsigned int i) {
   //construct detector or component of type 'type'
   Detector *det = 0x0;
 
+  //non-factory parts
   if( type == "CaloBuilder" ) {
     CaloBuilder calo(fTop, fGeo, fDet);
 

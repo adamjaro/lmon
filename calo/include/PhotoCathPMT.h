@@ -6,6 +6,7 @@
 
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
+#include "PhotoHits.h"
 
 class GeoParser;
 
@@ -24,6 +25,9 @@ class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
 
     //called via Detector
     virtual const G4String& GetName() const { return fNam; }
+    virtual void CreateOutput(TTree*);
+    virtual void ClearEvent();
+    virtual void FinishEvent();
 
   private:
 
@@ -35,6 +39,8 @@ class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
     G4String fNam; // name of sensitive photocathode logical volume
 
     G4VPhysicalVolume *fGlassPhysVol; // physical volume for the glass layer
+
+    PhotoHits fHits; // hit collection
 
 };
 

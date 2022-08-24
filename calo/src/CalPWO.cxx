@@ -10,6 +10,7 @@
 #include <vector>
 
 //ROOT
+#include "TTree.h"
 
 //Geant
 #include "G4NistManager.hh"
@@ -41,6 +42,8 @@ CalPWO::CalPWO(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Dete
   G4double mody = geo->GetD(fNam, "mody")*mm; // full size in y, mm
   G4double modz = geo->GetD(fNam, "modz")*mm; // full size in z, mm
 
+  G4cout << "  " << fNam << ", modx, y, z (mm): " << modx << " " << mody << " " << modz << " " << G4endl;
+
   //module volume
   G4Box *mod_shape = new G4Box(fNam+"_mod", modx/2., mody/2., modz/2.);
   G4Material *mod_mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_AIR"); // default module material
@@ -57,7 +60,12 @@ CalPWO::CalPWO(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Dete
   geo->GetOptD(fNam, "zpos", mod_zpos, GeoParser::Unit(mm)); // center position in z, mm
 
   //module in its mother volume
-  new G4PVPlacement(0, G4ThreeVector(mod_xpos, mod_ypos, mod_zpos), mod_vol, mod_vol->GetName(), top, false, 0);
+  G4LogicalVolume *mother_vol = top;
+  G4String mother_nam;
+  if( geo->GetOptS(fNam, "place_into", mother_nam) ) {
+    mother_vol = GetMotherVolume(mother_nam, top);
+  }
+  new G4PVPlacement(0, G4ThreeVector(mod_xpos, mod_ypos, mod_zpos), mod_vol, mod_vol->GetName(), mother_vol, false, 0);
 
   //crystal size
   G4double crystal_xy = geo->GetD(fNam, "crystal_xy")*mm; // crystal full size in x and y, mm
@@ -65,9 +73,6 @@ CalPWO::CalPWO(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Dete
 
   //wrapping thickness
   G4double wrapping_thickness = geo->GetD(fNam, "wrapping_thickness")*mm; // wrapping thickness, mm
-
-  //photon detector thickness in z
-  //G4double phot_z = geo->GetD(fNam, "phot_z")*mm; // photon detector thickness in z, mm
 
   //cell holding the wrapped crystal and photon detector
   G4double cell_xy = crystal_xy + 2.*wrapping_thickness; // factor of 2 for wrapping on all sides
@@ -178,7 +183,7 @@ void CalPWO::SetCrystalOptics(G4Material *mat) {
 
   //uniform optical properties
   std::vector<G4double> opt_lam = {350, 800}; // nm
-  std::vector<G4double> opt_r = {2.4, 2.4};
+  std::vector<G4double> opt_r = {2.2, 2.2};
   std::vector<G4double> opt_abs = {200*cm, 200*cm};
 
   tab->AddProperty("RINDEX", LambdaNMtoEV(opt_lam), opt_r);
@@ -193,7 +198,7 @@ void CalPWO::SetCrystalSurface(G4LogicalVolume *vol) {
 
   //crystal optical surface
 
-  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface", unified, ground, dielectric_metal);
+  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface", unified, polished, dielectric_metal);
   new G4LogicalSkinSurface("CrystalSurfaceL", vol, surface);
 
   //surface material
@@ -272,7 +277,21 @@ std::vector<G4double> CalPWO::LambdaNMtoEV(const std::vector<G4double>& lambda) 
 
 }//LambdaNMtoEV
 
+//_____________________________________________________________________________
+G4LogicalVolume* CalPWO::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
 
+  for(size_t i=0; i<top->GetNoDaughters(); i++) {
+
+    G4LogicalVolume *dv = top->GetDaughter(i)->GetLogicalVolume();
+
+    if( dv->GetName() == mother_nam ) {
+      return dv;
+    }
+  }
+
+  return 0x0;
+
+}//GetMotherVolume
 
 
 
