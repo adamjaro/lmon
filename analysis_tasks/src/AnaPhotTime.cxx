@@ -49,27 +49,49 @@ void AnaPhotTime::Run(const char*) {
   PhotoHits hits;
   hits.ConnectInput("pwo_cath", &tree);
 
+  //outputs
+  //string outfile = GetStr(opt_map, "main.outfile");
+  string outfile = "pmt_hits.root";
+  cout << "Output: " << outfile << endl;
+  TFile out(outfile.c_str(), "recreate");
+
+  //hit output tree
+  TTree hit_tree("hits", "hits");
+  Double_t hit_time;
+  hit_tree.Branch("hit_time", &hit_time, "hit_time/D");
+
   //event loop
   Long64_t nev = tree.GetEntries();
+  Long64_t iprint = nev/12;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
 
-    cout << "Next event: " << iev << endl;
+    if( iev > 0 and iev%iprint == 0 ) {
+      cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
+    }
 
+    //load the hits
     hits.LoadHits();
 
-    cout << "Hits: " << hits.GetNhits() << endl;
+    //cout << "Hits: " << hits.GetNhits() << endl;
 
     //hit loop
     for(unsigned int ihit = 0; ihit < hits.GetNhits(); ihit++) {
 
       PhotoHits::Hit hit = hits.GetHit(ihit);
 
-      cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
+      //cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
 
+      //set the hit output
+      hit_time = hit.time;
+      hit_tree.Fill();
     }
 
   }//event loop
+
+  hit_tree.Write();
+
+  out.Close();
 
 }//Run
 

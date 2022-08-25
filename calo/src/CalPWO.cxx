@@ -173,11 +173,15 @@ void CalPWO::SetCrystalOptics(G4Material *mat) {
   //scintillation and optical properties for the crystal
 
   std::vector<G4double> scin_lam = {414, 428}; // nm, scintillation wavelength
-  std::vector<G4double> scin_fast = {1., 1.}; // all in fast component
+  std::vector<G4double> scin_fast = {1., 1.};
 
   G4MaterialPropertiesTable *tab = new G4MaterialPropertiesTable();
   tab->AddProperty("FASTCOMPONENT", LambdaNMtoEV(scin_lam), scin_fast);
-  tab->AddConstProperty("FASTTIMECONSTANT", 1*ps);
+  tab->AddProperty("SLOWCOMPONENT", LambdaNMtoEV(scin_lam), scin_fast);
+  //tab->AddConstProperty("FASTTIMECONSTANT", 1*ps);
+  tab->AddConstProperty("FASTTIMECONSTANT", 1.67*ns);
+  tab->AddConstProperty("SLOWTIMECONSTANT", 6.6*ns);
+  tab->AddConstProperty("YIELDRATIO", 0.5);
   tab->AddConstProperty("SCINTILLATIONYIELD", 300/MeV);
   tab->AddConstProperty("RESOLUTIONSCALE", 1.);
 
@@ -198,7 +202,13 @@ void CalPWO::SetCrystalSurface(G4LogicalVolume *vol) {
 
   //crystal optical surface
 
-  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface", unified, polished, dielectric_metal);
+  G4OpticalSurface *surface = new G4OpticalSurface("CrystalSurface");
+  surface->SetType(dielectric_metal);
+  //surface->SetFinish(polished);
+  surface->SetFinish(ground);
+  //surface->SetSigmaAlpha(0.1);
+  surface->SetModel(unified);
+
   new G4LogicalSkinSurface("CrystalSurfaceL", vol, surface);
 
   //surface material
