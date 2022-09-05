@@ -46,7 +46,7 @@ new CalPWO pwo
   pwo.dz = pwo_phot_z
   pwo.cath_lay_vis = 1:0:0:2
   pwo.cath_main_vis = 0:0:1:0.4
-
+  pwo.mod_vis = 0:0:1:3
 
 
 

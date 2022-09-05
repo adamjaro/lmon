@@ -38,11 +38,11 @@ def chi2():
     xbin = 0.05
     xmax = 12
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -222,15 +222,15 @@ def ntrk():
     #xmax = 30
     xmax = 400
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
 
     #det = "s1"
-    #det = "s2"
-    det = "cnt_s1"
+    det = "s2"
+    #det = "cnt_s1"
     #det = "cnt_s2"
 
     val = "_ntrk"
@@ -241,9 +241,9 @@ def ntrk():
     #hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
 
     #plot
-    #plt.style.use("dark_background")
-    #col = "lime"
-    col = "black"
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
 
     fig = plt.figure()
     fig.set_size_inches(5, 5)

@@ -34,6 +34,7 @@ void AnaMapsBasic::Run(const char *conf) {
     ("main.input", program_options::value<string>(), "Analysis input")
     ("main.geo", program_options::value<string>(), "Geometry configuration")
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
+    ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
   ;
 
   //load the configuration file
@@ -96,6 +97,16 @@ void AnaMapsBasic::Run(const char *conf) {
   s2.AddTrackBranch("true_el_theta", &true_el_theta);
   s2.AddTrackBranch("true_el_phi", &true_el_phi);
   s2.AddTrackBranch("true_Q2", &true_Q2);
+
+  //track selection for tagger stations
+  if( opt_map.find("main.max_chi2ndf") != opt_map.end() ) {
+
+    Double_t max_chi2ndf = opt_map["main.max_chi2ndf"].as<double>();
+    cout << "Using Chi2/NDF = " << max_chi2ndf << endl;
+
+    s1.SetMaxChi2Ndf( max_chi2ndf );
+    s2.SetMaxChi2Ndf( max_chi2ndf );
+  }
 
   //reference counters
   RefCounter cnt_s1("cnt_s1", &tree, &geo, &otree);

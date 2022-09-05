@@ -20,6 +20,8 @@ class TagMapsBasic {
     void AddTrackBranch(std::string nam, Double_t *val);
     void WriteOutputs();
 
+    void SetMaxChi2Ndf(Double_t max_chi2ndf) { fChi2ndfMax = max_chi2ndf; }
+
     void FinishEvent();
 
     class Track;

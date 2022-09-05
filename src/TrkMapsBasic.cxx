@@ -46,7 +46,7 @@ TrkMapsBasic::TrkMapsBasic(const G4String& nam, GeoParser *geo, G4LogicalVolume 
   //tracker layer
   G4double layx = nx*dxy;
   G4double layy = ny*dxy;
-  G4cout << "  " << nam << ", layx, layy (mm): " << layx << ", " << layy << G4endl;
+  G4cout << "  " << nam << ": layx, layy, dxy (mm): " << layx << ", " << layy << ", " << dxy << G4endl;
   G4Box *lays = new G4Box(nam+"_lay", layx/2., layy/2., dz/2.);
 
   //layer volume
