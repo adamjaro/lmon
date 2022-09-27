@@ -44,8 +44,8 @@ class TagMapsBasic {
     class Track {
     public:
       Track(): x(0), y(0), slope_x(0), slope_y(0), theta_x(0), theta_y(0),
-        chi2_x(0), chi2_y(0), is_prim(0), itrk(-1), pdg(0), is_associate(0),
-        ref_x(0), ref_y(0), ref_theta_x(0), ref_theta_y(0) {}
+        chi2_x(0), chi2_y(0), chi2_xy(0), is_prim(0), itrk(-1), pdg(0), is_associate(0),
+        ref_x(0), ref_y(0), ref_theta_x(0), ref_theta_y(0), evt_ntrk(0) {}
 
       Double_t x; // track position in x, mm
       Double_t y; // track position in y, mm
@@ -55,6 +55,7 @@ class TagMapsBasic {
       Double_t theta_y; // track angle along y, rad
       Double_t chi2_x; // track chi^2 in x
       Double_t chi2_y; // track chi^2 in y
+      Double_t chi2_xy; // track chi^2 in xy plane
       Bool_t is_prim; // track for primary particle
       Int_t itrk; // index for MC particle
       Int_t pdg; // pdg for MC particle
@@ -63,10 +64,13 @@ class TagMapsBasic {
       Double_t ref_y; // reference position in y, mm
       Double_t ref_theta_x; // reference angle along x, rad
       Double_t ref_theta_y; // reference angle along y, rad
+      Int_t evt_ntrk; // number of all tracks in event for a given track
 
     };//Track
 
   private:
+
+    Double_t TrackChi2(Double_t *x, Double_t *y, Track& trk);
 
     std::vector<Track> fTracks; // tracks in event
 

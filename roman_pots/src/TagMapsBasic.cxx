@@ -104,6 +104,8 @@ void TagMapsBasic::ProcessEvent() {
           if( init_trk.chi2_x > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
           if( init_trk.chi2_y > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
 
+          TrackChi2(x, y, init_trk);
+
           //track is selected, add it for the event
           fTracks.push_back( init_trk );
           Track& trk = fTracks.back();
@@ -146,9 +148,41 @@ void TagMapsBasic::MakeTrack(Double_t *x, Double_t& pos, Double_t& slope, Double
     chi2 += (pos + slope*fZ[i] - x[i])*(pos + slope*fZ[i] - x[i]);
   }
 
-  //cout << pos << " " << slope << " " << theta << " " << chi2 << endl;
+  //cout << "Track: " << pos << " " << slope << " " << theta << " " << chi2 << endl;
 
 }//MakeTrack
+
+//_____________________________________________________________________________
+Double_t TagMapsBasic::TrackChi2(Double_t *x, Double_t *y, Track& trk) {
+
+  //calculate track chi^2 for its points
+  Double_t chi2_xy = 0;
+
+  //points loop
+  for(int i=0; i<4; i++) {
+
+    //track position in x and y
+    Double_t track_x_i = trk.x + trk.slope_x*fZ[i];
+    Double_t track_y_i = trk.y + trk.slope_y*fZ[i];
+
+    //square distance between the track and measured point along x and y
+    Double_t dx2 = (track_x_i-x[i])*(track_x_i-x[i]);
+    Double_t dy2 = (track_y_i-y[i])*(track_y_i-y[i]);
+
+    //add the square distance in the xy plane to the chi^2
+    chi2_xy += dx2 + dy2;
+
+    //cout << i << ": " << track_x_i-x[i] << " " << track_y_i-y[i] << " ";
+    //cout << i << ": " << dx2 << " " << dy2 << " ";
+
+  }//points loop
+
+  //set the chi^2 for the track
+  trk.chi2_xy = chi2_xy;
+
+  return chi2_xy;
+
+}//TrackChi2
 
 //_____________________________________________________________________________
 void TagMapsBasic::FinishEvent() {
@@ -162,8 +196,9 @@ void TagMapsBasic::FinishEvent() {
   for(auto it = fTracks.begin(); it != fTracks.end(); it++) {
 
     //set the output track and fill the tree
-    fOutTrk = *it;
-    if( fOutTrk.is_associate ) fNtrkAssociated++;
+    fOutTrk = *it; // load the current track
+    fOutTrk.evt_ntrk = fNtrk; // set number of tracks in event for the track
+    if( fOutTrk.is_associate ) fNtrkAssociated++; // counts for associated tracks
 
     fTrkTree->Fill();
 
@@ -187,12 +222,14 @@ void TagMapsBasic::CreateOutput() {
   fTrkTree->Branch("theta_y", &fOutTrk.theta_y, "theta_y/D");
   fTrkTree->Branch("chi2_x", &fOutTrk.chi2_x, "chi2_x/D");
   fTrkTree->Branch("chi2_y", &fOutTrk.chi2_y, "chi2_y/D");
+  fTrkTree->Branch("chi2_xy", &fOutTrk.chi2_xy, "chi2_xy/D");
   fTrkTree->Branch("is_prim", &fOutTrk.is_prim, "is_prim/O");
   fTrkTree->Branch("is_associate", &fOutTrk.is_associate, "is_associate/O");
   fTrkTree->Branch("ref_x", &fOutTrk.ref_x, "ref_x/D");
   fTrkTree->Branch("ref_y", &fOutTrk.ref_y, "ref_y/D");
   fTrkTree->Branch("ref_theta_x", &fOutTrk.ref_theta_x, "ref_theta_x/D");
   fTrkTree->Branch("ref_theta_y", &fOutTrk.ref_theta_y, "ref_theta_y/D");
+  fTrkTree->Branch("evt_ntrk", &fOutTrk.evt_ntrk, "evt_ntrk/I");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());

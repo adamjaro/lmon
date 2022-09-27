@@ -10,7 +10,8 @@ new CaloBuilder calo # set to create the calorimeters
 #single cell of CalPWO
 
 const crystal_xy 25. # mm
-const crystal_z 10. # mm
+#const crystal_z 10. # mm
+const crystal_z 100. # mm
 const wrapping_thickness 0.3 # mm
 
 const phot_xy 23. # mm

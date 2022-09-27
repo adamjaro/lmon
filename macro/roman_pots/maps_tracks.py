@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 0
 
     func = {}
     func[0] = chi2
@@ -23,6 +23,7 @@ def main():
     func[3] = ntrk
     func[4] = chi2_xy
     func[5] = tx_en
+    func[6] = excess_tracks
 
     func[iplot]()
 
@@ -38,22 +39,24 @@ def chi2():
     xbin = 0.05
     xmax = 12
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    sel = ""
+    #sel = ""
     #sel = "is_prim==1"
     #sel = "is_prim==0"
-    #sel = "is_associate==1"
+    sel = "is_associate==1"
 
-    hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
-    hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
+    #hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
+    #hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
+    hx = make_h1(inp, det, "TMath::Sqrt(chi2_x*chi2_x+chi2_y*chi2_y)", xbin, 0, xmax, sel)
 
     #plot
     plt.style.use("dark_background")
@@ -67,7 +70,7 @@ def chi2():
     set_grid(plt, col)
 
     plt.plot(hx[0], hx[1], "-", color="red", lw=1)
-    plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
+    #plt.plot(hy[0], hy[1], "-", color="blue", lw=1)
 
     ax.set_xlabel("Tracks $\chi^2$/ndf")
     ax.set_ylabel("Normalized counts")
@@ -222,23 +225,26 @@ def ntrk():
     #xmax = 30
     xmax = 400
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
     #det = "cnt_s1"
     #det = "cnt_s2"
 
-    val = "_ntrk"
-    #val = "_nhit"
+    #val = "_ntrk"
+    val = "s1_ntrk-s1_ntrk_associate"
+    #val = "s2_ntrk-s2_ntrk_associate"
 
-    hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
-    hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
+    #hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
+    #hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
     #hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
+    hx = make_h1(inp, "event", val, 1, 0, xmax)
 
     #plot
     plt.style.use("dark_background")
@@ -252,7 +258,7 @@ def ntrk():
     set_grid(plt, col)
 
     plt.plot(hx[0], hx[1], "-", color="blue", lw=1)
-    plt.plot(hy[0], hy[1], "--", color="red", lw=1)
+    #plt.plot(hy[0], hy[1], "--", color="red", lw=1)
     #plt.plot(hy1[0], hy1[1], "--", color="gold", lw=1)
 
     ax.set_xlabel("Tracks per event")
@@ -280,18 +286,22 @@ def chi2_xy():
     #tracks reduced chi^2 in x and y
 
     #mm
-    #xybin = 1
-    #xymax = 80
-    xybin = 0.1
-    xymax = 4
+    xybin = 1e-2
+    xymax = 0.5
+    #xybin = 0.1
+    #xymax = 5
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v2.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
 
-    sel = ""
+    #sel = ""
+    #sel = "is_prim==1"
+    sel = "is_associate==1"
     #sel = "(chi2_x<8)&&(chi2_y<8)&&(is_prim==0)"
 
     infile = TFile.Open(inp)
@@ -387,6 +397,63 @@ def tx_en():
 #tx_en
 
 #_____________________________________________________________________________
+def excess_tracks():
+
+    #difference in number of observed tracks to associated tracks
+
+    #tracks num
+    xbin = 2
+    #xmax = 100
+    xmax = 400
+
+    i1 = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
+    i2 = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002_chi05.root"
+    i3 = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002_chi03.root"
+
+
+    #val = "s1_ntrk-s1_ntrk_associate"
+    val = "s2_ntrk-s2_ntrk_associate"
+
+    #desc = "Tagger 1"
+    desc = "Tagger 2"
+
+    h1 = make_h1(i1, "event", val, xbin, 0, xmax)
+    h2 = make_h1(i2, "event", val, xbin, 0, xmax)
+    h3 = make_h1(i3, "event", val, xbin, 0, xmax)
+
+    #plot
+    plt.style.use("dark_background")
+    col = "lime"
+    #col = "black"
+
+    fig = plt.figure()
+    fig.set_size_inches(5, 5)
+    ax = fig.add_subplot(1, 1, 1)
+    set_axes_color(ax, col)
+    set_grid(plt, col)
+
+    plt.plot(h1[0], h1[1], "-", color="blue", lw=1)
+    plt.plot(h2[0], h2[1], "-", color="yellow", lw=1)
+    plt.plot(h3[0], h3[1], "-", color="red", lw=1)
+
+    ax.set_xlabel("All tracks - associated tracks")
+    ax.set_ylabel("Counts")
+
+    ax.set_yscale("log")
+
+    leg = legend()
+    leg.add_entry(leg_txt(), desc)
+    leg.add_entry(leg_lin("blue"), "$\chi^2$/ndf < 4")
+    leg.add_entry(leg_lin("yellow"), "$\chi^2$/ndf < 0.5")
+    leg.add_entry(leg_lin("red"), "$\chi^2$/ndf < 0.3")
+    leg.draw(plt, col)
+
+    fig.savefig("01fig.pdf", bbox_inches = "tight")
+    plt.close()
+
+#excess_tracks
+
+#_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
 
     inp = TFile.Open(infile)
@@ -397,7 +464,7 @@ def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):
     hx = ut.prepare_TH1D("hx", xbin, xmin, xmax)
     tree.Draw(val+" >> hx", sel)
     print("Entries:", hx.GetEntries())
-    ut.norm_to_integral(hx, 1.)
+    #ut.norm_to_integral(hx, 1.)
 
     return ut.h1_to_arrays(hx)
 
