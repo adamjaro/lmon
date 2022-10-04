@@ -9,6 +9,7 @@
 //C++
 #include <vector>
 #include <string>
+#include <unordered_set>
 
 //ROOT
 #include "TTree.h"
@@ -19,14 +20,13 @@
 
 //local classes
 #include "GeoParser.h"
-#include "TagMapsBasicPlane.h"
 #include "TagMapsBasic.h"
 
 using namespace std;
 
 //_____________________________________________________________________________
 TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree):
-    fNam(nam), fChi2ndfMax(4), fEvtTree(evt_tree) {
+    fNam(nam), fChi2ndfMax(0.5), fEvtTree(evt_tree) {
 
   //planes for the station, 1 - 4
   fPlanes.push_back( new TagMapsBasicPlane(fNam+"_1", tree, geo, evt_tree) );
@@ -64,10 +64,10 @@ void TagMapsBasic::ProcessEvent() {
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::ProcessEvent ));
 
   //clusters in planes
-  const vector<TagMapsBasicPlane::Cluster>& cls1 = fPlanes[0]->GetClusters();
-  const vector<TagMapsBasicPlane::Cluster>& cls2 = fPlanes[1]->GetClusters();
-  const vector<TagMapsBasicPlane::Cluster>& cls3 = fPlanes[2]->GetClusters();
-  const vector<TagMapsBasicPlane::Cluster>& cls4 = fPlanes[3]->GetClusters();
+  vector<TagMapsBasicPlane::Cluster>& cls1 = fPlanes[0]->GetClusters();
+  vector<TagMapsBasicPlane::Cluster>& cls2 = fPlanes[1]->GetClusters();
+  vector<TagMapsBasicPlane::Cluster>& cls3 = fPlanes[2]->GetClusters();
+  vector<TagMapsBasicPlane::Cluster>& cls4 = fPlanes[3]->GetClusters();
 
   //number of tracks per event
   fNtrk = 0;
@@ -75,19 +75,23 @@ void TagMapsBasic::ProcessEvent() {
 
   //plane 1
   for(unsigned long i1=0; i1<cls1.size(); i1++) {
-    const TagMapsBasicPlane::Cluster& c1 = cls1[i1];
+    TagMapsBasicPlane::Cluster& c1 = cls1[i1];
+    c1.iplane = 1;
 
     //plane 2
     for(unsigned long i2=0; i2<cls2.size(); i2++) {
-      const TagMapsBasicPlane::Cluster& c2 = cls2[i2];
+      TagMapsBasicPlane::Cluster& c2 = cls2[i2];
+      c2.iplane = 2;
 
       //plane 3
       for(unsigned long i3=0; i3<cls3.size(); i3++) {
-        const TagMapsBasicPlane::Cluster& c3 = cls3[i3];
+        TagMapsBasicPlane::Cluster& c3 = cls3[i3];
+        c3.iplane = 3;
 
         //plane 4
         for(unsigned long i4=0; i4<cls4.size(); i4++) {
-          const TagMapsBasicPlane::Cluster& c4 = cls4[i4];
+          TagMapsBasicPlane::Cluster& c4 = cls4[i4];
+          c4.iplane = 4;
 
           //make the track from the clusters
 
@@ -101,12 +105,20 @@ void TagMapsBasic::ProcessEvent() {
           MakeTrack(y, init_trk.y, init_trk.slope_y, init_trk.theta_y, init_trk.chi2_y);
 
           //maximal tracks reduced chi2
-          if( init_trk.chi2_x > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
-          if( init_trk.chi2_y > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
+          //if( init_trk.chi2_x > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
+          //if( init_trk.chi2_y > 2.*fChi2ndfMax ) continue; // 2 degrees of freedom
 
-          TrackChi2(x, y, init_trk);
+          //maximal track reduced chi2 in the xy plane
+          if( TrackChi2(x, y, init_trk) > 4.*fChi2ndfMax ) continue; // 4 degrees of freedom in the xy plane
 
-          //track is selected, add it for the event
+          //the track is selected
+
+          //evaluate clusters making the track
+          TagMapsBasicPlane::Cluster *cls[] = {&c1, &c2, &c3, &c4};
+          init_trk.cls.assign(cls, cls+4); // clusters in the track
+          ClusterAnalysis(cls, init_trk);
+
+          //add the track for the event
           fTracks.push_back( init_trk );
           Track& trk = fTracks.back();
 
@@ -185,7 +197,37 @@ Double_t TagMapsBasic::TrackChi2(Double_t *x, Double_t *y, Track& trk) {
 }//TrackChi2
 
 //_____________________________________________________________________________
+template<size_t N> void TagMapsBasic::ClusterAnalysis(TagMapsBasicPlane::Cluster* (&cls)[N], Track& trk) {
+
+  //cout << "Clusters:";
+
+  unordered_set<Int_t> itrk; // MC track indices from the clusters
+
+  //cluster loop
+  for(size_t icls=0; icls<N; icls++) {
+
+    //increment track counts for the cluster
+    cls[icls]->ntrk += 1;
+
+    itrk.insert( cls[icls]->itrk ); // add the MC track index
+
+    //cout << " " << cls[icls]->iplane << " " << cls[icls]->id;
+    //cout << " " << cls[icls]->itrk;
+
+  }//cluster loop
+
+  trk.num_diff_itrk = itrk.size(); // number of unique MC track indices
+
+  //cout << " " << itrk.size();
+  //cout << endl;
+
+}//ClusterAnalysis
+
+//_____________________________________________________________________________
 void TagMapsBasic::FinishEvent() {
+
+  //finish for planes
+  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::FinishEvent ));
 
   //set output tree for tracks
 
@@ -195,12 +237,38 @@ void TagMapsBasic::FinishEvent() {
   //tracks loop
   for(auto it = fTracks.begin(); it != fTracks.end(); it++) {
 
+    //cout << "Track:";
+
+    Int_t nshared = 0; // num of shared clusters
+
+    //clusters for the track
+    for(auto c1: (*it).cls) {
+
+      //inner tracks loop
+      for(auto it2 = fTracks.begin(); it2 != fTracks.end(); it2++) {
+        if( it == it2 ) continue; //same track
+        //inner clusters
+        for(auto c2: (*it2).cls) {
+          if( (c1->iplane == c2->iplane) and (c1->id == c2->id) ) {
+            nshared++;
+          }
+        }//inner clusters
+      }//inner tracks loop
+
+    }//clusters for the track
+
+    (*it).num_shared_cls = nshared; // set the number of shared clusters for the track
+
+    //cout << " shared clusters: " << (*it).num_shared_cls << endl;
+
     //set the output track and fill the tree
     fOutTrk = *it; // load the current track
     fOutTrk.evt_ntrk = fNtrk; // set number of tracks in event for the track
     if( fOutTrk.is_associate ) fNtrkAssociated++; // counts for associated tracks
 
     fTrkTree->Fill();
+
+    //cout << endl;
 
   } //tracks loop
 
@@ -230,6 +298,8 @@ void TagMapsBasic::CreateOutput() {
   fTrkTree->Branch("ref_theta_x", &fOutTrk.ref_theta_x, "ref_theta_x/D");
   fTrkTree->Branch("ref_theta_y", &fOutTrk.ref_theta_y, "ref_theta_y/D");
   fTrkTree->Branch("evt_ntrk", &fOutTrk.evt_ntrk, "evt_ntrk/I");
+  fTrkTree->Branch("num_shared_cls", &fOutTrk.num_shared_cls, "num_shared_cls/I");
+  fTrkTree->Branch("num_diff_itrk", &fOutTrk.num_diff_itrk, "num_diff_itrk/I");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());

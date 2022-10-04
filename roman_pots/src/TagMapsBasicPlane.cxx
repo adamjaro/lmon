@@ -97,8 +97,10 @@ void TagMapsBasicPlane::ProcessEvent() {
   fNClsPrim = 0;
 
   //clusters loop
+  Int_t cls_id = 0;
   for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
     Cluster& cls = *icls;
+    cls.id = cls_id++; // set the cluster ID
 
     //number of hits in the cluster
     cls.nhits = cls.hits.size();
@@ -132,17 +134,6 @@ void TagMapsBasicPlane::ProcessEvent() {
       //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.en << " " << cls.is_prim << " ";
       //cout << cls.nhits << " " << cls.x << " " << cls.y << " " << cls.sigma_x << " " << cls.sigma_y << endl;
     //}
-
-    //fill output on clusters
-    fClsX = cls.x;
-    fClsY = cls.y;
-    fClsE = cls.en;
-    fClsNhits = cls.nhits;
-    fClsPrim = cls.is_prim;
-    fClsSigX = cls.sigma_x;
-    fClsSigY = cls.sigma_y;
-
-    fClsTree->Fill();
 
     //increment event counters
     fNCls++;
@@ -430,6 +421,8 @@ void TagMapsBasicPlane::CreateOutput() {
   fClsTree->Branch("is_prim", &fClsPrim, "is_prim/O");
   fClsTree->Branch("sigma_x", &fClsSigX, "sigma_x/D");
   fClsTree->Branch("sigma_y", &fClsSigY, "sigma_y/D");
+  fClsTree->Branch("ntrk", &fClsNtrk, "ntrk/I");
+  fClsTree->Branch("min_dist", &fClsMinDist, "min_dist/D");
 
   //event tree
   fEvtTree->Branch((fNam+"_nhit").c_str(), &fNhit, (fNam+"_nhit/I").c_str());
@@ -438,6 +431,44 @@ void TagMapsBasicPlane::CreateOutput() {
   fEvtTree->Branch((fNam+"_ncls_prim").c_str(), &fNClsPrim, (fNam+"_ncls_prim/I").c_str());
 
 }//CreateOutput
+
+//_____________________________________________________________________________
+void TagMapsBasicPlane::FinishEvent() {
+
+  //clusters loop
+  for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
+    Cluster& cls = *icls;
+
+    //inner loop
+    for(vector<Cluster>::iterator i2 = fCls.begin(); i2 != fCls.end(); i2++) {
+      if( icls == i2 ) continue; // same cluster
+
+      Cluster& cls2 = *i2;
+
+      //distance between the clusters
+      Double_t dist = TMath::Sqrt( (cls.x-cls2.x)*(cls.x-cls2.x) + (cls.y-cls2.y)*(cls.y-cls2.y) );
+
+      //update the minimal distance for the cluster
+      if( dist < cls.min_dist or cls.min_dist < 0 ) cls.min_dist = dist;
+
+    }//inner loop
+
+    //fill output on clusters
+    fClsX = cls.x;
+    fClsY = cls.y;
+    fClsE = cls.en;
+    fClsNhits = cls.nhits;
+    fClsPrim = cls.is_prim;
+    fClsSigX = cls.sigma_x;
+    fClsSigY = cls.sigma_y;
+    fClsNtrk = cls.ntrk;
+    fClsMinDist = cls.min_dist;
+
+    fClsTree->Fill();
+
+  }//clusters loop
+
+}//FinishEvent
 
 //_____________________________________________________________________________
 void TagMapsBasicPlane::WriteOutputs() {

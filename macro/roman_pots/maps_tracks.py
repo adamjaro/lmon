@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -39,24 +39,27 @@ def chi2():
     xbin = 0.05
     xmax = 12
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v6.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v7.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v3.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
-    #sel = ""
+    sel = ""
     #sel = "is_prim==1"
     #sel = "is_prim==0"
-    sel = "is_associate==1"
+    #sel = "is_associate==0"
+    #sel = "evt_ntrk>70&&evt_ntrk<90"
+    #sel = "evt_ntrk<6"
+    #sel += "&&(is_associate==0)"
 
-    #hx = make_h1(inp, det, "chi2_x/2", xbin, 0, xmax, sel)
+    hx = make_h1(inp, det, "chi2_xy/4", xbin, 0, xmax, sel) # 4 degrees of freedom along xy (8 points components, 4 fit parameters)
     #hy = make_h1(inp, det, "chi2_y/2", xbin, 0, xmax, sel)
-    hx = make_h1(inp, det, "TMath::Sqrt(chi2_x*chi2_x+chi2_y*chi2_y)", xbin, 0, xmax, sel)
+    #hx = make_h1(inp, det, "TMath::Sqrt(chi2_x*chi2_x+chi2_y*chi2_y)", xbin, 0, xmax, sel)
 
     #plot
     plt.style.use("dark_background")
@@ -225,26 +228,26 @@ def ntrk():
     #xmax = 30
     xmax = 400
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v7.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
     #det = "cnt_s1"
     #det = "cnt_s2"
 
-    #val = "_ntrk"
-    val = "s1_ntrk-s1_ntrk_associate"
+    val = "_ntrk"
+    #val = "s1_ntrk-s1_ntrk_associate"
     #val = "s2_ntrk-s2_ntrk_associate"
 
-    #hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
+    hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
     #hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
     #hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
-    hx = make_h1(inp, "event", val, 1, 0, xmax)
+    #hx = make_h1(inp, "event", val, 1, 0, xmax)
 
     #plot
     plt.style.use("dark_background")

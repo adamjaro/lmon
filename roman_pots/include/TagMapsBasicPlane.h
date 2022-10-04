@@ -15,6 +15,7 @@ class TagMapsBasicPlane {
     TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree);
 
     void ProcessEvent();
+    void FinishEvent();
 
     void CreateOutput();
     void WriteOutputs();
@@ -22,7 +23,7 @@ class TagMapsBasicPlane {
     TrkMapsBasicHits& GetHits() { return fHits; }
 
     class Cluster;
-    const std::vector<Cluster>& GetClusters() { return fCls; }
+    std::vector<Cluster>& GetClusters() { return fCls; }
 
   private:
 
@@ -63,7 +64,8 @@ class TagMapsBasicPlane {
     class Cluster {
     public:
       Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1),
-                 sigma_x(0), sigma_y(0), itrk(-1), pdg(0) {}
+                 sigma_x(0), sigma_y(0), itrk(-1), pdg(0),
+                 ntrk(0), min_dist(-1), id(0), iplane(0) {}
 
       Double_t x; // cluster x position, mm
       Double_t y; // cluster y position, mm
@@ -74,6 +76,10 @@ class TagMapsBasicPlane {
       Double_t sigma_y; // uncertainty in cluster y position, mm
       Int_t itrk; // MC track index associated with the cluster
       Int_t pdg; // PDG code for the MC track
+      Int_t ntrk; // number of tracks for which the cluster was used
+      Double_t min_dist; // minimal distance to another cluster, mm
+      Int_t id; // cluster ID on the plane
+      Int_t iplane; // plane ID
 
       std::list<unsigned long> hits; // indices for hits contributing to cluster
 
@@ -93,7 +99,8 @@ class TagMapsBasicPlane {
     Bool_t fClsPrim; // primary flag for cluster
     Double_t fClsSigX; // uncertainty in x of cluster, mm
     Double_t fClsSigY; // uncertainty in y of cluster, mm
-
+    Int_t fClsNtrk; // number of tracks for which the cluster was used
+    Double_t fClsMinDist; // minimal distance to another cluster, mm
 };
 
 #endif

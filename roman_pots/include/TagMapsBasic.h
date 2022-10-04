@@ -4,9 +4,9 @@
 
 // Tagger station composed of MAPS basic planes
 
-class TagMapsBasicPlane;
 class GeoParser;
 #include "TrkMapsBasicHits.h"
+#include "TagMapsBasicPlane.h"
 
 class TagMapsBasic {
 
@@ -45,7 +45,8 @@ class TagMapsBasic {
     public:
       Track(): x(0), y(0), slope_x(0), slope_y(0), theta_x(0), theta_y(0),
         chi2_x(0), chi2_y(0), chi2_xy(0), is_prim(0), itrk(-1), pdg(0), is_associate(0),
-        ref_x(0), ref_y(0), ref_theta_x(0), ref_theta_y(0), evt_ntrk(0) {}
+        ref_x(0), ref_y(0), ref_theta_x(0), ref_theta_y(0), evt_ntrk(0), num_shared_cls(0),
+        num_diff_itrk(0), cls(0) {}
 
       Double_t x; // track position in x, mm
       Double_t y; // track position in y, mm
@@ -65,12 +66,19 @@ class TagMapsBasic {
       Double_t ref_theta_x; // reference angle along x, rad
       Double_t ref_theta_y; // reference angle along y, rad
       Int_t evt_ntrk; // number of all tracks in event for a given track
+      Int_t num_shared_cls; // number of track clusters shared with another track
+      Int_t num_diff_itrk; // number of unique MC track indices in the clusters
+
+      std::vector<TagMapsBasicPlane::Cluster*> cls; // track clusters
 
     };//Track
 
   private:
 
     Double_t TrackChi2(Double_t *x, Double_t *y, Track& trk);
+
+    template<std::size_t N>
+    void ClusterAnalysis(TagMapsBasicPlane::Cluster* (&cls)[N], Track& trk);
 
     std::vector<Track> fTracks; // tracks in event
 
