@@ -202,8 +202,14 @@ string AnaMapsBasic::GetStr(program_options::variables_map& opt_map, std::string
 
 }//GetStr
 
+//_____________________________________________________________________________
+extern "C" {
 
+  AnaMapsBasic* make_AnaMapsBasic() { return new AnaMapsBasic(); }
 
+  void run_AnaMapsBasic(AnaMapsBasic& t, const char *c) { t.Run(c); }
+
+}
 
 
 

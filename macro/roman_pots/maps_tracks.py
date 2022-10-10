@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 7
 
     func = {}
     func[0] = chi2
@@ -24,6 +24,7 @@ def main():
     func[4] = chi2_xy
     func[5] = tx_en
     func[6] = excess_tracks
+    func[7] = ntrk_cnt
 
     func[iplot]()
 
@@ -228,11 +229,11 @@ def ntrk():
     #xmax = 30
     xmax = 400
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v7.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
 
     #det = "s1"
@@ -455,6 +456,59 @@ def excess_tracks():
     plt.close()
 
 #excess_tracks
+
+#_____________________________________________________________________________
+def ntrk_cnt():
+
+    #track counts
+    xbin = 1
+    xmax = 30
+    ymax = 200
+
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
+
+    #det = "s1"
+    det = "s2"
+
+    sel = ""
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    can = ut.box_canvas()
+
+    hxy = ut.prepare_TH2D("hxy", xbin, 0, xmax, xbin, 0, ymax)
+
+    yval = det+"_ntrk"
+    xval = "cnt_"+det+"_ntrk"
+    tree.Draw(yval+":"+xval+" >> hxy", sel) # s1_ntrk:cnt_s1_ntrk,  y:x
+
+    ytit = "Number of reconstructed tracks in event"+" ("+yval+")"
+    xtit = "True tracks in reference counter in event"+" ("+xval+")"
+    ut.put_yx_tit(hxy, ytit, xtit, 1.9, 1.3)
+
+    ut.set_margin_lbtr(gPad, 0.13, 0.1, 0.03, 0.11)
+
+    hxy.SetMinimum(0.98)
+    hxy.SetContour(300)
+
+    gPad.SetLogz()
+
+    gPad.SetGrid()
+
+    leg = ut.prepare_leg(0.6, 0.82, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry("", "100 #mum", "")
+    leg.AddEntry("", "Tagger 2", "")
+    leg.Draw("same")
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#ntrk_cnt
 
 #_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):

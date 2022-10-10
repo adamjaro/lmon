@@ -10,7 +10,7 @@ class AnaMapsBasic {
 
     void Run(const char *conf);
 
-  private:
+  protected:
 
     void AssociateMC(TagMapsBasic& tag, RefCounter& cnt);
 
@@ -18,13 +18,7 @@ class AnaMapsBasic {
 
 };
 
-extern "C" {
 
-  AnaMapsBasic* make_AnaMapsBasic() { return new AnaMapsBasic(); }
-
-  void run_AnaMapsBasic(AnaMapsBasic& t, const char *c) { t.Run(c); }
-
-}
 
 #endif
 

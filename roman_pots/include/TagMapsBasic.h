@@ -27,6 +27,9 @@ class TagMapsBasic {
     class Track;
     std::vector<Track>& GetTracks() { return fTracks; }
 
+    int GetNumberOfClusters(int iplane);
+    void GetCluster(int iplane, int icls, double& x, double& y, double& z);
+
   private:
 
     void MakeTrack(Double_t *x, Double_t& pos, Double_t& slope, Double_t& theta, Double_t& chi2);
