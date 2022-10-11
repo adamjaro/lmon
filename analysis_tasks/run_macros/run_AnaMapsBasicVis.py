@@ -6,7 +6,7 @@ from ctypes import CDLL, c_char_p, c_double, byref
 import npyscreen as npy
 
 import ROOT as rt
-from ROOT import TEveManager, TEvePointSet, gEve
+from ROOT import TEveManager, TEvePointSet, gEve, TEveLine
 
 #_____________________________________________________________________________
 class gui(npy.NPSApp):
@@ -83,6 +83,33 @@ class gui(npy.NPSApp):
                 icls += 1
 
         gEve.AddGlobalElement(clusters)
+
+        #tracks
+        #print(self.lib.task_AnaMapsBasicVis_ntrk(self.task))
+        for i in range( self.lib.task_AnaMapsBasicVis_ntrk(self.task) ):
+
+            #load the track
+            x0 = c_double(0)
+            y0 = c_double(0)
+            slope_x = c_double(0)
+            slope_y = c_double(0)
+            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y))
+
+            #print(x0.value, y0.value, slope_x.value, slope_y.value)
+
+            #track line
+            zmax = 500. # mm
+            xpos = x0.value + zmax*slope_x.value
+            ypos = y0.value + zmax*slope_y.value
+            xneg = x0.value - zmax*slope_x.value
+            yneg = y0.value - zmax*slope_y.value
+            track_lin = TEveLine("track_"+str(i), 2)
+            track_lin.SetPoint(0, xneg, yneg, -zmax)
+            track_lin.SetPoint(1, xpos, ypos, zmax)
+
+            track_lin.SetLineColor(rt.kRed)
+
+            gEve.AddGlobalElement(track_lin)
 
         gEve.FullRedraw3D(rt.kTRUE)
 

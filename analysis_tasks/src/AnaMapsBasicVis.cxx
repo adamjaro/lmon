@@ -132,19 +132,59 @@ void AnaMapsBasicVis::GetCluster(int iplane, int icls, double& x, double& y, dou
 }//GetCluster
 
 //_____________________________________________________________________________
+int AnaMapsBasicVis::GetNumberOfTracks() {
+
+  return tag->GetTracks().size();
+
+}//GetNumberOfTracks
+
+//_____________________________________________________________________________
+void AnaMapsBasicVis::GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y) {
+
+  const vector<TagMapsBasic::Track>& tracks = tag->GetTracks();
+
+  x0 = tracks[i].x;
+  y0 = tracks[i].y;
+
+  slope_x = tracks[i].slope_x;
+  slope_y = tracks[i].slope_y;
+
+}//GetTrack
+
+//_____________________________________________________________________________
 extern "C" {
 
+  //make the instance
   AnaMapsBasicVis* make_AnaMapsBasicVis(const char *c) { return new AnaMapsBasicVis(c); }
 
+  //next event
   void task_AnaMapsBasicVis_next_event(AnaMapsBasicVis& t) { t.NextEvent(); }
 
+  //clusters
   int task_AnaMapsBasicVis_ncls(AnaMapsBasicVis& t, int i) { return t.GetNumberOfClusters(i); }
-
   void task_AnaMapsBasicVis_cluster(AnaMapsBasicVis& t, int iplane, int icls, double& x, double& y, double& z) {
     return t.GetCluster(iplane, icls, x, y, z);
   }
 
+  //tracks
+  int task_AnaMapsBasicVis_ntrk(AnaMapsBasicVis& t) { return t.GetNumberOfTracks(); }
+  void task_AnaMapsBasicVis_track(AnaMapsBasicVis& t, int i, double& x0, double& y0, double& slope_x, double& slope_y) {
+    return t.GetTrack(i, x0, y0, slope_x, slope_y);
+  }
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

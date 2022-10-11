@@ -11,8 +11,12 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     AnaMapsBasicVis(const char *conf);
 
     void NextEvent();
+
     int GetNumberOfClusters(int iplane);
     void GetCluster(int iplane, int icls, double& x, double& y, double& z);
+
+    int GetNumberOfTracks();
+    void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y);
 
   private:
 
