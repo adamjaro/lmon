@@ -27,6 +27,9 @@ class gui(npy.NPSApp):
         #make the visualization
         TEveManager.Create()
 
+        #current event
+        self.iev = 0
+
     #init
 
     #_____________________________________________________________________________
@@ -35,8 +38,15 @@ class gui(npy.NPSApp):
         #main frame for the gui
         frame = npy.Form(name="Tagger event display", lines=19, columns=80)
 
-        #frame.add(npy.ButtonPress, name="Draw", when_pressed_function=self.draw, relx=1, rely=2)
-        frame.add(npy.ButtonPress, name="Next event", when_pressed_function=self.next_event, relx=1, rely=2)
+        #event
+        nav_x = 2
+        nav_y = 2
+        frame.add(npy.BoxBasic, name="Event navigation", editable=False, relx=nav_x, rely=nav_y, width=36, height=6)
+        frame.add(npy.ButtonPress, name="Next", when_pressed_function=self.next_event, relx=nav_x+1, rely=nav_y+1)
+        frame.add(npy.ButtonPress, name="Previous", when_pressed_function=self.previous_event, relx=nav_x+1, rely=nav_y+2)
+        self.set_evt = frame.add(npy.TitleText, name="Set event", relx=nav_x+3, rely=nav_y+3, max_width=20)
+        self.set_evt.value = "0"
+        self.set_apply = frame.add(npy.ButtonPress, name="Apply", when_pressed_function=self.set_event, relx=nav_x+23, rely=nav_y+3)
 
         #clear and start
         npy.blank_terminal()
@@ -45,21 +55,31 @@ class gui(npy.NPSApp):
     #main
 
     #_____________________________________________________________________________
-    def draw(self):
+    def set_event(self):
 
-        draw_markers()
-        gEve.FullRedraw3D(rt.kTRUE)
+        self.lib.task_AnaMapsBasicVis_set_event(self.task, int(self.set_evt.value))
+        self.next_event()
 
-    #draw
+    #set_event
 
     #_____________________________________________________________________________
     def next_event(self):
 
+        self.iev = self.lib.task_AnaMapsBasicVis_next_event(self.task)
+        self.draw_event()
+
+    #_____________________________________________________________________________
+    def previous_event(self):
+
+        self.iev = self.lib.task_AnaMapsBasicVis_prev_event(self.task)
+        self.draw_event()
+
+    #_____________________________________________________________________________
+    def draw_event(self):
+
+        #scene
         gEve.GetGlobalScene().DestroyElements()
-
         draw_markers()
-
-        self.lib.task_AnaMapsBasicVis_next_event(self.task)
 
         #clusters
         ncls0 = self.lib.task_AnaMapsBasicVis_ncls(self.task, 0)
@@ -111,9 +131,16 @@ class gui(npy.NPSApp):
 
             gEve.AddGlobalElement(track_lin)
 
+        #status bar
+        stat_str = "Event number: "+str(self.iev)
+
+        gEve.GetStatusBar().SetParts(1)
+        gEve.GetStatusBar().AddText(stat_str)
+        gEve.GetStatusBar().SetHeight(30)
+
         gEve.FullRedraw3D(rt.kTRUE)
 
-    #draw
+    #draw_event
 
 #gui
 

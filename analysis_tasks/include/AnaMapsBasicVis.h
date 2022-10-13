@@ -10,7 +10,9 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
 
     AnaMapsBasicVis(const char *conf);
 
-    void NextEvent();
+    int NextEvent();
+    int PreviousEvent();
+    void SetEvent(int i) { iev = i; }
 
     int GetNumberOfClusters(int iplane);
     void GetCluster(int iplane, int icls, double& x, double& y, double& z);

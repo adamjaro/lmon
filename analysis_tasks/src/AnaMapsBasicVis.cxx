@@ -91,9 +91,12 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(0) {
 }//AnaMapsBasicVis
 
 //_____________________________________________________________________________
-void AnaMapsBasicVis::NextEvent() {
+int AnaMapsBasicVis::NextEvent() {
 
   //load and analyze next event
+
+  if( iev < 0 ) iev = 0;
+  if( iev >= tree->GetEntries() ) iev = tree->GetEntries()-1;
 
   tree->GetEntry(iev);
 
@@ -115,7 +118,17 @@ void AnaMapsBasicVis::NextEvent() {
 
   iev++;
 
+  return iev-1;
+
 }//NextEvent
+
+//_____________________________________________________________________________
+int AnaMapsBasicVis::PreviousEvent() {
+
+  iev -= 2;
+  return NextEvent();
+
+}//PreviousEvent
 
 //_____________________________________________________________________________
 int AnaMapsBasicVis::GetNumberOfClusters(int iplane) {
@@ -157,8 +170,10 @@ extern "C" {
   //make the instance
   AnaMapsBasicVis* make_AnaMapsBasicVis(const char *c) { return new AnaMapsBasicVis(c); }
 
-  //next event
-  void task_AnaMapsBasicVis_next_event(AnaMapsBasicVis& t) { t.NextEvent(); }
+  //event
+  int task_AnaMapsBasicVis_next_event(AnaMapsBasicVis& t) { return t.NextEvent(); }
+  int task_AnaMapsBasicVis_prev_event(AnaMapsBasicVis& t) { return t.PreviousEvent(); }
+  void task_AnaMapsBasicVis_set_event(AnaMapsBasicVis& t, int i) { t.SetEvent(i); }
 
   //clusters
   int task_AnaMapsBasicVis_ncls(AnaMapsBasicVis& t, int i) { return t.GetNumberOfClusters(i); }
