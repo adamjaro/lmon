@@ -7,6 +7,10 @@ import npyscreen as npy
 
 import ROOT as rt
 from ROOT import TEveManager, TEvePointSet, gEve, TEveLine
+from ROOT import gStyle
+
+sys.path.append("/home/jaroslav/sim/lmon/macro/")
+import plot_utils as ut
 
 #_____________________________________________________________________________
 class gui(npy.NPSApp):
@@ -21,11 +25,34 @@ class gui(npy.NPSApp):
         config = get_config()
 
         #analysis task
-        self.lib = CDLL("liblmonAnalysisTasks.so")
-        self.task = self.lib.make_AnaMapsBasicVis( c_char_p(bytes(config, "utf-8")) )
+        self.lib = CDLL("liblmonAnalysisTasks.so") # load the library
+        self.lib.task_AnaMapsBasicVis_det_nam.restype = c_char_p # to return a string
+        self.lib.task_AnaMapsBasicVis_get_max_chi2.restype = c_double # double return type
+        self.task = self.lib.make_AnaMapsBasicVis( c_char_p(bytes(config, "utf-8")) ) # task instance
 
         #make the visualization
         TEveManager.Create()
+
+        #event plots
+        gStyle.SetOptStat("")
+        gStyle.SetPalette(1)
+        gStyle.SetLineWidth(2)
+        gStyle.SetPadTickX(1)
+        gStyle.SetFrameLineWidth(2)
+
+        #tracks chi^2 and cluster distances
+        self.plots_evt = gEve.AddCanvasTab("Event")
+        self.plots_evt.Divide(2)
+
+        self.cluster_dist = ut.prepare_TH1D("cluster_dist", 1, 0, 12)
+        self.tracks_chi2 = ut.prepare_TH1D("tracks_chi2", 0.01, 0, 0.5)
+
+        #cluster position
+        self.plots_cls = gEve.AddCanvasTab("Planes")
+        self.plots_cls.Divide(2, 2)
+        self.plots_cls_pos = [ut.prepare_TH2D("cls_"+str(i), 2, -75, 75, 2, -75, 75) for i in range(4)]
+
+
 
         #current event
         self.iev = 0
@@ -36,17 +63,49 @@ class gui(npy.NPSApp):
     def main(self):
 
         #main frame for the gui
-        frame = npy.Form(name="Tagger event display", lines=19, columns=80)
+        frame = npy.Form(name="Low-Q2 tagger event display", lines=25, columns=80)
 
-        #event
+        #event navigation
         nav_x = 2
         nav_y = 2
-        frame.add(npy.BoxBasic, name="Event navigation", editable=False, relx=nav_x, rely=nav_y, width=36, height=6)
+        frame.add(npy.BoxBasic, name="Event navigation", editable=False, relx=nav_x, rely=nav_y, width=36, height=7)
         frame.add(npy.ButtonPress, name="Next", when_pressed_function=self.next_event, relx=nav_x+1, rely=nav_y+1)
         frame.add(npy.ButtonPress, name="Previous", when_pressed_function=self.previous_event, relx=nav_x+1, rely=nav_y+2)
-        self.set_evt = frame.add(npy.TitleText, name="Set event", relx=nav_x+3, rely=nav_y+3, max_width=20)
+        self.set_evt = frame.add(npy.TitleText, name="Set event", relx=nav_x+3, rely=nav_y+3, max_width=25)
         self.set_evt.value = "0"
-        self.set_apply = frame.add(npy.ButtonPress, name="Apply", when_pressed_function=self.set_event, relx=nav_x+23, rely=nav_y+3)
+        self.set_apply = frame.add(npy.ButtonPress, name="Apply", when_pressed_function=self.set_event, relx=nav_x+26, rely=nav_y+3)
+        frame.add(npy.ButtonPress, name="Re-run current event", when_pressed_function=self.proc_event, relx=nav_x+1, rely=nav_y+4)
+
+        #track criteria
+        track_sel_x = 2
+        track_sel_y = 10
+        frame.add(npy.BoxBasic, name="Track criteria", editable=False, relx=track_sel_x, rely=track_sel_y, width=36, height=4)
+        self.set_chi2 = frame.add(npy.TitleText, name="Max chi2ndf:", relx=track_sel_x+3, rely=track_sel_y+1, max_width=25)
+        self.set_chi2.value = "0.5"
+        self.set_chi2_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_chiSq,
+            relx=track_sel_x+28, rely=track_sel_y+1)
+
+        #tagger selection
+        tag_x = 2
+        tag_y = 15
+        frame.add(npy.BoxBasic, name="Tagger selection", editable=False, relx=tag_x, rely=tag_y, width=36, height=6)
+        self.tag_sel = frame.add(npy.TitleSelectOne, max_height=2, max_width=32, values = ["Tagger 1", "Tagger 2"],
+            name="Select:", relx=tag_x+1, rely=tag_y+1, scroll_exit=True)
+        self.tag_sel.value = 0
+        self.tag_apply = frame.add(npy.ButtonPress, name="Apply", when_pressed_function=self.set_tag, relx=tag_x+15, rely=tag_y+3)
+
+        #event criteria
+        evt_sel_x = 40
+        evt_sel_y = 2
+        frame.add(npy.BoxBasic, name="Event criteria", editable=False, relx=evt_sel_x, rely=evt_sel_y, width=30, height=7)
+        self.set_min_ncls = frame.add(npy.TitleText, name="Min clusters:", relx=evt_sel_x+2, rely=evt_sel_y+1, max_width=25)
+        self.set_min_ncls.value = "0"
+        self.set_min_ntrk = frame.add(npy.TitleText, name="Min rec trk:", relx=evt_sel_x+2, rely=evt_sel_y+2, max_width=25)
+        self.set_min_ntrk.value = "0"
+        self.set_min_ncnt = frame.add(npy.TitleText, name="Min cnt trk:", relx=evt_sel_x+2, rely=evt_sel_y+3, max_width=25)
+        self.set_min_ncnt.value = "0"
+        self.evt_sel_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_evt_sel,
+            relx=evt_sel_x+16, rely=evt_sel_y+4)
 
         #clear and start
         npy.blank_terminal()
@@ -58,7 +117,7 @@ class gui(npy.NPSApp):
     def set_event(self):
 
         self.lib.task_AnaMapsBasicVis_set_event(self.task, int(self.set_evt.value))
-        self.next_event()
+        self.proc_event()
 
     #set_event
 
@@ -75,47 +134,59 @@ class gui(npy.NPSApp):
         self.draw_event()
 
     #_____________________________________________________________________________
+    def proc_event(self):
+
+        self.iev = self.lib.task_AnaMapsBasicVis_process_event(self.task)
+        self.draw_event()
+
+    #_____________________________________________________________________________
     def draw_event(self):
+
+        #plots
+        self.cluster_dist.Reset()
+        self.tracks_chi2.Reset()
+        for i in self.plots_cls_pos: i.Reset()
 
         #scene
         gEve.GetGlobalScene().DestroyElements()
         draw_markers()
 
         #clusters
-        ncls0 = self.lib.task_AnaMapsBasicVis_ncls(self.task, 0)
-        ncls_planes = [self.lib.task_AnaMapsBasicVis_ncls(self.task, i) for i in range(4)]
-        #print("Next event ", ncls0)
-        #ncls = ncls0
-        ncls = sum(ncls_planes)
-        x = c_double(0)
-        y = c_double(0)
-        z = c_double(0)
+        ncls_planes = [self.lib.task_AnaMapsBasicVis_ncls(self.task, i) for i in range(4)] # number of clusters in each plane
+        ncls = sum(ncls_planes) # number of all clusters
+
+        #cluster points
         clusters = TEvePointSet(ncls)
-        icls = 0
         clusters.SetName("Clusters")
         clusters.SetMarkerColor(rt.kYellow)
         clusters.SetMarkerStyle(3)
+        icls = 0
+        cls_xy = [[] for i in range(4)]
         for iplane in range(4):
             for i in range(ncls_planes[iplane]):
+                x = c_double(0)
+                y = c_double(0)
+                z = c_double(0)
                 self.lib.task_AnaMapsBasicVis_cluster(self.task, iplane, i, byref(x), byref(y), byref(z))
-                #print(x.value, y.value, z.value)
                 clusters.SetPoint(icls, x.value, y.value, z.value)
                 icls += 1
+                cls_xy[iplane].append( (x.value, y.value) )
 
         gEve.AddGlobalElement(clusters)
 
         #tracks
-        #print(self.lib.task_AnaMapsBasicVis_ntrk(self.task))
-        for i in range( self.lib.task_AnaMapsBasicVis_ntrk(self.task) ):
+        ntrk = self.lib.task_AnaMapsBasicVis_ntrk(self.task)
+        for i in range(ntrk):
 
             #load the track
             x0 = c_double(0)
             y0 = c_double(0)
             slope_x = c_double(0)
             slope_y = c_double(0)
-            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y))
+            chi2 = c_double(0)
+            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y), byref(chi2))
 
-            #print(x0.value, y0.value, slope_x.value, slope_y.value)
+            self.tracks_chi2.Fill( chi2.value/4. ) # 4 degrees of freedom
 
             #track line
             zmax = 500. # mm
@@ -133,14 +204,67 @@ class gui(npy.NPSApp):
 
         #status bar
         stat_str = "Event number: "+str(self.iev)
+        stat_str += ", station: " + self.lib.task_AnaMapsBasicVis_det_nam(self.task).decode("utf-8")
+        stat_str += ", max_chi2ndf: "+str( self.lib.task_AnaMapsBasicVis_get_max_chi2(self.task) )
+        stat_str += ", clusters: "+str(ncls)+", reconstructed tracks: "+str(ntrk)
+        stat_str += ", true tracks: "+str( self.lib.task_AnaMapsBasicVis_ntrk_ref(self.task) )
 
         gEve.GetStatusBar().SetParts(1)
         gEve.GetStatusBar().AddText(stat_str)
         gEve.GetStatusBar().SetHeight(30)
 
+        #event plots
+        self.plots_evt.cd(1).SetGrid()
+        ut.line_h1(self.tracks_chi2, rt.kBlue, 2)
+        self.tracks_chi2.Draw()
+
+        self.plots_evt.cd(2)
+        self.cluster_dist.Fill( self.iev )
+        self.cluster_dist.Draw()
+
+        #cluster position
+        for iplane in range(4):
+            for cls in cls_xy[iplane]:
+                self.plots_cls_pos[iplane].Fill(cls[0], cls[1])
+
+        for iplane in range(4):
+            self.plots_cls.cd(iplane+1).SetGrid()
+            self.plots_cls_pos[iplane].Draw("colz")
+
+        ut.invert_col_can(self.plots_evt)
+        ut.invert_col_can(self.plots_cls)
+
+        self.plots_evt.Update()
+        self.plots_cls.Update()
+
         gEve.FullRedraw3D(rt.kTRUE)
 
     #draw_event
+
+    #_____________________________________________________________________________
+    def set_tag(self):
+
+        self.lib.task_AnaMapsBasicVis_set_det(self.task, self.tag_sel.value[0])
+
+    #set_tag
+
+    #_____________________________________________________________________________
+    def set_chiSq(self):
+
+        self.lib.task_AnaMapsBasicVis_set_max_chi2(self.task, c_double(float(self.set_chi2.value)))
+
+    #set_chiSq
+
+    #_____________________________________________________________________________
+    def set_evt_sel(self):
+
+        #self.set_min_ncls.value = "0"
+
+        self.lib.task_AnaMapsBasicVis_set_min_ntrk(self.task, int(self.set_min_ntrk.value))
+
+        #self.set_min_ncnt.value = "0"
+
+    #set_evt_sel
 
 #gui
 

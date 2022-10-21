@@ -10,15 +10,27 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
 
     AnaMapsBasicVis(const char *conf);
 
-    int NextEvent();
+    std::string GetDetName() { return tag->GetName(); }
+    void SetDet(int i);
+
+    int ProcessEvent(bool *stat=0x0);
+    int NextEvent(int di=1);
     int PreviousEvent();
     void SetEvent(int i) { iev = i; }
+
+    void SetMaxChi2ndf(double chi2);
+
+    void SetMinNtrk(int n) { min_ntrk = n; }
 
     int GetNumberOfClusters(int iplane);
     void GetCluster(int iplane, int icls, double& x, double& y, double& z);
 
     int GetNumberOfTracks();
-    void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y);
+    void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2);
+
+    int GetNumberOfRefTracks();
+
+    Double_t GetMaxChi2ndf() { return tag->GetMaxChi2ndf(); }
 
   private:
 
@@ -35,6 +47,9 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     Long64_t iev; // event number
 
     TagMapsBasic *tag; // active tagger
+    RefCounter *cnt; // active reference counter
+
+    unsigned long min_ntrk; // minimal number of tracks in event
 
 };
 

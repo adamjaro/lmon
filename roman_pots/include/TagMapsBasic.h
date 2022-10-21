@@ -30,6 +30,9 @@ class TagMapsBasic {
     int GetNumberOfClusters(int iplane);
     void GetCluster(int iplane, int icls, double& x, double& y, double& z);
 
+    std::string GetName() { return fNam; }
+    Double_t GetMaxChi2ndf() { return fChi2ndfMax; }
+
   private:
 
     void MakeTrack(Double_t *x, Double_t& pos, Double_t& slope, Double_t& theta, Double_t& chi2);
