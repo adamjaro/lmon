@@ -118,6 +118,27 @@ class gui(npy.NPSApp):
         self.evt_sel_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_evt_sel,
             relx=evt_sel_x+16, rely=evt_sel_y+4)
 
+        #plots configuration
+        plots_x = 40
+        plots_y = 10
+        frame.add(npy.BoxBasic, name="Plots configuration", editable=False, relx=plots_x, rely=plots_y, width=30, height=10)
+
+        #bins and range for chi^2/ndf
+        self.plot_chi2_bin = frame.add(npy.TitleText, name="Chi2 bin size:", relx=plots_x+2, rely=plots_y+1, begin_entry_at=17, max_width=25)
+        self.plot_chi2_bin.value = "0.01"
+        self.plot_chi2_min = frame.add(npy.TitleText, name="          min:", relx=plots_x+2, rely=plots_y+2, begin_entry_at=17, max_width=25)
+        self.plot_chi2_min.value = "0"
+        self.plot_chi2_max = frame.add(npy.TitleText, name="          max:", relx=plots_x+2, rely=plots_y+3, begin_entry_at=17, max_width=25)
+        self.plot_chi2_max.value = "0.5"
+
+        #bins and range for cluster minimal distance to another cluster
+        self.plot_cdist_bin = frame.add(npy.TitleText, name="Cls dist bin:", relx=plots_x+2, rely=plots_y+5, begin_entry_at=17, max_width=25)
+        self.plot_cdist_bin.value = "1"
+        self.plot_cdist_min = frame.add(npy.TitleText, name="         min:", relx=plots_x+2, rely=plots_y+6, begin_entry_at=17, max_width=25)
+        self.plot_cdist_min.value = "0"
+        self.plot_cdist_max = frame.add(npy.TitleText, name="         max:", relx=plots_x+2, rely=plots_y+7, begin_entry_at=17, max_width=25)
+        self.plot_cdist_max.value = "75"
+
         #clear and start
         npy.blank_terminal()
         frame.edit()
@@ -155,8 +176,16 @@ class gui(npy.NPSApp):
 
         #plots
         self.tracks_chi2.Reset()
+        chi2_bins = ut.get_nbins(float(self.plot_chi2_bin.value), float(self.plot_chi2_min.value), float(self.plot_chi2_max.value))
+        self.tracks_chi2.SetBins(chi2_bins[0], float(self.plot_chi2_min.value), chi2_bins[1])
+
         for i in self.cluster_dist: i.Reset()
-        for i in self.cluster_min_dist: i.Reset()
+
+        cls_min_dist_bins = ut.get_nbins(float(self.plot_cdist_bin.value), float(self.plot_cdist_min.value), float(self.plot_cdist_max.value))
+        for i in self.cluster_min_dist:
+            i.Reset()
+            i.SetBins(cls_min_dist_bins[0], float(self.plot_cdist_min.value), cls_min_dist_bins[1])
+
         for i in self.plots_cls_pos: i.Reset()
 
         #scene

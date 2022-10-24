@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 7
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -35,10 +35,10 @@ def chi2():
     #for two tracks parameters and four measured points
 
     #chi^2
-    #xbin = 1
-    #xmax = 120
-    xbin = 0.05
-    xmax = 12
+    xbin = 0.001
+    xmax = 0.1
+    #xbin = 0.05
+    #xmax = 12
 
     inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
@@ -47,8 +47,8 @@ def chi2():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v7.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v3.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     sel = ""
     #sel = "is_prim==1"
@@ -236,8 +236,8 @@ def ntrk():
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
 
-    #det = "s1"
-    det = "s2"
+    det = "s1"
+    #det = "s2"
     #det = "cnt_s1"
     #det = "cnt_s2"
 
