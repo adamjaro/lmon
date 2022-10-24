@@ -28,7 +28,7 @@ class TagMapsBasic {
     std::vector<Track>& GetTracks() { return fTracks; }
 
     int GetNumberOfClusters(int iplane);
-    void GetCluster(int iplane, int icls, double& x, double& y, double& z);
+    void GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md);
 
     std::string GetName() { return fNam; }
     Double_t GetMaxChi2ndf() { return fChi2ndfMax; }

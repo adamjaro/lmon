@@ -23,7 +23,7 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     void SetMinNtrk(int n) { min_ntrk = n; }
 
     int GetNumberOfClusters(int iplane);
-    void GetCluster(int iplane, int icls, double& x, double& y, double& z);
+    void GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md);
 
     int GetNumberOfTracks();
     void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2);

@@ -177,11 +177,11 @@ int AnaMapsBasicVis::GetNumberOfClusters(int iplane) {
 }//GetNumberOfClusters
 
 //_____________________________________________________________________________
-void AnaMapsBasicVis::GetCluster(int iplane, int icls, double& x, double& y, double& z) {
+void AnaMapsBasicVis::GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md) {
 
   //cluster on a given plane
 
-  tag->GetCluster(iplane, icls, x, y, z);
+  tag->GetCluster(iplane, icls, x, y, z, md);
 
 }//GetCluster
 
@@ -251,8 +251,8 @@ extern "C" {
 
   //clusters
   int task_AnaMapsBasicVis_ncls(AnaMapsBasicVis& t, int i) { return t.GetNumberOfClusters(i); }
-  void task_AnaMapsBasicVis_cluster(AnaMapsBasicVis& t, int iplane, int icls, double& x, double& y, double& z) {
-    return t.GetCluster(iplane, icls, x, y, z);
+  void task_AnaMapsBasicVis_cluster(AnaMapsBasicVis& t, int iplane, int icls, double& x, double& y, double& z, double& md) {
+    return t.GetCluster(iplane, icls, x, y, z, md);
   }
 
   //tracks

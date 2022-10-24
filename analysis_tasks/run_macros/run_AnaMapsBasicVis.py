@@ -8,9 +8,9 @@ import npyscreen as npy
 
 import ROOT as rt
 from ROOT import TEveManager, TEvePointSet, gEve, TEveLine
-from ROOT import gStyle, gPad, TLatex
+from ROOT import gStyle, TLatex
 
-sys.path.append("/home/jaroslav/sim/lmon/macro/")
+sys.path.append("../../macro/")
 import plot_utils as ut
 
 #_____________________________________________________________________________
@@ -50,16 +50,20 @@ class gui(npy.NPSApp):
         self.tracks_chi2 = ut.prepare_TH1D("tracks_chi2", 0.01, 0, 0.5)
         ut.put_yx_tit(self.tracks_chi2, "Counts", "Track #chi^{2}/ndf", 1.2, 1.3)
         self.cluster_dist = [ut.prepare_TH1D("cluster_dist_"+str(i), 1, 0, 75) for i in range(4)]
+        for i in self.cluster_dist:
+            ut.put_yx_tit(i, "Counts", "Cluster mutual distances (mm)", 1.2, 1.3)
+
         self.cluster_dist_col = [rt.kYellow, rt.kBlue, rt.kGreen, rt.kRed]
         self.cluster_dist_sty = [rt.kSolid, rt.kDashed, rt.kDotted, rt.kDashDotted]
+        self.cluster_min_dist = [ut.prepare_TH1D("cluster_min_dist_"+str(i), 1, 0, 75) for i in range(4)]
+        for i in self.cluster_min_dist:
+            ut.put_yx_tit(i, "Counts", "Cluster minimal distance to another cluster (mm)", 1.2, 1.3)
 
         #cluster position
         self.plots_cls = gEve.AddCanvasTab("Planes")
         self.plots_cls.Divide(2, 2)
         self.plots_cls_pos = [ut.prepare_TH2D("cls_"+str(i), 2, -75, 75, 2, -75, 75) for i in range(4)]
         for i in self.plots_cls_pos: ut.put_yx_tit(i, "Cluster #it{y} (mm)", "Cluster #it{x} (mm)", 1.2, 1.2)
-
-
 
         #current event
         self.iev = 0
@@ -152,6 +156,7 @@ class gui(npy.NPSApp):
         #plots
         self.tracks_chi2.Reset()
         for i in self.cluster_dist: i.Reset()
+        for i in self.cluster_min_dist: i.Reset()
         for i in self.plots_cls_pos: i.Reset()
 
         #scene
@@ -174,10 +179,11 @@ class gui(npy.NPSApp):
                 x = c_double(0)
                 y = c_double(0)
                 z = c_double(0)
-                self.lib.task_AnaMapsBasicVis_cluster(self.task, iplane, i, byref(x), byref(y), byref(z))
+                md = c_double(0)
+                self.lib.task_AnaMapsBasicVis_cluster(self.task, iplane, i, byref(x), byref(y), byref(z), byref(md))
                 clusters.SetPoint(icls, x.value, y.value, z.value)
                 icls += 1
-                cls_xy[iplane].append( (x.value, y.value) )
+                cls_xy[iplane].append( (x.value, y.value, md.value) )
 
         gEve.AddGlobalElement(clusters)
 
@@ -223,21 +229,8 @@ class gui(npy.NPSApp):
         #event plots
 
         #event data
-        self.plots_evt.cd(1)#.Clear()
-        #self.evt_frame.Reset()
+        self.plots_evt.cd(1)
         self.evt_frame.Draw()
-        #evt_desc_frame = self.plots_evt.cd(1).DrawFrame(0, 0, 1, 1)
-        #leg_evt = ut.prepare_leg(0.2, 0.2, 0.24, 0.4, 0.035)
-        #leg_evt.AddEntry("", "Event number: "+str(self.iev), "")
-        #leg_evt.AddEntry("", "Event number: ", "")
-        #leg_evt.Draw("same")
-
-        #evt_desc = pdesc(evt_desc_frame, 0.15, 0.78, 0.045)
-        #evt_desc = pdesc(self.evt_frame, 0.2, 0.9, 0.045)
-        #evt_desc.item("Event number", str(self.iev), rt.kGreen)
-        #evt_desc.item("Clusters", str(ncls), rt.kGreen)
-        #evt_desc.item("Tagger", self.lib.task_AnaMapsBasicVis_det_nam(self.task).decode("utf-8"), rt.kGreen)
-        #evt_desc.draw()
 
         evt_desc = TLatex()
         evt_desc.SetTextColor(rt.kGreen)
@@ -256,19 +249,28 @@ class gui(npy.NPSApp):
         self.tracks_chi2.Draw()
 
         #cluster mutual distances
-        self.plots_evt.cd(4).SetGrid()
+        self.plots_evt.cd(3).SetGrid()
         cls_dist_max = []
+        cls_min_dist_max = []
         for iplane in range(4):
             cls = cls_xy[iplane]
             for i in range(len(cls)):
+                self.cluster_min_dist[iplane].Fill( cls[i][2] )
                 for j in range(i+1, len(cls)):
                     self.cluster_dist[iplane].Fill(sqrt( (cls[j][0]-cls[i][0])**2 + (cls[j][1]-cls[i][1])**2 ))
-            ut.line_h1(self.cluster_dist[iplane], self.cluster_dist_col[iplane], 2)
-            cls_dist_max.append( self.cluster_dist[iplane].GetMaximum() )
 
-        frame_cls_dist = gPad.DrawFrame(0, 0, 75, 1.1*max(cls_dist_max)) # xmin, ymin, xmax, ymax
-        ut.put_yx_tit(frame_cls_dist, "Counts", "Cluster mutual distances (mm)", 1.2, 1.3)
-        frame_cls_dist.Draw()
+            #line style for distance plots
+            ut.line_h1(self.cluster_dist[iplane], self.cluster_dist_col[iplane], 2)
+            ut.line_h1(self.cluster_min_dist[iplane], self.cluster_dist_col[iplane], 2)
+            self.cluster_dist[iplane].SetLineStyle( self.cluster_dist_sty[iplane] )
+            self.cluster_min_dist[iplane].SetLineStyle( self.cluster_dist_sty[iplane] )
+
+            #maxima for distance plots in the same pad
+            cls_dist_max.append( self.cluster_dist[iplane].GetMaximum() )
+            cls_min_dist_max.append( self.cluster_min_dist[iplane].GetMaximum() )
+
+        #make the plot on mutual cluster distances
+        self.cluster_dist[ cls_dist_max.index(max(cls_dist_max)) ].Draw()
         leg = ut.prepare_leg(0.7, 0.65, 0.24, 0.2, 0.035) # x, y, dx, dy, tsiz
         iplane = 1
         for i in self.cluster_dist:
@@ -278,6 +280,16 @@ class gui(npy.NPSApp):
             iplane += 1
         leg.Draw("same")
 
+        #cluster minimal distance to another cluster
+        self.plots_evt.cd(4).SetGrid()
+        self.cluster_min_dist[ cls_min_dist_max.index(max(cls_min_dist_max)) ].Draw()
+        leg_min_dist = ut.prepare_leg(0.7, 0.65, 0.24, 0.2, 0.035) # x, y, dx, dy, tsiz
+        iplane = 1
+        for i in self.cluster_min_dist:
+            i.Draw("same")
+            leg_min_dist.AddEntry(i, "Plane_"+str(iplane), "l")
+            iplane += 1
+        leg_min_dist.Draw("same")
 
         #cluster position
         for iplane in range(4):

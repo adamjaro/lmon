@@ -337,13 +337,18 @@ int TagMapsBasic::GetNumberOfClusters(int iplane) {
 }//GetNumberOfClusters
 
 //_____________________________________________________________________________
-void TagMapsBasic::GetCluster(int iplane, int icls, double& x, double& y, double& z) {
+void TagMapsBasic::GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md) {
 
+  //cluster icls at iplane
   TagMapsBasicPlane::Cluster& cls = fPlanes[iplane]->GetClusters()[icls];
 
+  //position
   x = cls.x;
   y = cls.y;
   z = fZ[iplane];
+
+  //minimal distance to another cluster on the plane
+  md = cls.min_dist;
 
 }//GetCluster
 
