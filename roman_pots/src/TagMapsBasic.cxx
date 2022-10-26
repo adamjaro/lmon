@@ -332,7 +332,25 @@ void TagMapsBasic::WriteOutputs() {
 //_____________________________________________________________________________
 int TagMapsBasic::GetNumberOfClusters(int iplane) {
 
+  //number of clusters at iplane
+
   return fPlanes[iplane]->GetClusters().size();
+
+}//GetNumberOfClusters
+
+//_____________________________________________________________________________
+int TagMapsBasic::GetNumberOfClusters() {
+
+  //number of clusters at all planes
+
+  int ncls = 0;
+
+  for(auto i: fPlanes) {
+
+    ncls += i->GetClusters().size();
+  }
+
+  return ncls;
 
 }//GetNumberOfClusters
 

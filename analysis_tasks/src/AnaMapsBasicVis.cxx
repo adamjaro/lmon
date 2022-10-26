@@ -25,7 +25,8 @@ using namespace std;
 using namespace boost;
 
 //_____________________________________________________________________________
-AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0) {
+AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
+    min_ncls(0), min_ncnt(0), min_etrk(0) {
 
   //configuration file
   program_options::options_description opt("opt");
@@ -117,7 +118,11 @@ int AnaMapsBasicVis::ProcessEvent(bool *stat) {
 
     *stat = true;
 
-    if( tag->GetTracks().size() < min_ntrk ) *stat = false;
+    if( GetNumberOfTracks() < min_ntrk ) *stat = false;
+    if( tag->GetNumberOfClusters() < min_ncls ) *stat = false;
+    if( GetNumberOfRefTracks() < min_ncnt ) *stat = false;
+    if( GetNumberOfTracks()-GetNumberOfRefTracks() < min_etrk ) *stat = false;
+
   }
 
   //fill event tree
@@ -243,7 +248,7 @@ extern "C" {
   const char* task_AnaMapsBasicVis_det_nam(AnaMapsBasicVis& t) { return t.GetDetName().c_str(); }
   void task_AnaMapsBasicVis_set_det(AnaMapsBasicVis& t, int i) { t.SetDet(i); }
 
-  //event
+  //event navigation
   int task_AnaMapsBasicVis_next_event(AnaMapsBasicVis& t) { return t.NextEvent(); }
   int task_AnaMapsBasicVis_prev_event(AnaMapsBasicVis& t) { return t.PreviousEvent(); }
   void task_AnaMapsBasicVis_set_event(AnaMapsBasicVis& t, int i) { t.SetEvent(i); }
@@ -263,7 +268,12 @@ extern "C" {
   void task_AnaMapsBasicVis_set_max_chi2(AnaMapsBasicVis& t, double c) { return t.SetMaxChi2ndf(c); }
   double task_AnaMapsBasicVis_get_max_chi2(AnaMapsBasicVis& t) { return t.GetMaxChi2ndf(); }
   int task_AnaMapsBasicVis_ntrk_ref(AnaMapsBasicVis& t) { return t.GetNumberOfRefTracks(); }
+
+  //event selection
   void task_AnaMapsBasicVis_set_min_ntrk(AnaMapsBasicVis& t, int n) { t.SetMinNtrk(n); }
+  void task_AnaMapsBasicVis_set_min_ncls(AnaMapsBasicVis& t, int n) { t.SetMinNcls(n); }
+  void task_AnaMapsBasicVis_set_min_ncnt(AnaMapsBasicVis& t, int n) { t.SetMinNcnt(n); }
+  void task_AnaMapsBasicVis_set_min_etrk(AnaMapsBasicVis& t, int n) { t.SetMinEtrk(n); }
 
 }
 

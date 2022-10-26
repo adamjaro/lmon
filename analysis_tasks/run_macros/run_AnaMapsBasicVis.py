@@ -108,35 +108,37 @@ class gui(npy.NPSApp):
         #event criteria
         evt_sel_x = 40
         evt_sel_y = 2
-        frame.add(npy.BoxBasic, name="Event criteria", editable=False, relx=evt_sel_x, rely=evt_sel_y, width=30, height=7)
-        self.set_min_ncls = frame.add(npy.TitleText, name="Min clusters:", relx=evt_sel_x+2, rely=evt_sel_y+1, max_width=25)
+        frame.add(npy.BoxBasic, name="Event criteria", editable=False, relx=evt_sel_x, rely=evt_sel_y, width=30, height=8)
+        self.set_min_ncls = frame.add(npy.TitleText, name="Min clusters:", relx=evt_sel_x+2, rely=evt_sel_y+1,max_width=27,begin_entry_at=18)
         self.set_min_ncls.value = "0"
-        self.set_min_ntrk = frame.add(npy.TitleText, name="Min rec trk:", relx=evt_sel_x+2, rely=evt_sel_y+2, max_width=25)
+        self.set_min_ntrk = frame.add(npy.TitleText, name="Min rec trk:", relx=evt_sel_x+2, rely=evt_sel_y+2, max_width=27,begin_entry_at=18)
         self.set_min_ntrk.value = "0"
-        self.set_min_ncnt = frame.add(npy.TitleText, name="Min cnt trk:", relx=evt_sel_x+2, rely=evt_sel_y+3, max_width=25)
+        self.set_min_ncnt = frame.add(npy.TitleText, name="Min cnt trk:", relx=evt_sel_x+2, rely=evt_sel_y+3, max_width=27,begin_entry_at=18)
         self.set_min_ncnt.value = "0"
+        self.set_min_etrk = frame.add(npy.TitleText, name="Min excess trk:",relx=evt_sel_x+2,rely=evt_sel_y+4,max_width=27,begin_entry_at=18)
+        self.set_min_etrk.value = "0"
         self.evt_sel_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_evt_sel,
-            relx=evt_sel_x+16, rely=evt_sel_y+4)
+            relx=evt_sel_x+18, rely=evt_sel_y+5)
 
         #plots configuration
         plots_x = 40
-        plots_y = 10
+        plots_y = 11
         frame.add(npy.BoxBasic, name="Plots configuration", editable=False, relx=plots_x, rely=plots_y, width=30, height=10)
 
         #bins and range for chi^2/ndf
-        self.plot_chi2_bin = frame.add(npy.TitleText, name="Chi2 bin size:", relx=plots_x+2, rely=plots_y+1, begin_entry_at=17, max_width=25)
+        self.plot_chi2_bin = frame.add(npy.TitleText, name="Chi2 bin size:", relx=plots_x+2, rely=plots_y+2, begin_entry_at=17, max_width=25)
         self.plot_chi2_bin.value = "0.01"
-        self.plot_chi2_min = frame.add(npy.TitleText, name="          min:", relx=plots_x+2, rely=plots_y+2, begin_entry_at=17, max_width=25)
+        self.plot_chi2_min = frame.add(npy.TitleText, name="          min:", relx=plots_x+2, rely=plots_y+3, begin_entry_at=17, max_width=25)
         self.plot_chi2_min.value = "0"
-        self.plot_chi2_max = frame.add(npy.TitleText, name="          max:", relx=plots_x+2, rely=plots_y+3, begin_entry_at=17, max_width=25)
+        self.plot_chi2_max = frame.add(npy.TitleText, name="          max:", relx=plots_x+2, rely=plots_y+4, begin_entry_at=17, max_width=25)
         self.plot_chi2_max.value = "0.5"
 
         #bins and range for cluster minimal distance to another cluster
-        self.plot_cdist_bin = frame.add(npy.TitleText, name="Cls dist bin:", relx=plots_x+2, rely=plots_y+5, begin_entry_at=17, max_width=25)
+        self.plot_cdist_bin = frame.add(npy.TitleText, name="Cls dist bin:", relx=plots_x+2, rely=plots_y+6, begin_entry_at=17, max_width=25)
         self.plot_cdist_bin.value = "1"
-        self.plot_cdist_min = frame.add(npy.TitleText, name="         min:", relx=plots_x+2, rely=plots_y+6, begin_entry_at=17, max_width=25)
+        self.plot_cdist_min = frame.add(npy.TitleText, name="         min:", relx=plots_x+2, rely=plots_y+7, begin_entry_at=17, max_width=25)
         self.plot_cdist_min.value = "0"
-        self.plot_cdist_max = frame.add(npy.TitleText, name="         max:", relx=plots_x+2, rely=plots_y+7, begin_entry_at=17, max_width=25)
+        self.plot_cdist_max = frame.add(npy.TitleText, name="         max:", relx=plots_x+2, rely=plots_y+8, begin_entry_at=17, max_width=25)
         self.plot_cdist_max.value = "75"
 
         #clear and start
@@ -361,11 +363,12 @@ class gui(npy.NPSApp):
     #_____________________________________________________________________________
     def set_evt_sel(self):
 
-        #self.set_min_ncls.value = "0"
+        #apply the event selection criteria
 
         self.lib.task_AnaMapsBasicVis_set_min_ntrk(self.task, int(self.set_min_ntrk.value))
-
-        #self.set_min_ncnt.value = "0"
+        self.lib.task_AnaMapsBasicVis_set_min_ncls(self.task, int(self.set_min_ncls.value))
+        self.lib.task_AnaMapsBasicVis_set_min_ncnt(self.task, int(self.set_min_ncnt.value))
+        self.lib.task_AnaMapsBasicVis_set_min_etrk(self.task, int(self.set_min_etrk.value))
 
     #set_evt_sel
 

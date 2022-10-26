@@ -21,6 +21,9 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     void SetMaxChi2ndf(double chi2);
 
     void SetMinNtrk(int n) { min_ntrk = n; }
+    void SetMinNcls(int n) { min_ncls = n; }
+    void SetMinNcnt(int n) { min_ncnt = n; }
+    void SetMinEtrk(int n) { min_etrk = n; }
 
     int GetNumberOfClusters(int iplane);
     void GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md);
@@ -49,7 +52,10 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     TagMapsBasic *tag; // active tagger
     RefCounter *cnt; // active reference counter
 
-    unsigned long min_ntrk; // minimal number of tracks in event
+    int min_ntrk; // minimal number of tracks in event
+    int min_ncls; // minimal number of clusters on all planes in event
+    int min_ncnt; // minimal number of reference tracks in event
+    int min_etrk; // minimal number of excess tracks as reconstructed tracks - reference tracks
 
 };
 
