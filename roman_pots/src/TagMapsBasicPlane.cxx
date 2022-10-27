@@ -25,7 +25,7 @@ using namespace std;
 
 //_____________________________________________________________________________
 TagMapsBasicPlane::TagMapsBasicPlane(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree):
-    fNam(nam), fEmin(0.4), fTree(0), fEvtTree(evt_tree), fNhit(0) {
+    fNam(nam), fEmin(0.4), fTree(0), fEvtTree(evt_tree), fNhit(0), fClsMinLimMdist(0) {
 
   //connect the hits for the plane
   fHits.ConnectInput("lowQ2_"+fNam, tree);
@@ -140,6 +140,29 @@ void TagMapsBasicPlane::ProcessEvent() {
     if( cls.is_prim ) fNClsPrim++;
 
   }//clusters loop
+
+  //cluster mutual distances and status
+  for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
+    Cluster& cls = *icls;
+
+    //inner loop
+    for(vector<Cluster>::iterator i2 = fCls.begin(); i2 != fCls.end(); i2++) {
+      if( icls == i2 ) continue; // same cluster
+
+      Cluster& cls2 = *i2;
+
+      //distance between the clusters
+      Double_t dist = TMath::Sqrt( (cls.x-cls2.x)*(cls.x-cls2.x) + (cls.y-cls2.y)*(cls.y-cls2.y) );
+
+      //update the minimal distance for the cluster
+      if( dist < cls.min_dist or cls.min_dist < 0 ) cls.min_dist = dist;
+
+    }//inner loop
+
+    //cluster status
+    if( cls.min_dist > 0 and cls.min_dist < fClsMinLimMdist ) cls.stat = kFALSE; // limit on minimal distance to another cluster
+
+  }//cluster mutual distances and status
 
   //cout << fNam << " clusters: " << fNCls << " " << fNClsPrim << endl;
 
@@ -438,20 +461,6 @@ void TagMapsBasicPlane::FinishEvent() {
   //clusters loop
   for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
     Cluster& cls = *icls;
-
-    //inner loop
-    for(vector<Cluster>::iterator i2 = fCls.begin(); i2 != fCls.end(); i2++) {
-      if( icls == i2 ) continue; // same cluster
-
-      Cluster& cls2 = *i2;
-
-      //distance between the clusters
-      Double_t dist = TMath::Sqrt( (cls.x-cls2.x)*(cls.x-cls2.x) + (cls.y-cls2.y)*(cls.y-cls2.y) );
-
-      //update the minimal distance for the cluster
-      if( dist < cls.min_dist or cls.min_dist < 0 ) cls.min_dist = dist;
-
-    }//inner loop
 
     //fill output on clusters
     fClsX = cls.x;

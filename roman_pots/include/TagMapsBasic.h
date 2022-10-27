@@ -21,6 +21,7 @@ class TagMapsBasic {
     void WriteOutputs();
 
     void SetMaxChi2Ndf(Double_t max_chi2ndf) { fChi2ndfMax = max_chi2ndf; }
+    void SetClsLimMdist(Double_t d);
 
     void FinishEvent();
 
@@ -33,6 +34,7 @@ class TagMapsBasic {
 
     std::string GetName() { return fNam; }
     Double_t GetMaxChi2ndf() { return fChi2ndfMax; }
+    Double_t GetClsLimMdist() { return fPlanes[0]->GetLimMdist(); }
 
   private:
 

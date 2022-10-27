@@ -19,6 +19,7 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     void SetEvent(int i) { iev = i; }
 
     void SetMaxChi2ndf(double chi2);
+    void SetClsLimMdist(double d);
 
     void SetMinNtrk(int n) { min_ntrk = n; }
     void SetMinNcls(int n) { min_ncls = n; }
@@ -34,6 +35,7 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     int GetNumberOfRefTracks();
 
     Double_t GetMaxChi2ndf() { return tag->GetMaxChi2ndf(); }
+    Double_t GetClsLimMdist() { return tag->GetClsLimMdist(); }
 
   private:
 

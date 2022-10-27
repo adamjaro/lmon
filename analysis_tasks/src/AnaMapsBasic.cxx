@@ -35,6 +35,7 @@ void AnaMapsBasic::Run(const char *conf) {
     ("main.geo", program_options::value<string>(), "Geometry configuration")
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
+    ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
   ;
 
   //load the configuration file
@@ -106,6 +107,13 @@ void AnaMapsBasic::Run(const char *conf) {
 
     s1.SetMaxChi2Ndf( max_chi2ndf );
     s2.SetMaxChi2Ndf( max_chi2ndf );
+  }
+  if( opt_map.find("main.min_cls_dist") != opt_map.end() ) {
+    Double_t min_cls_dist = opt_map["main.min_cls_dist"].as<double>();
+    cout << "Using min_cls_dist = " << min_cls_dist << endl;
+
+    s1.SetClsLimMdist(min_cls_dist);
+    s2.SetClsLimMdist(min_cls_dist);
   }
 
   //reference counters

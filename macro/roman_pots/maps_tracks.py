@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 8
 
     func = {}
     func[0] = chi2
@@ -25,6 +25,7 @@ def main():
     func[5] = tx_en
     func[6] = excess_tracks
     func[7] = ntrk_cnt
+    func[8] = exc_trk_s12
 
     func[iplot]()
 
@@ -509,6 +510,58 @@ def ntrk_cnt():
     can.SaveAs("01fig.pdf")
 
 #ntrk_cnt
+
+#_____________________________________________________________________________
+def exc_trk_s12():
+
+    #excess tracks in both taggers
+
+    #track counts
+    xbin = 1
+    xmin = 1
+    xmax = 14
+
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v6.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    can = ut.box_canvas()
+
+    hs1 = ut.prepare_TH1D("hs1", xbin, xmin, xmax)
+    hs2 = ut.prepare_TH1D("hs2", xbin, xmin, xmax)
+
+    tree.Draw("s1_ntrk-cnt_s1_ntrk >> hs1")
+    tree.Draw("s2_ntrk-cnt_s2_ntrk >> hs2")
+    ut.line_h1(hs1, rt.kGreen)
+    ut.line_h1(hs2, rt.kRed)
+
+    #vertical limit by plot with larger maximum
+    if hs1.GetMaximum() > hs2.GetMaximum():
+        hx = hs1
+    else:
+        hx = hs2
+
+    ut.put_yx_tit(hx, "Counts", "(Rec tracks) - (True tracks)", 1.5, 1.2)
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.02, 0.02)
+    hx.Draw()
+
+    hs1.Draw("same")
+    hs2.Draw("same")
+
+    leg = ut.prepare_leg(0.7, 0.8, 0.24, 0.1, 0.035) # x, y, dx, dy, tsiz
+    leg.AddEntry(hs1, "Tagger 1", "l")
+    leg.AddEntry(hs2, "Tagger 2", "l")
+    leg.Draw("same")
+
+    gPad.SetLogy()
+    gPad.SetGrid()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#exc_trk_s12
 
 #_____________________________________________________________________________
 def make_h1(infile, tnam, val, xbin, xmin, xmax, sel=""):

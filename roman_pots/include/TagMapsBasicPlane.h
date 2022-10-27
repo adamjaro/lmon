@@ -20,6 +20,9 @@ class TagMapsBasicPlane {
     void CreateOutput();
     void WriteOutputs();
 
+    void SetLimMdist(Double_t d) { fClsMinLimMdist = d; }
+    Double_t GetLimMdist() { return fClsMinLimMdist; }
+
     TrkMapsBasicHits& GetHits() { return fHits; }
 
     class Cluster;
@@ -65,7 +68,7 @@ class TagMapsBasicPlane {
     public:
       Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1),
                  sigma_x(0), sigma_y(0), itrk(-1), pdg(0),
-                 ntrk(0), min_dist(-1), id(0), iplane(0) {}
+                 ntrk(0), min_dist(-1), id(0), iplane(0), stat(kTRUE) {}
 
       Double_t x; // cluster x position, mm
       Double_t y; // cluster y position, mm
@@ -80,6 +83,7 @@ class TagMapsBasicPlane {
       Double_t min_dist; // minimal distance to another cluster, mm
       Int_t id; // cluster ID on the plane
       Int_t iplane; // plane ID
+      Bool_t stat; // cluster status
 
       std::list<unsigned long> hits; // indices for hits contributing to cluster
 
@@ -87,6 +91,8 @@ class TagMapsBasicPlane {
 
     };//Cluster
   private:
+
+    Double_t fClsMinLimMdist; // limit on minimal distance to another cluster, mm
 
     std::vector<Cluster> fCls; // clusters in event
 

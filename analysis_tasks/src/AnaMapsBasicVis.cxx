@@ -35,6 +35,7 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
     ("main.geo", program_options::value<string>(), "Geometry configuration")
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
+    ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
   ;
 
   //load the configuration file
@@ -81,6 +82,13 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
 
     s1->SetMaxChi2Ndf( max_chi2ndf );
     s2->SetMaxChi2Ndf( max_chi2ndf );
+  }
+  if( opt_map.find("main.min_cls_dist") != opt_map.end() ) {
+    Double_t min_cls_dist = opt_map["main.min_cls_dist"].as<double>();
+    cout << "Using min_cls_dist = " << min_cls_dist << endl;
+
+    s1->SetClsLimMdist(min_cls_dist);
+    s2->SetClsLimMdist(min_cls_dist);
   }
 
   //reference counters
@@ -167,10 +175,22 @@ int AnaMapsBasicVis::PreviousEvent() {
 //_____________________________________________________________________________
 void AnaMapsBasicVis::SetMaxChi2ndf(double chi2) {
 
+  //set chi^2 limit for both taggers
+
   s1->SetMaxChi2Ndf(chi2);
   s2->SetMaxChi2Ndf(chi2);
 
 }//SetMaxChi2ndf
+
+//_____________________________________________________________________________
+void AnaMapsBasicVis::SetClsLimMdist(double d) {
+
+  //set limit on cluster distance for both taggers
+
+  s1->SetClsLimMdist(d);
+  s2->SetClsLimMdist(d);
+
+}//SetClsLimMdist
 
 //_____________________________________________________________________________
 int AnaMapsBasicVis::GetNumberOfClusters(int iplane) {
@@ -267,6 +287,8 @@ extern "C" {
   }
   void task_AnaMapsBasicVis_set_max_chi2(AnaMapsBasicVis& t, double c) { return t.SetMaxChi2ndf(c); }
   double task_AnaMapsBasicVis_get_max_chi2(AnaMapsBasicVis& t) { return t.GetMaxChi2ndf(); }
+  void task_AnaMapsBasicVis_set_lim_mdist(AnaMapsBasicVis& t, double d) { t.SetClsLimMdist(d); }
+  double task_AnaMapsBasicVis_get_lim_mdist(AnaMapsBasicVis& t) { return t.GetClsLimMdist(); }
   int task_AnaMapsBasicVis_ntrk_ref(AnaMapsBasicVis& t) { return t.GetNumberOfRefTracks(); }
 
   //event selection

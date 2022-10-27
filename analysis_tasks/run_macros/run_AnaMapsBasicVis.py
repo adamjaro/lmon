@@ -29,6 +29,7 @@ class gui(npy.NPSApp):
         self.lib = CDLL("liblmonAnalysisTasks.so") # load the library
         self.lib.task_AnaMapsBasicVis_det_nam.restype = c_char_p # to return a string
         self.lib.task_AnaMapsBasicVis_get_max_chi2.restype = c_double # double return type
+        self.lib.task_AnaMapsBasicVis_get_lim_mdist.restype = c_double
         self.task = self.lib.make_AnaMapsBasicVis( c_char_p(bytes(config, "utf-8")) ) # task instance
 
         #make the visualization
@@ -74,7 +75,7 @@ class gui(npy.NPSApp):
     def main(self):
 
         #main frame for the gui
-        frame = npy.Form(name="Low-Q2 tagger event display", lines=25, columns=80)
+        frame = npy.Form(name="Low-Q2 tagger event display", lines=25, columns=82)
 
         #event navigation
         nav_x = 2
@@ -90,15 +91,17 @@ class gui(npy.NPSApp):
         #track criteria
         track_sel_x = 2
         track_sel_y = 10
-        frame.add(npy.BoxBasic, name="Track criteria", editable=False, relx=track_sel_x, rely=track_sel_y, width=36, height=4)
+        frame.add(npy.BoxBasic, name="Track criteria", editable=False, relx=track_sel_x, rely=track_sel_y, width=36, height=6)
         self.set_chi2 = frame.add(npy.TitleText, name="Max chi2ndf:", relx=track_sel_x+3, rely=track_sel_y+1, max_width=25)
         self.set_chi2.value = "0.5"
+        self.set_min_mdist = frame.add(npy.TitleText, name="Min cls dist:", relx=track_sel_x+3, rely=track_sel_y+2, max_width=25)
+        self.set_min_mdist.value = "0"
         self.set_chi2_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_chiSq,
-            relx=track_sel_x+28, rely=track_sel_y+1)
+            relx=track_sel_x+17, rely=track_sel_y+3)
 
         #tagger selection
         tag_x = 2
-        tag_y = 15
+        tag_y = 17
         frame.add(npy.BoxBasic, name="Tagger selection", editable=False, relx=tag_x, rely=tag_y, width=36, height=6)
         self.tag_sel = frame.add(npy.TitleSelectOne, max_height=2, max_width=32, values = ["Tagger 1", "Tagger 2"],
             name="Select:", relx=tag_x+1, rely=tag_y+1, scroll_exit=True)
@@ -250,6 +253,7 @@ class gui(npy.NPSApp):
         stat_str = "Event number: "+str(self.iev)
         stat_str += ", station: " + self.lib.task_AnaMapsBasicVis_det_nam(self.task).decode("utf-8")
         stat_str += ", max_chi2ndf: "+str( self.lib.task_AnaMapsBasicVis_get_max_chi2(self.task) )
+        stat_str += ", min_mdist: "+str( self.lib.task_AnaMapsBasicVis_get_lim_mdist(self.task) )
         stat_str += ", clusters: "+str(ncls)+", reconstructed tracks: "+str(ntrk)
         stat_str += ", true tracks: "+str( self.lib.task_AnaMapsBasicVis_ntrk_ref(self.task) )
 
@@ -270,9 +274,13 @@ class gui(npy.NPSApp):
         evt_desc.DrawLatex(0.1, evt_desc_start, "Event number:  "+str(self.iev))
         evt_desc.DrawLatex(0.1, evt_desc_start - evt_desc_delt, "Tagger:  "+self.lib.task_AnaMapsBasicVis_det_nam(self.task).decode("utf-8"))
         evt_desc.DrawLatex(0.1, evt_desc_start - 2*evt_desc_delt, "Max_chi2ndf:  "+str(self.lib.task_AnaMapsBasicVis_get_max_chi2(self.task)))
-        evt_desc.DrawLatex(0.1, evt_desc_start - 3*evt_desc_delt, "Clusters:  "+str(ncls))
-        evt_desc.DrawLatex(0.1, evt_desc_start - 4*evt_desc_delt, "Reco tracks:  "+str(ntrk))
-        evt_desc.DrawLatex(0.1, evt_desc_start - 5*evt_desc_delt, "True tracks:  "+str( self.lib.task_AnaMapsBasicVis_ntrk_ref(self.task) ))
+        evt_desc.DrawLatex(0.1, evt_desc_start - 3*evt_desc_delt,"Min cls dist:  "+str(self.lib.task_AnaMapsBasicVis_get_lim_mdist(self.task)))
+        evt_desc.DrawLatex(0.1, evt_desc_start - 4*evt_desc_delt, "Clusters:  "+str(ncls))
+        evt_desc.DrawLatex(0.1, evt_desc_start - 5*evt_desc_delt, "Reco tracks:  "+str(ntrk))
+        evt_desc.DrawLatex(0.1, evt_desc_start - 6*evt_desc_delt, "True tracks:  "+str( self.lib.task_AnaMapsBasicVis_ntrk_ref(self.task) ))
+
+
+#        stat_str += ", min_mdist: "+str( self.lib.task_AnaMapsBasicVis_get_lim_mdist(self.task) )
 
         #tracks chi^2/ndf
         self.plots_evt.cd(2).SetGrid()
@@ -357,6 +365,7 @@ class gui(npy.NPSApp):
     def set_chiSq(self):
 
         self.lib.task_AnaMapsBasicVis_set_max_chi2(self.task, c_double(float(self.set_chi2.value)))
+        self.lib.task_AnaMapsBasicVis_set_lim_mdist(self.task, c_double(float(self.set_min_mdist.value)))
 
     #set_chiSq
 

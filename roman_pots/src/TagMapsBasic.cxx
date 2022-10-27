@@ -60,7 +60,7 @@ void TagMapsBasic::ProcessEvent() {
   //initialize the event tracks
   fTracks.clear();
 
-  //load hits for individual planes
+  //load hits and make clusters for individual planes
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::ProcessEvent ));
 
   //clusters in planes
@@ -77,21 +77,25 @@ void TagMapsBasic::ProcessEvent() {
   for(unsigned long i1=0; i1<cls1.size(); i1++) {
     TagMapsBasicPlane::Cluster& c1 = cls1[i1];
     c1.iplane = 1;
+    if( !c1.stat ) continue;
 
     //plane 2
     for(unsigned long i2=0; i2<cls2.size(); i2++) {
       TagMapsBasicPlane::Cluster& c2 = cls2[i2];
       c2.iplane = 2;
+      if( !c2.stat ) continue;
 
       //plane 3
       for(unsigned long i3=0; i3<cls3.size(); i3++) {
         TagMapsBasicPlane::Cluster& c3 = cls3[i3];
         c3.iplane = 3;
+        if( !c3.stat ) continue;
 
         //plane 4
         for(unsigned long i4=0; i4<cls4.size(); i4++) {
           TagMapsBasicPlane::Cluster& c4 = cls4[i4];
           c4.iplane = 4;
+          if( !c4.stat ) continue;
 
           //make the track from the clusters
 
@@ -222,6 +226,19 @@ template<size_t N> void TagMapsBasic::ClusterAnalysis(TagMapsBasicPlane::Cluster
   //cout << endl;
 
 }//ClusterAnalysis
+
+//_____________________________________________________________________________
+void TagMapsBasic::SetClsLimMdist(Double_t d) {
+
+  //set limit on minimal cluster distance for all planes
+
+  //plane loop
+  for(auto i: fPlanes) {
+
+    i->SetLimMdist(d);
+  }//plane loop
+
+}//SetClsLimMdist
 
 //_____________________________________________________________________________
 void TagMapsBasic::FinishEvent() {
