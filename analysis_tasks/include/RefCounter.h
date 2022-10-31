@@ -14,11 +14,11 @@ class RefCounter {
     RefCounter(std::string nam, TTree *tree, GeoParser *geo, TTree *otree);
 
     void ProcessEvent();
-
+    void FinishEvent();
     void WriteOutputs();
 
     class Track;
-    const std::vector<Track>& GetTracks() { return fTracks; }
+    std::vector<Track>& GetTracks() { return fTracks; }
 
   private:
 
@@ -36,13 +36,14 @@ class RefCounter {
     Double_t fThetaX; // track angle in x, rad
     Double_t fThetaY; // track angle in y, rad
     Bool_t fPrim; // track for primary particle
+    Bool_t fRec; // the track was reconstructed when true
 
     //track in reference counter
   public:
     class Track {
     public:
       Track(): x(0), y(0), theta_x(0), theta_y(0),
-               is_prim(0), itrk(-1), pdg(0) {}
+               is_prim(0), itrk(-1), pdg(0), is_rec(0) {}
 
       Double_t x; // track position in x, mm
       Double_t y; // track position in y, mm
@@ -51,6 +52,7 @@ class RefCounter {
       Bool_t is_prim; // track for primary particle
       Int_t itrk; // index for MC particle
       Int_t pdg; // pdg for MC particle
+      Bool_t is_rec; // the track was reconstructed when true
 
     };//Track
 

@@ -41,6 +41,7 @@ RefCounter::RefCounter(string nam, TTree *tree, GeoParser *geo, TTree *otree):
   fTrackTree->Branch("theta_x", &fThetaX, "theta_x/D");
   fTrackTree->Branch("theta_y", &fThetaY, "theta_y/D");
   fTrackTree->Branch("is_prim", &fPrim, "is_prim/O");
+  fTrackTree->Branch("is_rec", &fRec, "is_rec/O");
 
 }//RefCounter
 
@@ -77,39 +78,52 @@ void RefCounter::ProcessEvent() {
 
       //cout << h1.x << " " << h1.y << " " << h1.z << " " << h1.itrk <<  " " << h2.itrk << " " << h1.is_prim << endl;
 
-      //track position
-      fX = 0.5*(h1.x + h2.x);
-      fY = 0.5*(h1.y + h2.y);
-
-      //track angle
-      fThetaX = TMath::ATan( (h2.x-h1.x)/(h2.z-h1.z) );
-      fThetaY = TMath::ATan( (h2.y-h1.y)/(h2.z-h1.z) );
-
-      //primary flag for the track
-      fPrim = h2.is_prim;
-
-      //fill the track tree
-      fTrackTree->Fill();
-
       //add the reference track for the event
       fTracks.push_back( Track() );
       Track& trk = fTracks.back();
 
-      trk.x = fX;
-      trk.y = fY;
-      trk.theta_x = fThetaX;
-      trk.theta_y = fThetaY;
-      trk.is_prim = fPrim;
+      //track position
+      trk.x = 0.5*(h1.x + h2.x);
+      trk.y = 0.5*(h1.y + h2.y);
+
+      //track angle
+      trk.theta_x = TMath::ATan( (h2.x-h1.x)/(h2.z-h1.z) );
+      trk.theta_y = TMath::ATan( (h2.y-h1.y)/(h2.z-h1.z) );
+
+      //primary flag for the track
+      trk.is_prim = h2.is_prim;
+
+      //MC index and pdg for the track
       trk.itrk = h2.itrk;
       trk.pdg = h2.pdg;
 
     }//hit loop, plane 2
-
   }//hit loop, plane 1
 
-
-
 }//ProcessEvent
+
+//_____________________________________________________________________________
+void RefCounter::FinishEvent() {
+
+  //tracks loop
+  for(const auto& i: fTracks) {
+
+    //track position and angles
+    fX = i.x;
+    fY = i.y;
+    fThetaX = i.theta_x;
+    fThetaY = i.theta_y;
+
+    //MC and reconstruction flags
+    fPrim = i.is_prim;
+    fRec = i.is_rec;
+
+    //fill the track tree
+    fTrackTree->Fill();
+
+  }//tracks loop
+
+}//FinishEvent
 
 //_____________________________________________________________________________
 void RefCounter::WriteOutputs() {

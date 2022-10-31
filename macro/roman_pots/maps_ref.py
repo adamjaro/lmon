@@ -30,13 +30,13 @@ def xy():
     xybin = 1
     xymax = 80
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     #val = "pos_x:ref_x"
     val = "pos_y:ref_y"
@@ -87,12 +87,12 @@ def theta_x():
     xybin = 1
     xymax = 100
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -141,9 +141,9 @@ def theta_y():
     #xymax = 50
     xymax = 100
 
-    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"

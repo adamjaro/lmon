@@ -143,6 +143,9 @@ void AnaMapsBasic::Run(const char *conf) {
     s1.FinishEvent();
     s2.FinishEvent();
 
+    cnt_s1.FinishEvent();
+    cnt_s2.FinishEvent();
+
     //fill event tree
     otree.Fill();
 
@@ -166,7 +169,7 @@ void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
   //associate tagger tracks with MC particles in reference counter
 
   vector<TagMapsBasic::Track>& tracks = tag.GetTracks();
-  const vector<RefCounter::Track>& ref_cnt = cnt.GetTracks();
+  vector<RefCounter::Track>& ref_cnt = cnt.GetTracks();
 
   //tracks loop
   for(auto it = tracks.begin(); it != tracks.end(); it++) {
@@ -181,7 +184,7 @@ void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
     for(auto ir = ref_cnt.begin(); ir != ref_cnt.end(); ir++) {
 
       //reference track
-      const RefCounter::Track& ref = *ir;
+      RefCounter::Track& ref = *ir;
 
       //associate measured track with reference track
       if( ref.itrk != trk.itrk ) continue;
@@ -194,6 +197,9 @@ void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
       trk.ref_y = ref.y;
       trk.ref_theta_x = ref.theta_x;
       trk.ref_theta_y = ref.theta_y;
+
+      //mark the reference track as having measured track
+      ref.is_rec = true;
 
     }//reference tracks loop
   }//tracks loop
