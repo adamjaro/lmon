@@ -12,6 +12,7 @@
 //ROOT
 #include "TTree.h"
 #include "TMath.h"
+#include "TH1D.h"
 
 //Geant
 #include "G4String.hh"
@@ -42,6 +43,9 @@ RefCounter::RefCounter(string nam, TTree *tree, GeoParser *geo, TTree *otree):
   fTrackTree->Branch("theta_y", &fThetaY, "theta_y/D");
   fTrackTree->Branch("is_prim", &fPrim, "is_prim/O");
   fTrackTree->Branch("is_rec", &fRec, "is_rec/O");
+
+  //track counter
+  fCnt = new TH1D((fNam+"_hcnt").c_str(), (fNam+"_hcnt").c_str(), kMaxCnt-1, 1, kMaxCnt);
 
 }//RefCounter
 
@@ -121,6 +125,10 @@ void RefCounter::FinishEvent() {
     //fill the track tree
     fTrackTree->Fill();
 
+    //increment track counts
+    fCnt->Fill( kAll );
+    if(i.is_rec) fCnt->Fill( kRec );
+
   }//tracks loop
 
 }//FinishEvent
@@ -129,8 +137,15 @@ void RefCounter::FinishEvent() {
 void RefCounter::WriteOutputs() {
 
   fTrackTree->Write();
+  fCnt->Write();
 
-  cout << "RefCounter " << fNam << " tracks: " << fTrackTree->GetEntries() << endl;
+  cout << "RefCounter " << fNam;
+  cout << ", tracks: " << fCnt->GetBinContent(kAll);
+  cout << ", reconstructed: " << fCnt->GetBinContent(kRec);
+  if( fCnt->GetBinContent(kAll) > 0 ) {
+    cout << ", efficiency: " << fCnt->GetBinContent(kRec)/fCnt->GetBinContent(kAll);
+  }
+  cout << endl;
 
 }//WriteOutputs
 

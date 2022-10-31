@@ -5,6 +5,7 @@
 // Reference counter consisting of two planes placed along z
 
 class TagCounterPlane;
+class TH1D;
 
 //_____________________________________________________________________________
 class RefCounter {
@@ -37,6 +38,9 @@ class RefCounter {
     Double_t fThetaY; // track angle in y, rad
     Bool_t fPrim; // track for primary particle
     Bool_t fRec; // the track was reconstructed when true
+
+    enum fTrkCount {kAll=1, kRec, kMaxCnt};
+    TH1D *fCnt; // track counter
 
     //track in reference counter
   public:
