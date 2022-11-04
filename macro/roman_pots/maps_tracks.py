@@ -465,17 +465,18 @@ def ntrk_cnt():
     xbin = 1
     #xmax = 30
     #ymax = 200
-    xmax = 20
-    ymax = 20
+    xmax = 29
+    ymax = 29
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1"
+    det = "s2"
 
     sel = ""
 

@@ -30,6 +30,7 @@ class RefCounter {
 
     Int_t fNtrk; // number of tracks in event
     Int_t fNtrkPrim; // number of primary tracks in event
+    Bool_t fHitPrim; // flag for hit by primary particle in event
 
     TTree *fTrackTree; // track output tree
     Double_t fX; // track position in x, mm

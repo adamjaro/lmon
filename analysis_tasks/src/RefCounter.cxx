@@ -34,6 +34,7 @@ RefCounter::RefCounter(string nam, TTree *tree, GeoParser *geo, TTree *otree):
   //event quantities
   otree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());
   otree->Branch((fNam+"_ntrk_prim").c_str(), &fNtrkPrim, (fNam+"_ntrk_prim/I").c_str());
+  otree->Branch((fNam+"_hit_prim").c_str(), &fHitPrim, (fNam+"_hit_prim/O").c_str());
 
   //track output tree
   fTrackTree = new TTree(fNam.c_str(), fNam.c_str());
@@ -62,6 +63,7 @@ void RefCounter::ProcessEvent() {
   //reset the track counts
   fNtrk = 0;
   fNtrkPrim = 0;
+  fHitPrim = kFALSE;
 
   //hit loop, plane 1
   for(int ihit1=0; ihit1<hits1.GetNHits(); ihit1++) {
@@ -78,7 +80,10 @@ void RefCounter::ProcessEvent() {
 
       //increment the track counts
       fNtrk++;
-      if( h2.is_prim ) fNtrkPrim++;
+      if( h2.is_prim ) {
+        fNtrkPrim++;
+        fHitPrim = kTRUE;
+      }
 
       //cout << h1.x << " " << h1.y << " " << h1.z << " " << h1.itrk <<  " " << h2.itrk << " " << h1.is_prim << endl;
 

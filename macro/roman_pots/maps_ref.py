@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 1
 
     func = {}
     func[0] = xy
@@ -30,9 +30,9 @@ def xy():
     xybin = 1
     xymax = 80
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
     #det = "s1_tracks"
@@ -85,10 +85,11 @@ def theta_x():
 
     #mrad
     xybin = 1
-    xymax = 100
+    #xymax = 100
+    xymax = 50
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
     det = "s1_tracks"
@@ -141,8 +142,8 @@ def theta_y():
     #xymax = 50
     xymax = 100
 
-    inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
+    #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
 
     #det = "s1_tracks"
