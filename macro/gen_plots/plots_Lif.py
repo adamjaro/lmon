@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 6
+    iplot = 1
     funclist = []
     funclist.append( make_theta_allE ) # 0
     funclist.append( make_sig_E ) # 1
@@ -113,7 +113,7 @@ def make_sig_E():
     #cross section vs. photon energy
 
     ebin = 0.1
-    emin = 0.5
+    emin = 0.4
     emax = 19
 
     smin = 0.9
@@ -121,9 +121,9 @@ def make_sig_E():
 
     gdir = "/home/jaroslav/sim/GETaLM_data/lumi/"
 
-    inE1 = ["lumi_18x275_Lif_emin0p5_d200_beff3_5Mevt.root", 171.29]  #    129.63
-    inE2 = ["lumi_10x100_Lif_emin0p5_beff3_5Mevt.root", 123.83]
-    inE3 = ["lumi_5x41_Lif_emin0p5_beff3_5Mevt.root", 79.18]
+    inE1 = ["lumi_18x275_Lif_emin0p5_T3p3_10Mevt_v2.root", 171.29]  #    129.63
+    inE2 = ["lumi_10x100_Lif_emin0p5_T3p3_10Mevt.root", 123.83]
+    inE3 = ["lumi_5x41_Lif_emin0p5_T3p3_10Mevt.root", 79.18]
     inE4 = ["lumi_eAu_18x110_Lif_emin0p5_d200_beff2_5Mevt.root", 963626.6]
     inE5 = ["lumi_eAu_5x41_Lif_emin0p5_beff2_5Mevt.root", 462904.4]
 
@@ -177,7 +177,7 @@ def make_sig_E():
 
     gPad.SetGrid()
 
-    ut.invert_col(gPad)
+    #ut.invert_col(gPad)
     can.SaveAs("01fig.pdf")
 
 #make_sig_E

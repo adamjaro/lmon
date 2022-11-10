@@ -16,7 +16,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = acc_en_s12
@@ -47,13 +47,11 @@ def acc_en_s12():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
 
     infile = TFile.Open(inp)
     tree_lmon = infile.Get("event")
-
-    #inp_dd = TFile.Open("dd.root")
-    #tree_dd = inp_dd.Get("event")
 
     emin = 2
     emax = 19
@@ -61,23 +59,19 @@ def acc_en_s12():
     #amax = 0.6
     amax = 0.9
 
-    acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s1_IsHit")
+    acc_lmon_s1 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "cnt_s1_hit_prim")
+    #acc_lmon_s1.prec = 0.02
     acc_lmon_s1.prec = 0.05
     acc_lmon_s1.bmin = 0.1
     #acc_lmon_s1.nev = int(1e5)
     gLmonS1 = acc_lmon_s1.get()
 
-    acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "s2_IsHit")
+    acc_lmon_s2 = rt.acc_Q2_kine(tree_lmon, "true_el_E", "cnt_s2_hit_prim")
+    #acc_lmon_s2.prec = 0.02
     acc_lmon_s2.prec = 0.05
     acc_lmon_s2.bmin = 0.1
     #acc_lmon_s2.nev = int(1e5)
     gLmonS2 = acc_lmon_s2.get()
-
-    #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s1_IsHit")
-    #acc_dd = rt.acc_Q2_kine(tree_dd, "gen_en", "s2_IsHit")
-    #acc_dd.prec = 0.1
-    #acc_dd.bmin = 0.1
-    #gDD = acc_dd.get()
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, 0, emax, amax)
@@ -93,9 +87,6 @@ def acc_en_s12():
 
     ut.set_graph(gLmonS2, rt.kBlue)
     gLmonS2.Draw("psame")
-
-    #ut.set_graph(gDD, rt.kRed)
-    #gDD.Draw("psame")
 
     gPad.SetGrid()
 
@@ -564,29 +555,30 @@ def acc_mlt_theta_s12():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1a/hits_tag.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag1ax1/hits_tag.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag2a/hits_tag_10files.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
 
     #mrad
     tmin = 1.5
-    tmax = 7.5
+    tmax = 5.5
 
-    #amax = 0.3
-    amax = 1
+    amax = 0.3
+    #amax = 1
 
-    as1 = rt.acc_Q2_kine(tree, "true_el_theta", "s1_IsHit")
+    as1 = rt.acc_Q2_kine(tree, "true_el_theta", "cnt_s1_hit_prim")
     as1.modif = 3 # -log10(pi - theta)
-    as1.prec = 0.05
-    as1.bmin = 0.1
+    as1.prec = 0.02
+    #as1.bmin = 0.1
     #as1.nev = int(1e5)
     gs1 = as1.get()
 
-    as2 = rt.acc_Q2_kine(tree, "true_el_theta", "s2_IsHit")
+    as2 = rt.acc_Q2_kine(tree, "true_el_theta", "cnt_s2_hit_prim")
     as2.modif = 3 # -log10(pi - theta)
-    as2.prec = 0.05
-    as2.bmin = 0.1
+    as2.prec = 0.02
+    #as2.bmin = 0.1
     #as2.nev = int(1e5)
     gs2 = as2.get()
 

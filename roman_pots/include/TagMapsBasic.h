@@ -16,7 +16,7 @@ class TagMapsBasic {
 
     void ProcessEvent();
 
-    void CreateOutput();
+    void CreateOutput(bool planes=true);
     void AddTrackBranch(std::string nam, Double_t *val);
     void WriteOutputs();
 

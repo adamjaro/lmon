@@ -458,6 +458,8 @@ void TagMapsBasicPlane::CreateOutput() {
 //_____________________________________________________________________________
 void TagMapsBasicPlane::FinishEvent() {
 
+  if( !fClsTree ) return;
+
   //clusters loop
   for(vector<Cluster>::iterator icls = fCls.begin(); icls != fCls.end(); icls++) {
     Cluster& cls = *icls;

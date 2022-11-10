@@ -97,7 +97,7 @@ class TagMapsBasicPlane {
     std::vector<Cluster> fCls; // clusters in event
 
     //custers output tree
-    TTree *fClsTree; // clusters output tree
+    TTree *fClsTree = 0; // clusters output tree
     Double_t fClsX; // x of cluster, mm
     Double_t fClsY; // y of cluster, mm
     Double_t fClsE; // cluster energy, keV

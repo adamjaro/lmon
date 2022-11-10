@@ -292,10 +292,12 @@ void TagMapsBasic::FinishEvent() {
 }//FinishEvent
 
 //_____________________________________________________________________________
-void TagMapsBasic::CreateOutput() {
+void TagMapsBasic::CreateOutput(bool planes) {
 
   //create output for individual planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::CreateOutput ));
+  if(planes) {
+    for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::CreateOutput ));
+  }
 
   //track tree for the tagger detector
   fTrkTree = new TTree((fNam+"_tracks").c_str(), (fNam+"_tracks").c_str());
