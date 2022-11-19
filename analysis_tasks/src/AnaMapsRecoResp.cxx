@@ -125,14 +125,14 @@ AnaMapsRecoResp::AnaMapsRecoResp(const char *conf) {
     ProcessEvent(s2, cnt_s2, s2_rec);
 
     //fill the output tree
-    //otree.Fill();
+    otree.Fill();
 
   }//event loop
 
-  //WriteOutputs(s1, cnt_s1);
-  //WriteOutputs(s2, cnt_s2);
+  WriteOutputs(s1, cnt_s1);
+  WriteOutputs(s2, cnt_s2);
 
-  //otree.Write();
+  otree.Write();
 
   s1_rec.Export();
   s2_rec.Export();
