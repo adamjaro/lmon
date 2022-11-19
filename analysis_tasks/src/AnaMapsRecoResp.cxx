@@ -9,6 +9,7 @@
 //ROOT
 #include "TChain.h"
 #include "TFile.h"
+#include "TMath.h"
 
 //Geant
 #include "G4Step.hh"
@@ -18,6 +19,7 @@
 #include "TagMapsBasic.h"
 #include "GeoParser.h"
 #include "RefCounter.h"
+#include "EThetaPhiReco.h"
 #include "AnaMapsRecoResp.h"
 
 using namespace std;
@@ -37,6 +39,20 @@ AnaMapsRecoResp::AnaMapsRecoResp(const char *conf) {
     ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
   ;
 
+  //reconstruction for tagger stations
+  EThetaPhiReco s1_rec("s1", &opt);
+  EThetaPhiReco s2_rec("s2", &opt);
+
+  //quantities measured by the taggers
+  s1_rec.MakeQuantity("x"); // x position, mm
+  s1_rec.MakeQuantity("y"); // y position, mm
+  s1_rec.MakeQuantity("tx", 1e-3); // theta_x angle, range set in mrad, conversion to rad
+  s1_rec.MakeQuantity("ty", 1e-3); // theta_y angle, mrad conversion to rad
+  s2_rec.MakeQuantity("x");
+  s2_rec.MakeQuantity("y");
+  s2_rec.MakeQuantity("tx", 1e-3);
+  s2_rec.MakeQuantity("ty", 1e-3);
+
   //load the configuration file
   variables_map opt_map;
   store(parse_config_file(conf, opt), opt_map);
@@ -54,13 +70,16 @@ AnaMapsRecoResp::AnaMapsRecoResp(const char *conf) {
   }
 
   //input true kinematics
-  Double_t true_el_E, true_el_theta, true_el_phi;
   tree.SetBranchAddress("true_el_E", &true_el_E);
   tree.SetBranchAddress("true_el_theta", &true_el_theta);
   tree.SetBranchAddress("true_el_phi", &true_el_phi);
 
   //geometry
   GeoParser geo(GetStr(opt_map, "main.geo"));
+
+  //initialize the reconstruction
+  s1_rec.Initialize(&opt_map);
+  s2_rec.Initialize(&opt_map);
 
   //output file
   TFile out(GetStr(opt_map, "main.outfile").c_str(), "recreate");
@@ -102,24 +121,28 @@ AnaMapsRecoResp::AnaMapsRecoResp(const char *conf) {
     }
 
     //run for both taggers
-    ProcessEvent(s1, cnt_s1);
-    ProcessEvent(s2, cnt_s2);
+    ProcessEvent(s1, cnt_s1, s1_rec);
+    ProcessEvent(s2, cnt_s2, s2_rec);
 
     //fill the output tree
-    otree.Fill();
+    //otree.Fill();
 
   }//event loop
 
-  WriteOutputs(s1, cnt_s1);
-  WriteOutputs(s2, cnt_s2);
+  //WriteOutputs(s1, cnt_s1);
+  //WriteOutputs(s2, cnt_s2);
 
-  otree.Write();
+  //otree.Write();
+
+  s1_rec.Export();
+  s2_rec.Export();
+
   out.Close();
 
 }//AnaMapsRecoResp
 
 //_____________________________________________________________________________
-void AnaMapsRecoResp::ProcessEvent(TagMapsBasic& tag, RefCounter& cnt) {
+void AnaMapsRecoResp::ProcessEvent(TagMapsBasic& tag, RefCounter& cnt, EThetaPhiReco& rec) {
 
   tag.ProcessEvent();
   cnt.ProcessEvent();
@@ -129,6 +152,34 @@ void AnaMapsRecoResp::ProcessEvent(TagMapsBasic& tag, RefCounter& cnt) {
 
   tag.FinishEvent();
   cnt.FinishEvent();
+
+  //tracks in event
+  vector<TagMapsBasic::Track>& tracks = tag.GetTracks();
+
+  //tracks loop
+  for(const auto& trk: tracks) {
+
+    //primary track
+    if( !trk.is_prim ) continue;
+
+    //associated track with reference counter
+    if( !trk.is_associate ) continue;
+
+    //tolerance in x and y position, mm
+    if( TMath::Abs(trk.x-trk.ref_x) > 0.1 ) continue;
+    if( TMath::Abs(trk.y-trk.ref_y) > 0.1 ) continue;
+
+    //tolerance in theta_x and theta_y, mrad
+    if( 1e3*TMath::Abs(trk.theta_x-trk.ref_theta_x) > 0.15 ) continue;
+    if( 1e3*TMath::Abs(trk.theta_y-trk.ref_theta_y) > 0.15 ) continue;
+
+    //cout << 1e3*trk.theta_x << " " << 1e3*trk.ref_theta_x << " " << 1e3*TMath::Abs(trk.theta_x-trk.ref_theta_x) << endl;
+
+    //add input for reconstruction
+    Double_t quant[4]{trk.x, trk.y, trk.theta_x, trk.theta_y};
+    rec.AddInput(quant, true_el_E, true_el_theta, true_el_phi);
+
+  }//tracks loop
 
 }//ProcessEvent
 

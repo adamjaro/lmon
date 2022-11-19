@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 5
+    iplot = 1
 
     func = {}
     func[0] = xy
@@ -36,7 +36,7 @@ def xy():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v4.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v5.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -87,13 +87,15 @@ def theta_x():
     #reference angle along x
 
     #mrad
-    xybin = 1
-    xymax = 100
-    #xymax = 50
+    #xybin = 1
+    xybin = 0.1
+    #xymax = 100
+    #xymax = 10
+    xymax = 3
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v5.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -105,7 +107,8 @@ def theta_x():
 
     hxy = ut.prepare_TH2D("hxy", xybin, -xymax, xymax, xybin, -xymax, xymax)
 
-    tree.Draw("(1e3*theta_x):(1e3*ref_theta_x) >> hxy", "is_associate==1")
+    tree.Draw("(1e3*theta_x):(1e3*ref_theta_x) >> hxy", "(is_associate==1)&&(is_prim==1)")
+    #tree.Draw("(1e3*theta_x):(1e3*ref_theta_x) >> hxy", "is_prim==1")
 
     hxy.SetXTitle("Reference #it{#theta_{x}} (mrad)")
     hxy.SetYTitle("Track #it{#theta_{x}} (mrad)")
@@ -125,7 +128,7 @@ def theta_x():
 
     gPad.SetGrid()
 
-    leg = ut.prepare_leg(0.15, 0.9, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
+    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
     leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
     leg.Draw("same")
@@ -141,9 +144,11 @@ def theta_y():
     #reference angle along y
 
     #mrad
-    xybin = 1
-    #xymax = 50
-    xymax = 100
+    #xybin = 1
+    xybin = 0.1
+    #xymax = 30
+    #xymax = 100
+    xymax = 8
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v9.root"
@@ -159,7 +164,8 @@ def theta_y():
 
     hxy = ut.prepare_TH2D("hxy", xybin, -xymax, xymax, xybin, -xymax, xymax)
 
-    tree.Draw("(1e3*theta_y):(1e3*ref_theta_y) >> hxy", "is_associate==1")
+    #tree.Draw("(1e3*theta_y):(1e3*ref_theta_y) >> hxy", "is_associate==1")
+    tree.Draw("(1e3*theta_y):(1e3*ref_theta_y) >> hxy", "is_prim==1")
 
     hxy.SetXTitle("Reference #it{#theta_{y}} (mrad)")
     hxy.SetYTitle("Track #it{#theta_{y}} (mrad)")
@@ -248,8 +254,8 @@ def d_theta_x():
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -284,10 +290,10 @@ def d_theta_y():
     #track y  -  ref y
 
     #mm
-    #xbin = 1e-3
-    #xmax = 0.2
-    xbin = 1
-    xmax = 200
+    xbin = 1e-3
+    xmax = 0.2
+    #xbin = 1
+    #xmax = 200
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v4.root"
