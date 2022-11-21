@@ -77,6 +77,11 @@ class TagMapsBasic {
       Int_t evt_ntrk; // number of all tracks in event for a given track
       Int_t num_shared_cls; // number of track clusters shared with another track
       Int_t num_diff_itrk; // number of unique MC track indices in the clusters
+      Bool_t is_rec = 0; // reconstruction flag, 1 = track is reconstructed
+      Double_t rec_en = 0; // reconstructed electron energy, GeV
+      Double_t rec_theta = 0; // electron polar angle, rad
+      Double_t rec_phi = 0; // electron azimuthal angle, rad
+      Double_t rec_Q2 = 0; // reconstructed electron Q^2, GeV^2
 
       std::vector<TagMapsBasicPlane::Cluster*> cls; // track clusters
 

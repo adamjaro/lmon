@@ -2,6 +2,8 @@
 #ifndef AnaMapsBasic_h
 #define AnaMapsBasic_h
 
+class EThetaPhiReco;
+
 class AnaMapsBasic {
 
   public:
@@ -15,6 +17,18 @@ class AnaMapsBasic {
     void AssociateMC(TagMapsBasic& tag, RefCounter& cnt);
 
     std::string GetStr(boost::program_options::variables_map& opt_map, std::string par);
+
+  private:
+
+    void ElectronRec(TagMapsBasic& tag, RefCounter&, EThetaPhiReco *rec);
+
+    //input true kinematics
+    Double_t true_el_E;
+    Double_t true_el_theta;
+    Double_t true_el_phi;
+    Double_t true_Q2;
+
+    Double_t beam_en = 0; // beam energy, GeV
 
 };
 

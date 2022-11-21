@@ -210,7 +210,7 @@ void EThetaPhiReco::AddOutputBranch(string nam, Double_t *val) {
 }//AddOutputBranch
 
 //_____________________________________________________________________________
-Bool_t EThetaPhiReco::Reconstruct(Double_t *quant) {
+Bool_t EThetaPhiReco::Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi) {
 
   //run reconstruction for the measured quantities
 
@@ -222,9 +222,20 @@ Bool_t EThetaPhiReco::Reconstruct(Double_t *quant) {
 
   //set the reconstructed particle
   Link& lnk = (*ilnk).second;
-  rec_E = lnk.en;
-  rec_theta = lnk.theta;
-  rec_phi = lnk.phi;
+  el_en = lnk.en;
+  el_theta = lnk.theta;
+  el_phi = lnk.phi;
+
+  return kTRUE;
+
+}//Reconstruct
+
+//_____________________________________________________________________________
+Bool_t EThetaPhiReco::Reconstruct(Double_t *quant) {
+
+  //run the reconstruction with output to internal tree
+
+  if( !Reconstruct(quant, rec_E, rec_theta, rec_phi) ) return kFALSE;
 
   fRecTree->Fill();
 

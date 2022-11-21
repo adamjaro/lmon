@@ -11,6 +11,7 @@
 #include "TChain.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TMath.h"
 
 //Geant
 #include "G4Step.hh"
@@ -20,6 +21,7 @@
 #include "TagMapsBasic.h"
 #include "GeoParser.h"
 #include "RefCounter.h"
+#include "EThetaPhiReco.h"
 #include "AnaMapsBasic.h"
 
 using namespace std;
@@ -36,6 +38,7 @@ void AnaMapsBasic::Run(const char *conf) {
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
     ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
+    ("main.input_resp", program_options::value<string>(), "Input response for reconstruction")
   ;
 
   //load the configuration file
@@ -57,7 +60,6 @@ void AnaMapsBasic::Run(const char *conf) {
   }
 
   //input true kinematics
-  Double_t true_el_E, true_el_theta, true_el_phi, true_Q2;
   Double_t true_x, true_y;
   tree.SetBranchAddress("true_el_E", &true_el_E);
   tree.SetBranchAddress("true_el_theta", &true_el_theta);
@@ -66,10 +68,30 @@ void AnaMapsBasic::Run(const char *conf) {
   tree.SetBranchAddress("true_x", &true_x);
   tree.SetBranchAddress("true_y", &true_y);
 
+  //beam energy
+  beam_en = 18; //GeV
+
   //geometry
   string geo_nam = GetStr(opt_map, "main.geo");
   cout << "Geometry: " << geo_nam << endl;
   GeoParser geo(geo_nam);
+
+  //input response for electron reconstruction
+  EThetaPhiReco *s1_rec = 0x0;
+  EThetaPhiReco *s2_rec = 0x0;
+  if( opt_map.find("main.input_resp") != opt_map.end() ) {
+    string input_resp = GetStr(opt_map, "main.input_resp");
+    cout << "Response input: " << input_resp << endl;
+
+    //create the response for both taggers
+    s1_rec = new EThetaPhiReco("s1");
+    s2_rec = new EThetaPhiReco("s2");
+
+    //initialize the response from trained input
+    TFile in_resp(input_resp.c_str(), "read");
+    s1_rec->Import(&in_resp);
+    s2_rec->Import(&in_resp);
+  }
 
   //outputs
   string outfile = GetStr(opt_map, "main.outfile");
@@ -140,6 +162,10 @@ void AnaMapsBasic::Run(const char *conf) {
     AssociateMC(s1, cnt_s1);
     AssociateMC(s2, cnt_s2);
 
+    //run electron reconstruction
+    ElectronRec(s1, cnt_s1, s1_rec);
+    ElectronRec(s2, cnt_s2, s2_rec);
+
     s1.FinishEvent();
     s2.FinishEvent();
 
@@ -205,6 +231,34 @@ void AnaMapsBasic::AssociateMC(TagMapsBasic& tag, RefCounter& cnt) {
   }//tracks loop
 
 }//AssociateMC
+
+//_____________________________________________________________________________
+void AnaMapsBasic::ElectronRec(TagMapsBasic& tag, RefCounter&, EThetaPhiReco *rec) {
+
+  //run electron reconstruction with the response
+  if( !rec ) return;
+
+  //tracks loop
+  for(TagMapsBasic::Track& trk: tag.GetTracks()) {
+
+    //reconstruction for the track
+    Double_t quant[4]{trk.x, trk.y, trk.theta_x, trk.theta_y}; // input tagger quantity
+    Double_t rec_en=0, rec_theta=0, rec_phi=0; // reconstructed electron by reference
+    Bool_t stat = rec->Reconstruct(quant, rec_en, rec_theta, rec_phi); // perform the reconstruction
+    if( !stat ) continue;
+
+    //original electron corresponding to the track is reconstructed, set the track parameters 
+    trk.is_rec = kTRUE;
+    trk.rec_en = rec_en;
+    trk.rec_theta = rec_theta;
+    trk.rec_phi = rec_phi;
+
+    //reconstructed electron Q^2 by beam energy, electron energy and polar angle
+    trk.rec_Q2 = 2*beam_en*trk.rec_en*(1-TMath::Cos(TMath::Pi()-trk.rec_theta));
+
+  }//tracks loop
+
+}//ElectronRec
 
 //_____________________________________________________________________________
 string AnaMapsBasic::GetStr(program_options::variables_map& opt_map, std::string par) {

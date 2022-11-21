@@ -34,25 +34,26 @@ def en():
     emin = 3
     emax = 19
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
+    inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
-    sel = ""
+    #sel = ""
 
     infile = TFile.Open(inp)
-    tree = infile.Get(det+"_rec")
+    #tree = infile.Get(det+"_rec")
+    tree = infile.Get(det)
 
     can = ut.box_canvas()
 
     hxy = ut.prepare_TH2D("hxy", ebin, emin, emax, ebin, emin, emax)
 
     #tree.Draw("rec_el_E:true_el_E >> hxy", sel)
-    tree.Draw("rec_E:true_el_E >> hxy", sel)
+    tree.Draw("rec_en:true_el_E >> hxy", "is_rec==1")
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
@@ -80,23 +81,23 @@ def pitheta():
     tmin = 0
     tmax = 11
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
 
-    #det = "s1"
-    det = "s2"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
-    sel = ""
+    #sel = ""
 
     infile = TFile.Open(inp)
-    tree = infile.Get(det+"_rec")
+    tree = infile.Get(det)
 
     can = ut.box_canvas()
 
     hxy = ut.prepare_TH2D("hxy", tbin, tmin, tmax, tbin, tmin, tmax)
 
     #tree.Draw("(TMath::Pi()-rec_el_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
-    tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
+    tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", "is_rec==1")
 
     ytit = "Reconstructed #it{#pi-#theta_{e}} (mrad)"
     xtit = "Generated true #it{#pi-#theta_{e,gen}} (mrad)"
@@ -124,17 +125,17 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
 
-    det = "s1"
-    #det = "s2"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
-    #sel = ""
-    sel = "(TMath::Pi()-rec_theta)>1e-3"
+    sel = "is_rec==1"
+    sel += "&&(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
-    tree = infile.Get(det+"_rec")
+    tree = infile.Get(det)
 
     can = ut.box_canvas()
 
@@ -173,28 +174,29 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    #inp = "../../analysis/ini/tag_rec.root"
+    inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
 
-    #det = "s1"
-    #lab = "Tagger 1"
+    det = "s1_tracks"
+    lab = "Tagger 1"
 
-    det = "s2"
-    lab = "Tagger 2"
+    #det = "s2_tracks"
+    #lab = "Tagger 2"
 
-    sel = ""
+    #sel = ""
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
-    tree = infile.Get(det+"_rec")
+    tree = infile.Get(det)
 
     can = ut.box_canvas()
 
     hxy = ut.prepare_TH2D("hxy", qbin, qmin, qmax, qbin, qmin, qmax)
 
-    rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
-    tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy", sel)
+    #rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
+    #tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy", sel)
+    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", "is_rec==1")
 
     ytit = "Reconstructed electron log_{10}(Q^{2})"
     xtit = "Generated true log_{10}(Q^{2})"
@@ -213,7 +215,7 @@ def lQ2():
     leg.AddEntry("", lab, "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2

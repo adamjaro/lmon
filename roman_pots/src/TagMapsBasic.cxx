@@ -311,6 +311,7 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fTrkTree->Branch("chi2_y", &fOutTrk.chi2_y, "chi2_y/D");
   fTrkTree->Branch("chi2_xy", &fOutTrk.chi2_xy, "chi2_xy/D");
   fTrkTree->Branch("is_prim", &fOutTrk.is_prim, "is_prim/O");
+  fTrkTree->Branch("itrk", &fOutTrk.itrk, "itrk/I");
   fTrkTree->Branch("is_associate", &fOutTrk.is_associate, "is_associate/O");
   fTrkTree->Branch("ref_x", &fOutTrk.ref_x, "ref_x/D");
   fTrkTree->Branch("ref_y", &fOutTrk.ref_y, "ref_y/D");
@@ -319,6 +320,11 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fTrkTree->Branch("evt_ntrk", &fOutTrk.evt_ntrk, "evt_ntrk/I");
   fTrkTree->Branch("num_shared_cls", &fOutTrk.num_shared_cls, "num_shared_cls/I");
   fTrkTree->Branch("num_diff_itrk", &fOutTrk.num_diff_itrk, "num_diff_itrk/I");
+  fTrkTree->Branch("is_rec", &fOutTrk.is_rec, "is_rec/O");
+  fTrkTree->Branch("rec_en", &fOutTrk.rec_en, "rec_en/D");
+  fTrkTree->Branch("rec_theta", &fOutTrk.rec_theta, "rec_theta/D");
+  fTrkTree->Branch("rec_phi", &fOutTrk.rec_phi, "rec_phi/D");
+  fTrkTree->Branch("rec_Q2", &fOutTrk.rec_Q2, "rec_Q2/D");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());

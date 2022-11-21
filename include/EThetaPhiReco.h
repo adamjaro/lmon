@@ -22,6 +22,7 @@ class EThetaPhiReco {
     void CreateRecoOutput();
     void AddOutputBranch(std::string nam, Double_t *val);
 
+    Bool_t Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi);
     Bool_t Reconstruct(Double_t *quant);
     void WriteRecoOutput() { fRecTree->Write(); }
 
