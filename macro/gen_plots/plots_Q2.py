@@ -13,11 +13,11 @@ def main():
     #basedir = "/home/jaroslav/sim/GETaLM/cards"
     basedir = "/home/jaroslav/sim/GETaLM_data"
 
-    #infile = "qr/qr_18x275_Qe_beff2_5Mevt.root"
+    infile = "qr/qr_18x275_T3p3_5Mevt.root"
     #infile = "py/pythia_ep_18x275_Q2all_beff2_5Mevt.root"
-    infile = "uni/uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
+    #infile = "uni/uni_el_e2p1_18p2_mlt1p7_5p3_beff2_5Mevt.root"
 
-    iplot = 3
+    iplot = 22
     funclist = []
     funclist.append( gen_xy ) # 0
     funclist.append( gen_Q2 ) # 1
@@ -331,13 +331,13 @@ def gen_run_qr():
     #gen = gen_quasi_real(parse, None)
     gen = gen_quasi_real_v2(parse, None)
 
-    for i in xrange(12):
+    for i in range(12):
 
         u = rt.Double(0)
         y = rt.Double(0)
         gen.eq.GetRandom2(u, y)
 
-        print u, y
+        print(u, y)
 
 #gen_run_qr
 

@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 4
 
     func = {}
     func[0] = en
@@ -34,13 +34,11 @@ def en():
     emin = 3
     emax = 19
 
-    inp = "../../analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5a/tag_rec_pass5.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     #sel = ""
 
@@ -57,9 +55,9 @@ def en():
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
-    ut.put_yx_tit(hxy, ytit, xtit, 1.9, 1.3)
+    ut.put_yx_tit(hxy, ytit, xtit, 1.4, 1.3)
 
-    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
+    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.02, 0.11)
 
     hxy.SetMinimum(0.98)
     hxy.SetContour(300)
@@ -81,8 +79,8 @@ def pitheta():
     tmin = 0
     tmax = 11
 
-    inp = "../../analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -125,8 +123,8 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    inp = "../../analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax5/tag_rec_pass5.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -174,15 +172,14 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    inp = "../../analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec_pass5.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec_pass5.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
 
-    det = "s1_tracks"
-    lab = "Tagger 1"
+    #det = "s1_tracks"
+    #lab = "Tagger 1"
 
-    #det = "s2_tracks"
-    #lab = "Tagger 2"
+    det = "s2_tracks"
+    lab = "Tagger 2"
 
     #sel = ""
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
@@ -225,18 +222,19 @@ def rec_lQ2():
 
     #GeV^2
     qbin = 0.1
-    qmin = -8
+    qmin = -11
     qmax = -1
 
-    #inp = "../../analysis/ini/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4a/tag_rec.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax3/tag_rec.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag4ax2/tag_rec.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v10.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
-    #det = "s1"
-    det = "s2"
+    sel = "itrk==1"
+    #sel = "itrk!=1"
 
-    hx = make_h1(inp, det+"_rec", "TMath::Log10(rec_Q2)", qbin, qmin, qmax)
+    hx1 = make_h1(inp, "s1_tracks", "TMath::Log10(rec_Q2)", qbin, qmin, qmax, sel)
+    hx2 = make_h1(inp, "s2_tracks", "TMath::Log10(rec_Q2)", qbin, qmin, qmax, sel)
 
     #plot
     plt.style.use("dark_background")
@@ -249,7 +247,8 @@ def rec_lQ2():
     set_axes_color(ax, col)
     set_grid(plt, col)
 
-    plt.plot(hx[0], hx[1], "-", color="red", lw=1)
+    plt.plot(hx1[0], hx1[1], "-", color="orange", lw=1)
+    plt.plot(hx2[0], hx2[1], "-", color="red", lw=1)
 
     ax.set_xlabel("log10(Q2) (GeV2)")
     ax.set_ylabel("Normalized counts")

@@ -10,13 +10,13 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     funclist = {}
     funclist[0] = en_pitheta
     funclist[1] = en_pitheta_lQ2
     funclist[2] = lx_lQ2_en
-
+    funclist[3] = true_lQ2_el_lQ2
     funclist[iplot]()
 
 #main
@@ -86,22 +86,27 @@ def en_pitheta_lQ2():
     #emin = 17
     #emax = 19
     ebin = 0.2
+    #ebin = 0.09
     emin = 0
     emax = 18.5
+    #emax = 5.02
 
     #mrad
     tmin = 0
-    #tbin = 0.2
     #tmax = 300
     tbin = 0.2
+    #tbin = 0.8
     tmax = 12
+    #tmax = 99
 
     #log(GeV^2)
     lbin = 0.1
     lmin = -20
     lmax = 5
 
-    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root"
+    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root"
+    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_bx_18x275_T3p3_10Mevt.root"
+    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_5x41_T3p3_10Mevt.root"
     #inp = "/home/jaroslav/sim/GETaLM_data/py/pythia_ep_18x275_Q2all_T3p3_5Mevt.root"
 
     sel = ""
@@ -129,6 +134,7 @@ def en_pitheta_lQ2():
 
     hE.SetMinimum(-7)
     hE.SetMaximum(-1)
+    #hE.SetMaximum(-0.4)
     hE.SetContour(300)
 
     #Q^2 labels in powers of 10
@@ -223,6 +229,59 @@ def lx_lQ2_en():
     can.SaveAs("01fig.pdf")
 
 #lx_lQ2_en
+
+#_____________________________________________________________________________
+def true_lQ2_el_lQ2():
+
+    #electron Q^2 (y axis) and true Q^2 (x axis), both as log_10
+    #according to GETaLM paper plot in plot_TrueQ2elQ2.py
+
+    basedir = ""
+
+    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_5x41_T3p3_10Mevt.root"
+    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root"
+    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_bx_18x275_T3p3_10Mevt.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("ltree")
+
+    #tree.Print()
+    #return
+
+    lqbin = 0.08
+    #lqbin = 0.03
+    lqmin = -10
+    lqmax = 4.5
+
+    hQ2 = ut.prepare_TH2D("hQ2", lqbin, lqmin, lqmax, lqbin, lqmin, lqmax)
+
+    can = ut.box_canvas()
+
+    #gStyle.SetPalette(56)
+
+    Q2form = "(2*18*el_en*(1-TMath::Cos(TMath::Pi()-el_theta)))"
+
+    tree.Draw("TMath::Log10("+Q2form+"):TMath::Log10(true_Q2) >> hQ2")
+
+    ytit = "Electron  log_{10}(#it{Q}^{2}_{e})"#+" / {0:.3f}".format(xbin)
+    xtit = "Generator true  log_{10}(#it{Q}^{2})"#+" / {0:.3f}".format(xbin)
+    ut.put_yx_tit(hQ2, ytit, xtit, 1.6, 1.4)
+
+    ut.set_margin_lbtr(gPad, 0.12, 0.11, 0.03, 0.12)
+
+    hQ2.Draw()
+
+    hQ2.SetMinimum(0.98)
+    hQ2.SetContour(300)
+
+    gPad.SetGrid()
+
+    gPad.SetLogz()
+
+    ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#true_lQ2_el_lQ2
 
 #_____________________________________________________________________________
 if __name__ == "__main__":
