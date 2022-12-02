@@ -318,7 +318,7 @@ def norm_to_num(hMC, num, col=rt.kBlue):
     hMC.SetMarkerColor(col)
 
 #_____________________________________________________________________________
-def norm_to_integral(hMC, ival, col=rt.kBlue):
+def norm_to_integral(hMC, ival, col=rt.kBlue, keep_err=False):
 
     #normalize hMC to integral given by ival
     #suppress errors to draw as line and set color,
@@ -326,8 +326,9 @@ def norm_to_integral(hMC, ival, col=rt.kBlue):
     hMC.Sumw2()
     hMC.Scale(ival/hMC.Integral("width"))
 
-    for ibin in range(hMC.GetNbinsX()+1):
-        hMC.SetBinError(ibin, 0)
+    if not keep_err:
+        for ibin in range(hMC.GetNbinsX()+1):
+            hMC.SetBinError(ibin, 0)
 
     hMC.SetLineColor(col)
     hMC.SetMarkerColor(col)

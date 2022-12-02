@@ -238,9 +238,9 @@ def true_lQ2_el_lQ2():
 
     basedir = ""
 
-    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_5x41_T3p3_10Mevt.root"
+    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_5x41_T3p3_10Mevt.root"
     #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_18x275_T3p3_5Mevt.root"
-    inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_bx_18x275_T3p3_10Mevt.root"
+    #inp = "/home/jaroslav/sim/GETaLM_data/qr/qr_bx_18x275_T3p3_10Mevt.root"
 
     infile = TFile.Open(inp)
     tree = infile.Get("ltree")
@@ -259,7 +259,8 @@ def true_lQ2_el_lQ2():
 
     #gStyle.SetPalette(56)
 
-    Q2form = "(2*18*el_en*(1-TMath::Cos(TMath::Pi()-el_theta)))"
+    #Q2form = "(2*18*el_en*(1-TMath::Cos(TMath::Pi()-el_theta)))"
+    Q2form = "(2*5*el_en*(1-TMath::Cos(TMath::Pi()-el_theta)))"
 
     tree.Draw("TMath::Log10("+Q2form+"):TMath::Log10(true_Q2) >> hQ2")
 
