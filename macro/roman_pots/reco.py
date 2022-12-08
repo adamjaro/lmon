@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 4
+    iplot = 0
 
     func = {}
     func[0] = en
@@ -66,7 +66,7 @@ def en():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en
@@ -175,11 +175,11 @@ def lQ2():
     #inp = "../../analysis_tasks/ini/ana.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
 
-    #det = "s1_tracks"
-    #lab = "Tagger 1"
+    det = "s1_tracks"
+    lab = "Tagger 1"
 
-    det = "s2_tracks"
-    lab = "Tagger 2"
+    #det = "s2_tracks"
+    #lab = "Tagger 2"
 
     #sel = ""
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
@@ -195,8 +195,8 @@ def lQ2():
     #tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy", sel)
     tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", "is_rec==1")
 
-    ytit = "Reconstructed electron log_{10}(Q^{2})"
-    xtit = "Generated true log_{10}(Q^{2})"
+    ytit = "Reconstructed electron  log_{10}(Q^{2})"
+    xtit = "Generated true  log_{10}(Q^{2})"
     ut.put_yx_tit(hxy, ytit, xtit, 1.9, 1.3)
 
     ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
@@ -212,7 +212,7 @@ def lQ2():
     leg.AddEntry("", lab, "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2

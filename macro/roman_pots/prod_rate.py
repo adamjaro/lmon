@@ -168,9 +168,9 @@ def sig_frac():
     hqr.Draw("][ same")
 
     #legend on event rates
-    leg = ut.prepare_leg(0.14, 0.77, 0.28, 0.16, 0.035)
+    leg = ut.prepare_leg(0.14, 0.77, 0.28, 0.16, 0.035) # 0.035
     tlab = {"s1_tracks": "Tagger 1", "s2_tracks": "Tagger 2"}
-    leg.AddEntry("", tlab[det], "l")
+    leg.AddEntry("", tlab[det], "")
     leg.AddEntry(hall, "All tracks (sig + bkg)", "l")
     leg.AddEntry(hqr, "Signal only", "l")
     leg.Draw("same")

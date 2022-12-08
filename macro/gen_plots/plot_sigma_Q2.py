@@ -122,16 +122,16 @@ def sigma_en():
     emin = 0 # GeV
     emax = 23
     smin = 1e-4
-    #smax = 1e3 # mb
-    smax = 1 # mb
+    smax = 1e3 # mb
+    #smax = 1 # mb
 
     ebin = 0.2
 
     basedir = "/home/jaroslav/sim/GETaLM_data"
 
-    #g1 = make_sigma(basedir+"/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.root", "true_el_E", 0.1, emin, emax, 171.3)
+    g1 = make_sigma(basedir+"/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.root", "true_el_E", 0.1, emin, emax, 171.3)
     g2 = make_sigma(basedir+"/qr/qr_18x275_T3p3_5Mevt.root", "true_el_E", ebin, emin, emax, 0.053)
-    g3 = make_sigma(basedir+"/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root", "true_el_E", ebin, emin, emax, 0.055)
+    #g3 = make_sigma(basedir+"/py/pythia_ep_18x275_Q2all_beff2_5Mevt.root", "true_el_E", ebin, emin, emax, 0.055)
 
     can = ut.box_canvas()
     frame = gPad.DrawFrame(emin, smin, emax, smax)
@@ -143,13 +143,13 @@ def sigma_en():
 
     ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.02, 0.02)
 
-    #g1.SetLineColor(rt.kBlue) # kBlue
+    g1.SetLineColor(rt.kBlue) # kBlue
     g2.SetLineColor(rt.kRed) # kRed
-    g3.SetLineColor(rt.kGreen+1) # kGreen+1
+    #g3.SetLineColor(rt.kGreen+1) # kGreen+1
     g2.SetLineStyle(rt.kDashed)
 
-    #g1.Draw("lsame")
-    g3.Draw("lsame")
+    g1.Draw("lsame")
+    #g3.Draw("lsame")
     g2.Draw("lsame")
 
     gPad.SetLogy()
@@ -157,9 +157,9 @@ def sigma_en():
     gPad.SetGrid()
 
     leg = ut.prepare_leg(0.2, 0.8, 0.24, 0.15, 0.035) # x, y, dx, dy, tsiz
-    #leg.AddEntry(g1, "Bremsstrahlung", "l")
+    leg.AddEntry(g1, "Bremsstrahlung", "l")
     leg.AddEntry(g2, "Quasi-real photoproduction", "l")
-    leg.AddEntry(g3, "Pythia6", "l")
+    #leg.AddEntry(g3, "Pythia6", "l")
     leg.Draw("same")
 
     #ut.invert_col(rt.gPad)
