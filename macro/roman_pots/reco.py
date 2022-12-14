@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 3
 
     func = {}
     func[0] = en
@@ -35,12 +35,13 @@ def en():
     emax = 19
 
     #inp = "../../analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
     det = "s1_tracks"
     #det = "s2_tracks"
 
-    #sel = ""
+    sel = "is_rec==1 && itrk==1"
 
     infile = TFile.Open(inp)
     #tree = infile.Get(det+"_rec")
@@ -50,14 +51,14 @@ def en():
 
     hxy = ut.prepare_TH2D("hxy", ebin, emin, emax, ebin, emin, emax)
 
-    #tree.Draw("rec_el_E:true_el_E >> hxy", sel)
-    tree.Draw("rec_en:true_el_E >> hxy", "is_rec==1")
+    tree.Draw("rec_en:true_el_E >> hxy", sel)
+    #tree.Draw("rec_en:true_el_E >> hxy", "is_rec==1")
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
     ut.put_yx_tit(hxy, ytit, xtit, 1.4, 1.3)
 
-    ut.set_margin_lbtr(gPad, 0.11, 0.1, 0.02, 0.11)
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.02, 0.11)
 
     hxy.SetMinimum(0.98)
     hxy.SetContour(300)
@@ -80,12 +81,13 @@ def pitheta():
     tmax = 11
 
     #inp = "../../analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    #sel = ""
+    sel = "is_rec==1 && itrk==1"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -94,14 +96,14 @@ def pitheta():
 
     hxy = ut.prepare_TH2D("hxy", tbin, tmin, tmax, tbin, tmin, tmax)
 
-    #tree.Draw("(TMath::Pi()-rec_el_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
-    tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", "is_rec==1")
+    tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", sel)
+    #tree.Draw("(TMath::Pi()-rec_theta)*1e3:(TMath::Pi()-true_el_theta)*1e3 >> hxy", "is_rec==1")
 
     ytit = "Reconstructed #it{#pi-#theta_{e}} (mrad)"
     xtit = "Generated true #it{#pi-#theta_{e,gen}} (mrad)"
     ut.put_yx_tit(hxy, ytit, xtit, 1.9, 1.3)
 
-    ut.set_margin_lbtr(gPad, 0.14, 0.1, 0.03, 0.11)
+    ut.set_margin_lbtr(gPad, 0.14, 0.12, 0.03, 0.11)
 
     hxy.SetMinimum(0.98)
     hxy.SetContour(300)
@@ -110,7 +112,7 @@ def pitheta():
 
     gPad.SetGrid()
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #pitheta
@@ -124,12 +126,13 @@ def phi():
     pmax = TMath.Pi()+0.1
 
     #inp = "../../analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    sel = "is_rec==1"
+    sel = "is_rec==1 && itrk==1"
     sel += "&&(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
@@ -159,7 +162,7 @@ def phi():
     leg.AddEntry("", "#pi-#theta_{#it{e},rec} > 1 mrad", "")
     leg.Draw("same")
 
-    ut.invert_col(rt.gPad)
+    #ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phi
@@ -173,7 +176,8 @@ def lQ2():
     qmax = -1
 
     #inp = "../../analysis_tasks/ini/ana.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
     det = "s1_tracks"
     lab = "Tagger 1"
@@ -181,7 +185,7 @@ def lQ2():
     #det = "s2_tracks"
     #lab = "Tagger 2"
 
-    #sel = ""
+    sel = "is_rec==1 && itrk==1"
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
@@ -193,7 +197,8 @@ def lQ2():
 
     #rec_Q2 = "(2.*18*rec_E*(1.-TMath::Cos(TMath::Pi()-rec_theta)))"
     #tree.Draw("TMath::Log10("+rec_Q2+"):TMath::Log10(true_Q2) >> hxy", sel)
-    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", "is_rec==1")
+    #tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", "is_rec==1")
+    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", sel)
 
     ytit = "Reconstructed electron  log_{10}(Q^{2})"
     xtit = "Generated true  log_{10}(Q^{2})"
