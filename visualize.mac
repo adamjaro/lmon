@@ -13,7 +13,8 @@
 #input
 /lmon/input/type gun
 #/gun/energy 18 GeV
-/gun/energy 12 GeV
+#/gun/energy 12 GeV
+/gun/energy 14 GeV
 /gun/particle e-
 #/gun/particle gamma
 /gun/direction 0 0 -1
@@ -60,11 +61,11 @@
 #/vis/viewer/set/targetPoint 0 0 -18700 mm
 #/vis/viewer/set/targetPoint -148 100 -14999 mm
 #/vis/viewer/set/targetPoint 0 0 -28200 mm # spectrometer magnet
-#/vis/viewer/set/targetPoint -499.9 100 -36500 mm  # Tagger 2
+/vis/viewer/set/targetPoint -499.9 100 -36500 mm  # Tagger 2
 #/vis/viewer/set/targetPoint -499.9 100 -37400 mm  # Tagger 2 end
 #/vis/viewer/set/targetPoint 0 0 -9500 mm
 #/vis/viewer/set/targetPoint -462 0 -37696 mm
-/vis/viewer/set/targetPoint 0 0 -36400 mm # spectrometers
+#/vis/viewer/set/targetPoint 0 0 -36400 mm # spectrometers
 
 #/vis/scene/add/text -500 0 -7000 mm 15 0 0 Q1eR
 #/vis/scene/add/text -500 0 -9000 mm 15 0 0 Q2eR

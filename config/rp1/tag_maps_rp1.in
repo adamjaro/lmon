@@ -193,13 +193,16 @@ new ParticleCounter lowQ2_cnt_s2_1
   lowQ2_cnt_s2_1.place_into = vac_B2Q3
   lowQ2_cnt_s2_1.vis = 0:0:1:0.3
 
+#slab of material representing outgoing beam pipe
+#new BoxSegment beam_slab
 
-
-
-
-
-
-
+  beam_slab.dx = 1 # mm, slab thickness
+  beam_slab.dy = 2.*vac_rBI # same height as vac_B2Q3
+  beam_slab.dz = vac_LBQ # same length as vac_B2Q3
+  beam_slab.zpos = 0 # center of vac_B2Q3
+  beam_slab.xpos = tag_pos_x+(tag_size_xy/2.)+1
+  beam_slab.place_into = vac_B2Q3
+  beam_slab.mat_name = G4_Al
 
 
 

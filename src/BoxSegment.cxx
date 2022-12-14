@@ -36,7 +36,10 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   G4Box *shape = new G4Box(fNam, dx/2., dy/2., dz/2.);
 
   //logical volume
-  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial("G4_Galactic");
+  G4String mat_name = "G4_Galactic";
+  geo->GetOptS(nam, "mat_name", mat_name);
+  G4cout << "  " << fNam << ", mat_name: " << mat_name << G4endl;
+  G4Material *mat = G4NistManager::Instance()->FindOrBuildMaterial(mat_name);
   G4LogicalVolume *vol = new G4LogicalVolume(shape, mat, fNam);
 
   //visibility
@@ -68,15 +71,37 @@ BoxSegment::BoxSegment(const G4String& nam, GeoParser *geo, G4LogicalVolume *top
   G4RotationMatrix rot(rot_axis, theta); //CLHEP::HepRotation
   G4cout << "  " << fNam << ", theta: " << theta << G4endl;
 
-  //placement in top
+  //placement in mother volume
   G4ThreeVector pos(xpos, ypos, zpos);
   G4Transform3D transform(rot, pos); //HepGeom::Transform3D
 
-  new G4PVPlacement(transform, vol, fNam, top, false, 0);
+  //get the mother volume
+  G4LogicalVolume *mother_vol = top;
+  G4String mother_nam;
+  if( geo->GetOptS(fNam, "place_into", mother_nam) ) {
+    mother_vol = GetMotherVolume(mother_nam, top);
+  }
+
+  //make the placement
+  new G4PVPlacement(transform, vol, fNam, mother_vol, false, 0);
 
 }//BoxSegment
 
+//_____________________________________________________________________________
+G4LogicalVolume* BoxSegment::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
 
+  for(size_t i=0; i<top->GetNoDaughters(); i++) {
+
+    G4LogicalVolume *dv = top->GetDaughter(i)->GetLogicalVolume();
+
+    if( dv->GetName() == mother_nam ) {
+      return dv;
+    }
+  }
+
+  return 0x0;
+
+}//GetMotherVolume
 
 
 

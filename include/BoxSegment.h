@@ -19,6 +19,8 @@ class BoxSegment: public Detector {
 
   private:
 
+    G4LogicalVolume* GetMotherVolume(G4String mother_nam, G4LogicalVolume *top);
+
     G4String fNam; //segment name
 
 };
