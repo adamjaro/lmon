@@ -26,7 +26,7 @@ using namespace std;
 
 //_____________________________________________________________________________
 TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *evt_tree):
-    fNam(nam), fChi2ndfMax(0.5), fEvtTree(evt_tree) {
+    fNam(nam), fChi2ndfMax(0.5), fEvtTree(evt_tree), fAllTrkSig(0) {
 
   //planes for the station, 1 - 4
   fPlanes.push_back( new TagMapsBasicPlane(fNam+"_1", tree, geo, evt_tree) );
@@ -139,6 +139,7 @@ void TagMapsBasic::ProcessEvent() {
           //increment event quantities
           fNtrk++;
           if( trk.is_prim ) fNtrkPrim++;
+          if( trk.itrk == 1 ) fAllTrkSig++;
 
         }//plane 4
       }//plane 3
@@ -251,6 +252,11 @@ void TagMapsBasic::FinishEvent() {
   //counter for associated tracks in event
   fNtrkAssociated = 0;
 
+  //reconstruction flags
+  fIsSigTrk = kFALSE;
+  fIsSigRec = kFALSE;
+  fSigRecQ2 = 0;
+
   //tracks loop
   for(auto it = fTracks.begin(); it != fTracks.end(); it++) {
 
@@ -285,7 +291,15 @@ void TagMapsBasic::FinishEvent() {
 
     fTrkTree->Fill();
 
-    //cout << endl;
+    //reconstruction flags for signal track
+    if( (*it).itrk == 1 ) {
+      fIsSigTrk = kTRUE; // signal track is present
+
+      if( (*it).is_rec == kTRUE ) {
+        fIsSigRec = kTRUE; // Q^2 is reconstructed for signal track
+        fSigRecQ2 = (*it).rec_Q2; // value of the Q^2
+      }
+    }
 
   } //tracks loop
 
@@ -330,6 +344,9 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());
   fEvtTree->Branch((fNam+"_ntrk_prim").c_str(), &fNtrkPrim, (fNam+"_ntrk_prim/I").c_str());
   fEvtTree->Branch((fNam+"_ntrk_associate").c_str(), &fNtrkAssociated, (fNam+"_ntrk_associate/I").c_str());
+  fEvtTree->Branch((fNam+"_is_sig_trk").c_str(), &fIsSigTrk, (fNam+"_is_sig_trk/O").c_str());
+  fEvtTree->Branch((fNam+"_is_sig_rec").c_str(), &fIsSigRec, (fNam+"_is_sig_rec/O").c_str());
+  fEvtTree->Branch((fNam+"_sig_rec_Q2").c_str(), &fSigRecQ2, (fNam+"_sig_rec_Q2/D").c_str());
 
 }//CreateOutput
 
@@ -348,7 +365,7 @@ void TagMapsBasic::WriteOutputs() {
   //write outputs for the planes
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::WriteOutputs ));
 
-  cout << "Tagger " << fNam << ", tracks: " << fTrkTree->GetEntries() << endl;
+  cout << "Tagger " << fNam << ", tracks: " << fTrkTree->GetEntries() << ", signal tracks: " << fAllTrkSig << endl;
 
   fTrkTree->Write();
 

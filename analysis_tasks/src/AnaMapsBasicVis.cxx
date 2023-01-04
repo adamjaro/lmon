@@ -24,9 +24,30 @@
 using namespace std;
 using namespace boost;
 
+TChain *AnaMapsBasicVis::tree = 0x0; // input tree
+TFile *AnaMapsBasicVis::out = 0x0; // output file
+TTree *AnaMapsBasicVis::otree = 0x0; // output tree
+
+TagMapsBasic *AnaMapsBasicVis::s1 = 0x0; // Tagger 1
+TagMapsBasic *AnaMapsBasicVis::s2 = 0x0; // Tagger 2
+
+RefCounter *AnaMapsBasicVis::cnt_s1 = 0x0; // Reference counter 1
+RefCounter *AnaMapsBasicVis::cnt_s2 = 0x0; // Reference counter 2
+
+Long64_t AnaMapsBasicVis::iev = -1; // event number
+
+TagMapsBasic *AnaMapsBasicVis::tag = 0x0; // active tagger
+RefCounter *AnaMapsBasicVis::cnt = 0x0; // active reference counter
+
+int AnaMapsBasicVis::min_ntrk = 0; // minimal number of tracks in event
+int AnaMapsBasicVis::min_ncls = 0; // minimal number of clusters on all planes in event
+int AnaMapsBasicVis::min_ncnt = 0; // minimal number of reference tracks in event
+int AnaMapsBasicVis::min_etrk = 0; // minimal number of excess tracks as reconstructed tracks - reference tracks
+
 //_____________________________________________________________________________
-AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
-    min_ncls(0), min_ncnt(0), min_etrk(0) {
+//AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
+//    min_ncls(0), min_ncnt(0), min_etrk(0) {
+AnaMapsBasicVis::AnaMapsBasicVis(const char *conf) {
 
   //configuration file
   program_options::options_description opt("opt");
@@ -130,6 +151,7 @@ int AnaMapsBasicVis::ProcessEvent(bool *stat) {
     if( tag->GetNumberOfClusters() < min_ncls ) *stat = false;
     if( GetNumberOfRefTracks() < min_ncnt ) *stat = false;
     if( GetNumberOfTracks()-GetNumberOfRefTracks() < min_etrk ) *stat = false;
+    if( GetSigTracks() < 1 ) *stat = false;
 
   }
 
@@ -220,7 +242,22 @@ int AnaMapsBasicVis::GetNumberOfTracks() {
 }//GetNumberOfTracks
 
 //_____________________________________________________________________________
-void AnaMapsBasicVis::GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2) {
+int AnaMapsBasicVis::GetSigTracks() {
+
+  //number of signal tracks having itrk == 1
+
+  int nsig = 0;
+
+  for(const auto& i: tag->GetTracks()) {
+    if( i.itrk == 1 ) nsig++;
+  }
+
+  return nsig;
+
+}//GetSigTracks
+
+//_____________________________________________________________________________
+void AnaMapsBasicVis::GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2, int& itrk) {
 
   const vector<TagMapsBasic::Track>& tracks = tag->GetTracks();
 
@@ -231,6 +268,8 @@ void AnaMapsBasicVis::GetTrack(int i, double& x0, double& y0, double& slope_x, d
   slope_y = tracks[i].slope_y;
 
   chi2 = tracks[i].chi2_xy;
+
+  itrk = tracks[i].itrk;
 
 }//GetTrack
 
@@ -282,8 +321,9 @@ extern "C" {
 
   //tracks
   int task_AnaMapsBasicVis_ntrk(AnaMapsBasicVis& t) { return t.GetNumberOfTracks(); }
-  void task_AnaMapsBasicVis_track(AnaMapsBasicVis& t, int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2) {
-    return t.GetTrack(i, x0, y0, slope_x, slope_y, chi2);
+  void task_AnaMapsBasicVis_track(AnaMapsBasicVis& t, int i, double& x0, double& y0, double& slope_x, double& slope_y,
+    double& chi2, int& itrk) {
+    return t.GetTrack(i, x0, y0, slope_x, slope_y, chi2, itrk);
   }
   void task_AnaMapsBasicVis_set_max_chi2(AnaMapsBasicVis& t, double c) { return t.SetMaxChi2ndf(c); }
   double task_AnaMapsBasicVis_get_max_chi2(AnaMapsBasicVis& t) { return t.GetMaxChi2ndf(); }

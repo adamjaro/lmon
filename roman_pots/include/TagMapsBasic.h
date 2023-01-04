@@ -105,6 +105,12 @@ class TagMapsBasic {
     Int_t fNtrk; // number of tracks per event
     Int_t fNtrkPrim; // number of primary tracks per event
     Int_t fNtrkAssociated; // number of tracks associated with MC particle
+    Bool_t fIsSigTrk; // flag for signal track presence (itrk == 1)
+    Bool_t fIsSigRec; // flag for Q^2 reconstruction for signal track
+    Double_t fSigRecQ2; // Q^2 for signal track
+
+    //all track counter
+    Int_t fAllTrkSig; // number of all signal tracks (itrk == 1)
 
 };
 

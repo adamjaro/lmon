@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-from ctypes import CDLL, c_char_p, c_double, byref
+from ctypes import CDLL, c_char_p, c_double, c_int, byref
 from math import sqrt
 
 import npyscreen as npy
@@ -231,7 +231,9 @@ class gui(npy.NPSApp):
             slope_x = c_double(0)
             slope_y = c_double(0)
             chi2 = c_double(0)
-            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y), byref(chi2))
+            itrk = c_int(0)
+            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y),\
+            byref(chi2), byref(itrk))
 
             self.tracks_chi2.Fill( chi2.value/4. ) # 4 degrees of freedom
 
@@ -245,7 +247,10 @@ class gui(npy.NPSApp):
             track_lin.SetPoint(0, xneg, yneg, -zmax)
             track_lin.SetPoint(1, xpos, ypos, zmax)
 
-            track_lin.SetLineColor(rt.kRed)
+            if itrk.value == 1:
+                track_lin.SetLineColor(rt.kRed)
+            else:
+                track_lin.SetLineColor(rt.kBlue)
 
             gEve.AddGlobalElement(track_lin)
 

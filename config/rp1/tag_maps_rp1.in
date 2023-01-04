@@ -203,7 +203,7 @@ new ParticleCounter lowQ2_cnt_s2_1
   beam_slab.xpos = tag_pos_x+(tag_size_xy/2.)+1
   beam_slab.place_into = vac_B2Q3
   beam_slab.mat_name = G4_Al
-
+  beam_slab.vis = 0:1:0:1
 
 
 

@@ -30,7 +30,8 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     void GetCluster(int iplane, int icls, double& x, double& y, double& z, double& md);
 
     int GetNumberOfTracks();
-    void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2);
+    int GetSigTracks();
+    void GetTrack(int i, double& x0, double& y0, double& slope_x, double& slope_y, double& chi2, int& itrk);
 
     int GetNumberOfRefTracks();
 
@@ -39,25 +40,25 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
 
   private:
 
-    TChain *tree; // input tree
-    TFile *out; // output file
-    TTree *otree; // output tree
+    static TChain *tree; // input tree
+    static TFile *out; // output file
+    static TTree *otree; // output tree
 
-    TagMapsBasic *s1; // Tagger 1
-    TagMapsBasic *s2; // Tagger 2
+    static TagMapsBasic *s1; // Tagger 1
+    static TagMapsBasic *s2; // Tagger 2
 
-    RefCounter *cnt_s1; // Reference counter 1
-    RefCounter *cnt_s2; // Reference counter 2
+    static RefCounter *cnt_s1; // Reference counter 1
+    static RefCounter *cnt_s2; // Reference counter 2
 
-    Long64_t iev; // event number
+    static Long64_t iev; // event number
 
-    TagMapsBasic *tag; // active tagger
-    RefCounter *cnt; // active reference counter
+    static TagMapsBasic *tag; // active tagger
+    static RefCounter *cnt; // active reference counter
 
-    int min_ntrk; // minimal number of tracks in event
-    int min_ncls; // minimal number of clusters on all planes in event
-    int min_ncnt; // minimal number of reference tracks in event
-    int min_etrk; // minimal number of excess tracks as reconstructed tracks - reference tracks
+    static int min_ntrk; // minimal number of tracks in event
+    static int min_ncls; // minimal number of clusters on all planes in event
+    static int min_ncnt; // minimal number of reference tracks in event
+    static int min_etrk; // minimal number of excess tracks as reconstructed tracks - reference tracks
 
 };
 

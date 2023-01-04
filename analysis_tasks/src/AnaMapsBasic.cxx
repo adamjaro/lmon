@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include "glob.h"
+#include <new>
 
 //Boost
 #include <boost/program_options.hpp>
@@ -27,6 +28,8 @@
 using namespace std;
 using namespace boost;
 
+Double_t AnaMapsBasic::beam_en = 0;
+
 //_____________________________________________________________________________
 void AnaMapsBasic::Run(const char *conf) {
 
@@ -39,6 +42,7 @@ void AnaMapsBasic::Run(const char *conf) {
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
     ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
     ("main.input_resp", program_options::value<string>(), "Input response for reconstruction")
+    ("main.planes_output", program_options::value<bool>(), "Write output for planes")
   ;
 
   //load the configuration file
@@ -60,7 +64,7 @@ void AnaMapsBasic::Run(const char *conf) {
   }
 
   //input true kinematics
-  Double_t true_x, true_y;
+  Double_t true_el_E, true_el_theta, true_el_phi, true_Q2, true_x, true_y;
   tree.SetBranchAddress("true_el_E", &true_el_E);
   tree.SetBranchAddress("true_el_theta", &true_el_theta);
   tree.SetBranchAddress("true_el_phi", &true_el_phi);
@@ -110,8 +114,13 @@ void AnaMapsBasic::Run(const char *conf) {
   //tagger stations
   TagMapsBasic s1("s1", &tree, &geo, &otree);
   TagMapsBasic s2("s2", &tree, &geo, &otree);
-  s1.CreateOutput();
-  s2.CreateOutput();
+  bool planes_output = true;
+  if( opt_map.find("main.planes_output") != opt_map.end() ) {
+    planes_output = opt_map["main.planes_output"].as<bool>();
+  }
+  s1.CreateOutput(planes_output);
+  s2.CreateOutput(planes_output);
+
   s1.AddTrackBranch("true_el_E", &true_el_E);
   s1.AddTrackBranch("true_el_theta", &true_el_theta);
   s1.AddTrackBranch("true_el_phi", &true_el_phi);
@@ -273,9 +282,17 @@ string AnaMapsBasic::GetStr(program_options::variables_map& opt_map, std::string
 //_____________________________________________________________________________
 extern "C" {
 
-  AnaMapsBasic* make_AnaMapsBasic() { return new AnaMapsBasic(); }
+  //AnaMapsBasic* make_AnaMapsBasic() { return new AnaMapsBasic(); }
+  void* make_AnaMapsBasic() { return new(nothrow) AnaMapsBasic(); }
 
-  void run_AnaMapsBasic(AnaMapsBasic& t, const char *c) { t.Run(c); }
+  //void run_AnaMapsBasic(AnaMapsBasic& t, const char *c) { t.Run(c); }
+
+  void run_AnaMapsBasic(void *t, const char *c) {
+
+    AnaMapsBasic *task = reinterpret_cast<AnaMapsBasic*>(t);
+
+    task->Run(c);
+  }
 
 }
 
