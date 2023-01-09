@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-from ctypes import CDLL, c_char_p
+from ctypes import CDLL, c_char_p, c_void_p
 
 #_____________________________________________________________________________
 def main():
@@ -14,7 +14,8 @@ def main():
     #print(config)
 
     #analysis task
-    task = lib.make_AnaMapsBasic()
+    lib.make_AnaMapsBasic.restype = c_void_p
+    task = c_void_p(lib.make_AnaMapsBasic())
 
     #run the task    
     lib.run_AnaMapsBasic( task, c_char_p(bytes(config, "utf-8")) )

@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = pitheta_en
@@ -28,14 +28,15 @@ def pitheta_en():
     #mrad
     ymin = 0
     ybin = 0.2
-    ymax = 12
+    ymax = 11
 
     #GeV
     xbin = 0.25
     xmin = 2
     xmax = 18.5
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
 
     #det = "s1"
     det = "s2"
@@ -49,8 +50,14 @@ def pitheta_en():
     hxy_sel = ut.prepare_TH2D("hxy_sel", xbin, xmin, xmax, ybin, ymin, ymax)
 
     val = "(TMath::Pi()-true_el_theta)*1e3:true_el_E"
-    tree.Draw(val+" >> hxy_sel", det+"_ntrk_prim>0")
+    #tree.Draw(val+" >> hxy_sel", det+"_ntrk_prim>0")
+    #tree.Draw(val+" >> hxy_sel", det+"_is_sig_trk==1")
+    tree.Draw(val+" >> hxy_sel", det+"_is_sig_rec==1")
     tree.Draw(val+" >> hxy_all")
+
+    print("All: ", hxy_all.GetEntries())
+    print("Sel: ", hxy_sel.GetEntries())
+    print("AxE: ", hxy_sel.GetEntries()/hxy_all.GetEntries())
 
     hxy_sel.Divide(hxy_all)
 
@@ -71,7 +78,7 @@ def pitheta_en():
 
     hxy_sel.Draw("colz")
 
-    leg = ut.prepare_leg(0.15, 0.85, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
+    leg = ut.prepare_leg(0.12, 0.88, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
     leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
     leg.Draw("same")

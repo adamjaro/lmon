@@ -28,8 +28,6 @@
 using namespace std;
 using namespace boost;
 
-Double_t AnaMapsBasic::beam_en = 0;
-
 //_____________________________________________________________________________
 void AnaMapsBasic::Run(const char *conf) {
 
