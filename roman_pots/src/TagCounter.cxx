@@ -46,7 +46,7 @@ void TagCounter::ProcessEvent() {
   //planes loop
   for(unsigned int i=0; i<fPlanes.size(); i++) {
 
-    fIsHit *= fPlanes[i]->IsHit();
+    fIsHit = fIsHit && fPlanes[i]->IsHit();
 
     if( !fPlanes[i]->IsHit() ) continue;
     fNPlane++;

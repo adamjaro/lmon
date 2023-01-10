@@ -24,30 +24,9 @@
 using namespace std;
 using namespace boost;
 
-TChain *AnaMapsBasicVis::tree = 0x0; // input tree
-TFile *AnaMapsBasicVis::out = 0x0; // output file
-TTree *AnaMapsBasicVis::otree = 0x0; // output tree
-
-TagMapsBasic *AnaMapsBasicVis::s1 = 0x0; // Tagger 1
-TagMapsBasic *AnaMapsBasicVis::s2 = 0x0; // Tagger 2
-
-RefCounter *AnaMapsBasicVis::cnt_s1 = 0x0; // Reference counter 1
-RefCounter *AnaMapsBasicVis::cnt_s2 = 0x0; // Reference counter 2
-
-Long64_t AnaMapsBasicVis::iev = -1; // event number
-
-TagMapsBasic *AnaMapsBasicVis::tag = 0x0; // active tagger
-RefCounter *AnaMapsBasicVis::cnt = 0x0; // active reference counter
-
-int AnaMapsBasicVis::min_ntrk = 0; // minimal number of tracks in event
-int AnaMapsBasicVis::min_ncls = 0; // minimal number of clusters on all planes in event
-int AnaMapsBasicVis::min_ncnt = 0; // minimal number of reference tracks in event
-int AnaMapsBasicVis::min_etrk = 0; // minimal number of excess tracks as reconstructed tracks - reference tracks
-
 //_____________________________________________________________________________
-//AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
-//    min_ncls(0), min_ncnt(0), min_etrk(0) {
-AnaMapsBasicVis::AnaMapsBasicVis(const char *conf) {
+AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
+    min_ncls(0), min_ncnt(0), min_etrk(0), min_sig_trk(0) {
 
   //configuration file
   program_options::options_description opt("opt");
@@ -57,6 +36,8 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf) {
     ("main.outfile", program_options::value<string>(), "Output from the analysis")
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
     ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
+    ("main.input_resp", program_options::value<string>(), "Input response for reconstruction")
+    ("main.planes_output", program_options::value<bool>(), "Write output for planes")
   ;
 
   //load the configuration file
@@ -151,7 +132,7 @@ int AnaMapsBasicVis::ProcessEvent(bool *stat) {
     if( tag->GetNumberOfClusters() < min_ncls ) *stat = false;
     if( GetNumberOfRefTracks() < min_ncnt ) *stat = false;
     if( GetNumberOfTracks()-GetNumberOfRefTracks() < min_etrk ) *stat = false;
-    if( GetSigTracks() < 1 ) *stat = false;
+    if( GetSigTracks() < min_sig_trk ) *stat = false;
 
   }
 
@@ -336,6 +317,7 @@ extern "C" {
   void task_AnaMapsBasicVis_set_min_ncls(AnaMapsBasicVis& t, int n) { t.SetMinNcls(n); }
   void task_AnaMapsBasicVis_set_min_ncnt(AnaMapsBasicVis& t, int n) { t.SetMinNcnt(n); }
   void task_AnaMapsBasicVis_set_min_etrk(AnaMapsBasicVis& t, int n) { t.SetMinEtrk(n); }
+  void task_AnaMapsBasicVis_set_min_sig_trk(AnaMapsBasicVis& t, int n) { t.SetMinSigTrk(n); }
 
 }
 

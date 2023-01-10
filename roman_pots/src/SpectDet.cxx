@@ -47,7 +47,7 @@ bool SpectDet::IsHit() {
   //layers loop
   for(vector<SpectPlane*>::iterator ip = fLay.begin(); ip != fLay.end(); ip++) {
 
-    is_hit *= (*ip)->IsHit();
+    is_hit = is_hit && (*ip)->IsHit();
 
   }//layers loop
 

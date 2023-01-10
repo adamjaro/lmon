@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-from ctypes import CDLL, c_char_p, c_double, c_int, byref
+from ctypes import CDLL, c_char_p, c_double, c_int, byref, c_void_p
 from math import sqrt
 
 import npyscreen as npy
@@ -30,7 +30,8 @@ class gui(npy.NPSApp):
         self.lib.task_AnaMapsBasicVis_det_nam.restype = c_char_p # to return a string
         self.lib.task_AnaMapsBasicVis_get_max_chi2.restype = c_double # double return type
         self.lib.task_AnaMapsBasicVis_get_lim_mdist.restype = c_double
-        self.task = self.lib.make_AnaMapsBasicVis( c_char_p(bytes(config, "utf-8")) ) # task instance
+        self.lib.make_AnaMapsBasicVis.restype = c_void_p
+        self.task = c_void_p( self.lib.make_AnaMapsBasicVis( c_char_p(bytes(config, "utf-8")) ) ) # task instance
 
         #make the visualization
         TEveManager.Create()
@@ -93,9 +94,9 @@ class gui(npy.NPSApp):
         track_sel_y = 10
         frame.add(npy.BoxBasic, name="Track criteria", editable=False, relx=track_sel_x, rely=track_sel_y, width=36, height=6)
         self.set_chi2 = frame.add(npy.TitleText, name="Max chi2ndf:", relx=track_sel_x+3, rely=track_sel_y+1, max_width=25)
-        self.set_chi2.value = "0.5"
+        self.set_chi2.value = "0.01"
         self.set_min_mdist = frame.add(npy.TitleText, name="Min cls dist:", relx=track_sel_x+3, rely=track_sel_y+2, max_width=25)
-        self.set_min_mdist.value = "0"
+        self.set_min_mdist.value = "0.5"
         self.set_chi2_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_chiSq,
             relx=track_sel_x+17, rely=track_sel_y+3)
 
@@ -111,7 +112,7 @@ class gui(npy.NPSApp):
         #event criteria
         evt_sel_x = 40
         evt_sel_y = 2
-        frame.add(npy.BoxBasic, name="Event criteria", editable=False, relx=evt_sel_x, rely=evt_sel_y, width=30, height=8)
+        frame.add(npy.BoxBasic, name="Event criteria", editable=False, relx=evt_sel_x, rely=evt_sel_y, width=30, height=9)
         self.set_min_ncls = frame.add(npy.TitleText, name="Min clusters:", relx=evt_sel_x+2, rely=evt_sel_y+1,max_width=27,begin_entry_at=18)
         self.set_min_ncls.value = "0"
         self.set_min_ntrk = frame.add(npy.TitleText, name="Min rec trk:", relx=evt_sel_x+2, rely=evt_sel_y+2, max_width=27,begin_entry_at=18)
@@ -120,12 +121,15 @@ class gui(npy.NPSApp):
         self.set_min_ncnt.value = "0"
         self.set_min_etrk = frame.add(npy.TitleText, name="Min excess trk:",relx=evt_sel_x+2,rely=evt_sel_y+4,max_width=27,begin_entry_at=18)
         self.set_min_etrk.value = "0"
+        self.set_min_sig_trk = frame.add(npy.TitleText, name="Min signal trk:",relx=evt_sel_x+2,rely=evt_sel_y+5,max_width=27,
+            begin_entry_at=18)
+        self.set_min_sig_trk.value = "0"
         self.evt_sel_apply = frame.add(npy.ButtonPress, name="Set", when_pressed_function=self.set_evt_sel,
-            relx=evt_sel_x+18, rely=evt_sel_y+5)
+            relx=evt_sel_x+18, rely=evt_sel_y+6)
 
         #plots configuration
         plots_x = 40
-        plots_y = 11
+        plots_y = 12
         frame.add(npy.BoxBasic, name="Plots configuration", editable=False, relx=plots_x, rely=plots_y, width=30, height=10)
 
         #bins and range for chi^2/ndf
@@ -383,6 +387,7 @@ class gui(npy.NPSApp):
         self.lib.task_AnaMapsBasicVis_set_min_ncls(self.task, int(self.set_min_ncls.value))
         self.lib.task_AnaMapsBasicVis_set_min_ncnt(self.task, int(self.set_min_ncnt.value))
         self.lib.task_AnaMapsBasicVis_set_min_etrk(self.task, int(self.set_min_etrk.value))
+        self.lib.task_AnaMapsBasicVis_set_min_sig_trk(self.task, int(self.set_min_sig_trk.value))
 
     #set_evt_sel
 
