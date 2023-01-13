@@ -164,7 +164,7 @@ const spec_lay_iz 100. # mm, spacing in z for individual layers
 const spec_lay_start_z (lumi_spec_dz/2.)-spec_lay_size_z/2.
 
 #up, layer A
-new ParticleCounter up_layA
+#new ParticleCounter up_layA
 
   up_layA.zpos = spec_lay_start_z
   up_layA.dx = lumi_spec_dxy
@@ -173,7 +173,7 @@ new ParticleCounter up_layA
   up_layA.place_into = LumiSUbox
 
 #up, layer B
-new ParticleCounter up_layB
+#new ParticleCounter up_layB
 
   up_layB.zpos = spec_lay_start_z-spec_lay_iz
   up_layB.dx = lumi_spec_dxy
@@ -182,7 +182,7 @@ new ParticleCounter up_layB
   up_layB.place_into = LumiSUbox
 
 #up, layer C
-new ParticleCounter up_layC
+#new ParticleCounter up_layC
 
   up_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
   up_layC.dx = lumi_spec_dxy
@@ -198,7 +198,7 @@ const spec_calo_scin_ofs 0.05 # mm, scintillator offset
 const spec_calo_nscin 25
 
 #up calorimeter
-new CaloBPC up_cal
+#new CaloBPC up_cal
 
   up_cal.zpos = spec_calo_zpos
   up_cal.place_into = LumiSUbox
@@ -209,7 +209,7 @@ new CaloBPC up_cal
 #tracking layers and calorimeter in down spectrometer
 
 #down, layer A
-new ParticleCounter down_layA
+#new ParticleCounter down_layA
 
   down_layA.zpos = spec_lay_start_z
   down_layA.dx = lumi_spec_dxy
@@ -218,7 +218,7 @@ new ParticleCounter down_layA
   down_layA.place_into = LumiSDbox
 
 #down, layer B
-new ParticleCounter down_layB
+#new ParticleCounter down_layB
 
   down_layB.zpos = spec_lay_start_z-spec_lay_iz
   down_layB.dx = lumi_spec_dxy
@@ -227,7 +227,7 @@ new ParticleCounter down_layB
   down_layB.place_into = LumiSDbox
 
 #down, layer C
-new ParticleCounter down_layC
+#new ParticleCounter down_layC
 
   down_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
   down_layC.dx = lumi_spec_dxy
@@ -236,7 +236,7 @@ new ParticleCounter down_layC
   down_layC.place_into = LumiSDbox
 
 #down calorimeter
-new CaloBPC down_cal
+#new CaloBPC down_cal
 
   down_cal.zpos = spec_calo_zpos
   down_cal.place_into = LumiSDbox
