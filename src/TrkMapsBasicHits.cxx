@@ -206,8 +206,8 @@ void TrkMapsBasicHits::LocalFromGeo(G4String nam, GeoParser *geo) {
     fThetaY = theta;
   }
 
-  //cout << "TrkMapsBasicHits::LocalFromGeo: ";
-  //cout << fXpos << " " << fYpos << " " << fZpos << " " << fThetaX << " " << fThetaY << endl;
+  cout << "TrkMapsBasicHits::LocalFromGeo, " << nam << ": ";
+  cout << fXpos << " " << fYpos << " " << fZpos << " " << fThetaX << " " << fThetaY << endl;
 
 }//LocalFromGeo
 

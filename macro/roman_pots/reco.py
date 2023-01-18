@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 2
 
     func = {}
     func[0] = en
@@ -36,10 +36,11 @@ def en():
 
     #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     sel = "is_rec==1 && itrk==1"
 
@@ -67,7 +68,7 @@ def en():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #en
@@ -83,9 +84,10 @@ def pitheta():
     #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     sel = "is_rec==1 && itrk==1"
 
@@ -112,7 +114,7 @@ def pitheta():
 
     gPad.SetGrid()
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #pitheta
@@ -125,12 +127,12 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     sel = "is_rec==1 && itrk==1"
     sel += "&&(TMath::Pi()-rec_theta)>1e-3"
@@ -162,7 +164,7 @@ def phi():
     leg.AddEntry("", "#pi-#theta_{#it{e},rec} > 1 mrad", "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #phi
@@ -175,9 +177,9 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
 
     det = "s1_tracks"
     lab = "Tagger 1"
@@ -217,7 +219,7 @@ def lQ2():
     leg.AddEntry("", lab, "")
     leg.Draw("same")
 
-    #ut.invert_col(rt.gPad)
+    ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lQ2
