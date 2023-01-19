@@ -99,13 +99,14 @@ def sig_frac():
     rmin = 1e-6
     rmax = 1e2
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
 
     #number of simulated events
     nsim = 5000*1999
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
     #18x275 GeV
     sigma_qr = 0.053266 # mb, quasi-real cross section, qr_bx_18x275_T3p3_10Mevt.log

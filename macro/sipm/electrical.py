@@ -12,7 +12,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = cprp

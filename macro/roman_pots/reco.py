@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 3
 
     func = {}
     func[0] = en
@@ -127,9 +127,10 @@ def phi():
     pmin = -TMath.Pi()-0.1
     pmax = TMath.Pi()+0.1
 
-    inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -177,15 +178,16 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    inp = "../../analysis_tasks/ini/ana.root"
+    #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
 
-    det = "s1_tracks"
-    lab = "Tagger 1"
+    #det = "s1_tracks"
+    #lab = "Tagger 1"
 
-    #det = "s2_tracks"
-    #lab = "Tagger 2"
+    det = "s2_tracks"
+    lab = "Tagger 2"
 
     sel = "is_rec==1 && itrk==1"
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
