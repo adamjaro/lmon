@@ -25,7 +25,8 @@ def main():
 #_____________________________________________________________________________
 def cprp():
 
-    infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035.csv"
+    #infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035.csv"
+    infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035_12avg.csv"
 
     inp = read_csv(infile)
 
@@ -41,10 +42,11 @@ def cprp():
     rmax = -1
     for i in range(len(inp)):
 
-        gc.SetPoint(i, inp["Vb_V"][i], inp["Cp_nF"][i])
-        gr.SetPoint(i, inp["Vb_V"][i], inp["Rp_MOhm"][i])
+        gc.SetPoint(i, inp["Vb_V"][i], inp["Cp_F"][i]*1e9) # to nF
+        rp = inp["Rp_Ohm"][i]*1e-6 # to MOhm
+        gr.SetPoint(i, inp["Vb_V"][i], rp)
 
-        if inp["Rp_MOhm"][i] > rmax: rmax = inp["Rp_MOhm"][i]
+        if rp > rmax: rmax = rp
 
     rmax *= 1.1
     gr.Scale(gPad.GetUymax()/rmax)
@@ -84,7 +86,8 @@ def cprp():
 #_____________________________________________________________________________
 def idc():
 
-    infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035.csv"
+    #infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035.csv"
+    infile = "/home/jaroslav/sim/lmon/data/sipm/test/m30035_12avg.csv"
 
     inp = read_csv(infile)
 
@@ -98,10 +101,11 @@ def idc():
     rmax = -1
     for i in range(len(inp)):
 
-        gi.SetPoint(i, inp["Vb_V"][i], inp["IDC_nA"][i])
-        gr.SetPoint(i, inp["Vb_V"][i], inp["Rp_MOhm"][i])
+        gi.SetPoint(i, inp["Vb_V"][i], inp["Idc_A"][i]*1e9) # to nA
+        rp = inp["Rp_Ohm"][i]*1e-6 # to MOhm
+        gr.SetPoint(i, inp["Vb_V"][i], rp)
 
-        if inp["Rp_MOhm"][i] > rmax: rmax = inp["Rp_MOhm"][i]
+        if rp > rmax: rmax = rp
 
     rmax *= 1.1
     gr.Scale(gPad.GetUymax()/rmax)

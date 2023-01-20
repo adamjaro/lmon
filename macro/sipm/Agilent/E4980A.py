@@ -4,9 +4,6 @@ from time import sleep
 from pandas import DataFrame
 from math import sqrt
 
-from ctypes import c_double
-from ROOT import TFile, TTree
-
 #_____________________________________________________________________________
 class E4980A:
     #_____________________________________________________________________________
@@ -14,36 +11,18 @@ class E4980A:
 
         #range and steps in bias voltage, V
         self.vmin = 1
-        self.vmax = 11
-        self.npoints = 4
+        self.vmax = 28
+        self.npoints = 120
 
         #output name
-        out = "out.root"
+        self.out_nam = "out.csv"
 
         #number of measurements for average
-        self.navg = 3
+        self.navg = 12
 
-        #create the output
-        self.outfile = TFile(out, "recreate")
-        self.tree = TTree("CpRp", "CpRp")
-        self.vbias = c_double()
-        self.cp = c_double()
-        self.rp = c_double()
-        self.vdc = c_double()
-        self.idc = c_double()
-        self.cp_err = c_double()
-        self.rp_err = c_double()
-        self.vdc_err = c_double()
-        self.idc_err = c_double()
-        self.tree.Branch("bias", self.vbias, "bias/D")
-        self.tree.Branch("cp", self.cp, "cp/D")
-        self.tree.Branch("rp", self.rp, "rp/D")
-        self.tree.Branch("vdc", self.vdc, "vdc/D")
-        self.tree.Branch("idc", self.idc, "idc/D")
-        self.tree.Branch("cp_err", self.cp_err, "cp_err/D")
-        self.tree.Branch("rp_err", self.rp_err, "rp_err/D")
-        self.tree.Branch("vdc_err", self.vdc_err, "vdc_err/D")
-        self.tree.Branch("idc_err", self.idc_err, "idc_err/D")
+        #data for output DataFrame
+        self.out = {"Vb_V":[], "Cp_F":[], "Rp_Ohm":[], "Vdc_V":[], "Idc_A":[],\
+                    "Cp_err":[], "Rp_err":[], "Vdc_err":[], "Idc_err":[]}
 
         #telnet session for the meter
         self.telnet = Telnet()
@@ -66,7 +45,7 @@ class E4980A:
 
             #apply the bias
             self.put(":BIAS:VOLT "+str(vb))
-            self.vbias.value = vb
+            self.out["Vb_V"].append(vb)
             sleep(0.3)
 
             #read the data
@@ -88,26 +67,24 @@ class E4980A:
             df = DataFrame(dat)
 
             #set the output, mean values
-            self.cp.value = df["cp"].mean()
-            self.rp.value = df["rp"].mean()
-            self.vdc.value = df["vdc"].mean()
-            self.idc.value = df["idc"].mean()
+            self.out["Cp_F"].append( df["cp"].mean() )
+            self.out["Rp_Ohm"].append( df["rp"].mean() )
+            self.out["Vdc_V"].append( df["vdc"].mean() )
+            self.out["Idc_A"].append( df["idc"].mean() )
 
             #standard deviation of the mean
-            self.cp_err.value = df["cp"].std()/sqrt(self.navg)
-            self.rp_err.value = df["rp"].std()/sqrt(self.navg)
-            self.vdc_err.value = df["vdc"].std()/sqrt(self.navg)
-            self.idc_err.value = df["idc"].std()/sqrt(self.navg)
-
-            #fill the output
-            self.tree.Fill()
+            self.out["Cp_err"].append( df["cp"].std()/sqrt(self.navg) )
+            self.out["Rp_err"].append( df["rp"].std()/sqrt(self.navg) )
+            self.out["Vdc_err"].append( df["vdc"].std()/sqrt(self.navg) )
+            self.out["Idc_err"].append( df["idc"].std()/sqrt(self.navg) )
 
         #ramp down and turn bias off
         self.ramp_down()
 
         #write the output
-        self.tree.Write()
-        self.outfile.Close()
+        out_df = DataFrame(self.out)
+        print(out_df)
+        out_df.to_csv(self.out_nam)
 
         #close the telnet session
         self.telnet.close()

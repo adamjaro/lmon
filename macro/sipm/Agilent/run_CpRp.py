@@ -13,8 +13,8 @@ def main():
     #LCR meter
     lc = E4980A("192.168.1.101", 5024)
 
-    #lc.run()
-    #lc.ramp_down()
+    #start the interactive shell, call 'lc.configure()' to set for Cp-Rp
+    #and 'lc.run()' to make the measurement
 
     vars = globals().copy()
     vars.update(locals())
