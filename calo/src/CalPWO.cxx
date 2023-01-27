@@ -24,16 +24,18 @@
 #include "G4OpticalSurface.hh"
 #include "G4LogicalSkinSurface.hh"
 #include "G4LogicalBorderSurface.hh"
+#include "G4RunManager.hh"
 
 //local classes
 #include "CalPWO.h"
 #include "PhotoCathPMT.h"
 #include "GeoParser.h"
 #include "ColorDecoder.h"
+#include "TrackingAction.h"
 
 //_____________________________________________________________________________
 CalPWO::CalPWO(const G4String& nam, GeoParser *geo, G4LogicalVolume *top) : Detector(),
-  G4VSensitiveDetector(nam), fNam(nam) {
+  G4VSensitiveDetector(nam), fNam(nam), fStack(0) {
 
   G4cout << "CalPWO: " << fNam << G4endl;
 
@@ -286,6 +288,28 @@ std::vector<G4double> CalPWO::LambdaNMtoEV(const std::vector<G4double>& lambda) 
   return en;
 
 }//LambdaNMtoEV
+
+//_____________________________________________________________________________
+G4bool CalPWO::ProcessHits(G4Step *, G4TouchableHistory*) {
+
+  //G4Track *track = step->GetTrack();
+
+  //G4cout << "CalPWO::ProcessHits, track ID: " << track->GetTrackID() << " " << track->GetParentID() << " ";
+  //G4cout << fStack->GetPrimaryID(track->GetTrackID()) << G4endl;
+
+  return true;
+
+}//ProcessHits
+
+//_____________________________________________________________________________
+void CalPWO::CreateOutput(TTree*) {
+
+  //load the tracking action for primary particle IDs
+  fStack = static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() );
+
+  G4cout << "CalPWO::CreateOutput " << fStack << G4endl;
+
+}//CreateOutput
 
 //_____________________________________________________________________________
 G4LogicalVolume* CalPWO::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {

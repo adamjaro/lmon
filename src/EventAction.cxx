@@ -12,12 +12,18 @@
 //local headers
 #include "EventAction.h"
 #include "DetectorConstruction.h"
+#include "TrackingAction.h"
 
 //_____________________________________________________________________________
-EventAction::EventAction() : G4UserEventAction(), fDet(0) {
+EventAction::EventAction() : G4UserEventAction(), fDet(0), fStack(0) {
 
   //get the detector
   fDet = static_cast<const DetectorConstruction*>( G4RunManager::GetRunManager()->GetUserDetectorConstruction() );
+
+  //tracking action maintaining local particle stack
+  fStack = static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() );
+
+  G4cout << "EventAction::EventAction " << fDet << " " << fStack << G4endl;
 
 }//EventAction
 
@@ -26,6 +32,9 @@ void EventAction::BeginOfEventAction(const G4Event *evt) {
 
   //set MC and clear the detectors
   fDet->BeginEvent(evt);
+
+  //reset the TrackingAction for the event
+  fStack->Reset();
 
 }//BeginOfEventAction
 

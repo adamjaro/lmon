@@ -13,6 +13,7 @@
 #include "RunAction.h"
 #include "UniformGen.h"
 #include "GenReader.h"
+#include "TrackingAction.h"
 
 //_____________________________________________________________________________
 void ActionInitialization::Build() const {
@@ -22,6 +23,7 @@ void ActionInitialization::Build() const {
   //SetUserAction(new UniformGen);
   SetUserAction(new GenReader);
 
+  SetUserAction(new TrackingAction);
   SetUserAction(new EventAction);
   SetUserAction(new RunAction);
 

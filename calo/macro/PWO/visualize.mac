@@ -10,15 +10,17 @@
 #input
 /lmon/input/type gun
 #/gun/energy 511 keV
-/gun/energy 180 keV
-/gun/particle gamma
+#/gun/energy 180 keV
+#/gun/particle gamma
+/gun/energy 10 MeV
+/gun/particle e-
 /gun/position 0 0 1 mm
 /gun/direction 0 0 -1
 
 #output
 /lmon/output/name pwo.root
 
-/process/optical/boundary/setInvokeSD true
+#/process/optical/boundary/setInvokeSD true
 
 # Initialize kernel
 /run/initialize
@@ -29,7 +31,7 @@
 # trajectories are established:
 /vis/viewer/set/autoRefresh false
 /vis/verbose errors
-/vis/viewer/set/background 1 1 1 0.
+#/vis/viewer/set/background 1 1 1 0.
 #/vis/viewer/set/lightsThetaPhi 120. 135. deg
 /vis/viewer/set/lightsThetaPhi -45 -45 deg
 #

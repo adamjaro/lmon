@@ -8,6 +8,7 @@
 #include "G4VSensitiveDetector.hh"
 
 class GeoParser;
+class TrackingAction;
 
 class CalPWO : public Detector, public G4VSensitiveDetector {
 
@@ -17,11 +18,12 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
     virtual ~CalPWO() {}
 
     //called via G4VSensitiveDetector
-    virtual G4bool ProcessHits(G4Step *, G4TouchableHistory*) { return true; }
+    virtual G4bool ProcessHits(G4Step *, G4TouchableHistory*);
 
     //called via Detector
     virtual const G4String& GetName() const { return fNam; }
     virtual void Add(std::vector<Detector*> *vec);
+    void CreateOutput(TTree*);
 
   private:
 
@@ -36,6 +38,8 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
     G4String fNam; // name of detector sensitive logical volume
 
     Detector *fPMT; // PMT photocathode
+
+    const TrackingAction *fStack; // stack for primary particles
 
 };
 

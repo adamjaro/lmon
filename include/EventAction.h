@@ -7,6 +7,7 @@
 #include "G4UserEventAction.hh"
 
 class DetectorConstruction;
+class TrackingAction;
 
 class EventAction : public G4UserEventAction {
 
@@ -21,6 +22,7 @@ class EventAction : public G4UserEventAction {
   private:
 
     const DetectorConstruction *fDet; // detector
+    const TrackingAction *fStack; // tracking action
 
 };
 
