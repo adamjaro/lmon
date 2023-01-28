@@ -5,6 +5,7 @@
 // Hits for TrkMapsBasic
 
 class GeoParser;
+class TrackingAction;
 
 class TrkMapsBasicHits {
 
@@ -35,8 +36,8 @@ class TrkMapsBasicHits {
     class Hit {
     public:
 
-      Hit(Int_t ip, Int_t ir, Double_t xp, Double_t yp, Double_t zp, Int_t it, Int_t pd, Bool_t prim):
-        ipix(ip), irow(ir), x(xp), y(yp), z(zp), en(0), itrk(it), pdg(pd), is_prim(prim) {}
+      Hit(Int_t ip, Int_t ir, Double_t xp, Double_t yp, Double_t zp, Int_t it, Int_t pd, Bool_t prim, Int_t pid):
+        ipix(ip), irow(ir), x(xp), y(yp), z(zp), en(0), itrk(it), pdg(pd), is_prim(prim), prim_id(pid) {}
 
       Int_t ipix; // pixel index in the row
       Int_t irow; // row index in the layer
@@ -47,12 +48,15 @@ class TrkMapsBasicHits {
       Int_t itrk; // track index
       Int_t pdg; // track PDG code
       Bool_t is_prim; // hit by primary particle
+      Int_t prim_id; // ID of primary particle associated with the hit
 
     };//Hit
 
     const Hit& GetHit(unsigned long i) { return fHitsR[i]; }
 
   private:
+
+    const TrackingAction *fStack; // stack for primary particles
 
     //run-time containers for hits
     std::map<std::pair<Int_t, Int_t>, Hit> fHitsW; // structure for write
@@ -70,6 +74,7 @@ class TrkMapsBasicHits {
     std::vector<Int_t> *fItrk; // track index
     std::vector<Int_t> *fPdg; // track PDG code
     std::vector<Bool_t> *fPrim; // primary flag
+    std::vector<Int_t> *fPrimID; // primary ID
 
     G4double fXpos; // plane position in x, mm
     G4double fYpos; // plane position in y, mm

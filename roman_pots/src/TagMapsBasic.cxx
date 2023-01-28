@@ -17,6 +17,7 @@
 
 //Geant
 #include "G4String.hh"
+#include "G4ios.hh"
 
 //local classes
 #include "GeoParser.h"
@@ -56,6 +57,8 @@ TagMapsBasic::TagMapsBasic(std::string nam, TTree *tree, GeoParser *geo, TTree *
 
 //_____________________________________________________________________________
 void TagMapsBasic::ProcessEvent() {
+
+  //G4cout << "TagMapsBasic::ProcessEvent, " << fNam << G4endl;
 
   //initialize the event tracks
   fTracks.clear();
@@ -134,6 +137,12 @@ void TagMapsBasic::ProcessEvent() {
 
             trk.itrk = c1.itrk;
             trk.pdg = c1.pdg;
+          }
+
+          //primary particle ID, set to the track when the primary ID is the same for all clusters
+          if( (c1.prim_id == c2.prim_id) and (c2.prim_id == c3.prim_id) and (c3.prim_id == c4.prim_id) ) {
+
+            trk.prim_id = c1.prim_id;
           }
 
           //increment event quantities
@@ -244,6 +253,8 @@ void TagMapsBasic::SetClsLimMdist(Double_t d) {
 //_____________________________________________________________________________
 void TagMapsBasic::FinishEvent() {
 
+  //G4cout << "TagMapsBasic::FinishEvent, " << fNam << G4endl;
+
   //finish for planes
   for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::FinishEvent ));
 
@@ -292,7 +303,7 @@ void TagMapsBasic::FinishEvent() {
     fTrkTree->Fill();
 
     //reconstruction flags for signal track
-    if( (*it).itrk == 1 ) {
+    if( (*it).itrk == 1 or (*it).prim_id == 1 ) {
       fIsSigTrk = kTRUE; // signal track is present
 
       if( (*it).is_rec == kTRUE ) {
@@ -326,6 +337,7 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fTrkTree->Branch("chi2_xy", &fOutTrk.chi2_xy, "chi2_xy/D");
   fTrkTree->Branch("is_prim", &fOutTrk.is_prim, "is_prim/O");
   fTrkTree->Branch("itrk", &fOutTrk.itrk, "itrk/I");
+  fTrkTree->Branch("prim_id", &fOutTrk.prim_id, "prim_id/I");
   fTrkTree->Branch("is_associate", &fOutTrk.is_associate, "is_associate/O");
   fTrkTree->Branch("ref_x", &fOutTrk.ref_x, "ref_x/D");
   fTrkTree->Branch("ref_y", &fOutTrk.ref_y, "ref_y/D");

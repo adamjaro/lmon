@@ -67,7 +67,7 @@ class TagMapsBasicPlane {
     class Cluster {
     public:
       Cluster(): x(0), y(0), en(0), nhits(0), is_prim(1),
-                 sigma_x(0), sigma_y(0), itrk(-1), pdg(0),
+                 sigma_x(0), sigma_y(0), itrk(-1), pdg(0), prim_id(0),
                  ntrk(0), min_dist(-1), id(0), iplane(0), stat(kTRUE) {}
 
       Double_t x; // cluster x position, mm
@@ -79,6 +79,7 @@ class TagMapsBasicPlane {
       Double_t sigma_y; // uncertainty in cluster y position, mm
       Int_t itrk; // MC track index associated with the cluster
       Int_t pdg; // PDG code for the MC track
+      Int_t prim_id; // ID of primary particle associated with the cluster
       Int_t ntrk; // number of tracks for which the cluster was used
       Double_t min_dist; // minimal distance to another cluster, mm
       Int_t id; // cluster ID on the plane

@@ -53,7 +53,7 @@ class TagMapsBasic {
     class Track {
     public:
       Track(): x(0), y(0), slope_x(0), slope_y(0), theta_x(0), theta_y(0),
-        chi2_x(0), chi2_y(0), chi2_xy(0), is_prim(0), itrk(-1), pdg(0), is_associate(0),
+        chi2_x(0), chi2_y(0), chi2_xy(0), is_prim(0), itrk(-1), pdg(0), prim_id(-1), is_associate(0),
         ref_x(0), ref_y(0), ref_theta_x(0), ref_theta_y(0), evt_ntrk(0), num_shared_cls(0),
         num_diff_itrk(0), cls(0) {}
 
@@ -69,6 +69,7 @@ class TagMapsBasic {
       Bool_t is_prim; // track for primary particle
       Int_t itrk; // index for MC particle
       Int_t pdg; // pdg for MC particle
+      Int_t prim_id; // ID of primary particle associated with the track
       Bool_t is_associate; // track association to a reference MC particle
       Double_t ref_x; // reference position in x, mm
       Double_t ref_y; // reference position in y, mm

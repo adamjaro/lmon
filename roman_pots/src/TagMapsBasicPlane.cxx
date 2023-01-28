@@ -16,6 +16,7 @@
 
 //Geant
 #include "G4String.hh"
+#include "G4ios.hh"
 
 //local classes
 #include "GeoParser.h"
@@ -47,7 +48,6 @@ void TagMapsBasicPlane::ProcessEvent() {
   fCls.clear();
 
   //if( GetHitsCount() < 12 ) return;
-
   //cout << fNam << " hits: " << GetHitsCount() << endl;
 
   //hits loop
@@ -66,6 +66,7 @@ void TagMapsBasicPlane::ProcessEvent() {
     const TrkMapsBasicHits::Hit& seed_hit = fHits.GetHit( ih );
     cls.itrk = seed_hit.itrk;
     cls.pdg = seed_hit.pdg;
+    cls.prim_id = seed_hit.prim_id;
 
     //adjacent hits for the hit with the most energy
     int nfound = FindAdjHits(ih, cls.hits);
@@ -125,6 +126,7 @@ void TagMapsBasicPlane::ProcessEvent() {
     cls.sigma_x = cls.GetSigma(cls.sigma_x, cls.x);
     cls.sigma_y = cls.GetSigma(cls.sigma_y, cls.y);
 
+    //PrintCluster(cls);
     //if(cls.nhits > 4) {
       //cout << fNam << " " << cls.nhits << endl;
       //PrintCluster(cls);
@@ -164,7 +166,7 @@ void TagMapsBasicPlane::ProcessEvent() {
 
   }//cluster mutual distances and status
 
-  //cout << fNam << " clusters: " << fNCls << " " << fNClsPrim << endl;
+  //cout << "TagMapsBasicPlane::ProcessEvent: " << fNam << " clusters: " << fNCls << " " << fNClsPrim << endl;
 
 }//ProcessEvent
 
@@ -458,6 +460,8 @@ void TagMapsBasicPlane::CreateOutput() {
 //_____________________________________________________________________________
 void TagMapsBasicPlane::FinishEvent() {
 
+  //G4cout << "TagMapsBasicPlane::FinishEvent " << fClsTree << G4endl;
+
   if( !fClsTree ) return;
 
   //clusters loop
@@ -478,6 +482,8 @@ void TagMapsBasicPlane::FinishEvent() {
     fClsTree->Fill();
 
   }//clusters loop
+
+  //G4cout << "TagMapsBasicPlane::FinishEvent" << G4endl;
 
 }//FinishEvent
 
@@ -512,7 +518,7 @@ void TagMapsBasicPlane::PrintCluster(Cluster& cls) {
 
   //print cluster parameters
 
-  cout << fNam << " cluster: " << cls.is_prim << " " << cls.nhits;
+  cout << fNam << " cluster: " << cls.is_prim << " " << cls.prim_id << " " << cls.nhits;
   cout << " " << cls.x << " " << cls.y << endl;
 
   //hit loop

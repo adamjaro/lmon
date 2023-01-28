@@ -151,7 +151,7 @@ void AnaMapsBasic::Run(const char *conf) {
 
   //event loop
   Long64_t nev = tree.GetEntries();
-  Long64_t iprint = nev/12;
+  Long64_t iprint = nev>12 ? nev/12 : 1;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
 
