@@ -37,12 +37,14 @@ def en():
     #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v1.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
 
-    sel = "is_rec==1 && itrk==1"
+    #sel = "is_rec==1 && itrk==1"
+    sel = "is_rec==1 && prim_id==1"
 
     infile = TFile.Open(inp)
     #tree = infile.Get(det+"_rec")
@@ -54,6 +56,10 @@ def en():
 
     tree.Draw("rec_en:true_el_E >> hxy", sel)
     #tree.Draw("rec_en:true_el_E >> hxy", "is_rec==1")
+
+    print("All tracks:    ", tree.GetEntries())
+    print("Reco primary:  ", hxy.Integral())
+    print("Ratio of above:", hxy.Integral()/tree.GetEntries())
 
     ytit = "Reconstructed energy #it{E_{e}} (GeV)"
     xtit = "Generated true energy #it{E_{e,gen}} (GeV)"
@@ -83,13 +89,14 @@ def pitheta():
 
     #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v1.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
 
-    sel = "is_rec==1 && itrk==1"
+    #sel = "is_rec==1 && itrk==1"
+    sel = "is_rec==1 && prim_id==1"
 
     infile = TFile.Open(inp)
     tree = infile.Get(det)
@@ -180,16 +187,17 @@ def lQ2():
 
     #inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
 
-    #det = "s1_tracks"
-    #lab = "Tagger 1"
+    det = "s1_tracks"
+    lab = "Tagger 1"
 
-    det = "s2_tracks"
-    lab = "Tagger 2"
+    #det = "s2_tracks"
+    #lab = "Tagger 2"
 
-    sel = "is_rec==1 && itrk==1"
+    #sel = "is_rec==1 && itrk==1"
+    sel = "is_rec==1 && prim_id==1"
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)

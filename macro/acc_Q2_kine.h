@@ -8,6 +8,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <functional>
 
 //ROOT
 #include "TTree.h"
@@ -30,22 +31,40 @@ class acc_Q2_kine {
   Int_t modif; // modifier to input value
 
   //_____________________________________________________________________________
-  acc_Q2_kine(TTree *t, string nam, string sel): tree(t),
-    prec(1e-2), delt(1e-6), nev(0), bmin(-1), modif(-1) {
+  acc_Q2_kine(TTree *t, string nam, string sel, string sel2="", int logic_sel=0): tree(t),
+    prec(1e-2), delt(1e-6), nev(0), bmin(-1), modif(-1), val_sel2(0) {
 
     //input tree
-    //tree->SetBranchStatus("*", 0);
-    //tree->SetBranchStatus(nam.c_str(), 1);
-    //tree->SetBranchStatus(sel.c_str(), 1);
-
     tree->SetBranchAddress(nam.c_str(), &val);
-    tree->SetBranchAddress(sel.c_str(), &val_sel);
+
+    val_sel = new Bool_t;
+    tree->SetBranchAddress(sel.c_str(), val_sel);
+
+    if( !sel2.empty() ) {
+      val_sel2 = new Bool_t;
+      tree->SetBranchAddress(sel2.c_str(), val_sel2);
+    }
 
     //modifiers to input value
     mods[0] = &acc_Q2_kine::theta_to_eta;
     mods[1] = &acc_Q2_kine::log10_Q2;
     mods[2] = &acc_Q2_kine::pitheta;
     mods[3] = &acc_Q2_kine::mlt_theta;
+
+
+    //logical function for two selection variables
+    switch( logic_sel ) {
+
+      case 0:
+        select_func = logical_or<bool>();
+        break;
+
+      case 1:
+        select_func = logical_and<bool>();
+        break;
+
+    }
+
 
   }//acc_Q2_kine
 
@@ -69,7 +88,20 @@ class acc_Q2_kine {
       valAll.push_back(val);
 
       //make the selection
-      if( val_sel != kTRUE ) continue;
+      bool select = false;
+
+      //one or two selection variables
+      if( val_sel2 ) {
+
+        //two selection variables
+        select = select_func(*val_sel, *val_sel2);
+      } else {
+
+        //single variable
+        select = *val_sel;
+      }
+
+      if( !select ) continue;
 
       //event is selected
       valSel.push_back(val);
@@ -276,7 +308,10 @@ private:
 
   TTree *tree; // input tree
   Double_t val; // kinematics variable
-  Bool_t val_sel; // selection variable
+  Bool_t *val_sel; // selection variable
+  Bool_t *val_sel2; // selection variable 2
+
+  function<bool(bool, bool)> select_func; // selection function
 
 };//acc_Q2_kine
 

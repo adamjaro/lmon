@@ -2,6 +2,7 @@
 
 import ROOT as rt
 from ROOT import gPad, gROOT, gStyle, TFile, gSystem
+from ROOT import std
 
 import sys
 sys.path.append("../")
@@ -10,11 +11,12 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 2
 
     func = {}
     func[0] = pitheta_en
     func[1] = lx_lQ2
+    func[2] = lQ2
 
     func[iplot]()
 
@@ -37,9 +39,15 @@ def pitheta_en():
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic.root"
     inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
 
     #det = "s1"
-    det = "s2"
+    #det = "s2"
+
+    #sel = "s1_is_sig_rec==1"
+    #sel = "s2_is_sig_rec==1"
+    #sel = "s1_is_sig_rec==1 && s2_is_sig_rec==1"
+    sel = "s1_is_sig_rec==1 || s2_is_sig_rec==1"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -50,9 +58,7 @@ def pitheta_en():
     hxy_sel = ut.prepare_TH2D("hxy_sel", xbin, xmin, xmax, ybin, ymin, ymax)
 
     val = "(TMath::Pi()-true_el_theta)*1e3:true_el_E"
-    #tree.Draw(val+" >> hxy_sel", det+"_ntrk_prim>0")
-    #tree.Draw(val+" >> hxy_sel", det+"_is_sig_trk==1")
-    tree.Draw(val+" >> hxy_sel", det+"_is_sig_rec==1")
+    tree.Draw(val+" >> hxy_sel", sel)
     tree.Draw(val+" >> hxy_all")
 
     print("All: ", hxy_all.GetEntries())
@@ -65,7 +71,8 @@ def pitheta_en():
     xtit = "Electron energy #it{E_{e}} (GeV)"
     ut.put_yx_tit(hxy_sel, ytit, xtit, 1.1, 1.2)
 
-    hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
+    #hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
+    hxy_sel.SetZTitle("Acceptance")
     hxy_sel.SetTitleOffset(1.4, "Z")
 
     ut.set_margin_lbtr(gPad, 0.09, 0.09, 0.015, 0.15)
@@ -80,7 +87,7 @@ def pitheta_en():
 
     leg = ut.prepare_leg(0.12, 0.88, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
-    leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
+    #leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
     leg.Draw("same")
 
     ut.invert_col(rt.gPad)
@@ -103,10 +110,13 @@ def lx_lQ2():
     xmin = -9
     xmax = 0
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
 
-    det = "s1"
-    #det = "s2"
+    #sel = "s1_is_sig_rec==1"
+    #sel = "s2_is_sig_rec==1"
+    #sel = "s1_is_sig_rec==1 && s2_is_sig_rec==1"
+    sel = "s1_is_sig_rec==1 || s2_is_sig_rec==1"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -117,7 +127,8 @@ def lx_lQ2():
     hxy_sel = ut.prepare_TH2D("hxy_sel", xbin, xmin, xmax, ybin, ymin, ymax)
 
     val = "(TMath::Log10(true_x)):(TMath::Log10(true_Q2))"
-    tree.Draw(val+" >> hxy_sel", det+"_ntrk_prim>0")
+    #tree.Draw(val+" >> hxy_sel", det+"_ntrk_prim>0")
+    tree.Draw(val+" >> hxy_sel", sel)
     tree.Draw(val+" >> hxy_all")
 
     hxy_sel.Divide(hxy_all)
@@ -126,7 +137,8 @@ def lx_lQ2():
     xtit = "Virtuality #it{Q}^{2} (GeV^{2})"
     ut.put_yx_tit(hxy_sel, ytit, xtit, 1.4, 1.3)
 
-    hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
+    #hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
+    hxy_sel.SetZTitle("Acceptance")
     hxy_sel.SetTitleOffset(1.4, "Z")
 
     ut.set_margin_lbtr(gPad, 0.1, 0.1, 0.015, 0.15)
@@ -154,13 +166,68 @@ def lx_lQ2():
 
     leg = ut.prepare_leg(0.15, 0.88, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
-    leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
-    leg.Draw("same")
+    #leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
+    #leg.Draw("same")
 
     ut.invert_col(rt.gPad)
     can.SaveAs("01fig.pdf")
 
 #lx_lQ2
+
+#_____________________________________________________________________________
+def lQ2():
+
+    #acceptance x efficiency in Q^2
+
+    #log_10(GeV^2)
+    xbin = 0.05
+    xmin = -9
+    xmax = 0
+
+    amin = 0
+    amax = 0.3
+
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
+
+    infile = TFile.Open(inp)
+    tree = infile.Get("event")
+
+    gROOT.ProcessLine(".L ../acc_Q2_kine.h+")
+
+    axe = rt.acc_Q2_kine(tree, "true_Q2", "s1_is_sig_rec", "s2_is_sig_rec", 0)
+    axe.modif = 1
+    #axe.prec = 0.05
+    #axe.bmin = 0.1
+    axe.prec = 0.01
+    axe.bmin = 0.08
+    #axe.nev = int(1e4)
+    gax = axe.get()
+
+    can = ut.box_canvas()
+    frame = gPad.DrawFrame(xmin, amin, xmax, amax)
+
+    ut.put_yx_tit(frame, "Acceptance", "Virtuality #it{Q}^{2} (GeV^{2})", 1.6, 1.5)
+
+    frame.Draw()
+
+    ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.03, 0.03)
+
+    gPad.SetGrid()
+
+    ut.set_graph(gax, rt.kBlue)
+    gax.Draw("psame")
+
+    #Q^2 labels in powers of 10
+    ax = frame.GetXaxis()
+    labels = range(-9, 1)
+    for i in range(len(labels)):
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+    ax.SetLabelOffset(0.015)
+
+    #ut.invert_col(rt.gPad)
+    can.SaveAs("01fig.pdf")
+
+#lQ2
 
 #_____________________________________________________________________________
 if __name__ == "__main__":

@@ -100,13 +100,11 @@ def sig_frac():
     rmax = 1e2
 
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
 
-    #number of simulated events
-    nsim = 5000*1999
-
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
     #18x275 GeV
     sigma_qr = 0.053266 # mb, quasi-real cross section, qr_bx_18x275_T3p3_10Mevt.log
@@ -121,14 +119,27 @@ def sig_frac():
     infile = TFile.Open(inp)
     tree = infile.Get(det)
 
+    #number of simulated events
+    nsim = infile.Get("event").GetEntries()
+
+    print("Num of simulated events:", nsim)
+
+    #selection for signal and background tracks
+    #sig_sel = "itrk==1"
+    #bkg_sel = "itrk!=1"
+    sig_sel = "prim_id==1"
+    bkg_sel = "prim_id!=1"
+
     #background
     hbkg = ut.prepare_TH1D("hbkg", qbin, qmin, qmax)
-    tree.Draw("TMath::Log10(rec_Q2) >> hbkg", "itrk!=1")
+    tree.Draw("TMath::Log10(rec_Q2) >> hbkg", bkg_sel)
+    print("Background tracks per event:", hbkg.Integral()/nsim)
     ut.norm_to_integral(hbkg, rate_bkg, rt.kBlue, True)
 
     #quasi-real signal
     hqr = ut.prepare_TH1D("hqr", qbin, qmin, qmax)
-    tree.Draw("TMath::Log10(rec_Q2) >> hqr", "itrk==1")
+    tree.Draw("TMath::Log10(rec_Q2) >> hqr", sig_sel)
+    print("Signal tracks per event:", hqr.Integral()/nsim)
     ut.norm_to_integral(hqr, (hqr.GetEntries()/nsim)*rate_qr*1e-6, rt.kBlue, True) # rate in MHz
 
     #all events as signal + background

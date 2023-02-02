@@ -14,7 +14,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 7
+    iplot = 3
 
     func = {}
     func[0] = chi2
@@ -231,11 +231,10 @@ def ntrk():
     xmax = 400
 
     #inp = "/home/jaroslav/sim/lmon/analysis_tasks/ini/ana.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5d/maps_basic_v5.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx1/maps_basic.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx2/maps_basic.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx3/maps_basic_v8.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/FarBackward_ana1/tag5dx3/pixel002/maps_basic_pixel002.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    inp2 = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v1.root"
 
     det = "s1"
     #det = "s2"
@@ -247,6 +246,7 @@ def ntrk():
     #val = "s2_ntrk-s2_ntrk_associate"
 
     hx = make_h1(inp, "event", det+val, 1, 0, xmax, det+val+">0")
+    hy = make_h1(inp2, "event", det+val, 1, 0, xmax, det+val+">0")
     #hy = make_h1(inp, "event", det+val+"_prim", 1, 0, xmax, det+val+"_prim>0")
     #hy1 = make_h1(inp, "event", det+val+"_associate", 1, 0, xmax, det+val+"_associate>0")
     #hx = make_h1(inp, "event", val, 1, 0, xmax)
@@ -263,7 +263,7 @@ def ntrk():
     set_grid(plt, col)
 
     plt.plot(hx[0], hx[1], "-", color="blue", lw=1)
-    #plt.plot(hy[0], hy[1], "--", color="red", lw=1)
+    plt.plot(hy[0], hy[1], "--", color="red", lw=1)
     #plt.plot(hy1[0], hy1[1], "--", color="gold", lw=1)
 
     ax.set_xlabel("Tracks per event")
