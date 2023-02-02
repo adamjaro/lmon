@@ -1,0 +1,306 @@
+
+#starting z position for exit window
+const lumi_win_z -18700. # mm
+
+#size in xy for box holding the exit window, < 1 mrad
+const lumi_win_dx 37.5 # mm
+
+#tilt angle for exit window
+const lumi_win_TW 0.25 # rad
+
+#size in z for box holding the exit window
+const lumi_win_dz lumi_win_dx/TMath::Tan(lumi_win_TW)
+
+#box volume holding the exit window
+new BoxSegment ExitWinBox
+
+  ExitWinBox.dx = lumi_win_dx
+  ExitWinBox.dy = lumi_win_dx
+  ExitWinBox.dz = lumi_win_dz
+  ExitWinBox.zpos = lumi_win_z-lumi_win_dz/2.
+  ExitWinBox.vis = 1:0:0:2
+
+#exit window thickness
+const lumi_win_thickness 2.6 # mm
+
+#exit window
+new ExitWindowV1 ew
+
+  ew.dx = lumi_win_thickness
+  ew.dy = lumi_win_dx
+  ew.dz = sqrt(lumi_win_dx*lumi_win_dx+lumi_win_dz*lumi_win_dz)-(lumi_win_thickness/tan(lumi_win_TW))
+  ew.tilt = lumi_win_TW
+  ew.place_into = ExitWinBox
+
+#parameters for spectrometer magnet
+const lumi_mag_zpos -28200. # mm, center in z
+const lumi_mag_rin 100. # mm, inner radius
+const lumi_mag_rout 160. # mm, outer radius
+const lumi_mag_dz 600. # mm, length along z
+
+#dipole spectrometer magnet
+new Magnet lumi_dipole
+
+  lumi_dipole.zpos = lumi_mag_zpos
+  lumi_dipole.dz = lumi_mag_dz
+  lumi_dipole.inner_r = lumi_mag_rin
+  lumi_dipole.outer_r = lumi_mag_rout
+  lumi_dipole.field = lumi_mag_field
+
+#vacuum section from exit window to spectrometer magnet
+new VacLumi lumi_vac_win_mag
+
+  lumi_vac_win_mag.z0 = lumi_win_z-lumi_win_dz
+  lumi_vac_win_mag.z1 = lumi_mag_zpos+lumi_mag_dz/2.
+  lumi_vac_win_mag.dX0 = lumi_win_dx/2.
+  lumi_vac_win_mag.dY0 = lumi_win_dx/2.
+  lumi_vac_win_mag.dX1 = lumi_mag_rin
+  lumi_vac_win_mag.dY1 = lumi_mag_rin
+
+#parameters for spectrometer detectors
+const lumi_spec_z -36400. # mm, starting point in z
+const lumi_spec_dxy 200. # mm, full front size in x and y
+const lumi_spec_dz 500. # mm, full length along z
+const lumi_spec_yS 60. # mm, elevation in y
+
+#angle from the end of the dipole magnet
+const lumi_spec_zS (lumi_mag_zpos-lumi_mag_dz/2.)-lumi_spec_z
+const lumi_spec_alpha asin(lumi_spec_dxy/(2.*sqrt(lumi_spec_zS*lumi_spec_zS+lumi_spec_yS*lumi_spec_yS)))+atan(lumi_spec_yS/lumi_spec_zS)
+
+#center for spectrometer detectors (down detector is at -yC at -alpha)
+const lumi_spec_cdet 0.5*sqrt(lumi_spec_dz*lumi_spec_dz+lumi_spec_dxy*lumi_spec_dxy)
+const lumi_spec_zC lumi_spec_z-lumi_spec_cdet*sin(atan(lumi_spec_dz/lumi_spec_dxy)-lumi_spec_alpha)
+const lumi_spec_yC lumi_spec_yS+lumi_spec_cdet*cos(atan(lumi_spec_dz/lumi_spec_dxy)-lumi_spec_alpha)
+
+#up spectrometer
+new BoxSegment LumiSUbox
+
+  LumiSUbox.dx = lumi_spec_dxy
+  LumiSUbox.dy = lumi_spec_dxy
+  LumiSUbox.dz = lumi_spec_dz
+  LumiSUbox.zpos = lumi_spec_zC
+  LumiSUbox.ypos = lumi_spec_yC
+  LumiSUbox.rotate_x = 1
+  LumiSUbox.theta = lumi_spec_alpha
+
+#down spectrometer
+new BoxSegment LumiSDbox
+
+  LumiSDbox.dx = lumi_spec_dxy
+  LumiSDbox.dy = lumi_spec_dxy
+  LumiSDbox.dz = lumi_spec_dz
+  LumiSDbox.zpos = lumi_spec_zC
+  LumiSDbox.ypos = -lumi_spec_yC
+  LumiSDbox.rotate_x = 1
+  LumiSDbox.theta = -lumi_spec_alpha
+
+#direct photon detector
+const lumiD_z -37300. # mm, start position in z
+const lumiD_dxy 160. # mm, full size in x and y
+const lumiD_dz 355. # mm, full length along z
+
+new BoxSegment LumiDbox
+
+  LumiDbox.dx = lumiD_dxy
+  LumiDbox.dy = lumiD_dxy
+  LumiDbox.dz = lumiD_dz
+  LumiDbox.zpos = lumiD_z-lumiD_dz/2.
+
+#edge points around spectrometer detectors
+const lumi_spec_zT lumi_spec_z+lumi_spec_dxy*sin(lumi_spec_alpha)
+const lumi_spec_yT lumi_spec_yS+lumi_spec_dxy*cos(lumi_spec_alpha)
+
+const lumi_spec_zF lumi_spec_z-lumi_spec_dz*cos(lumi_spec_alpha)
+const lumi_spec_yF lumi_spec_yS+lumi_spec_dz*sin(lumi_spec_alpha)
+
+#vacuum section from spectrometer magnet to spectrometer detectors
+new VacLumi lumi_vac_mag_spec
+
+  lumi_vac_mag_spec.z0 = lumi_mag_zpos-lumi_mag_dz/2.
+  lumi_vac_mag_spec.z1 = lumi_spec_zT
+  lumi_vac_mag_spec.dX0 = lumi_mag_rin
+  lumi_vac_mag_spec.dY0 = lumi_mag_rin
+  lumi_vac_mag_spec.dX1 = lumi_spec_dxy/2.
+  lumi_vac_mag_spec.dY1 = lumi_spec_yT
+
+#vacuum section in front of luminosity spectrometers
+new VacLumi lumi_vac_spec_front
+
+  lumi_vac_spec_front.z0 = lumi_spec_zT
+  lumi_vac_spec_front.z1 = lumi_spec_z
+  lumi_vac_spec_front.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_front.dY0 = lumi_spec_yT
+  lumi_vac_spec_front.dX1 = lumi_spec_dxy/2.
+  lumi_vac_spec_front.dY1 = lumi_spec_yS
+  #lumi_vac_spec_front.vis = 1:0:0:2
+
+#vacuum section between luminosity spectrometers
+new VacLumi lumi_vac_spec_mid
+
+  lumi_vac_spec_mid.z0 = lumi_spec_z
+  lumi_vac_spec_mid.z1 = lumi_spec_zF
+  lumi_vac_spec_mid.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_mid.dY0 = lumi_spec_yS
+  lumi_vac_spec_mid.dX1 = lumi_spec_dxy/2.
+  lumi_vac_spec_mid.dY1 = lumi_spec_yF
+  #lumi_vac_spec_mid.vis = 1:0:0:2
+
+#vacuum section from spectrometers to direct photon detector
+new VacLumi lumi_vac_spec_phot
+
+  lumi_vac_spec_phot.z0 = lumi_spec_zF
+  lumi_vac_spec_phot.z1 = lumiD_z
+  lumi_vac_spec_phot.dX0 = lumi_spec_dxy/2.
+  lumi_vac_spec_phot.dY0 = lumi_spec_yF
+  lumi_vac_spec_phot.dX1 = lumiD_dxy/2.
+  lumi_vac_spec_phot.dY1 = lumiD_dxy/2.
+  #lumi_vac_spec_phot.vis = 1:0:0:2
+
+#tracking layers in spectrometers
+const spec_lay_size_z 1. # mm, layer thickness along z
+const spec_lay_iz 100. # mm, spacing in z for individual layers
+
+#starting position in z for layers
+const spec_lay_start_z (lumi_spec_dz/2.)-spec_lay_size_z/2.
+
+#up, layer A
+#new ParticleCounter up_layA
+
+  up_layA.zpos = spec_lay_start_z
+  up_layA.dx = lumi_spec_dxy
+  up_layA.dy = lumi_spec_dxy
+  up_layA.dz = spec_lay_size_z
+  up_layA.place_into = LumiSUbox
+
+#up, layer B
+#new ParticleCounter up_layB
+
+  up_layB.zpos = spec_lay_start_z-spec_lay_iz
+  up_layB.dx = lumi_spec_dxy
+  up_layB.dy = lumi_spec_dxy
+  up_layB.dz = spec_lay_size_z
+  up_layB.place_into = LumiSUbox
+
+#up, layer C
+#new ParticleCounter up_layC
+
+  up_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
+  up_layC.dx = lumi_spec_dxy
+  up_layC.dy = lumi_spec_dxy
+  up_layC.dz = spec_lay_size_z
+  up_layC.place_into = LumiSUbox
+
+#calorimeter center position in z, based on its length of 158.6 mm
+const spec_calo_zpos (lumi_spec_dz/2.)-3.*spec_lay_iz-0.5*158.6
+const spec_calo_scin_ofs 0.05 # mm, scintillator offset
+
+#calorimeter scintillator spacing for 200 mm front size
+const spec_calo_nscin 25
+
+#up calorimeter
+#new CaloBPC up_cal
+
+  up_cal.zpos = spec_calo_zpos
+  up_cal.place_into = LumiSUbox
+  up_cal.modxy = lumi_spec_dxy
+  up_cal.nscin = spec_calo_nscin
+  up_cal.scin_ofs = spec_calo_scin_ofs
+
+#tracking layers and calorimeter in down spectrometer
+
+#down, layer A
+#new ParticleCounter down_layA
+
+  down_layA.zpos = spec_lay_start_z
+  down_layA.dx = lumi_spec_dxy
+  down_layA.dy = lumi_spec_dxy
+  down_layA.dz = spec_lay_size_z
+  down_layA.place_into = LumiSDbox
+
+#down, layer B
+#new ParticleCounter down_layB
+
+  down_layB.zpos = spec_lay_start_z-spec_lay_iz
+  down_layB.dx = lumi_spec_dxy
+  down_layB.dy = lumi_spec_dxy
+  down_layB.dz = spec_lay_size_z
+  down_layB.place_into = LumiSDbox
+
+#down, layer C
+#new ParticleCounter down_layC
+
+  down_layC.zpos = spec_lay_start_z-2.*spec_lay_iz
+  down_layC.dx = lumi_spec_dxy
+  down_layC.dy = lumi_spec_dxy
+  down_layC.dz = spec_lay_size_z
+  down_layC.place_into = LumiSDbox
+
+#down calorimeter
+#new CaloBPC down_cal
+
+  down_cal.zpos = spec_calo_zpos
+  down_cal.place_into = LumiSDbox
+  down_cal.modxy = lumi_spec_dxy
+  down_cal.nscin = spec_calo_nscin
+  down_cal.scin_ofs = spec_calo_scin_ofs
+
+#direct photon detector as PWO calorimeter
+
+#crystal tower
+const pwo_crystal_xy 22. # mm
+const pwo_crystal_z 350. # mm
+const pwo_wrapping_thickness 0.3 # mm
+
+#optical detector at the tower
+const pwo_phot_xy 18. # mm
+const pwo_phot_z 2. # mm
+
+#number of towers along x and y
+const pwo_nxy 7
+
+const pwo_modz pwo_wrapping_thickness+pwo_crystal_z+pwo_phot_z
+const pwo_modxy pwo_nxy*(pwo_crystal_xy+2.*pwo_wrapping_thickness)
+
+#not yet ready
+#new CalPWO pwo
+
+  pwo.crystal_xy = pwo_crystal_xy
+  pwo.crystal_z = pwo_crystal_z
+  pwo.wrapping_thickness = pwo_wrapping_thickness
+  pwo.nx = pwo_nxy
+  pwo.ny = pwo_nxy
+  pwo.modx = pwo_modxy
+  pwo.mody = pwo_modxy
+  pwo.modz = pwo_modz
+  pwo.zpos = 0
+  pwo.crystal_vis = 1:0:0:0.3
+  pwo.wrapping_vis = 0:1:0:2
+  pwo.radius = pwo_phot_xy/2
+  pwo.dz = pwo_phot_z
+  pwo.cath_lay_vis = 1:0:0:2
+  pwo.cath_main_vis = 0:0:1:0.4
+  pwo.place_into = LumiDbox
+
+#counter in place of direct photon detector
+#new ParticleCounter phot_cnt
+
+  #phot_cnt.zpos = (lumiD_dz/2.)-spec_lay_size_z/2.
+  #phot_cnt.dx = lumiD_dxy
+  #phot_cnt.dy = lumiD_dxy
+  #phot_cnt.dz = spec_lay_size_z
+  #phot_cnt.place_into = LumiDbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -6,18 +6,19 @@
 #detectors and components
 #/lmon/construct/geometry config/pro1/geom_all.in
 #/lmon/construct/geometry config/pro2/geom_pro2.in
-/lmon/construct/geometry config/rp1/geom_rp1.in
+#/lmon/construct/geometry config/rp1/geom_rp1.in
+/lmon/construct/geometry config/rp2/geom_rp2.in
 #/lmon/construct/geometry config/geom_beam-gas.in
 #/lmon/construct/geometry config/geom_test.in
 
 #input
-#/lmon/input/type gun
+/lmon/input/type gun
 #/gun/energy 18 GeV
-#/gun/energy 12 GeV
+/gun/energy 12 GeV
 #/gun/energy 14 GeV
-#/gun/particle e-
+/gun/particle e-
 #/gun/particle gamma
-#/gun/direction 0 0 -1
+/gun/direction 0 0 -1
 
 #/lmon/input/type hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/lumi/lumi_18x275_Lif_emin0p5_T3p3_10Mevt.hepmc
@@ -25,9 +26,9 @@
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam_gas/beam_gas_ep_10GeV_emin0p1_10Mevt.hepmc
 #/lmon/input/hepmc/name /home/jaroslav/sim/GETaLM_data/beam/el_beam_18_t3p3_10kevt.hepmc
 
-/lmon/input/type tparticle
+#/lmon/input/type tparticle
 #/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/lgen_18x275.root
-/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/qr_bx.root
+#/lmon/input/tparticle/name /home/jaroslav/sim/GETaLM/cards/qr_bx.root
 
 # Initialize kernel
 /run/initialize
