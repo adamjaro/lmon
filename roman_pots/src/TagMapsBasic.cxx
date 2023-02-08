@@ -293,6 +293,24 @@ void TagMapsBasic::FinishEvent() {
 
     (*it).num_shared_cls = nshared; // set the number of shared clusters for the track
 
+    //load MC particle for the track
+
+    //MC loop
+    for(unsigned long imc=0; imc<fMCItrk->size(); imc++) {
+
+      //primary particle for the track
+      if( fMCItrk->at(imc) != (*it).prim_id ) continue;
+
+      //set MC kinematics for the track
+      (*it).mcp_en = fMCEn->at(imc);
+      (*it).mcp_theta = fMCTheta->at(imc);
+      (*it).mcp_phi = fMCPhi->at(imc);
+      (*it).mcp_Q2 = 2*18*(*it).mcp_en*(1-TMath::Cos(TMath::Pi()-(*it).mcp_theta));
+
+      //cout << "MC: " << fMCItrk->at(imc) << ", energy: " << fMCEn->at(imc) << " " << (*it).mcp_en << endl;
+
+    }//MC loop
+
     //cout << " shared clusters: " << (*it).num_shared_cls << endl;
 
     //set the output track and fill the tree
@@ -303,7 +321,7 @@ void TagMapsBasic::FinishEvent() {
     fTrkTree->Fill();
 
     //reconstruction flags for signal track
-    if( (*it).itrk == 1 or (*it).prim_id == 1 ) {
+    if( (*it).prim_id == 1 ) {
       fIsSigTrk = kTRUE; // signal track is present
 
       if( (*it).is_rec == kTRUE ) {
@@ -351,6 +369,10 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fTrkTree->Branch("rec_theta", &fOutTrk.rec_theta, "rec_theta/D");
   fTrkTree->Branch("rec_phi", &fOutTrk.rec_phi, "rec_phi/D");
   fTrkTree->Branch("rec_Q2", &fOutTrk.rec_Q2, "rec_Q2/D");
+  fTrkTree->Branch("mcp_en", &fOutTrk.mcp_en, "mcp_en/D");
+  fTrkTree->Branch("mcp_theta", &fOutTrk.mcp_theta, "mcp_theta/D");
+  fTrkTree->Branch("mcp_phi", &fOutTrk.mcp_phi, "mcp_phi/D");
+  fTrkTree->Branch("mcp_Q2", &fOutTrk.mcp_Q2, "mcp_Q2/D");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());
@@ -423,6 +445,32 @@ void TagMapsBasic::GetCluster(int iplane, int icls, double& x, double& y, double
   md = cls.min_dist;
 
 }//GetCluster
+
+//_____________________________________________________________________________
+void TagMapsBasic::SetMCParticles(vector<Int_t> *itrk, vector<Double_t> *en, vector<Double_t> *theta, vector<Double_t> *phi) {
+
+  //set branches with MC particles
+
+  fMCItrk = itrk;
+  fMCEn = en;
+  fMCTheta = theta;
+  fMCPhi = phi;
+
+}//SetMCParticles
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

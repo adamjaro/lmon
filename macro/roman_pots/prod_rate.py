@@ -11,7 +11,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 1
+    iplot = 0
 
     func = {}
     func[0] = rate_lQ2
@@ -99,9 +99,10 @@ def sig_frac():
     rmin = 1e-6
     rmax = 1e2
 
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx8/maps_basic_v1.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx11/maps_basic_v1.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -125,10 +126,11 @@ def sig_frac():
     print("Num of simulated events:", nsim)
 
     #selection for signal and background tracks
-    #sig_sel = "itrk==1"
+    sig_sel = "itrk==1"
     #bkg_sel = "itrk!=1"
-    sig_sel = "prim_id==1"
-    bkg_sel = "prim_id!=1"
+    #sig_sel = "prim_id==1"
+    #bkg_sel = "prim_id!=1"
+    bkg_sel = "prim_id!=1 && prim_id==itrk"
 
     #background
     hbkg = ut.prepare_TH1D("hbkg", qbin, qmin, qmax)
@@ -166,7 +168,7 @@ def sig_frac():
     ut.set_margin_lbtr(gPad, 0.11, 0.11, 0.02, 0)
 
     frame = gPad.DrawFrame(qmin, rmin, qmax, rmax)
-    ut.put_yx_tit(frame, "Event rate (MHz)", "Reconstructed log_{10}(#it{Q}^{2}) (GeV^{2})", 1.5, 1.4)
+    ut.put_yx_tit(frame, "Event rate (MHz)", "Reconstructed #it{Q}^{2} (GeV^{2})", 1.5, 1.4)
 
     frame.Draw()
 
@@ -189,12 +191,14 @@ def sig_frac():
 
     gPad.SetGrid()
 
+    ut.frame_pow10_labels(frame, -10, -1, "x", 1, 0.015)
+
     #plot on signal fraction
     can.cd(2)
     ut.set_margin_lbtr(gPad, 0, 0.11, 0.02, 0.12)
 
     fraction_frame = gPad.DrawFrame(-4.8, 0, -1.1, 1.1)
-    fraction_frame.SetXTitle("Zoom on reconstructed log_{10}(#it{Q}^{2}) (GeV^{2})")
+    fraction_frame.SetXTitle("Zoom on reconstructed #it{Q}^{2} (GeV^{2})")
     fraction_frame.GetXaxis().SetTitleOffset(1.4)
 
     fraction_frame.Draw()
@@ -206,6 +210,8 @@ def sig_frac():
     frac_leg.Draw("same")
 
     gPad.SetGrid()
+
+    ut.frame_pow10_labels_float(fraction_frame, -4.5, -1.5, "x", 0.5, 0.015)
 
     #vertical axis for fraction plot
     frac_xpos = fraction_frame.GetXaxis().GetXmax()

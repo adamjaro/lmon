@@ -23,6 +23,8 @@ class TagMapsBasic {
     void SetMaxChi2Ndf(Double_t max_chi2ndf) { fChi2ndfMax = max_chi2ndf; }
     void SetClsLimMdist(Double_t d);
 
+    void SetMCParticles(std::vector<Int_t>*, std::vector<Double_t>*, std::vector<Double_t>*, std::vector<Double_t>*);
+
     void FinishEvent();
 
     class Track;
@@ -83,6 +85,10 @@ class TagMapsBasic {
       Double_t rec_theta = 0; // electron polar angle, rad
       Double_t rec_phi = 0; // electron azimuthal angle, rad
       Double_t rec_Q2 = 0; // reconstructed electron Q^2, GeV^2
+      Double_t mcp_en = 0; // MC particle energy, GeV
+      Double_t mcp_theta = 0; // MC particle polar angle, rad
+      Double_t mcp_phi = 0; // MC particle azimuthal angle, rad
+      Double_t mcp_Q2 = 0; // MC particle Q^2, GeV^2
 
       std::vector<TagMapsBasicPlane::Cluster*> cls; // track clusters
 
@@ -112,6 +118,12 @@ class TagMapsBasic {
 
     //all track counter
     Int_t fAllTrkSig; // number of all signal tracks (itrk == 1)
+
+    //MC particles
+    std::vector<Int_t> *fMCItrk; // track ID for the particle
+    std::vector<Double_t> *fMCEn; // particle energy, GeV
+    std::vector<Double_t> *fMCTheta; // particle polar angle, rad
+    std::vector<Double_t> *fMCPhi; // particle azimuthal angle, rad
 
 };
 

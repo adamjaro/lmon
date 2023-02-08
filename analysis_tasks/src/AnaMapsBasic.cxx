@@ -70,6 +70,14 @@ void AnaMapsBasic::Run(const char *conf) {
   tree.SetBranchAddress("true_x", &true_x);
   tree.SetBranchAddress("true_y", &true_y);
 
+  //input MC particles
+  vector<Int_t> *fMCItrk=0x0; 
+  vector<Double_t> *fMCEn=0x0, *fMCTheta=0x0, *fMCPhi=0x0;
+  tree.SetBranchAddress("mcp_itrk", &fMCItrk); // track ID for the particle
+  tree.SetBranchAddress("mcp_en", &fMCEn); // particle energy, GeV
+  tree.SetBranchAddress("mcp_theta", &fMCTheta); // particle polar angle, rad
+  tree.SetBranchAddress("mcp_phi", &fMCPhi); // particle azimuthal angle, rad
+
   //beam energy
   beam_en = 18; //GeV
 
@@ -119,6 +127,9 @@ void AnaMapsBasic::Run(const char *conf) {
   s1.CreateOutput(planes_output);
   s2.CreateOutput(planes_output);
 
+  s1.SetMCParticles(fMCItrk, fMCEn, fMCTheta, fMCPhi);
+  s2.SetMCParticles(fMCItrk, fMCEn, fMCTheta, fMCPhi);
+
   s1.AddTrackBranch("true_el_E", &true_el_E);
   s1.AddTrackBranch("true_el_theta", &true_el_theta);
   s1.AddTrackBranch("true_el_phi", &true_el_phi);
@@ -158,6 +169,8 @@ void AnaMapsBasic::Run(const char *conf) {
     if( iev > 0 and iev%iprint == 0 ) {
       cout << Form("%.1f", 100.*iev/nev) << "%" << endl;
     }
+
+    //cout << "Next event:" << endl;
 
     //process the event for both taggers
     s1.ProcessEvent();

@@ -738,10 +738,54 @@ def invert_col_can(can):
         invert_col(pad, bgcol)
         i += 1
 
+#_____________________________________________________________________________
+def frame_pow10_labels(frame, minl, maxl, xy="x", step=1, offset=-1):
 
+    #frame axis labels in powers of 10
 
+    if xy == "x":
+        ax = frame.GetXaxis()
 
+    if xy == "y":
+        ax = frame.GetYaxis()
 
+    labels = range(minl, maxl+1, step)
+    for i in range(len(labels)):
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+
+    if offset > 0:
+        ax.SetLabelOffset(offset)
+
+#frame_pow10_labels
+
+#_____________________________________________________________________________
+def frame_pow10_labels_float(frame, minl, maxl, xy="x", step=1, offset=-1):
+
+    #frame axis labels in powers of 10 with floating point steps
+
+    if xy == "x":
+        ax = frame.GetXaxis()
+
+    if xy == "y":
+        ax = frame.GetYaxis()
+
+    x = minl
+    i = 0
+    while x < maxl+step:
+
+        ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(x)+"}")
+
+        x += step
+        i += 1
+
+    #labels = range(minl, maxl+1, step)
+    #for i in range(len(labels)):
+        #ax.ChangeLabel(i+1, -1, -1, -1, -1, -1, "10^{"+str(labels[i])+"}")
+
+    if offset > 0:
+        ax.SetLabelOffset(offset)
+
+#frame_pow10_labels_float
 
 
 

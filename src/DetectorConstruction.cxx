@@ -21,6 +21,7 @@
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
 #include "G4Tubs.hh"
+#include "G4RunManager.hh"
 
 //local classes
 #include "DetectorConstruction.h"
@@ -28,6 +29,7 @@
 #include "MCEvent.h"
 #include "GeoParser.h"
 #include "ComponentBuilder.h"
+#include "TrackingAction.h"
 
 //_____________________________________________________________________________
 DetectorConstruction::DetectorConstruction() : G4VUserDetectorConstruction(), fDet(0), fOut(0), fMsg(0) {
@@ -128,6 +130,9 @@ void DetectorConstruction::CreateOutput() const {
 
   //open output file
   fOut->Open();
+
+  //output on MC particles by the TrackingAction
+  static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() )->CreateOutput(fOut->GetTree());
 
   //detector loop to call CreateOutput
   std::vector<Detector*>::iterator i = fDet->begin();
