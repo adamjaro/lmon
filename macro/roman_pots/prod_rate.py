@@ -11,7 +11,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 0
+    iplot = 1
 
     func = {}
     func[0] = rate_lQ2
@@ -126,11 +126,11 @@ def sig_frac():
     print("Num of simulated events:", nsim)
 
     #selection for signal and background tracks
-    sig_sel = "itrk==1"
+    #sig_sel = "itrk==1"
     #bkg_sel = "itrk!=1"
-    #sig_sel = "prim_id==1"
-    #bkg_sel = "prim_id!=1"
-    bkg_sel = "prim_id!=1 && prim_id==itrk"
+    sig_sel = "prim_id==1"
+    bkg_sel = "prim_id!=1"
+    #bkg_sel = "prim_id!=1 && prim_id==itrk"
 
     #background
     hbkg = ut.prepare_TH1D("hbkg", qbin, qmin, qmax)

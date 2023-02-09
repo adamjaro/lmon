@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
 import sys
-from ctypes import CDLL, c_char_p
+from ctypes import CDLL, c_char_p, c_void_p
 
 #_____________________________________________________________________________
 def main():
@@ -14,7 +14,8 @@ def main():
     lib = CDLL("liblmonAnalysisTasks.so")
 
     #analysis task
-    task = lib.make_AnaPhotTime()
+    lib.make_AnaPhotTime.restype = c_void_p
+    task = c_void_p(lib.make_AnaPhotTime())
 
     #run the task    
     lib.run_AnaPhotTime( task, c_char_p(bytes(config, "utf-8")) )

@@ -185,15 +185,15 @@ def lQ2():
     qmin = -8
     qmax = -1
 
-    #inp = "../../analysis_tasks/ini/ana.root"
+    inp = "../../analysis_tasks/ini/ana.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx4/maps_basic_v6.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
 
-    #det = "s1_tracks"
-    det = "s2_tracks"
+    det = "s1_tracks"
+    #det = "s2_tracks"
 
-    sel = "is_rec==1 && prim_id==-1"
+    sel = "is_rec==1 && prim_id>1"
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)
@@ -205,8 +205,8 @@ def lQ2():
 
     hxy = ut.prepare_TH2D("hxy", qbin, qmin, qmax, qbin, qmin, qmax)
 
-    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", sel)
-    #tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(mcp_Q2) >> hxy", sel)
+    #tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >> hxy", sel)
+    tree.Draw("TMath::Log10(rec_Q2):TMath::Log10(mcp_Q2) >> hxy", sel)
     #tree2.Draw("TMath::Log10(rec_Q2):TMath::Log10(true_Q2) >>+hxy", sel)
 
     ytit = "Reconstructed electron #it{Q}^{2} (GeV^{2})"

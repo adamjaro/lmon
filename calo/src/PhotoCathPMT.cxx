@@ -230,6 +230,12 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
   hit.pos_z = hit_z;
   hit.time = time;
 
+  PhotoHitsV2::Hit& hit2 = fHitsV2.CreateHit();
+  hit2.pos_x = hit_x;
+  hit2.pos_y = hit_y;
+  hit2.pos_z = hit_z;
+  hit2.time = time;
+
   return true;
 
 }//ProcessHits
@@ -238,6 +244,7 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
 void PhotoCathPMT::CreateOutput(TTree *tree) {
 
   fHits.CreateOutput(fNam, tree);
+  fHitsV2.CreateOutput(fNam, tree);
 
 }//CreateOutput
 
@@ -245,6 +252,7 @@ void PhotoCathPMT::CreateOutput(TTree *tree) {
 void PhotoCathPMT::ClearEvent() {
 
   fHits.ClearEvent();
+  fHitsV2.ClearEvent();
 
 }//ClearEvent
 
@@ -252,6 +260,7 @@ void PhotoCathPMT::ClearEvent() {
 void PhotoCathPMT::FinishEvent() {
 
   fHits.FinishEvent();
+  fHitsV2.FinishEvent();
 
 }//FinishEvent
 

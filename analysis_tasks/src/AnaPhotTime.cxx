@@ -18,6 +18,7 @@
 //local classes
 #include "AnaPhotTime.h"
 #include "PhotoHits.h"
+#include "PhotoHitsV2Coll.h"
 
 using namespace std;
 using namespace boost;
@@ -49,6 +50,9 @@ void AnaPhotTime::Run(const char*) {
   PhotoHits hits;
   hits.ConnectInput("pwo_cath", &tree);
 
+  PhotoHitsV2Coll hits2;
+  hits2.ConnectInput("pwo_cath", &tree);
+
   //outputs
   //string outfile = GetStr(opt_map, "main.outfile");
   string outfile = "pmt_hits.root";
@@ -62,7 +66,7 @@ void AnaPhotTime::Run(const char*) {
 
   //event loop
   Long64_t nev = tree.GetEntries();
-  Long64_t iprint = nev/12;
+  Long64_t iprint = nev>12 ? nev/12 : 1;
   for(Long64_t iev=0; iev<nev; iev++) {
     tree.GetEntry(iev);
 
@@ -72,15 +76,18 @@ void AnaPhotTime::Run(const char*) {
 
     //load the hits
     hits.LoadHits();
+    hits2.LoadInput();
 
-    //cout << "Hits: " << hits.GetNhits() << endl;
+    cout << "Hits: " << hits.GetNhits() << " " << hits2.GetN() << endl;
 
     //hit loop
     for(unsigned int ihit = 0; ihit < hits.GetNhits(); ihit++) {
 
       PhotoHits::Hit hit = hits.GetHit(ihit);
+      PhotoHitsV2::Hit hit2 = hits2.GetUnit(ihit);
 
-      //cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
+      cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
+      cout << hit2.time << " " << hit2.pos_x << " " << hit2.pos_y << " " << hit2.pos_z << endl;
 
       //set the hit output
       hit_time = hit.time;
