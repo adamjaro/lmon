@@ -7,7 +7,7 @@
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
 #include "PhotoHits.h"
-#include "PhotoHitsV2Coll.h"
+#include "PhotoHitsV2.h"
 
 class GeoParser;
 
@@ -42,8 +42,7 @@ class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
     G4VPhysicalVolume *fGlassPhysVol; // physical volume for the glass layer
 
     PhotoHits fHits; // hit collection
-    PhotoHitsV2Coll fHitsV2; // experimental hit collection
-
+    PhotoHitsV2::Coll fHitsV2; // experimental hit collection
 
 };
 

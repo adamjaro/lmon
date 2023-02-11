@@ -18,7 +18,7 @@
 //local classes
 #include "AnaPhotTime.h"
 #include "PhotoHits.h"
-#include "PhotoHitsV2Coll.h"
+#include "PhotoHitsV2.h"
 
 using namespace std;
 using namespace boost;
@@ -50,7 +50,7 @@ void AnaPhotTime::Run(const char*) {
   PhotoHits hits;
   hits.ConnectInput("pwo_cath", &tree);
 
-  PhotoHitsV2Coll hits2;
+  PhotoHitsV2::Coll hits2;
   hits2.ConnectInput("pwo_cath", &tree);
 
   //outputs

@@ -34,10 +34,6 @@ include_directories(${HEPMC3_INCLUDE_DIR})
 find_package(ROOT REQUIRED COMPONENTS Core EG Hist Physics RIO Tree MathCore)
 include(${ROOT_USE_FILE})
 
-#dictionary for detectors
-#set (DICT G__DET.cxx)
-#ROOT_GENERATE_DICTIONARY(G__DET Detector.h SensDetDummy.h ExitWinZEUS.h LINKDEF include/LinkDef.h)
-
 #component libraries
 set(COMPONENT_LIBS)
 set(COMPONENT_INCLUDE)
@@ -61,7 +57,6 @@ add_subdirectory(polarimetry)
 add_subdirectory(roman_pots)
 
 #base shared library
-#add_library (${LIB} SHARED ${sources} ${headers} ${DICT})
 add_library (${LIB} SHARED ${sources} ${headers})
 target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${COMPONENT_INCLUDE})
 target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
