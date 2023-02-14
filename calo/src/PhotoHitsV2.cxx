@@ -24,11 +24,16 @@ PhotoHitsV2::Coll::Coll() {
 
   G4cout << "PhotoHitsV2::Coll::Coll" << G4endl;
 
-  //hits memory representation
-  AddUnitAttr("_HitV2PosX", fUnitIO.pos_x);
-  AddUnitAttr("_HitV2PosY", fUnitIO.pos_y);
-  AddUnitAttr("_HitV2PosZ", fUnitIO.pos_z);
-  AddUnitAttr("_HitV2Time", fUnitIO.time);
+  //hits memory representation, the names will be a suffix to the detector name
+  AddUnitAttr("_HitPosX", fUnitIO.pos_x);
+  AddUnitAttr("_HitPosY", fUnitIO.pos_y);
+  AddUnitAttr("_HitPosZ", fUnitIO.pos_z);
+  AddUnitAttr("_HitTime", fUnitIO.time);
+  AddUnitAttr("_HitPmtX", fUnitIO.pmt_x);
+  AddUnitAttr("_HitPmtY", fUnitIO.pmt_y);
+  AddUnitAttr("_HitPmtZ", fUnitIO.pmt_z);
+  AddUnitAttr("_HitCellID", fUnitIO.cell_id);
+  AddUnitAttr("_HitPrimID", fUnitIO.prim_id);
 
 }//Coll
 
@@ -42,6 +47,15 @@ PhotoHitsV2::Hit& PhotoHitsV2::Coll::CreateHit() {
   return fStorage.back();
 
 }//Coll::CreateHit
+
+
+
+
+
+
+
+
+
 
 
 

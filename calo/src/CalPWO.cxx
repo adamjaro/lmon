@@ -297,6 +297,15 @@ G4bool CalPWO::ProcessHits(G4Step *, G4TouchableHistory*) {
   //G4cout << "CalPWO::ProcessHits, track ID: " << track->GetTrackID() << " " << track->GetParentID() << " ";
   //G4cout << fStack->GetPrimaryID(track->GetTrackID()) << G4endl;
 
+  //G4cout << "CalPWO::ProcessHits" << G4endl;
+
+  //cell location in the module
+  //const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
+  //G4int i0 = hnd->GetCopyNumber();
+  //G4int i1 = hnd->GetCopyNumber(1);
+
+  //G4cout << "icell: " << i0 << " " << i1 << G4endl;
+
   return true;
 
 }//ProcessHits

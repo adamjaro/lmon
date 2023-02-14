@@ -47,11 +47,9 @@ void AnaPhotTime::Run(const char*) {
   cout << tree.GetName() << endl;
 
   //PMT hits
-  PhotoHits hits;
+  //PhotoHits hits;
+  PhotoHitsV2::Coll hits;
   hits.ConnectInput("pwo_cath", &tree);
-
-  PhotoHitsV2::Coll hits2;
-  hits2.ConnectInput("pwo_cath", &tree);
 
   //outputs
   //string outfile = GetStr(opt_map, "main.outfile");
@@ -75,19 +73,17 @@ void AnaPhotTime::Run(const char*) {
     }
 
     //load the hits
-    hits.LoadHits();
-    hits2.LoadInput();
+    hits.LoadInput();
 
-    cout << "Hits: " << hits.GetNhits() << " " << hits2.GetN() << endl;
+    cout << "Hits: " << hits.GetN() << endl;
 
     //hit loop
-    for(unsigned int ihit = 0; ihit < hits.GetNhits(); ihit++) {
+    for(unsigned int ihit = 0; ihit < hits.GetN(); ihit++) {
 
-      PhotoHits::Hit hit = hits.GetHit(ihit);
-      PhotoHitsV2::Hit hit2 = hits2.GetUnit(ihit);
+      PhotoHitsV2::Hit hit = hits.GetUnit(ihit);
 
-      cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
-      cout << hit2.time << " " << hit2.pos_x << " " << hit2.pos_y << " " << hit2.pos_z << endl;
+      //cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
+      cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << endl;
 
       //set the hit output
       hit_time = hit.time;

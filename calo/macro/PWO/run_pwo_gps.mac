@@ -7,26 +7,36 @@
 /lmon/input/type gps
 
 /gps/verbose 2
+
+/lmon/input/type gps
 /gps/particle e-
-/gps/number 3
-
+/gps/number 1
 /gps/ene/type Gauss
-#/gps/ene/mono  10 MeV
-/gps/ene/mono 1 GeV
+/gps/ene/mono 10 MeV
 /gps/ene/sigma 0.0 GeV
-
 /gps/pos/type Point
-/gps/pos/centre 0.0 0.0 0.0 cm
-
+/gps/pos/centre 0 0 1 mm
 /gps/ang/type iso
-#/gps/ang/rot1 -1.0 0 0.0
-#/gps/ang/rot2  0 1 0
 /gps/ang/rot1 0 0 1
 /gps/ang/rot2  0 0 1
 
-/gps/ang/mintheta  0.000 radian
-/gps/ang/maxtheta  0.005 radian
+/gps/source/add 1
+/gps/particle e-
+/gps/number 1
+/gps/ene/type Gauss
+/gps/ene/mono 10 MeV
+/gps/ene/sigma 0.0 GeV
+/gps/pos/type Point
+#/gps/pos/centre -44 22 1 mm
+/gps/pos/centre 0 0 1 mm
+/gps/time 20 ns
+/gps/ang/type iso
+/gps/ang/rot1 0 0 1
+/gps/ang/rot2  0 0 1
 
+/gps/source/multiplevertex true
+
+/gps/source/list
 
 #output
 /lmon/output/name pwo.root
@@ -36,5 +46,17 @@
 
 #/process/optical/boundary/setInvokeSD true
 
-/run/beamOn 3
+/run/beamOn 1
+
+
+
+
+
+
+
+
+
+
+
+
 

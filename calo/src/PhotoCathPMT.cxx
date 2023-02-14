@@ -23,11 +23,13 @@
 #include "G4LogicalBorderSurface.hh"
 #include "G4VProcess.hh"
 #include "G4OpticalPhoton.hh"
+#include "G4RunManager.hh"
 
 //local classes
 #include "PhotoCathPMT.h"
 #include "GeoParser.h"
 #include "ColorDecoder.h"
+#include "TrackingAction.h"
 
 //_____________________________________________________________________________
 PhotoCathPMT::PhotoCathPMT(const G4String& nam, GeoParser *, G4LogicalVolume *top) : Detector(),
@@ -201,40 +203,39 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
   //only absorbed photons
   if( track->GetTrackStatus() <= 0 ) return false;
 
+  //add the hit
+  PhotoHitsV2::Hit& hit = fHits.CreateHit();
+
   //point in current step
   G4StepPoint *point = step->GetPostStepPoint();
 
   //hit time, ns
-  G4double time = point->GetGlobalTime()/ns;
+  hit.time = point->GetGlobalTime()/ns;
 
   //hit position
   G4ThreeVector hpos = point->GetPosition();
-  G4double hit_x = hpos.x()/mm;
-  G4double hit_y = hpos.y()/mm;
-  G4double hit_z = hpos.z()/mm;
+  hit.pos_x = hpos.x()/mm;
+  hit.pos_y = hpos.y()/mm;
+  hit.pos_z = hpos.z()/mm;
 
-/*
   //global pmt position
   const G4TouchableHandle& hnd = point->GetTouchableHandle();
   G4ThreeVector origin(0, 0, 0);
   G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
-  G4double pmt_x = gpos.x()/mm;
-  G4double pmt_y = gpos.y()/mm;
-  G4double pmt_z = gpos.z()/mm;
-*/
+  hit.pmt_x = gpos.x()/mm;
+  hit.pmt_y = gpos.y()/mm;
+  hit.pmt_z = gpos.z()/mm;
 
-  //add the hit
-  PhotoHits::Hit& hit = fHits.CreateHit();
-  hit.pos_x = hit_x;
-  hit.pos_y = hit_y;
-  hit.pos_z = hit_z;
-  hit.time = time;
+  //cell index with the pmt in the module, indexing as
+  //photocathode (sensitive), copy #2 -> pmt volume, copy #1 -> cell, copy #0 -> module
+  hit.cell_id = hnd->GetCopyNumber(2);
 
-  PhotoHitsV2::Hit& hit2 = fHitsV2.CreateHit();
-  hit2.pos_x = hit_x;
-  hit2.pos_y = hit_y;
-  hit2.pos_z = hit_z;
-  hit2.time = time;
+  //ID of primary particle associated with the hit
+  hit.prim_id = fStack->GetPrimaryID( track->GetTrackID() );
+
+  //G4cout << "PhotoCathPMT::ProcessHits" << G4endl;
+  //G4cout << hit.cell_id << " " << hit.prim_id << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << G4endl;
+  //G4cout << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << " " << hit.prim_id << G4endl;
 
   return true;
 
@@ -244,7 +245,9 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
 void PhotoCathPMT::CreateOutput(TTree *tree) {
 
   fHits.CreateOutput(fNam, tree);
-  fHitsV2.CreateOutput(fNam, tree);
+
+  //load the tracking action for primary particle IDs
+  fStack = static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() );
 
 }//CreateOutput
 
@@ -252,7 +255,6 @@ void PhotoCathPMT::CreateOutput(TTree *tree) {
 void PhotoCathPMT::ClearEvent() {
 
   fHits.ClearEvent();
-  fHitsV2.ClearEvent();
 
 }//ClearEvent
 
@@ -260,7 +262,6 @@ void PhotoCathPMT::ClearEvent() {
 void PhotoCathPMT::FinishEvent() {
 
   fHits.FinishEvent();
-  fHitsV2.FinishEvent();
 
 }//FinishEvent
 

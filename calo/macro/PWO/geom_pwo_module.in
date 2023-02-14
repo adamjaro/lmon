@@ -13,8 +13,8 @@ const lumiD_dz 355. # mm, full length along z
 
 #crystal tower
 const pwo_crystal_xy 22. # mm
-#const pwo_crystal_z 400. # mm
-const pwo_crystal_z 350. # mm
+const pwo_crystal_z 100. # mm
+#const pwo_crystal_z 350. # mm
 const pwo_wrapping_thickness 0.3 # mm
 
 #optical detector at the tower

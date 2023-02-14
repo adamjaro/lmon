@@ -6,10 +6,11 @@
 
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
-#include "PhotoHits.h"
+//#include "PhotoHits.h"
 #include "PhotoHitsV2.h"
 
 class GeoParser;
+class TrackingAction;
 
 class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
 
@@ -41,8 +42,10 @@ class PhotoCathPMT : public Detector, public G4VSensitiveDetector {
 
     G4VPhysicalVolume *fGlassPhysVol; // physical volume for the glass layer
 
-    PhotoHits fHits; // hit collection
-    PhotoHitsV2::Coll fHitsV2; // experimental hit collection
+    //PhotoHits fHits; // prototype hit collection
+    PhotoHitsV2::Coll fHits; // hit collection
+
+    const TrackingAction *fStack; // stack for primary particles
 
 };
 

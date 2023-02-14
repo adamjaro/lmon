@@ -1,13 +1,13 @@
 
 #detector
-/lmon/construct/geometry geom_pwo_cell.in
-#/lmon/construct/geometry geom_pwo_module.in
+#/lmon/construct/geometry geom_pwo_cell.in
+/lmon/construct/geometry geom_pwo_module.in
 
 #input
 /lmon/input/type gun
-/gun/energy 511 keV
+#/gun/energy 511 keV
 #/gun/energy 100 keV
-#/gun/energy 10 MeV
+/gun/energy 10 MeV
 #/gun/particle gamma
 /gun/particle e-
 /gun/position 0 0 1 mm
@@ -21,5 +21,5 @@
 
 #/process/optical/boundary/setInvokeSD true
 
-/run/beamOn 8
+/run/beamOn 1
 
