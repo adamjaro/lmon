@@ -7,6 +7,8 @@
 #include "Detector.h"
 #include "G4VSensitiveDetector.hh"
 
+#include "CalPWOHits.h"
+
 class GeoParser;
 class TrackingAction;
 
@@ -24,6 +26,8 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
     virtual const G4String& GetName() const { return fNam; }
     virtual void Add(std::vector<Detector*> *vec);
     void CreateOutput(TTree*);
+    void ClearEvent();
+    void FinishEvent();
 
   private:
 
@@ -40,6 +44,8 @@ class CalPWO : public Detector, public G4VSensitiveDetector {
     Detector *fPMT; // PMT photocathode
 
     const TrackingAction *fStack; // stack for primary particles
+
+    CalPWOHits::Coll fHits; // hit collection
 
 };
 

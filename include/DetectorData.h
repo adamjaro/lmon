@@ -66,6 +66,24 @@ template<class U, class S=std::vector<U>> class DetectorData {
     }//FinishEvent
 
     //_____________________________________________________________________________
+    void FinishEventAsoc() {
+
+      //write all the Unit objects in the Storage to the tree, version for S as an associative container
+
+      //Unit loop
+      for(const auto& i: fStorage) {
+
+        //set the IO member
+        fUnitIO = i.second;
+
+        //write the unit attributes to the tree
+        std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fun( &UnitAttrBase::Write ));
+
+      }//Unit loop
+
+    }//FinishEventAsoc
+
+    //_____________________________________________________________________________
     void ConnectInput(std::string base_nam, TTree *tree) {
 
       //connect input for Unit attributes from the tree

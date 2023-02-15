@@ -290,28 +290,43 @@ std::vector<G4double> CalPWO::LambdaNMtoEV(const std::vector<G4double>& lambda) 
 }//LambdaNMtoEV
 
 //_____________________________________________________________________________
-G4bool CalPWO::ProcessHits(G4Step *, G4TouchableHistory*) {
-
-  //G4Track *track = step->GetTrack();
-
-  //G4cout << "CalPWO::ProcessHits, track ID: " << track->GetTrackID() << " " << track->GetParentID() << " ";
-  //G4cout << fStack->GetPrimaryID(track->GetTrackID()) << G4endl;
-
-  //G4cout << "CalPWO::ProcessHits" << G4endl;
+G4bool CalPWO::ProcessHits(G4Step *step, G4TouchableHistory*) {
 
   //cell location in the module
-  //const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
-  //G4int i0 = hnd->GetCopyNumber();
-  //G4int i1 = hnd->GetCopyNumber(1);
+  const G4TouchableHandle& hnd = step->GetPreStepPoint()->GetTouchableHandle();
 
-  //G4cout << "icell: " << i0 << " " << i1 << G4endl;
+  //global cell position
+  G4ThreeVector origin(0, 0, 0);
+  G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
+
+  //make the hit for the cell, indexing as copy #1 -> cell, copy #0 -> module
+  CalPWOHits::Hit& hit = fHits.ConstructedAt(hnd->GetCopyNumber(1), gpos.x()/mm, gpos.y()/mm, gpos.z()/mm);
+
+  //deposited energy in step, GeV
+  G4double edep = step->GetTotalEnergyDeposit()/GeV;
+
+  //increment energy deposit in the hit
+  hit.en += edep;
+
+  //primary ID for the track in step
+  Int_t prim_id = fStack->GetPrimaryID( step->GetTrack()->GetTrackID() );
+
+  //energy deposit for the given primary ID
+  if( hit.prim_energy.find(prim_id) == hit.prim_energy.end() ) {
+    //initialize with zero
+    hit.prim_energy[prim_id] = 0;
+  }
+  hit.prim_energy[prim_id] += edep; // increment energy deposit for the primary ID
 
   return true;
 
 }//ProcessHits
 
 //_____________________________________________________________________________
-void CalPWO::CreateOutput(TTree*) {
+void CalPWO::CreateOutput(TTree *tree) {
+
+  //create output for the hits
+  fHits.CreateOutput(fNam, tree);
 
   //load the tracking action for primary particle IDs
   fStack = static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() );
@@ -319,6 +334,20 @@ void CalPWO::CreateOutput(TTree*) {
   G4cout << "CalPWO::CreateOutput " << fStack << G4endl;
 
 }//CreateOutput
+
+//_____________________________________________________________________________
+void CalPWO::ClearEvent() {
+
+  fHits.ClearEvent();
+
+}//ClearEvent
+
+//_____________________________________________________________________________
+void CalPWO::FinishEvent() {
+
+  fHits.FinishEvent();
+
+}//FinishEvent
 
 //_____________________________________________________________________________
 G4LogicalVolume* CalPWO::GetMotherVolume(G4String mother_nam, G4LogicalVolume *top) {
