@@ -23,7 +23,12 @@
 //ROOT
 #include "TTree.h"
 
-template<class U, class S=std::vector<U>> class DetectorData {
+template<class U, class S=std::vector<U>, typename K=Int_t> class DetectorData {
+
+  // U is the Unit, S is the Storage container where objects of Unit are stored
+  //
+  // When Storage S is an associative container, K must be key_type of that container.
+  // No meaning is given to K othwise.
 
   public:
 
@@ -48,15 +53,27 @@ template<class U, class S=std::vector<U>> class DetectorData {
     }//ClearEvent
 
     //_____________________________________________________________________________
+    U& Add(U obj) {
+
+      //make new object obj of Unit U with Storage S as a sequence container
+      //and return reference to it
+
+      fStorage.push_back( obj ); // put object obj to the sequence container
+
+      return fStorage.back(); // return reference to the added object
+
+    }//Add
+
+    //_____________________________________________________________________________
     void FinishEvent() {
 
       //write all the Unit objects in the Storage to the tree
 
       //Unit loop
-      for(U i: fStorage) {
+      for(auto& i: fStorage) {
 
         //set the IO member
-        fUnitIO = i;
+        fUnitIO = GetUnitFromIter(i);
 
         //write the unit attributes to the tree
         std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fun( &UnitAttrBase::Write ));
@@ -64,24 +81,6 @@ template<class U, class S=std::vector<U>> class DetectorData {
       }//Unit loop
 
     }//FinishEvent
-
-    //_____________________________________________________________________________
-    void FinishEventAsoc() {
-
-      //write all the Unit objects in the Storage to the tree, version for S as an associative container
-
-      //Unit loop
-      for(const auto& i: fStorage) {
-
-        //set the IO member
-        fUnitIO = i.second;
-
-        //write the unit attributes to the tree
-        std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fun( &UnitAttrBase::Write ));
-
-      }//Unit loop
-
-    }//FinishEventAsoc
 
     //_____________________________________________________________________________
     void ConnectInput(std::string base_nam, TTree *tree) {
@@ -150,7 +149,8 @@ template<class U, class S=std::vector<U>> class DetectorData {
     //unit attribute in its memory representation
     template<typename T> class UnitAttr: public UnitAttrBase {
       public:
-        UnitAttr(std::string n, T& v): attr_nam(n), val(v) {} // constructor with attribute name and value reference
+        // constructor with attribute name and value reference in fUnitIO
+        UnitAttr(std::string n, T& v): attr_nam(n), val(v) {}
         void CreateOutput(std::string base_nam, TTree *tree) {
           //create the vector and tree branch from provided base name and attribute name
           vec = new std::vector<T>();
@@ -170,6 +170,10 @@ template<class U, class S=std::vector<U>> class DetectorData {
         T& val; // input/output value
         std::vector<T> *vec; // container for attribute values
     };//UnitAttr
+
+    //Unit object from iterator for a sequence or an associative container
+    U GetUnitFromIter(U& u_obj) { return u_obj; } // S is a sequence container
+    U GetUnitFromIter(std::pair<const K, U> a_obj) { return a_obj.second; } // S is an associative container
 
     std::vector<UnitAttrBase*> fUnitAttr; // unit attributes in its memory representation
 

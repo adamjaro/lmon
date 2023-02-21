@@ -29,8 +29,6 @@ class Coll : public DetectorData<Hit> {
 
     Coll();
 
-    Hit& CreateHit();
-
 };//Coll
 
 }//PhotoHitsV2

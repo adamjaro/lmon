@@ -17,8 +17,8 @@
 
 //local classes
 #include "AnaPhotTime.h"
-#include "PhotoHits.h"
 #include "PhotoHitsV2.h"
+#include "CalPWOHits.h"
 
 using namespace std;
 using namespace boost;
@@ -47,9 +47,12 @@ void AnaPhotTime::Run(const char*) {
   cout << tree.GetName() << endl;
 
   //PMT hits
-  //PhotoHits hits;
   PhotoHitsV2::Coll hits;
   hits.ConnectInput("pwo_cath", &tree);
+
+  //tower cell hits
+  CalPWOHits::Coll cell_hits;
+  cell_hits.ConnectInput("pwo", &tree);
 
   //outputs
   //string outfile = GetStr(opt_map, "main.outfile");
@@ -74,21 +77,34 @@ void AnaPhotTime::Run(const char*) {
 
     //load the hits
     hits.LoadInput();
+    cell_hits.LoadInput();
 
-    cout << "Hits: " << hits.GetN() << endl;
+    cout << "PMT hits: " << hits.GetN() << endl;
 
     //hit loop
     for(unsigned int ihit = 0; ihit < hits.GetN(); ihit++) {
 
       PhotoHitsV2::Hit hit = hits.GetUnit(ihit);
 
-      //cout << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
-      cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << endl;
+      cout << "PhotoHit: " << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
+      //cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << endl;
 
       //set the hit output
       hit_time = hit.time;
       hit_tree.Fill();
-    }
+    }//hit loop
+
+    cout << "Cell hits: " << cell_hits.GetN() << endl;
+
+    //cell hit loop
+    for(unsigned int ihit = 0; ihit < cell_hits.GetN(); ihit++) {
+
+      CalPWOHits::Hit hit = cell_hits.GetUnit(ihit);
+
+      cout << "CalPWOHit: " << hit.cell_id << " " << hit.en << endl;
+
+    }//cell hit loop
+
 
   }//event loop
 

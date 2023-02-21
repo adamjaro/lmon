@@ -12,7 +12,7 @@
 #include "TTree.h"
 
 //Geant
-#include "G4ios.hh"
+//#include "G4ios.hh"
 
 //local classes
 #include "PhotoHitsV2.h"
@@ -22,7 +22,7 @@ using namespace std;
 //_____________________________________________________________________________
 PhotoHitsV2::Coll::Coll() {
 
-  G4cout << "PhotoHitsV2::Coll::Coll" << G4endl;
+  //G4cout << "PhotoHitsV2::Coll::Coll" << G4endl;
 
   //hits memory representation, the names will be a suffix to the detector name
   AddUnitAttr("_HitPosX", fUnitIO.pos_x);
@@ -37,16 +37,6 @@ PhotoHitsV2::Coll::Coll() {
 
 }//Coll
 
-//_____________________________________________________________________________
-PhotoHitsV2::Hit& PhotoHitsV2::Coll::CreateHit() {
-
-  //make new hit and return reference to it
-
-  fStorage.push_back( PhotoHitsV2::Hit() );
-
-  return fStorage.back();
-
-}//Coll::CreateHit
 
 
 

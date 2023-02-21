@@ -204,7 +204,7 @@ G4bool PhotoCathPMT::ProcessHits(G4Step *step, G4TouchableHistory*) {
   if( track->GetTrackStatus() <= 0 ) return false;
 
   //add the hit
-  PhotoHitsV2::Hit& hit = fHits.CreateHit();
+  PhotoHitsV2::Hit& hit = fHits.Add( PhotoHitsV2::Hit() );
 
   //point in current step
   G4StepPoint *point = step->GetPostStepPoint();

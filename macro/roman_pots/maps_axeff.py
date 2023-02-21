@@ -11,7 +11,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 2
+    iplot = 0
 
     func = {}
     func[0] = pitheta_en
@@ -46,8 +46,8 @@ def pitheta_en():
 
     #sel = "s1_is_sig_rec==1"
     #sel = "s2_is_sig_rec==1"
-    #sel = "s1_is_sig_rec==1 && s2_is_sig_rec==1"
-    sel = "s1_is_sig_rec==1 || s2_is_sig_rec==1"
+    sel = "s1_is_sig_rec==1 && s2_is_sig_rec==1"
+    #sel = "s1_is_sig_rec==1 || s2_is_sig_rec==1"
 
     infile = TFile.Open(inp)
     tree = infile.Get("event")
@@ -71,8 +71,8 @@ def pitheta_en():
     xtit = "Electron energy #it{E_{e}} (GeV)"
     ut.put_yx_tit(hxy_sel, ytit, xtit, 1.1, 1.2)
 
-    #hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
-    hxy_sel.SetZTitle("Acceptance")
+    hxy_sel.SetZTitle("Acceptance #times Efficiency #it{A}#times#it{E}")
+    #hxy_sel.SetZTitle("Acceptance")
     hxy_sel.SetTitleOffset(1.4, "Z")
 
     ut.set_margin_lbtr(gPad, 0.09, 0.09, 0.015, 0.15)
@@ -88,6 +88,8 @@ def pitheta_en():
     leg = ut.prepare_leg(0.12, 0.88, 0.24, 0.1, 0.04) # x, y, dx, dy, tsiz
     tnam = {"s1": "Tagger 1", "s2": "Tagger 2"}
     #leg.AddEntry("", "#bf{"+tnam[det]+"}", "")
+    #leg.AddEntry("", "Tagger 1 #bf{OR} Tagger 2", "")
+    leg.AddEntry("", "Tagger 1 #bf{AND} Tagger 2", "")
     leg.Draw("same")
 
     ut.invert_col(rt.gPad)

@@ -10,7 +10,7 @@ import plot_utils as ut
 #_____________________________________________________________________________
 def main():
 
-    iplot = 3
+    iplot = 1
 
     funclist = {}
     funclist[0] = en_pitheta

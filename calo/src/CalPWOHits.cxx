@@ -12,7 +12,7 @@
 #include "TTree.h"
 
 //Geant
-#include "G4ios.hh"
+//#include "G4ios.hh"
 
 //local classes
 #include "CalPWOHits.h"
@@ -22,7 +22,7 @@ using namespace std;
 //_____________________________________________________________________________
 CalPWOHits::Coll::Coll() {
 
-  G4cout << "CalPWOHits::Coll::Coll" << G4endl;
+  //G4cout << "CalPWOHits::Coll::Coll" << G4endl;
 
   //hits memory representation, the names will be a suffix to the detector name
   AddUnitAttr("_HitCellID", fUnitIO.cell_id);
@@ -81,7 +81,7 @@ void CalPWOHits::Coll::FinishEvent() {
   }//hit loop
 
   //finish for the hits
-  DetectorData::FinishEventAsoc();
+  DetectorData::FinishEvent();
 
 }//FinishEvent
 

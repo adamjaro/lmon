@@ -3,7 +3,7 @@ new top topv
 
   topv.xsiz = 500 # mm
   topv.ysiz = 500 # mm
-  topv.zsiz = 1000 # mm
+  topv.zsiz = 10000 # mm
 
 #calorimeter module by a matrix of CalPWO towers
 
