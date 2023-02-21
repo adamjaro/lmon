@@ -35,19 +35,6 @@ CalPWOHits::Coll::Coll() {
 }//Coll
 
 //_____________________________________________________________________________
-CalPWOHits::Hit& CalPWOHits::Coll::ConstructedAt(Int_t i, Double_t x, Double_t y, Double_t z) {
-
-  using namespace CalPWOHits;
-
-  //create Hit object in the Storage or retrieve already existing
-  unordered_map<Int_t, Hit>::iterator it = fStorage.emplace(i, Hit(i, x, y, z)).first;
-
-  //get reference the the Hit object
-  return (*it).second;
-
-}//ConstructedAt
-
-//_____________________________________________________________________________
 void CalPWOHits::Coll::FinishEvent() {
 
   //locate primary ID with the largest energy deposition and assing it for each hit

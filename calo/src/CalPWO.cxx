@@ -300,7 +300,8 @@ G4bool CalPWO::ProcessHits(G4Step *step, G4TouchableHistory*) {
   G4ThreeVector gpos = hnd->GetHistory()->GetTopTransform().Inverse().TransformPoint(origin);
 
   //make the hit for the cell, indexing as copy #1 -> cell, copy #0 -> module
-  CalPWOHits::Hit& hit = fHits.ConstructedAt(hnd->GetCopyNumber(1), gpos.x()/mm, gpos.y()/mm, gpos.z()/mm);
+  Int_t cell_id = hnd->GetCopyNumber(1);
+  CalPWOHits::Hit& hit = fHits.ConstructedAt(cell_id, CalPWOHits::Hit(cell_id, gpos.x()/mm, gpos.y()/mm, gpos.z()/mm));
 
   //deposited energy in step, GeV
   G4double edep = step->GetTotalEnergyDeposit()/GeV;
@@ -331,7 +332,7 @@ void CalPWO::CreateOutput(TTree *tree) {
   //load the tracking action for primary particle IDs
   fStack = static_cast<const TrackingAction*>( G4RunManager::GetRunManager()->GetUserTrackingAction() );
 
-  G4cout << "CalPWO::CreateOutput " << fStack << G4endl;
+  //G4cout << "CalPWO::CreateOutput " << fStack << G4endl;
 
 }//CreateOutput
 

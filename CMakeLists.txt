@@ -59,7 +59,9 @@ add_subdirectory(roman_pots)
 #base shared library
 add_library (${LIB} SHARED ${sources} ${headers})
 target_include_directories(${LIB} PUBLIC "${CMAKE_CURRENT_BINARY_DIR}" ${COMPONENT_INCLUDE})
-target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
+#target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES} ${HEPMC3_LIB})
+target_link_libraries(${LIB} ${Geant4_LIBRARIES} ${ROOT_LIBRARIES})
+target_link_libraries(${LIB} ${HEPMC3_LIB})
 
 #binary executable
 add_executable(${BIN} run.cxx)

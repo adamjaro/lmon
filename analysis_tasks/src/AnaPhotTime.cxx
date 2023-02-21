@@ -22,18 +22,26 @@
 
 using namespace std;
 using namespace boost;
+using namespace boost::program_options;
 
 //_____________________________________________________________________________
-void AnaPhotTime::Run(const char*) {
+void AnaPhotTime::Run(const char *conf) {
 
   cout << "AnaPhotTime::Run" << endl;
 
-  //configuration file will be here
+  //configuration file
+  options_description opt("opt");
+  opt.add_options()
+    ("main.input", program_options::value<string>(), "Analysis input")
+    ("main.outfile", program_options::value<string>(), "Output from the analysis")
+  ;
+
+  //load the configuration file
+  variables_map opt_map;
+  store(parse_config_file(conf, opt), opt_map);
 
   //inputs
-  //string input = GetStr(opt_map, "main.input");
-  string input = "/home/jaroslav/sim/lmon/calo/macro/PWO/pwo.root";
-  cout << "Input: " << input << endl;
+  string input = GetStr(opt_map, "main.input");
   glob_t glob_inputs;
   glob(input.c_str(), GLOB_TILDE, NULL, &glob_inputs);
 
@@ -55,8 +63,7 @@ void AnaPhotTime::Run(const char*) {
   cell_hits.ConnectInput("pwo", &tree);
 
   //outputs
-  //string outfile = GetStr(opt_map, "main.outfile");
-  string outfile = "pmt_hits.root";
+  string outfile = GetStr(opt_map, "main.outfile");
   cout << "Output: " << outfile << endl;
   TFile out(outfile.c_str(), "recreate");
 
@@ -82,9 +89,9 @@ void AnaPhotTime::Run(const char*) {
     cout << "PMT hits: " << hits.GetN() << endl;
 
     //hit loop
-    for(unsigned int ihit = 0; ihit < hits.GetN(); ihit++) {
+    for(auto it = hits.read_begin(); it != hits.read_end(); ++it) {
 
-      PhotoHitsV2::Hit hit = hits.GetUnit(ihit);
+      PhotoHitsV2::Hit hit = *it;
 
       cout << "PhotoHit: " << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
       //cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << endl;
@@ -114,7 +121,15 @@ void AnaPhotTime::Run(const char*) {
 
 }//Run
 
+//_____________________________________________________________________________
+string AnaPhotTime::GetStr(program_options::variables_map& opt_map, std::string par) {
 
+  string res = opt_map[par].as<string>();
+  res.erase(remove(res.begin(), res.end(), '\"'), res.end());
+
+  return res;
+
+}//GetStr
 
 
 

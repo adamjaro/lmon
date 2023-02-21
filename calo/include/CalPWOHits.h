@@ -33,8 +33,6 @@ class Coll : public DetectorData<Hit, std::unordered_map<Int_t, Hit>> {
 
   Coll();
 
-  Hit& ConstructedAt(Int_t i, Double_t x, Double_t y, Double_t z);
-
   void FinishEvent();
 
 };//Coll

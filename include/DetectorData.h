@@ -23,12 +23,9 @@
 //ROOT
 #include "TTree.h"
 
-template<class U, class S=std::vector<U>, typename K=Int_t> class DetectorData {
+template<class U, class S=std::vector<U>> class DetectorData {
 
   // U is the Unit, S is the Storage container where objects of Unit are stored
-  //
-  // When Storage S is an associative container, K must be key_type of that container.
-  // No meaning is given to K othwise.
 
   public:
 
@@ -63,6 +60,16 @@ template<class U, class S=std::vector<U>, typename K=Int_t> class DetectorData {
       return fStorage.back(); // return reference to the added object
 
     }//Add
+
+    //_____________________________________________________________________________
+    template<typename key_type> U& ConstructedAt(key_type i, U obj) {
+
+      //create object obj of unit U in the Storage S or retrieve already existing
+      //with S as an associative container and return reference to it
+
+      return ( *(fStorage.emplace(i, obj).first) ).second;
+
+    }//ConstructedAt
 
     //_____________________________________________________________________________
     void FinishEvent() {
@@ -115,8 +122,12 @@ template<class U, class S=std::vector<U>, typename K=Int_t> class DetectorData {
 
     }//LoadInput
 
-    unsigned long GetN() { return fUnitsRead.size(); } // get number of units read at a current tree entry
+    unsigned long GetN() { return fUnitsRead.size(); } // get number of units read at the current tree entry
     U& GetUnit(unsigned long i) { return fUnitsRead[i]; } // get unit object at position i
+
+    //read iterator
+    typename std::vector<U>::iterator read_begin() { return fUnitsRead.begin(); }
+    typename std::vector<U>::iterator read_end() { return fUnitsRead.end(); }
 
   protected:
 
@@ -171,9 +182,9 @@ template<class U, class S=std::vector<U>, typename K=Int_t> class DetectorData {
         std::vector<T> *vec; // container for attribute values
     };//UnitAttr
 
-    //Unit object from iterator for a sequence or an associative container
-    U GetUnitFromIter(U& u_obj) { return u_obj; } // S is a sequence container
-    U GetUnitFromIter(std::pair<const K, U> a_obj) { return a_obj.second; } // S is an associative container
+    //Unit object from iterator for S as a sequence or an associative container
+    U GetUnitFromIter(U& u_obj) {  return u_obj; } // sequence container
+    template<typename some_key> U GetUnitFromIter(std::pair<some_key, U> a_obj) { return a_obj.second; } // associative container
 
     std::vector<UnitAttrBase*> fUnitAttr; // unit attributes in its memory representation
 

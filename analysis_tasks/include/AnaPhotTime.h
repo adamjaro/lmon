@@ -12,6 +12,8 @@ class AnaPhotTime {
 
   private:
 
+    std::string GetStr(boost::program_options::variables_map& opt_map, std::string par);
+
 };
 
 extern "C" {

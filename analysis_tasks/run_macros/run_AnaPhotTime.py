@@ -7,8 +7,7 @@ from ctypes import CDLL, c_char_p, c_void_p
 def main():
 
     #configuration from command line
-    #config = get_config()
-    config = ""
+    config = get_config()
 
     #analysis library
     lib = CDLL("liblmonAnalysisTasks.so")
