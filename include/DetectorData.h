@@ -19,6 +19,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <functional>
 
 //ROOT
 #include "TTree.h"

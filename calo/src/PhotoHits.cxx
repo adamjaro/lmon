@@ -8,6 +8,7 @@
 //C++
 #include <vector>
 #include <algorithm>
+#include <functional>
 
 //ROOT
 #include "TTree.h"
