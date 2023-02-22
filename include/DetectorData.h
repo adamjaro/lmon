@@ -172,10 +172,16 @@ template<class U, class S=std::vector<U>> class DetectorData {
         void ConnectInput(std::string base_nam, TTree *tree) {
           //connect the vector with attribute values to the input tree
           vec = 0x0;
+          if( !tree->FindBranch( (base_nam+attr_nam).c_str() ) ) return;
           tree->SetBranchAddress((base_nam+attr_nam).c_str(), &vec);
         }
         unsigned long GetN() { return vec->size(); } // number of attribute values for a given event
-        void LoadVal(unsigned long i) { val = vec->at(i); } // load the value at the given position via the reference
+        void LoadVal(unsigned long i) {
+          //load the value at position i via reference val
+          val = 0;
+          if( !vec ) return;
+          val = vec->at(i);
+        }
       private:
         std::string attr_nam; // attribute name
         T& val; // input/output value

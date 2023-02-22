@@ -94,7 +94,7 @@ void AnaPhotTime::Run(const char *conf) {
       PhotoHitsV2::Hit hit = *it;
 
       cout << "PhotoHit: " << hit.time << " " << hit.pos_x << " " << hit.pos_y << " " << hit.pos_z << endl;
-      //cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " << hit.pmt_z << endl;
+      cout << hit.cell_id << " " << hit.prim_id << " " << hit.pmt_x << " " << hit.pmt_y << " " <<  hit.pmt_z << endl;// 
 
       //set the hit output
       hit_time = hit.time;
