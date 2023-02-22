@@ -64,7 +64,7 @@ void TagMapsBasic::ProcessEvent() {
   fTracks.clear();
 
   //load hits and make clusters for individual planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::ProcessEvent ));
+  for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagMapsBasicPlane::ProcessEvent ));
 
   //clusters in planes
   vector<TagMapsBasicPlane::Cluster>& cls1 = fPlanes[0]->GetClusters();
@@ -256,7 +256,7 @@ void TagMapsBasic::FinishEvent() {
   //G4cout << "TagMapsBasic::FinishEvent, " << fNam << G4endl;
 
   //finish for planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::FinishEvent ));
+  for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagMapsBasicPlane::FinishEvent ));
 
   //set output tree for tracks
 
@@ -339,7 +339,7 @@ void TagMapsBasic::CreateOutput(bool planes) {
 
   //create output for individual planes
   if(planes) {
-    for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::CreateOutput ));
+    for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagMapsBasicPlane::CreateOutput ));
   }
 
   //track tree for the tagger detector
@@ -397,7 +397,7 @@ void TagMapsBasic::AddTrackBranch(string nam, Double_t *val) {
 void TagMapsBasic::WriteOutputs() {
 
   //write outputs for the planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagMapsBasicPlane::WriteOutputs ));
+  for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagMapsBasicPlane::WriteOutputs ));
 
   cout << "Tagger " << fNam << ", tracks: " << fTrkTree->GetEntries() << ", signal tracks: " << fAllTrkSig << endl;
 

@@ -100,7 +100,7 @@ void TagCounter::CreateOutput(bool create_planes) {
 
   //output for planes
   if(create_planes) {
-    for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagCounterPlane::CreateOutput ));
+    for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagCounterPlane::CreateOutput ));
   }
 
 }//CreateOutput
@@ -121,7 +121,7 @@ void TagCounter::WriteOutputs() {
   if(fSTree) fSTree->Write();
 
   //output for individual planes
-  for_each(fPlanes.begin(), fPlanes.end(), mem_fun( &TagCounterPlane::WriteOutputs ));
+  for_each(fPlanes.begin(), fPlanes.end(), mem_fn( &TagCounterPlane::WriteOutputs ));
 
 }//write_outputs
 

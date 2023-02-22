@@ -104,7 +104,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 void DetectorConstruction::BeginEvent(const G4Event *evt) const {
 
   //detector loop for  ClearEvent  in each detector
-  std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::ClearEvent ));
+  std::for_each(fDet->begin(), fDet->end(), std::mem_fn( &Detector::ClearEvent ));
 
   //set MC
   fMC->BeginEvent(evt);
@@ -115,7 +115,7 @@ void DetectorConstruction::BeginEvent(const G4Event *evt) const {
 void DetectorConstruction::FinishEvent() const {
 
   //detector loop
-  std::for_each(fDet->begin(), fDet->end(), std::mem_fun( &Detector::FinishEvent ));
+  std::for_each(fDet->begin(), fDet->end(), std::mem_fn( &Detector::FinishEvent ));
 
   //fill the output tree
   fOut->FillTree();

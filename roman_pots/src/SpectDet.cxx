@@ -115,7 +115,7 @@ void SpectDet::CreateOutput() {
   fSTree->Branch("calE", &fCalE, "calE/D");
 
   //output for layers
-  for_each(fLay.begin(), fLay.end(), mem_fun( &SpectPlane::CreateOutput ));
+  for_each(fLay.begin(), fLay.end(), mem_fn( &SpectPlane::CreateOutput ));
 
 }//CreateOutput
 
@@ -124,7 +124,7 @@ void SpectDet::WriteOutputs() {
 
   if(fSTree) fSTree->Write();
 
-  for_each(fLay.begin(), fLay.end(), mem_fun( &SpectPlane::WriteOutputs ));
+  for_each(fLay.begin(), fLay.end(), mem_fn( &SpectPlane::WriteOutputs ));
 
 }//WriteOutputs
 

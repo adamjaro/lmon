@@ -45,7 +45,7 @@ template<class U, class S=std::vector<U>> class DetectorData {
       //clear run-time Unit objects and memory representation
 
       fStorage.clear();
-      std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fun( &UnitAttrBase::ClearEvent ));
+      std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fn( &UnitAttrBase::ClearEvent ));
 
     }//ClearEvent
 
@@ -83,7 +83,7 @@ template<class U, class S=std::vector<U>> class DetectorData {
         fUnitIO = GetUnitFromIter(i);
 
         //write the unit attributes to the tree
-        std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fun( &UnitAttrBase::Write ));
+        std::for_each(fUnitAttr.begin(), fUnitAttr.end(), std::mem_fn( &UnitAttrBase::Write ));
 
       }//Unit loop
 
@@ -128,6 +128,8 @@ template<class U, class S=std::vector<U>> class DetectorData {
     //read iterator
     typename std::vector<U>::iterator read_begin() { return fUnitsRead.begin(); }
     typename std::vector<U>::iterator read_end() { return fUnitsRead.end(); }
+
+    std::vector<U>& GetReadData() { return fUnitsRead; } // handle to vector with read objects of Unit U
 
   protected:
 

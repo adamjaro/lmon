@@ -6,16 +6,20 @@ from ROOT import gROOT, gSystem, TFile
 #_____________________________________________________________________________
 def main():
 
+    #directory where the lmon is located
+    lmon_top = "/home/jaroslav/sim/lmon"
+
     #include directories
-    gSystem.AddIncludePath(" -I/home/jaroslav/sim/lmon/include")
-    gSystem.AddIncludePath(" -I/home/jaroslav/sim/lmon/calo/include")
+    gSystem.AddIncludePath(" -I"+lmon_top+"/include")
+    gSystem.AddIncludePath(" -I"+lmon_top+"/calo/include")
 
     #load hit definitions
-    gROOT.ProcessLine(".L /home/jaroslav/sim/lmon/calo/src/PhotoHitsV2.cxx+")
-    gROOT.ProcessLine(".L /home/jaroslav/sim/lmon/calo/src/CalPWOHits.cxx+")
+    gROOT.ProcessLine(".L "+lmon_top+"/calo/src/PhotoHitsV2.cxx+")
+    gROOT.ProcessLine(".L "+lmon_top+"/calo/src/CalPWOHits.cxx+")
 
     #input file
-    inp = "/home/jaroslav/sim/lmon/calo/macro/PWO/pwo.root"
+    #inp = "/home/jaroslav/sim/lmon/calo/macro/PWO/pwo.root"
+    inp = "pwo.root"
 
     #open the input
     infile = TFile.Open(inp)
@@ -43,8 +47,7 @@ def main():
         print("PMT hits:", hits_cath.GetN())
 
         #PMT hits loop
-        for ihit in range(hits_cath.GetN()):
-            hit = hits_cath.GetUnit(ihit)
+        for hit in hits_cath.GetReadData():
 
             print("PhotoHit:", hit.time, hit.pos_x, hit.pos_y, hit.pos_z)
 

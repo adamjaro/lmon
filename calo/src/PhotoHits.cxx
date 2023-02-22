@@ -47,7 +47,7 @@ void PhotoHits::ClearEvent() {
 
   //clear run-time hits and the memory representation
   fHits.clear();
-  for_each(fHitPars.begin(), fHitPars.end(), mem_fun( &HitParBase::ClearEvent ));
+  for_each(fHitPars.begin(), fHitPars.end(), mem_fn( &HitParBase::ClearEvent ));
 
 }//ClearEvent
 
@@ -61,7 +61,7 @@ void PhotoHits::FinishEvent() {
     fHitIO = i;
 
     //write the hit in all its representation parameters
-    for_each(fHitPars.begin(), fHitPars.end(), mem_fun( &HitParBase::Write ));
+    for_each(fHitPars.begin(), fHitPars.end(), mem_fn( &HitParBase::Write ));
   }//hit loop
 
 }//FinishEvent
