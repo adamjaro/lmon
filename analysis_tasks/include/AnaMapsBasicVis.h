@@ -2,6 +2,8 @@
 #ifndef AnaMapsBasicVis_h
 #define AnaMapsBasicVis_h
 
+#include <vector>
+
 #include "AnaMapsBasic.h"
 
 class AnaMapsBasicVis : protected AnaMapsBasic {
@@ -61,6 +63,10 @@ class AnaMapsBasicVis : protected AnaMapsBasic {
     int min_ncnt; // minimal number of reference tracks in event
     int min_etrk; // minimal number of excess tracks as reconstructed tracks - reference tracks
     int min_sig_trk; // minimal number of signal tracks (itrk == 1)
+
+    //input MC particles
+    std::vector<Int_t> *fMCItrk=0x0; 
+    std::vector<Double_t> *fMCEn=0x0, *fMCTheta=0x0, *fMCPhi=0x0;
 
 };
 

@@ -76,22 +76,23 @@ class gui(npy.NPSApp):
     def main(self):
 
         #main frame for the gui
-        frame = npy.Form(name="Low-Q2 tagger event display", lines=25, columns=82)
+        frame = npy.Form(name="Low-Q2 tagger event display", lines=26, columns=82)
 
         #event navigation
         nav_x = 2
         nav_y = 2
-        frame.add(npy.BoxBasic, name="Event navigation", editable=False, relx=nav_x, rely=nav_y, width=36, height=7)
+        frame.add(npy.BoxBasic, name="Event navigation", editable=False, relx=nav_x, rely=nav_y, width=36, height=8)
         frame.add(npy.ButtonPress, name="Next", when_pressed_function=self.next_event, relx=nav_x+1, rely=nav_y+1)
         frame.add(npy.ButtonPress, name="Previous", when_pressed_function=self.previous_event, relx=nav_x+1, rely=nav_y+2)
         self.set_evt = frame.add(npy.TitleText, name="Set event", relx=nav_x+3, rely=nav_y+3, max_width=25)
         self.set_evt.value = "0"
         self.set_apply = frame.add(npy.ButtonPress, name="Apply", when_pressed_function=self.set_event, relx=nav_x+26, rely=nav_y+3)
         frame.add(npy.ButtonPress, name="Re-run current event", when_pressed_function=self.proc_event, relx=nav_x+1, rely=nav_y+4)
+        frame.add(npy.ButtonPress, name="Export to txt", when_pressed_function=self.export_event, relx=nav_x+1, rely=nav_y+5)
 
         #track criteria
         track_sel_x = 2
-        track_sel_y = 10
+        track_sel_y = 11
         frame.add(npy.BoxBasic, name="Track criteria", editable=False, relx=track_sel_x, rely=track_sel_y, width=36, height=6)
         self.set_chi2 = frame.add(npy.TitleText, name="Max chi2ndf:", relx=track_sel_x+3, rely=track_sel_y+1, max_width=25)
         self.set_chi2.value = "0.01"
@@ -102,7 +103,7 @@ class gui(npy.NPSApp):
 
         #tagger selection
         tag_x = 2
-        tag_y = 17
+        tag_y = 18
         frame.add(npy.BoxBasic, name="Tagger selection", editable=False, relx=tag_x, rely=tag_y, width=36, height=6)
         self.tag_sel = frame.add(npy.TitleSelectOne, max_height=2, max_width=32, values = ["Tagger 1", "Tagger 2"],
             name="Select:", relx=tag_x+1, rely=tag_y+1, scroll_exit=True)
@@ -362,6 +363,60 @@ class gui(npy.NPSApp):
         gEve.FullRedraw3D(rt.kTRUE)
 
     #draw_event
+
+    #_____________________________________________________________________________
+    def export_event(self):
+
+        f = open("event.txt", "w")
+
+        #clusters
+        ncls_planes = [self.lib.task_AnaMapsBasicVis_ncls(self.task, i) for i in range(4)] # number of clusters in each plane
+
+        #cluster loop
+        for iplane in range(4):
+            xpos = []
+            ypos = []
+            for i in range(ncls_planes[iplane]):
+                x = c_double(0)
+                y = c_double(0)
+                z = c_double(0)
+                md = c_double(0)
+                self.lib.task_AnaMapsBasicVis_cluster(self.task, iplane, i, byref(x), byref(y), byref(z), byref(md))
+                xpos.append(x.value)
+                ypos.append(y.value)
+
+            f.write("Plane_"+str(iplane)+"_x: ")
+            for i in xpos: f.write("{0:.4f}, ".format(i))
+            f.write("\n")
+
+            f.write("Plane_"+str(iplane)+"_y: ")
+            for i in ypos: f.write("{0:.4f}, ".format(i))
+            f.write("\n\n")
+
+        #tracks loop
+        ntrk = self.lib.task_AnaMapsBasicVis_ntrk(self.task)
+        for i in range(ntrk):
+
+            #load the track
+            x0 = c_double(0)
+            y0 = c_double(0)
+            slope_x = c_double(0)
+            slope_y = c_double(0)
+            chi2 = c_double(0)
+            itrk = c_int(0)
+            self.lib.task_AnaMapsBasicVis_track(self.task, i, byref(x0), byref(y0), byref(slope_x), byref(slope_y),\
+            byref(chi2), byref(itrk))
+
+            f.write("Track "+str(i)+", ")
+            f.write("x0: {0:.3f}, y0: {1:.3f}, ".format(x0.value, y0.value))
+            f.write("slope_x: {0:.9f}, slope_y: {1:.9f}, ".format(slope_x.value, slope_y.value))
+            f.write("chi2: {0:.3f}".format(chi2.value))
+
+            f.write("\n")
+
+        f.close()
+
+    #export_event
 
     #_____________________________________________________________________________
     def set_tag(self):

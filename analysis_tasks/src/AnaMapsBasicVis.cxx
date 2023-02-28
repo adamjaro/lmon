@@ -57,6 +57,12 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
     tree->Add( glob_inputs.gl_pathv[i] );
   }
 
+  //input MC particles
+  tree->SetBranchAddress("mcp_itrk", &fMCItrk); // track ID for the particle
+  tree->SetBranchAddress("mcp_en", &fMCEn); // particle energy, GeV
+  tree->SetBranchAddress("mcp_theta", &fMCTheta); // particle polar angle, rad
+  tree->SetBranchAddress("mcp_phi", &fMCPhi); // particle azimuthal angle, rad
+
   //geometry
   string geo_nam = GetStr(opt_map, "main.geo");
   //cout << "Geometry: " << geo_nam << endl;
@@ -75,6 +81,9 @@ AnaMapsBasicVis::AnaMapsBasicVis(const char *conf): iev(-1), min_ntrk(0),
   s2 = new TagMapsBasic("s2", tree, &geo, otree);
   s1->CreateOutput();
   s2->CreateOutput();
+
+  s1->SetMCParticles(fMCItrk, fMCEn, fMCTheta, fMCPhi);
+  s2->SetMCParticles(fMCItrk, fMCEn, fMCTheta, fMCPhi);
 
   //track selection for tagger stations
   if( opt_map.find("main.max_chi2ndf") != opt_map.end() ) {
