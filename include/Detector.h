@@ -13,7 +13,7 @@ class Detector {
 
   public:
 
-    virtual ~Detector() {}
+    virtual ~Detector() = default;
 
     // add Detector to all Detectors during detector construction
     virtual void Add(std::vector<Detector*> *vec) {vec->push_back(this);}

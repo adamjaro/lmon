@@ -8,7 +8,7 @@
 // and runs by  ./track_fit_NIM1982
 //
 // Coordinate frame for detector planes is shown in the drawing below,
-// shows correct in text editor with fixed-size fond:
+// shows correct in text editor with fixed-size font:
 //
 //                                    /\ x, y
 //                                    |
