@@ -166,10 +166,12 @@ void EThetaPhiReco::Import(TFile *in) {
   TTree *link_tree = dynamic_cast<TTree*>( in->Get( (fNam+"_links").c_str() ) );
   ULong64_t idx;
   Double_t en, theta, phi;
+  Int_t ninp;
   link_tree->SetBranchAddress("idx", &idx);
   link_tree->SetBranchAddress("en", &en);
   link_tree->SetBranchAddress("theta", &theta);
   link_tree->SetBranchAddress("phi", &phi);
+  link_tree->SetBranchAddress("ninp", &ninp);
 
   //links tree loop
   for(Long64_t i=0; i<link_tree->GetEntries(); i++) {
@@ -183,6 +185,7 @@ void EThetaPhiReco::Import(TFile *in) {
     lnk.en = en;
     lnk.theta = theta;
     lnk.phi = phi;
+    lnk.ninp = ninp;
 
   }//links tree loop
 
@@ -210,7 +213,7 @@ void EThetaPhiReco::AddOutputBranch(string nam, Double_t *val) {
 }//AddOutputBranch
 
 //_____________________________________________________________________________
-Bool_t EThetaPhiReco::Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi) {
+Bool_t EThetaPhiReco::Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi, Int_t *ninp) {
 
   //run reconstruction for the measured quantities
 
@@ -220,11 +223,19 @@ Bool_t EThetaPhiReco::Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el
   //test for the link
   if( ilnk == fLinks.end() ) return kFALSE;
 
-  //set the reconstructed particle
+  //get the link
   Link& lnk = (*ilnk).second;
+
+  //minimal number of inputs
+  if( lnk.ninp < fMinNinp ) return kFALSE;
+
+  //set the reconstructed particle
   el_en = lnk.en;
   el_theta = lnk.theta;
   el_phi = lnk.phi;
+
+  //number of inputs when requested
+  if(ninp) *ninp = lnk.ninp;
 
   return kTRUE;
 

@@ -22,7 +22,9 @@ class EThetaPhiReco {
     void CreateRecoOutput();
     void AddOutputBranch(std::string nam, Double_t *val);
 
-    Bool_t Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi);
+    void SetMinNinp(Int_t n) { fMinNinp = n; }
+
+    Bool_t Reconstruct(Double_t *quant, Double_t& el_en, Double_t& el_theta, Double_t& el_phi, Int_t *ninp=0);
     Bool_t Reconstruct(Double_t *quant);
     void WriteRecoOutput() { fRecTree->Write(); }
 
@@ -56,6 +58,7 @@ class EThetaPhiReco {
       Double_t en_err; // corresponding errors, same units
       Double_t theta_err;
       Double_t phi_err;
+      Int_t ninp=0; // number of inputs set from import
 
       void AddParticle(double e, double t, double p);
 
@@ -86,6 +89,8 @@ class EThetaPhiReco {
 
     template<typename T> void AddOpt(std::string onam);
     template<typename T> T GetOpt(std::string onam, boost::program_options::variables_map *opt_map);
+
+    Int_t fMinNinp=0; // minimal number of inputs used for reconstruction
 
 };
 

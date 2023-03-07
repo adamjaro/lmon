@@ -89,6 +89,7 @@ class TagMapsBasic {
       Double_t mcp_theta = 0; // MC particle polar angle, rad
       Double_t mcp_phi = 0; // MC particle azimuthal angle, rad
       Double_t mcp_Q2 = 0; // MC particle Q^2, GeV^2
+      Int_t ninp = 0; //number of inputs used for reconstruction
 
       std::vector<TagMapsBasicPlane::Cluster*> cls; // track clusters
 

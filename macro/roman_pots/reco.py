@@ -190,10 +190,10 @@ def lQ2():
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
     #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v2.root"
 
-    det = "s1_tracks"
-    #det = "s2_tracks"
+    #det = "s1_tracks"
+    det = "s2_tracks"
 
-    sel = "is_rec==1 && prim_id>1"
+    sel = "is_rec==1 && prim_id>1 && ninp>=24"
     #sel = "(TMath::Pi()-rec_theta)>1e-3"
 
     infile = TFile.Open(inp)

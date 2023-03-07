@@ -373,6 +373,7 @@ void TagMapsBasic::CreateOutput(bool planes) {
   fTrkTree->Branch("mcp_theta", &fOutTrk.mcp_theta, "mcp_theta/D");
   fTrkTree->Branch("mcp_phi", &fOutTrk.mcp_phi, "mcp_phi/D");
   fTrkTree->Branch("mcp_Q2", &fOutTrk.mcp_Q2, "mcp_Q2/D");
+  fTrkTree->Branch("ninp", &fOutTrk.ninp, "ninp/I");
 
   //event quantities
   fEvtTree->Branch((fNam+"_ntrk").c_str(), &fNtrk, (fNam+"_ntrk/I").c_str());

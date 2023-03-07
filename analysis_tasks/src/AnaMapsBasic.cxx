@@ -40,6 +40,7 @@ void AnaMapsBasic::Run(const char *conf) {
     ("main.max_chi2ndf", program_options::value<double>(), "Maximal tracks Chi2/NDF")
     ("main.min_cls_dist", program_options::value<double>(), "Minimal cluster distance")
     ("main.input_resp", program_options::value<string>(), "Input response for reconstruction")
+    ("main.min_resp_ninp", program_options::value<int>(), "Minimal number of inputs for reconstruction")
     ("main.planes_output", program_options::value<bool>(), "Write output for planes")
   ;
 
@@ -101,6 +102,12 @@ void AnaMapsBasic::Run(const char *conf) {
     TFile in_resp(input_resp.c_str(), "read");
     s1_rec->Import(&in_resp);
     s2_rec->Import(&in_resp);
+  }
+  if( s1_rec and opt_map.find("main.min_resp_ninp") != opt_map.end() ) {
+
+    s1_rec->SetMinNinp( opt_map["main.min_resp_ninp"].as<int>() );
+    s2_rec->SetMinNinp( opt_map["main.min_resp_ninp"].as<int>() );
+
   }
 
   //outputs
@@ -264,7 +271,8 @@ void AnaMapsBasic::ElectronRec(TagMapsBasic& tag, RefCounter&, EThetaPhiReco *re
     //reconstruction for the track
     Double_t quant[4]{trk.x, trk.y, trk.theta_x, trk.theta_y}; // input tagger quantity
     Double_t rec_en=0, rec_theta=0, rec_phi=0; // reconstructed electron by reference
-    Bool_t stat = rec->Reconstruct(quant, rec_en, rec_theta, rec_phi); // perform the reconstruction
+    Int_t ninp;
+    Bool_t stat = rec->Reconstruct(quant, rec_en, rec_theta, rec_phi, &ninp); // perform the reconstruction
     if( !stat ) continue;
 
     //original electron corresponding to the track is reconstructed, set the track parameters 
@@ -272,6 +280,7 @@ void AnaMapsBasic::ElectronRec(TagMapsBasic& tag, RefCounter&, EThetaPhiReco *re
     trk.rec_en = rec_en;
     trk.rec_theta = rec_theta;
     trk.rec_phi = rec_phi;
+    trk.ninp = ninp;
 
     //reconstructed electron Q^2 by beam energy, electron energy and polar angle
     trk.rec_Q2 = 2*beam_en*trk.rec_en*(1-TMath::Cos(TMath::Pi()-trk.rec_theta));
