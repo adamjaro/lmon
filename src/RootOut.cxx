@@ -84,7 +84,7 @@ void RootOut::FillTree() {
 void RootOut::Close() {
 
   //write the tree
-  if(fDetTree) fDetTree->Write();
+  if(fDetTree) fDetTree->Write(0, TObject::kOverwrite);
 
   //close the output file
   if(fOut) fOut->Close();

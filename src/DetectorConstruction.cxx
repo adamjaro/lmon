@@ -93,6 +93,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct() {
 
   G4VPhysicalVolume *top_p = new G4PVPlacement(0, G4ThreeVector(), top_l, topnam+"_p", 0, false, 0);
 
+  //local materials
+  G4Material *carbon_fiber = new G4Material("CarbonFiber", 1.750*g/cm3, 1);
+  carbon_fiber->AddMaterial(G4NistManager::Instance()->FindOrBuildMaterial("G4_C"), 1);
+
   //add detectors and components
   ComponentBuilder builder(top_l, &geo, fDet);
 

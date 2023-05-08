@@ -99,8 +99,8 @@ def sig_frac():
     rmin = 1e-3
     rmax = 1e5
 
-    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
-    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx11/maps_basic_v1.root"
+    #inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx6/maps_basic_v2.root"
+    inp = "/home/jaroslav/sim/lmon/data/taggers/tag5dx9/maps_basic_v1.root"
 
     #det = "s1_tracks"
     det = "s2_tracks"
@@ -126,10 +126,10 @@ def sig_frac():
     print("Num of simulated events:", nsim)
 
     #selection for signal and background tracks
-    sig_sel = "itrk==1"
-    bkg_sel = "itrk!=1"
-    #sig_sel = "prim_id==1"
-    #bkg_sel = "prim_id!=1"
+    #sig_sel = "itrk==1"
+    #bkg_sel = "itrk!=1"
+    sig_sel = "prim_id==1"
+    bkg_sel = "prim_id!=1"
     #bkg_sel = "prim_id!=1 && prim_id==itrk"
 
     #background
@@ -234,7 +234,7 @@ def sig_frac():
 
     frac_axis.Draw()
 
-    ut.invert_col_can(can)
+    #ut.invert_col_can(can)
     can.SaveAs("01fig.pdf")
 
 #sig_frac

@@ -24,7 +24,8 @@ new BoxSegment tag_ew_s1
   tag_ew_s1.xpos = tag_pos_x
   tag_ew_s1.zpos = tag_ew_s1_zpos
   tag_ew_s1.place_into = vac_B2Q3
-  tag_ew_s1.mat_name = G4_Be
+  #tag_ew_s1.mat_name = G4_Be
+  tag_ew_s1.mat_name = CarbonFiber
   tag_ew_s1.vis = 1:0:0:1
 
 #exit window plate for tagger 2
@@ -37,7 +38,8 @@ new BoxSegment tag_ew_s2
   tag_ew_s2.xpos = tag_pos_x
   tag_ew_s2.zpos = tag_ew_s2_zpos
   tag_ew_s2.place_into = vac_B2Q3
-  tag_ew_s2.mat_name = G4_Be
+  #tag_ew_s2.mat_name = G4_Be
+  tag_ew_s1.mat_name = CarbonFiber
   tag_ew_s2.vis = 1:0:0:1
 
 #Aluminum plates along taggers and beam pipe

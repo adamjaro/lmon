@@ -210,7 +210,7 @@ void AnaMapsBasic::Run(const char *conf) {
   cnt_s1.WriteOutputs();
   cnt_s2.WriteOutputs();
 
-  otree.Write();
+  otree.Write(0, TObject::kOverwrite);
 
   out.Close();
 
